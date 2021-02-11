@@ -24,6 +24,7 @@
         <activity android:name=".F1Chat" android:screenOrientation="portrait"/>
         <activity android:name=".LoginActivity" android:screenOrientation="portrait"/>
         <activity android:name=".PhoneNumber" android:screenOrientation="portrait"/>
+        <activity android:name=".PhoneNumber1" android:screenOrientation="portrait"/>
 
     </application>
 

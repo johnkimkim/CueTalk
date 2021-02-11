@@ -41,7 +41,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.firebase:firebase-auth'
-
+    implementation 'com.google.firebase:firebase-auth:20.0.2'
 
     implementation files('libs/sqlite-jdbc-3.30.1.jar')
 

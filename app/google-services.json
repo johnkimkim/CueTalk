@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "723637778144",
+    "project_id": "cuetalk-c4d03",
+    "storage_bucket": "cuetalk-c4d03.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:723637778144:android:a4ee0563468c6ba7994285",
+        "android_client_info": {
+          "package_name": "com.tistory.starcue.cuetalk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "723637778144-7lu782dg47hndiqom3po0q1h035h7a95.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tistory.starcue.cuetalk",
+            "certificate_hash": "25bd32df656e28989d2843759f612f3b0773e3e8"
+          }
+        },
+        {
+          "client_id": "723637778144-60k7pt2c5cohafhg2rjjuf5ihkfp12s0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwYWza8Mxci2qBIBzZl3wRItqtHrRbD1w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "723637778144-60k7pt2c5cohafhg2rjjuf5ihkfp12s0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

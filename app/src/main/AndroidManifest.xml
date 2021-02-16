@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CueTalk">
-        <activity android:name=".Splash">
+        <activity android:name=".FLogin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,6 +23,8 @@
         <activity android:name=".F1intent" android:screenOrientation="portrait"/>
         <activity android:name=".F1Chat" android:screenOrientation="portrait"/>
         <activity android:name=".LoginActivity" android:screenOrientation="portrait"/>
+<!--        <activity android:name=".FLogin" android:screenOrientation="portrait"/>-->
+        <activity android:name=".Splash" android:screenOrientation="portrait"/>
         <activity android:name=".PhoneNumber" android:screenOrientation="portrait"/>
         <activity android:name=".PhoneNumber1" android:screenOrientation="portrait"/>
 

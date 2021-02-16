@@ -1,32 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/phonetext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:text="전화번호인증"
-        android:textSize="20dp"
-        android:layout_margin="10dp"/>
+        android:textSize="20dp" />
 
     <EditText
         android:id="@+id/edittext"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/phonetext"
-        android:layout_margin="10dp"/>
+        android:layout_margin="10dp" />
 
     <Button
         android:id="@+id/okbtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/phonetext"
+        android:layout_margin="10dp"
+        android:layout_toRightOf="@+id/edittext"
+        android:text="인증요청" />
+
+
+    <ProgressBar
+        android:id="@+id/login_progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/okbtn"
+        app:layout_constraintEnd_toEndOf="@+id/okbtn"
+        app:layout_constraintTop_toTopOf="@+id/okbtn"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
+
+
+    <TextView
+        android:id="@+id/login_feedback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/edittext"
-        android:layout_below="@+id/phonetext"
-        android:text="인증요청"
-        android:layout_margin="10dp"/>
-
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="ㅇㅋㅇㅋ"
+        android:textColor="#FF0000" />
 
 
 </RelativeLayout>

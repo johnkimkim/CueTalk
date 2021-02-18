@@ -32,7 +32,7 @@ public class Fragment5 extends Fragment {
         sex = rootView.findViewById(R.id.profilesex);
         reset = rootView.findViewById(R.id.resetprofile);
 
-        setdb();
+//        setdb();
         reset_profile();
 
         return rootView;

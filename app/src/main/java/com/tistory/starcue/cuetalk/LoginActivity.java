@@ -17,7 +17,15 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 public class LoginActivity extends AppCompatActivity {
+
+    private FirebaseAuth mAuth;
+    private FirebaseUser mCurrentUser;
+    FirebaseFirestore db;
 
     private EditText editid;
     private Button loginbtn;
@@ -42,6 +50,10 @@ public class LoginActivity extends AppCompatActivity {
         databaseHandler.setDB(LoginActivity.this);
         databaseHandler = new DatabaseHandler(this);
         sqLiteDatabase = databaseHandler.getWritableDatabase();
+
+        mAuth = FirebaseAuth.getInstance();
+        mCurrentUser = mAuth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
 
         setinit();
         setagespin();
@@ -84,6 +96,8 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
                 Toast.makeText(LoginActivity.this, "ok", Toast.LENGTH_SHORT).show();
             }
+
+//            mAuth.signOut();
 
         });
     }

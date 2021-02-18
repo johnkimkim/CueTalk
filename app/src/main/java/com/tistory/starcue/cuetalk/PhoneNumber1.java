@@ -116,4 +116,9 @@ public class PhoneNumber1 extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    @Override
+    public void onBackPressed() {
+
+    }
 }

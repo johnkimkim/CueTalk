@@ -111,6 +111,7 @@ public class PhoneNumber extends AppCompatActivity {
                 Intent intent = new Intent(PhoneNumber.this, PhoneNumber1.class);
                 intent.putExtra("AuthCredentials", s);
                 startActivity(intent);
+                finish();
             }
         };
     }
@@ -156,5 +157,10 @@ public class PhoneNumber extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }

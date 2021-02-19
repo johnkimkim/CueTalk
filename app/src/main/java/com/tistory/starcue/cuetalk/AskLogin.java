@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.Window;
@@ -82,7 +83,7 @@ public class AskLogin extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 setfirestoredata();
-                startActivity(new Intent(AskLogin.this, LoginActivity.class));
+                checkSql();
             }
         });
     }
@@ -126,6 +127,22 @@ public class AskLogin extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    private void checkSql() {
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from id", null);
+        int i = cursor.getCount();
+        if (i == 0) {
+            String test = Integer.toString(i);
+            Log.d("splash<<<: ", test);
+            Intent intent = new Intent(AskLogin.this, LoginActivity.class);
+            startActivity(intent);
+        } else {
+            String test = Integer.toString(i);
+            Log.d("splash<<<: ", test);
+            Intent intent = new Intent(AskLogin.this, MainActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override

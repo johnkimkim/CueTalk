@@ -7,7 +7,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="이미 로그인 중 입니다.\n다른기기에서 로그아웃 후 새로 로그인 하시겠습니까?"
+        android:text="앱을 재설치했거나\n이미 로그인 중 입니다.\n다른기기에서 로그아웃 후 새로 로그인 하시겠습니까?"
         android:gravity="center"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"/>

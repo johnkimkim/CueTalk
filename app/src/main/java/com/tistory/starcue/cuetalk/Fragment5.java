@@ -12,12 +12,20 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 public class Fragment5 extends Fragment {
 
     TextView name, age, sex;
-    Button reset;
+    Button reset, logout;
     DatabaseHandler databaseHandler;
     private SQLiteDatabase sqLiteDatabase;
+
+    private FirebaseAuth mAuth;
+    private FirebaseUser mCurrentUser;
+    FirebaseFirestore db;
 
     public Fragment5() {
         // Required empty public constructor
@@ -31,11 +39,20 @@ public class Fragment5 extends Fragment {
         age = rootView.findViewById(R.id.profileage);
         sex = rootView.findViewById(R.id.profilesex);
         reset = rootView.findViewById(R.id.resetprofile);
+        logout = rootView.findViewById(R.id.logout_btn);
 
-//        setdb();
+        setFirebse();
+        setdb();
         reset_profile();
+        logoutBtn();
 
         return rootView;
+    }
+
+    private void setFirebse() {
+        mAuth = FirebaseAuth.getInstance();
+        mCurrentUser = mAuth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
     }
 
     private void setdb() {
@@ -52,13 +69,19 @@ public class Fragment5 extends Fragment {
     }
 
     private void reset_profile() {
-        reset.setOnClickListener(view -> {
-            databaseHandler.setDB(getActivity());
-            databaseHandler = new DatabaseHandler(getActivity());
-            sqLiteDatabase = databaseHandler.getWritableDatabase();
-            databaseHandler.dbdelete();
-            Intent intent = new Intent(getActivity(), LoginActivity.class);
-            startActivity(intent);
+        reset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ChangeProfile.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void logoutBtn() {
+        logout.setOnClickListener(view -> {
+            mAuth.signOut();
+            startActivity(new Intent(getActivity(), PhoneNumber.class));
         });
     }
 

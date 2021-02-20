@@ -30,14 +30,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LoginActivity extends AppCompatActivity {
+public class ChangeProfile extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
     FirebaseFirestore db;
 
     private EditText editid;
-    private Button loginbtn;
+    private Button yesbtn, nobtn;
     private String[] age;
     NumberPicker picker;
     RadioButton radiomale, radiofemale;
@@ -56,9 +56,9 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_activity);
+        setContentView(R.layout.change_profile);
 
-        databaseHandler.setDB(LoginActivity.this);
+        databaseHandler.setDB(ChangeProfile.this);
         databaseHandler = new DatabaseHandler(this);
         sqLiteDatabase = databaseHandler.getWritableDatabase();
 
@@ -68,25 +68,28 @@ public class LoginActivity extends AppCompatActivity {
 
         setinit();
         setagespin();
-        setLoginbtn();
+        setYesBtn();
+        setNoBtn();
+
     }
 
     private void setinit() {
-        editid = findViewById(R.id.editid);
-        loginbtn = findViewById(R.id.loginbtn);
-        radiomale = findViewById(R.id.sexmale);
-        radiofemale = findViewById(R.id.sexfemale);
-        radioGroup = findViewById(R.id.radiogroup);
-        agespin = findViewById(R.id.agespin);
-        relativeLayout = findViewById(R.id.progresslayout);
-        progressBar = findViewById(R.id.progress_bar);
+        editid = findViewById(R.id.change_profile_editid);
+        yesbtn = findViewById(R.id.change_profile_yesbtn);
+        nobtn = findViewById(R.id.change_profile_nobtn);
+        radiomale = findViewById(R.id.change_profile_sexmale);
+        radiofemale = findViewById(R.id.change_profile_sexfemale);
+        radioGroup = findViewById(R.id.change_profile_radiogroup);
+        agespin = findViewById(R.id.change_profile_agespin);
+        relativeLayout = findViewById(R.id.change_profile_progresslayout);
+        progressBar = findViewById(R.id.change_profile_progress_bar);
 
         relativeLayout.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
     }
 
-    private void setLoginbtn() {
-        loginbtn.setOnClickListener(view -> {
+    private void setYesBtn() {
+        yesbtn.setOnClickListener(view -> {
 
             if (radiomale.isChecked()) {
                 sexstring = "남자";
@@ -101,15 +104,16 @@ public class LoginActivity extends AppCompatActivity {
             int i = Integer.parseInt(agestring);
 
             if (name.equals("")) {
-                Toast.makeText(LoginActivity.this, "name", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChangeProfile.this, "name", Toast.LENGTH_SHORT).show();
             } else if (i == 0) {
-                Toast.makeText(LoginActivity.this, "age", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChangeProfile.this, "age", Toast.LENGTH_SHORT).show();
             } else if (sexstring.equals("")) {
-                Toast.makeText(LoginActivity.this, "sex", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChangeProfile.this, "sex", Toast.LENGTH_SHORT).show();
             } else {
                 relativeLayout.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.VISIBLE);
 
+                databaseHandler.dbdelete();
                 databaseHandler.dbinsert(name, sexstring, agestring);
 
                 updateUser(name, sexstring, agestring);
@@ -120,8 +124,12 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    private void setNoBtn() {
+        nobtn.setOnClickListener(view -> onBackPressed());
+    }
+
     private void setagespin() {
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(LoginActivity.this, android.R.layout.select_dialog_item, items);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(ChangeProfile.this, android.R.layout.select_dialog_item, items);
         arrayAdapter.setDropDownViewResource(android.R.layout.select_dialog_item);
         agespin.setAdapter(arrayAdapter);
 
@@ -143,6 +151,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUser(String name, String sex, String age) {
+        databaseHandler.setDB(ChangeProfile.this);
+        databaseHandler = new DatabaseHandler(this);
+        sqLiteDatabase = databaseHandler.getWritableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery("select uniqueField from uniqueTable where _rowid_ = 1", null);
         cursor.moveToFirst();
         String uniquestring = cursor.getString(0);
@@ -170,16 +181,15 @@ public class LoginActivity extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
                         relativeLayout.setVisibility(View.GONE);
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(LoginActivity.this, "네트워크문제로 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ChangeProfile.this, "네트워크문제로 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
     private void goToMain() {
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        Intent intent = new Intent(ChangeProfile.this, MainActivity.class);
         startActivity(intent);
-        Toast.makeText(LoginActivity.this, "ok", Toast.LENGTH_SHORT).show();
+        Toast.makeText(ChangeProfile.this, "ok", Toast.LENGTH_SHORT).show();
         finish();
     }
-
 }

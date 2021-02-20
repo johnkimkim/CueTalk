@@ -4,8 +4,6 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-
 
     <application
         android:allowBackup="true"
@@ -31,6 +29,7 @@
         <activity android:name=".PhoneNumber" android:screenOrientation="portrait"/>
         <activity android:name=".PhoneNumber1" android:screenOrientation="portrait"/>
         <activity android:name=".AskLogin" android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert"/>
+        <activity android:name=".ChangeProfile" android:screenOrientation="portrait"/>
 
     </application>
 

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--    <RelativeLayout-->
+    <!--        android:id="@+id/progresslayout"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:background="#8F323232">-->
+    <!--        <ProgressBar-->
+    <!--            android:id="@+id/progress_bar"-->
+    <!--            style="?android:attr/progressBarStyle"-->
+    <!--            android:layout_width="50dp"-->
+    <!--            android:layout_height="50dp"-->
+    <!--            android:visibility="invisible"-->
+    <!--            android:layout_centerHorizontal="true"-->
+    <!--            android:layout_centerVertical="true"/>-->
+    <!--    </RelativeLayout>-->
+
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="600dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="프로필 변경" />-->
+<!--        -->
+<!--        <ImageView-->
+<!--            android:id="@+id/change_profile_image"-->
+<!--            android:layout_width="80dp"-->
+<!--            android:layout_height="80dp"/>-->
+
+        <Button
+            android:id="@+id/add_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이미지추가"/>
+
+        <EditText
+            android:id="@+id/change_profile_editid"
+            android:layout_width="200dp"
+            android:layout_height="60dp"
+            android:hint="닉네임 입력" />
+
+        <Spinner
+            android:id="@+id/change_profile_agespin"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:dropDownWidth="140dp"
+            android:spinnerMode="dialog" />
+
+        <RadioGroup
+            android:id="@+id/change_profile_radiogroup"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/change_profile_sexmale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="남자" />
+
+            <RadioButton
+                android:id="@+id/change_profile_sexfemale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="여자" />
+
+        </RadioGroup>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/change_profile_yesbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="변경"
+                android:layout_margin="2dp"/>
+
+            <Button
+                android:id="@+id/change_profile_nobtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="취소"
+                android:layout_margin="2dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/change_profile_progresslayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#8F323232">
+
+        <ProgressBar
+            android:id="@+id/change_profile_progress_bar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+</RelativeLayout>

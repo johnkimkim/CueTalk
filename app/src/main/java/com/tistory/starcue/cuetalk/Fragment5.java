@@ -3,21 +3,31 @@ package com.tistory.starcue.cuetalk;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class Fragment5 extends Fragment {
 
+    ImageView pic;
     TextView name, age, sex;
     Button reset, logout;
     DatabaseHandler databaseHandler;
@@ -26,6 +36,8 @@ public class Fragment5 extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
     FirebaseFirestore db;
+    FirebaseStorage storage;
+    StorageReference storageReference;
 
     public Fragment5() {
         // Required empty public constructor
@@ -40,8 +52,10 @@ public class Fragment5 extends Fragment {
         sex = rootView.findViewById(R.id.profilesex);
         reset = rootView.findViewById(R.id.resetprofile);
         logout = rootView.findViewById(R.id.logout_btn);
+        pic = rootView.findViewById(R.id.fragment5image);
 
         setFirebse();
+        setPic();
         setdb();
         reset_profile();
         logoutBtn();
@@ -53,6 +67,8 @@ public class Fragment5 extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
     }
 
     private void setdb() {
@@ -82,6 +98,29 @@ public class Fragment5 extends Fragment {
         logout.setOnClickListener(view -> {
             mAuth.signOut();
             startActivity(new Intent(getActivity(), PhoneNumber.class));
+        });
+    }
+
+    private void setPic() {
+//        Glide.with(getActivity()).load("gs://cuetalk-c4d03.appspot.com/images/03aUD74hz4MjcbcZcpSMc2KfZWs2").into(pic);
+        String uid = mAuth.getUid();
+        StorageReference storageRef = storage.getReference().child("images/" + uid);
+        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(getActivity())
+                        .load(uri.toString())
+                        .override(600, 600)
+                        .placeholder(R.drawable.ic_launcher_background)
+                        .error(R.drawable.ic_launcher_foreground)
+                        .circleCrop()
+                        .into(pic);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("Fragment5>>>", "load pic fail");
+            }
         });
     }
 

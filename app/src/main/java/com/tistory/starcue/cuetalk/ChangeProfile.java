@@ -1,14 +1,19 @@
 package com.tistory.starcue.cuetalk;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
@@ -21,12 +26,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +48,8 @@ public class ChangeProfile extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
     FirebaseFirestore db;
+    FirebaseStorage storage;
+    StorageReference storageReference;
 
     private EditText editid;
     private Button yesbtn, nobtn;
@@ -53,6 +68,10 @@ public class ChangeProfile extends AppCompatActivity {
     DatabaseHandler databaseHandler;
     private SQLiteDatabase sqLiteDatabase;
 
+    ImageView imageView;
+    Button addImageBtn;
+    Uri imageUri;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,8 +84,11 @@ public class ChangeProfile extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
 
         setinit();
+        setPic();
         setagespin();
         setYesBtn();
         setNoBtn();
@@ -83,9 +105,67 @@ public class ChangeProfile extends AppCompatActivity {
         agespin = findViewById(R.id.change_profile_agespin);
         relativeLayout = findViewById(R.id.change_profile_progresslayout);
         progressBar = findViewById(R.id.change_profile_progress_bar);
+        imageView = findViewById(R.id.change_profile_image);
+        addImageBtn = findViewById(R.id.add_image);
 
         relativeLayout.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
+
+        addImageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chooosePic();
+            }
+        });
+    }
+
+    private void chooosePic() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
+            imageUri = data.getData();
+            imageView.setImageURI(imageUri);
+        }
+    }
+
+    private void uploadPic() {
+
+        final ProgressDialog pd = new ProgressDialog(ChangeProfile.this);
+        pd.setTitle("이미지 업로드 중...");
+        pd.show();
+
+        String uid = mAuth.getUid();
+        StorageReference riversRef = storageReference.child("images/" + uid);
+        riversRef.putFile(imageUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        pd.dismiss();
+                        goToMain();
+                        Snackbar.make(findViewById(android.R.id.content), "이미지 업로드 성공", Snackbar.LENGTH_LONG).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        pd.dismiss();
+                        Toast.makeText(ChangeProfile.this, "업로드실패", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                        double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                        pd.setMessage("Pro: " + (int) progressPercent + "%");
+                    }
+                });
     }
 
     private void setYesBtn() {
@@ -117,6 +197,7 @@ public class ChangeProfile extends AppCompatActivity {
                 databaseHandler.dbinsert(name, sexstring, agestring);
 
                 updateUser(name, sexstring, agestring);
+                uploadPic();
             }
 
 //            mAuth.signOut();
@@ -173,7 +254,7 @@ public class ChangeProfile extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        goToMain();
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -184,6 +265,29 @@ public class ChangeProfile extends AppCompatActivity {
                         Toast.makeText(ChangeProfile.this, "네트워크문제로 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void setPic() {
+//        Glide.with(getActivity()).load("gs://cuetalk-c4d03.appspot.com/images/03aUD74hz4MjcbcZcpSMc2KfZWs2").into(pic);
+        String uid = mAuth.getUid();
+        StorageReference storageRef = storage.getReference().child("images/" + uid);
+        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(ChangeProfile.this)
+                        .load(uri.toString())
+                        .override(600, 600)
+                        .placeholder(R.drawable.ic_launcher_background)
+                        .error(R.drawable.ic_launcher_foreground)
+                        .circleCrop()
+                        .into(imageView);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
     }
 
     private void goToMain() {

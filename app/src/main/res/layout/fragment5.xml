@@ -17,6 +17,11 @@
             android:layout_height="wrap_content"
             android:text="프로필" />
 
+        <ImageView
+            android:id="@+id/fragment5image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"/>
+
         <TextView
             android:id="@+id/profilename"
             android:layout_width="wrap_content"

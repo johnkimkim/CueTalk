@@ -1,14 +1,17 @@
 package com.tistory.starcue.cuetalk;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
@@ -23,9 +26,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +43,8 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
     FirebaseFirestore db;
+    FirebaseStorage storage;
+    StorageReference storageReference;
 
     private EditText editid;
     private Button loginbtn;
@@ -47,6 +57,9 @@ public class LoginActivity extends AppCompatActivity {
     Spinner agespin;
     RelativeLayout relativeLayout;
     ProgressBar progressBar;
+    ImageView pic;
+    Button addpic;
+    Uri imageUri;
 
     String[] items = {"나이", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70"};
 
@@ -65,6 +78,8 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
 
         setinit();
         setagespin();
@@ -80,9 +95,67 @@ public class LoginActivity extends AppCompatActivity {
         agespin = findViewById(R.id.agespin);
         relativeLayout = findViewById(R.id.progresslayout);
         progressBar = findViewById(R.id.progress_bar);
+        pic = findViewById(R.id.login_profile_image);
+        addpic = findViewById(R.id.login_add_image);
 
         relativeLayout.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
+
+        addpic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chooosePic();
+            }
+        });
+    }
+
+    private void chooosePic() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
+            imageUri = data.getData();
+            pic.setImageURI(imageUri);
+        }
+    }
+
+    private void uploadPic() {
+
+        final ProgressDialog pd = new ProgressDialog(LoginActivity.this);
+        pd.setTitle("이미지 업로드 중...");
+        pd.show();
+
+        String uid = mAuth.getUid();
+        StorageReference riversRef = storageReference.child("images/" + uid);
+        riversRef.putFile(imageUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        pd.dismiss();
+                        Snackbar.make(findViewById(android.R.id.content), "이미지 업로드 성공", Snackbar.LENGTH_LONG).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        pd.dismiss();
+                        goToMain();
+                        Toast.makeText(LoginActivity.this, "업로드실패", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                        double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                        pd.setMessage("Pro: " + (int) progressPercent + "%");
+                    }
+                });
     }
 
     private void setLoginbtn() {
@@ -113,6 +186,7 @@ public class LoginActivity extends AppCompatActivity {
                 databaseHandler.dbinsert(name, sexstring, agestring);
 
                 updateUser(name, sexstring, agestring);
+                uploadPic();
             }
 
 //            mAuth.signOut();
@@ -162,7 +236,7 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        goToMain();
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

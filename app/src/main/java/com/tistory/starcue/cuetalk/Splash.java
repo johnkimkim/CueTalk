@@ -52,7 +52,7 @@ public class Splash extends AppCompatActivity {
         preferences = getSharedPreferences("checkFirst", Activity.MODE_PRIVATE);
         firstLogin = preferences.getBoolean("checkFirst", false);
 
-        checkfirst();
+        checkUnique();
 
     }
 
@@ -78,6 +78,42 @@ public class Splash extends AppCompatActivity {
 //            cursor.close();
 //        }, 1200);
 
+    }
+
+    private void checkUnique() {
+        setDB();
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from uniqueTable", null);
+        int i = cursor.getCount();
+        if (i == 0) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d(">>>", "first");
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putBoolean("checkFirst", true);
+                    editor.apply();
+
+                    String unique = UUID.randomUUID().toString();
+
+                    databaseHandler.setDB(Splash.this);
+                    databaseHandler = new DatabaseHandler(Splash.this);
+                    sqLiteDatabase = databaseHandler.getWritableDatabase();
+                    databaseHandler.insertUnique(unique);
+
+                    Log.d(">>>", unique);
+
+                    checkUser();
+                }
+            }, 500);
+        } else {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    checkUser();
+                    Log.d(">>>", "not first");
+                }
+            }, 500);
+        }
     }
 
     private void checkfirst() {

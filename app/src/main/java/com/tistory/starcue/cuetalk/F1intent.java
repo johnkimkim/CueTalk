@@ -1,40 +1,27 @@
 package com.tistory.starcue.cuetalk;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static com.tistory.starcue.cuetalk.Fragment1.spinner;
 
@@ -46,7 +33,7 @@ public class F1intent extends AppCompatActivity {
     ListView listView;
     String name, sex, age;
     F1intenrAdapter f1intenrAdapter;
-    private ArrayList<AdressRoomList> adressRoomLists = new ArrayList<>();
+    private ArrayList<AdressRoomItem> adressRoomItems = new ArrayList<>();
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
     Map<String, Object> map = new HashMap<String, Object>();
@@ -87,7 +74,7 @@ public class F1intent extends AppCompatActivity {
     }
 
     private void setlistview() {
-        F1intenrAdapter f1intenrAdapter = new F1intenrAdapter(F1intent.this, adressRoomLists);
+        F1intenrAdapter f1intenrAdapter = new F1intenrAdapter(F1intent.this, adressRoomItems);
         listView.setAdapter(f1intenrAdapter);
         f1intenrAdapter.notifyDataSetChanged();
     }
@@ -107,25 +94,25 @@ public class F1intent extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String s = getIntent().getStringExtra("adress");
 
-                adressRoomLists.clear();
+                adressRoomItems.clear();
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                     String test = snapshot1.child(s).child(name).getKey();
                     Log.d("<<<1", test);
-                    AdressRoomList adressRoomList = new AdressRoomList();
-                    AdressRoomList data = snapshot1.child(s).getValue(AdressRoomList.class);//child 설정 고치기
+                    AdressRoomItem adressRoomItem = new AdressRoomItem();
+                    AdressRoomItem data = snapshot1.child(s).getValue(AdressRoomItem.class);//child 설정 고치기
 
                     ArrayList<String> namelist = new ArrayList<>();
                     String getname = snapshot1.child(s).getValue(String.class);
                     namelist.add(getname);
 
-                    adressRoomList.setName(snapshot1.child(s).getValue(AdressRoomList.class).getName());
+                    adressRoomItem.setName(snapshot1.child(s).getValue(AdressRoomItem.class).getName());
 //                    adressRoomList.setSex(snapshot1.child(s).getValue(AdressRoomList.class).getSex());
 //                    adressRoomList.setAge(snapshot1.child(s).getValue(AdressRoomList.class).getAge());
-                    adressRoomLists.add(adressRoomList);
+                    adressRoomItems.add(adressRoomItem);
 
                 }
 
-                f1intenrAdapter = new F1intenrAdapter(F1intent.this, adressRoomLists);
+                f1intenrAdapter = new F1intenrAdapter(F1intent.this, adressRoomItems);
                 listView.setAdapter(f1intenrAdapter);
                 f1intenrAdapter.notifyDataSetChanged();
 

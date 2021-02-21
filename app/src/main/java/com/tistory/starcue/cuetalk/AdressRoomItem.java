@@ -5,7 +5,7 @@ import com.google.firebase.database.Exclude;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AdressRoomList {
+public class AdressRoomItem {
 
     public String name;
     public String sex;
@@ -29,7 +29,7 @@ public class AdressRoomList {
 
 
 
-    public AdressRoomList() {
+    public AdressRoomItem() {
 
     }
 
@@ -41,7 +41,7 @@ public class AdressRoomList {
         this.name = name;
     }
 
-    public AdressRoomList(String name, String sex, String age) {
+    public AdressRoomItem(String name, String sex, String age) {
         this.name = name;
         this.sex = sex;
         this.age = age;

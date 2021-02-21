@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -29,7 +30,7 @@ public class Fragment5 extends Fragment {
 
     ImageView pic;
     TextView name, age, sex;
-    Button reset, logout;
+    Button reset, logout, deleteUser;
     DatabaseHandler databaseHandler;
     private SQLiteDatabase sqLiteDatabase;
 
@@ -53,12 +54,14 @@ public class Fragment5 extends Fragment {
         reset = rootView.findViewById(R.id.resetprofile);
         logout = rootView.findViewById(R.id.logout_btn);
         pic = rootView.findViewById(R.id.fragment5image);
+        deleteUser = rootView.findViewById(R.id.fragment5_delete_user);
 
         setFirebse();
         setPic();
         setdb();
         reset_profile();
         logoutBtn();
+        deleteUser();
 
         return rootView;
     }
@@ -76,12 +79,19 @@ public class Fragment5 extends Fragment {
         databaseHandler = new DatabaseHandler(getActivity());
         sqLiteDatabase = databaseHandler.getWritableDatabase();
 
-        Cursor cursor = sqLiteDatabase.rawQuery("select * from id where _rowid_ = 1", null);
-        cursor.moveToFirst();
-        name.setText(cursor.getString(0));
-        age.setText(cursor.getString(1));
-        sex.setText(cursor.getString(2));
-        cursor.close();
+        Cursor cursorid = sqLiteDatabase.rawQuery("select * from id where _rowid_ = 1", null);
+        cursorid.moveToFirst();
+        int i = cursorid.getCount();
+        if (i != 0) {
+            Cursor cursor = sqLiteDatabase.rawQuery("select * from id where _rowid_ = 1", null);
+            cursor.moveToFirst();
+            name.setText(cursor.getString(0));
+            age.setText(cursor.getString(1));
+            sex.setText(cursor.getString(2));
+            cursor.close();
+        }
+
+
     }
 
     private void reset_profile() {
@@ -98,6 +108,20 @@ public class Fragment5 extends Fragment {
         logout.setOnClickListener(view -> {
             mAuth.signOut();
             startActivity(new Intent(getActivity(), PhoneNumber.class));
+        });
+    }
+
+    private void deleteUser() {
+        deleteUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteDocument();
+                deleteImage();
+                mAuth.signOut();
+                mCurrentUser.delete();
+                databaseHandler.dbdelete();
+                startActivity(new Intent(getActivity(), Splash.class));
+            }
         });
     }
 
@@ -120,6 +144,40 @@ public class Fragment5 extends Fragment {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.d("Fragment5>>>", "load pic fail");
+            }
+        });
+    }
+
+    private void deleteDocument() {
+//        String dsa = mCurrentUser.getUid();
+        String unique = mAuth.getUid();
+        db.collection("users").document(unique)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(getActivity(), "document삭제 완료", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), "document삭제 실패", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void deleteImage() {
+        String uid = mAuth.getUid();
+        StorageReference storageRef = storage.getReference().child("images/" + uid);
+        storageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
             }
         });
     }

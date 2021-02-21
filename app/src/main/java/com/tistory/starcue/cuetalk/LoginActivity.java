@@ -139,13 +139,13 @@ public class LoginActivity extends AppCompatActivity {
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         pd.dismiss();
                         Snackbar.make(findViewById(android.R.id.content), "이미지 업로드 성공", Snackbar.LENGTH_LONG).show();
+                        goToMain();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         pd.dismiss();
-                        goToMain();
                         Toast.makeText(LoginActivity.this, "업로드실패", Toast.LENGTH_SHORT).show();
                     }
                 })
@@ -186,7 +186,12 @@ public class LoginActivity extends AppCompatActivity {
                 databaseHandler.dbinsert(name, sexstring, agestring);
 
                 updateUser(name, sexstring, agestring);
-                uploadPic();
+                if (imageUri != null) {
+                    uploadPic();
+                } else {
+                    goToMain();
+                }
+
             }
 
 //            mAuth.signOut();

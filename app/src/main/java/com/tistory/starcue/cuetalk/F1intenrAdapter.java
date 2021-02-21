@@ -12,22 +12,22 @@ import java.util.ArrayList;
 public class F1intenrAdapter extends BaseAdapter {
 
     Context c;
-    ArrayList<AdressRoomList> adressRoomLists;
+    ArrayList<AdressRoomItem> adressRoomItems;
     LayoutInflater inflater;
 
-    public F1intenrAdapter(Context c, ArrayList<AdressRoomList> adressRoomLists) {
+    public F1intenrAdapter(Context c, ArrayList<AdressRoomItem> adressRoomItems) {
         this.c = c;
-        this.adressRoomLists = adressRoomLists;
+        this.adressRoomItems = adressRoomItems;
     }
 
     @Override
     public int getCount() {
-        return adressRoomLists.size();
+        return adressRoomItems.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return adressRoomLists.get(i);
+        return adressRoomItems.get(i);
     }
 
     @Override
@@ -41,13 +41,13 @@ public class F1intenrAdapter extends BaseAdapter {
             inflater = (LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
         if (view == null) {
-            view = inflater.inflate(R.layout.f1listviewlayout, viewGroup, false);
+            view = inflater.inflate(R.layout.adress_room_layout, viewGroup, false);
         }
 
         F1intentHoler holer = new F1intentHoler(view);
-        holer.name.setText(adressRoomLists.get(i).getName());
-        holer.sex.setText(adressRoomLists.get(i).getSex());
-        holer.age.setText(adressRoomLists.get(i).getAge());
+        holer.name.setText(adressRoomItems.get(i).getName());
+        holer.sex.setText(adressRoomItems.get(i).getSex());
+        holer.age.setText(adressRoomItems.get(i).getAge());
         return view;
     }
 
@@ -57,9 +57,9 @@ public class F1intenrAdapter extends BaseAdapter {
         TextView age;
 
         public F1intentHoler(View itemView) {
-            name = itemView.findViewById(R.id.name);
-            sex = itemView.findViewById(R.id.sex);
-            age = itemView.findViewById(R.id.age);
+            name = itemView.findViewById(R.id.adress_room_layout_name);
+            sex = itemView.findViewById(R.id.adress_room_layout_sex);
+            age = itemView.findViewById(R.id.adress_room_layout_age);
         }
     }
 }

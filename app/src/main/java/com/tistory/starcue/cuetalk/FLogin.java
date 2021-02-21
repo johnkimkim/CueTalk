@@ -50,6 +50,8 @@ public class FLogin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.flogin);
 
+        Log.d("FLogin>>>", "oncreate");
+
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
@@ -64,7 +66,7 @@ public class FLogin extends AppCompatActivity {
             setinit();
             setOnClickbtn();
 
-            setFirebaseFirestore();
+//            setFirebaseFirestore();
 //            checkForLogin();
 //            getdata();
             checkDevice();
@@ -198,19 +200,19 @@ public class FLogin extends AppCompatActivity {
                     if (documentSnapshot.exists()) {
                         String unique = documentSnapshot.getString("unique");
                         Log.d(">>>unique", unique);
-                        if (unique.equals(uniquestring)) {
+                        if (unique.equals(uniquestring)) { //기존회원 있을때
                             Log.d(">>>", "same");
                             checkSql();
-                        } else {
+                        } else { //기존회원 없을때
                             Log.d(">>>", "not same");
                             asklogin();
                         }
                     } else {
                         ifNullDocument();
-                        Log.d("getdata document: ", "null");
+                        Log.d(">>>getdata document: ", "null");
                     }
                 } else {
-                    Log.d("getdata: ", "false, ", task.getException());
+                    Log.d(">>>getdata: ", "false, ", task.getException());
                 }
             }
         });
@@ -304,12 +306,16 @@ public class FLogin extends AppCompatActivity {
             String test = Integer.toString(i);
             Log.d("splash<<<: ", test);
             Intent intent = new Intent(FLogin.this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
         } else {
             String test = Integer.toString(i);
             Log.d("splash<<<: ", test);
             Intent intent = new Intent(FLogin.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
         }

@@ -239,25 +239,23 @@ public class ChangeProfile extends AppCompatActivity {
     }
 
     private void updateUser(String name, String sex, String age) {
-        databaseHandler.setDB(ChangeProfile.this);
-        databaseHandler = new DatabaseHandler(this);
-        sqLiteDatabase = databaseHandler.getWritableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery("select uniqueField from uniqueTable where _rowid_ = 1", null);
-        cursor.moveToFirst();
-        String uniquestring = cursor.getString(0);
+//        databaseHandler.setDB(ChangeProfile.this);
+//        databaseHandler = new DatabaseHandler(this);
+//        sqLiteDatabase = databaseHandler.getWritableDatabase();
+//        Cursor cursor = sqLiteDatabase.rawQuery("select uniqueField from uniqueTable where _rowid_ = 1", null);
+//        cursor.moveToFirst();
+//        String uniquestring = cursor.getString(0);
         //get unique
 
         String user_uid = mAuth.getUid();
 
         Map<String, Object> user = new HashMap<>();
-        user.put("uid", user_uid);
-        user.put("unique", uniquestring);
         user.put("name", name);
         user.put("sex", sex);
         user.put("age", age);
 
         db.collection("users").document(user_uid)
-                .set(user)
+                .update(user)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

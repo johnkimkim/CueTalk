@@ -2,8 +2,11 @@ package com.tistory.starcue.cuetalk;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -52,16 +55,44 @@ public class PhoneNumber1 extends AppCompatActivity {
         phone1edit = findViewById(R.id.edittext1);
         feedtext = findViewById(R.id.phone1feedback);
         okbtn = findViewById(R.id.okbtn1);
+        okbtn.setEnabled(false);
         progressBar = findViewById(R.id.otp_progress_bar);
+
+        phone1edit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String count = charSequence.toString();
+                Log.d("PhoneNumber1>>>", count);
+                if (count.length() < 6) {
+                    okbtn.setEnabled(false);
+                } else {
+                    okbtn.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 
     private void setOnClickbtn() {
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
                 String otp = phone1edit.getText().toString();
                 if (otp.isEmpty()) {
-                    feedtext.setText("인증코드를 입력해주세요");
+                    feedtext.setText("인증코드를 입력해주세요");//필요없음
                     feedtext.setVisibility(View.VISIBLE);
                 } else {
                     progressBar.setVisibility(View.VISIBLE);

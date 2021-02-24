@@ -222,10 +222,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUser(String name, String sex, String age) {
-        Cursor cursor = sqLiteDatabase.rawQuery("select uniqueField from uniqueTable where _rowid_ = 1", null);
-        cursor.moveToFirst();
-        String uniquestring = cursor.getString(0);
-        //get unique
+//        Cursor cursor = sqLiteDatabase.rawQuery("select uniqueField from uniqueTable where _rowid_ = 1", null);
+//        cursor.moveToFirst();
+//        String uniquestring = cursor.getString(0);
+//        //get unique
 
         String user_uid = mAuth.getUid();
 

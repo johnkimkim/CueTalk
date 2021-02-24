@@ -6,8 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -64,13 +67,42 @@ public class PhoneNumber extends AppCompatActivity {
         mProgressBar = findViewById(R.id.login_progress_bar);
         feedtext = findViewById(R.id.login_feedback);
         feedtext.setVisibility(View.GONE);
+
+        mButton.setEnabled(false);
+        mPhoneNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String count = charSequence.toString();
+                Log.d("PhoneNumber1>>>", count);
+                if (count.length() < 11) {
+                    mButton.setEnabled(false);
+                } else {
+                    mButton.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 
     private void setOnClickBtn() {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String phoneNum = "+82" + mPhoneNumber.getText().toString();
+
+                InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+                String phoneNum = "+82" + mPhoneNumber.getText().toString().substring(1);
+                Log.d("PHoneNumber>>>", phoneNum);
 
                 if (phoneNum.isEmpty()) {
                     feedtext.setVisibility(View.VISIBLE);

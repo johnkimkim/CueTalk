@@ -137,35 +137,42 @@ public class ChangeProfile extends AppCompatActivity {
 
     private void uploadPic() {
 
-        final ProgressDialog pd = new ProgressDialog(ChangeProfile.this);
-        pd.setTitle("이미지 업로드 중...");
-        pd.show();
 
-        String uid = mAuth.getUid();
-        StorageReference riversRef = storageReference.child("images/" + uid);
-        riversRef.putFile(imageUri)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        pd.dismiss();
-                        goToMain();
-                        Snackbar.make(findViewById(android.R.id.content), "이미지 업로드 성공", Snackbar.LENGTH_LONG).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        pd.dismiss();
-                        Toast.makeText(ChangeProfile.this, "업로드실패", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                        double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
-                        pd.setMessage("Pro: " + (int) progressPercent + "%");
-                    }
-                });
+        if (imageUri != null) {
+            final ProgressDialog pd = new ProgressDialog(ChangeProfile.this);
+            pd.setTitle("이미지 업로드 중...");
+            pd.show();
+
+            String uid = mAuth.getUid();
+            StorageReference riversRef = storageReference.child("images/" + uid);
+            riversRef.putFile(imageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            pd.dismiss();
+                            goToMain();
+                            Snackbar.make(findViewById(android.R.id.content), "이미지 업로드 성공", Snackbar.LENGTH_LONG).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            pd.dismiss();
+                            Toast.makeText(ChangeProfile.this, "업로드실패", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                            double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                            pd.setMessage("Pro: " + (int) progressPercent + "%");
+                        }
+                    });
+        } else {
+            goToMain();
+        }
+
+
     }
 
     private void setYesBtn() {

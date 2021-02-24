@@ -120,6 +120,7 @@ public class Fragment5 extends Fragment {
                 mAuth.signOut();
                 mCurrentUser.delete();
                 databaseHandler.dbdelete();
+                databaseHandler.uniquedelete();
                 startActivity(new Intent(getActivity(), Splash.class));
             }
         });

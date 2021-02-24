@@ -38,20 +38,20 @@ public class Fragment1 extends Fragment {
 
                 } else if (i == 1) {
 //                    Toast.makeText(getActivity(), "서울", Toast.LENGTH_LONG).show();
-                    String s = "sroomlist";
-                    Intent intent = new Intent(getActivity(), F1intent.class);
+                    String s = "seoul";
+                    Intent intent = new Intent(getActivity(), AdressRoom.class);
                     intent.putExtra("adress", s);
                     startActivity(intent);
                 } else if (i == 2) {
 //                    Toast.makeText(getActivity(), "경기", Toast.LENGTH_LONG).show();
-                    String s = "groomlist";
-                    Intent intent = new Intent(getActivity(), F1intent.class);
+                    String s = "gyungi";
+                    Intent intent = new Intent(getActivity(), AdressRoom.class);
                     intent.putExtra("adress", s);
                     startActivity(intent);
                 } else if (i == 3) {
-                    String s = "iroomlist";
+                    String s = "incheon";
 //                    Toast.makeText(getActivity(), "인천", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(getActivity(), F1intent.class);
+                    Intent intent = new Intent(getActivity(), AdressRoom.class);
                     intent.putExtra("adress", s);
                     startActivity(intent);
                 }

@@ -230,14 +230,12 @@ public class LoginActivity extends AppCompatActivity {
         String user_uid = mAuth.getUid();
 
         Map<String, Object> user = new HashMap<>();
-        user.put("uid", user_uid);
-        user.put("unique", uniquestring);
         user.put("name", name);
         user.put("sex", sex);
         user.put("age", age);
 
         db.collection("users").document(user_uid)
-                .set(user)
+                .update(user)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

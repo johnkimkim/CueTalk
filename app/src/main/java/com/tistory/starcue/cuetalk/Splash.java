@@ -133,8 +133,6 @@ public class Splash extends AppCompatActivity {
                     sqLiteDatabase = databaseHandler.getWritableDatabase();
                     databaseHandler.insertUnique(unique);
 
-                    Log.d(">>>", unique);
-
                     checkUser();
                 }
             }, 500);

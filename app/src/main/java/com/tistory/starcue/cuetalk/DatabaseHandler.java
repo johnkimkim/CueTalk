@@ -104,7 +104,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void dbdelete() {
         sqLiteDatabase = this.getWritableDatabase();
         sqLiteDatabase.execSQL("delete from id");
-        sqLiteDatabase.execSQL("delete from uniqueTable");
         sqLiteDatabase.execSQL("vacuum");
         sqLiteDatabase.close();
     }

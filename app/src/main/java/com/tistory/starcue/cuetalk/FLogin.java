@@ -297,28 +297,66 @@ public class FLogin extends AppCompatActivity {
 
                     }
                 });
+
+
     }
 
     private void checkSql() {
-        Cursor cursor = sqLiteDatabase.rawQuery("select * from id", null);
-        int i = cursor.getCount();
-        if (i == 0) {
-            String test = Integer.toString(i);
-            Log.d("splash<<<: ", test);
-            Intent intent = new Intent(FLogin.this, LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        } else {
-            String test = Integer.toString(i);
-            Log.d("splash<<<: ", test);
-            Intent intent = new Intent(FLogin.this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        }
+
+        String user_uid = mAuth.getUid();
+        db.collection("users").document(user_uid)
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot snapshot = task.getResult();
+                    if (snapshot.exists()) {
+                        String name = snapshot.getString("name");
+                        if (name == null) {
+                            Intent intent = new Intent(FLogin.this, LoginActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Intent intent = new Intent(FLogin.this, MainActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
+                        }
+                    } else {
+                        Intent intent = new Intent(FLogin.this, LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+                } else {
+                    Toast.makeText(FLogin.this, "네트워크 오류로 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+//        Cursor cursor = sqLiteDatabase.rawQuery("select * from id", null);
+//        int i = cursor.getCount();
+//        if (i == 0) {
+//            String test = Integer.toString(i);
+//            Log.d("splash<<<: ", test);
+//            Intent intent = new Intent(FLogin.this, LoginActivity.class);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//            startActivity(intent);
+//            finish();
+//        } else {
+//            String test = Integer.toString(i);
+//            Log.d("splash<<<: ", test);
+//            Intent intent = new Intent(FLogin.this, MainActivity.class);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//            startActivity(intent);
+//            finish();
+//        }
     }
 
 }

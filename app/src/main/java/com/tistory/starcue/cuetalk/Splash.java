@@ -50,7 +50,11 @@ public class Splash extends AppCompatActivity {
 
         //check permission
         if (Build.VERSION.SDK_INT >= 23) {
-            if (ActivityCompat.checkSelfPermission(Splash.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(Splash.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+            || ActivityCompat.checkSelfPermission(Splash.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+            || ActivityCompat.checkSelfPermission(Splash.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+            || ActivityCompat.checkSelfPermission(Splash.this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED
+            || ActivityCompat.checkSelfPermission(Splash.this, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
                 //has permission
                 mAuth = FirebaseAuth.getInstance();
                 mCurrentUser = mAuth.getCurrentUser();
@@ -259,16 +263,6 @@ public class Splash extends AppCompatActivity {
 
                     }
                 });
-    }
-
-    private void checkPermission() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (ActivityCompat.checkSelfPermission(Splash.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                //권한허용
-            } else {
-                //권한없음
-            }
-        }
     }
 
 }

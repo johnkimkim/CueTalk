@@ -1,10 +1,13 @@
 package com.tistory.starcue.cuetalk;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -12,6 +15,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -44,15 +48,34 @@ public class Splash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
 
-//        setDB();
-        mAuth = FirebaseAuth.getInstance();
-        mCurrentUser = mAuth.getCurrentUser();
-        db = FirebaseFirestore.getInstance();
+        //check permission
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (ActivityCompat.checkSelfPermission(Splash.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                //has permission
+                mAuth = FirebaseAuth.getInstance();
+                mCurrentUser = mAuth.getCurrentUser();
+                db = FirebaseFirestore.getInstance();
 
-        preferences = getSharedPreferences("checkFirst", Activity.MODE_PRIVATE);
-        firstLogin = preferences.getBoolean("checkFirst", false);
+                preferences = getSharedPreferences("checkFirst", Activity.MODE_PRIVATE);
+                firstLogin = preferences.getBoolean("checkFirst", false);
 
-        checkUnique();
+                checkUnique();
+            } else {
+                Intent intent = new Intent(Splash.this, Access.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        } else {
+            mAuth = FirebaseAuth.getInstance();
+            mCurrentUser = mAuth.getCurrentUser();
+            db = FirebaseFirestore.getInstance();
+
+            preferences = getSharedPreferences("checkFirst", Activity.MODE_PRIVATE);
+            firstLogin = preferences.getBoolean("checkFirst", false);
+
+            checkUnique();
+        }
 
     }
 
@@ -236,6 +259,16 @@ public class Splash extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    private void checkPermission() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (ActivityCompat.checkSelfPermission(Splash.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                //권한허용
+            } else {
+                //권한없음
+            }
+        }
     }
 
 }

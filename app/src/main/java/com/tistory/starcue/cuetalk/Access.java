@@ -1,11 +1,13 @@
 package com.tistory.starcue.cuetalk;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -16,6 +18,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,14 +29,22 @@ public class Access extends AppCompatActivity {
     Button okbtn;
 
     int PERMISSION_ALL = 1;
-    String[] permissions = {
+    String[] PERMISSION = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE, //저장공간
             Manifest.permission.ACCESS_FINE_LOCATION, //위치
             Manifest.permission.CALL_PHONE, //전화
             Manifest.permission.WRITE_CONTACTS //주소록
     };
+    private List permissionLists;
 
-    private static final int MUTIPLE_PERMISSIONS = 101;
+    final int WRITE_EXTERNAL_STORAGE = 0;
+    final int ACCESS_FINE_LOCATION = 1;
+    final int CALL_PHONE = 2;
+    final int WRITE_CONTACTS = 3;
+
+    private static final int MUTIPLE_PERMISSIONS = 1023;
+
+    private PermissionSupport permission;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,9 +52,7 @@ public class Access extends AppCompatActivity {
         setContentView(R.layout.access);
 
         setinit();
-        if (Build.VERSION.SDK_INT >= 23) {
-            checkPermission();
-        }
+
 
     }
 
@@ -50,86 +61,34 @@ public class Access extends AppCompatActivity {
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                checkPermission();
+                checkPermission(view);
             }
         });
     }
 
-    private boolean checkPermission() {
-        int result;
-        List<String> permissionsList = new ArrayList<>();
-        for (String pm : permissions) {
-            result = ContextCompat.checkSelfPermission(Access.this, pm);
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                permissionsList.add(pm);
+    public void checkPermission(View view) {
+        PermissionListener permissionListener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                Intent intent = new Intent(Access.this, Splash.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
             }
-        }
-        if (!permissionsList.isEmpty()) {
-            ActivityCompat.requestPermissions(Access.this, permissionsList.toArray(new String[permissionsList.size()]), MUTIPLE_PERMISSIONS);
-            return false;
-        }
-        return true;
-    }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case MUTIPLE_PERMISSIONS: {
-                if (grantResults.length > 0) {
-                    for (int i = 0; i < permissions.length; i++) {
-                        if (permissions[i].equals(Access.this.permissions[0])) {
-                            if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                                showToast();
-                            }
-                        } else if(permissions[i].equals(Access.this.permissions[1])) {
-                            if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                                showToast();
-                            }
-                        } else if(permissions[i].equals(Access.this.permissions[2])) {
-                            if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                                showToast();
-                            }
-                        } else if(permissions[i].equals(Access.this.permissions[3])) {
-                            if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                                showToast();
-                            }
-                        } else if(permissions[i].equals(Access.this.permissions[4])) {
-                            if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                                showToast();
-                            }
-                        }
-                    }
-                } else {
-                    showToast();
-                }
-                return;
+            @Override
+            public void onPermissionDenied(List<String> deniedPermissions) {
+                Toast.makeText(Access.this, "모든 권한을 허용해야 사용가능", Toast.LENGTH_LONG).show();
             }
-        }
+        };
+
+        TedPermission.with(Access.this)
+                .setPermissionListener(permissionListener)
+                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        , Manifest.permission.ACCESS_FINE_LOCATION
+                        , Manifest.permission.CALL_PHONE
+                        , Manifest.permission.WRITE_CONTACTS)
+                .check();
     }
 
-    private void showToast() {
-        Toast.makeText(Access.this, "모든권한용청함", Toast.LENGTH_LONG).show();
-//        finish();
-    }
-
-    public boolean hasPermissions(Context context, String... permisions) {
-        if (context != null && permisions != null) {
-            for (String permission : permisions) {
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    private void getPermission() {
-        ActivityCompat.requestPermissions(Access.this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, //저장공간
-                        Manifest.permission.ACCESS_FINE_LOCATION, //위치
-                        Manifest.permission.READ_PHONE_STATE, //전화
-                        Manifest.permission.READ_CONTACTS //주소록
-                }, 1000);
-    }
 }

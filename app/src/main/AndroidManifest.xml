@@ -4,7 +4,10 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
 
     <application
         android:allowBackup="true"
@@ -13,7 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CueTalk">
-        <activity android:name=".Access">
+        <activity android:name=".Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,13 +29,13 @@
         <activity android:name=".F1Chat" android:screenOrientation="portrait"/>
         <activity android:name=".LoginActivity" android:screenOrientation="portrait"/>
         <activity android:name=".FLogin" android:screenOrientation="portrait"/>
-        <activity android:name=".Splash" android:screenOrientation="portrait"/>
+<!--        <activity android:name=".Splash" android:screenOrientation="portrait"/>-->
         <activity android:name=".PhoneNumber" android:screenOrientation="portrait"/>
         <activity android:name=".PhoneNumber1" android:screenOrientation="portrait"/>
         <activity android:name=".AskLogin" android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert"/>
         <activity android:name=".ChangeProfile" android:screenOrientation="portrait"/>
         <activity android:name=".AdressRoom" android:screenOrientation="portrait"/>
-<!--        <activity android:name=".Access" android:screenOrientation="portrait"/>-->
+        <activity android:name=".Access" android:screenOrientation="portrait"/>
 
     </application>
 

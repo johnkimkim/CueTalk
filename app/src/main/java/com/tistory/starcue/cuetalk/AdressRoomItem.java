@@ -10,6 +10,16 @@ public class AdressRoomItem {
     public String name;
     public String sex;
     public String age;
+    public String km;
+    public String pic;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getSex() {
         return sex;
@@ -27,35 +37,19 @@ public class AdressRoomItem {
         this.age = age;
     }
 
-
-
-    public AdressRoomItem() {
-
+    public String getKm() {
+        return km;
     }
 
-    public String getName() {
-        return name;
+    public void setKm(String km) {
+        this.km = km;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getPic() {
+        return pic;
     }
 
-    public AdressRoomItem(String name, String sex, String age) {
-        this.name = name;
-        this.sex = sex;
-        this.age = age;
+    public void setPic(String pic) {
+        this.pic = pic;
     }
-
-    @Exclude
-    public Map<String, Object> toMap() {
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("name", name);
-        result.put("sex", sex);
-        result.put("age", age);
-        return result;
-    }
-
-
-
 }

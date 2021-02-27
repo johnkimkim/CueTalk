@@ -10,8 +10,9 @@
 
         <ImageView
             android:id="@+id/adress_room_layout_pic"
-            android:layout_width="70dp"
-            android:layout_height="70dp"/>
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_launcher_background"/>
 
         <TextView
             android:id="@+id/adress_room_layout_name"

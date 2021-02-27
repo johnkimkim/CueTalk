@@ -149,6 +149,21 @@ public class ChangeProfile extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            //upload pic in firestore
+                            storageReference.child("images/" + uid).getDownloadUrl()
+                                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            String picUri = uri.toString();
+                                            uploadPicInStore(picUri);
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+
+                                        }
+                                    });//upload pic in firestore
                             pd.dismiss();
                             goToMain();
                             Snackbar.make(findViewById(android.R.id.content), "이미지 업로드 성공", Snackbar.LENGTH_LONG).show();
@@ -293,6 +308,26 @@ public class ChangeProfile extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void uploadPicInStore(String uri) {
+        String user_iod = mAuth.getUid();
+        Map<String, Object> userPic = new HashMap<>();
+        userPic.put("pic", uri);
+        db.collection("users").document(user_iod)
+                .update(userPic)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
     }
 
     private void goToMain() {

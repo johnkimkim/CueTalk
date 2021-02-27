@@ -11,53 +11,69 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.zip.Inflater;
 
-public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.ViewHolder> {
+public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.CustomViewHolder> {
 
-    TextView name, sex, age, km;
-    ImageView pic;
-    Button btn;
+    private ArrayList<AdressRoomItem> arrayList;
+    private Context context;
 
-    private ArrayList<AdressRoomItem> mData;
-
-    AdressRoomAdapter(ArrayList<AdressRoomItem> list) {
-        mData = list;
+    AdressRoomAdapter(ArrayList<AdressRoomItem> arrayList, Context context) {
+        this.arrayList = arrayList;
+        this.context = context;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        Context context = parent.getContext();
-        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        Context context = parent.getContext();
+//        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View view = layoutInflater.inflate(R.layout.adress_room_layout, parent, false);
-        AdressRoomAdapter.ViewHolder viewHolder = new AdressRoomAdapter.ViewHolder(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adress_room_layout, parent, false);
+        CustomViewHolder holder = new CustomViewHolder(view);
 
-        return null;
+        return holder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
         //position에 해당하는 데이터를 뷰홀더의 아이템뷰에 표시
+        Glide.with(holder.imageView)
+                .load(arrayList.get(position).getPic())
+                .override(150, 150)
+                .circleCrop()
+                .into(holder.imageView);
+        holder.name.setText(arrayList.get(position).getName());
+        holder.sex.setText(arrayList.get(position).getSex());
+        holder.age.setText(arrayList.get(position).getAge());
+        holder.km.setText(arrayList.get(position).getKm());
+
+
     }
 
     @Override
     public int getItemCount() {
-        return mData.size();
+        //삼항연산자
+        return (arrayList != null ? arrayList.size() : 0);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
-        public ViewHolder(@NonNull View itemView) {
+    public class CustomViewHolder extends RecyclerView.ViewHolder{
+        ImageView imageView;
+        TextView name;
+        TextView sex;
+        TextView age;
+        TextView km;
+        public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.adress_room_layout_name);
-            sex = itemView.findViewById(R.id.adress_room_layout_sex);
-            age = itemView.findViewById(R.id.adress_room_layout_age);
-            km = itemView.findViewById(R.id.adress_room_layout_km);
-            pic = itemView.findViewById(R.id.adress_room_layout_pic);
-            btn = itemView.findViewById(R.id.adress_room_layout_chatbtn);
+            this.imageView = itemView.findViewById(R.id.adress_room_layout_pic);
+            this.name = itemView.findViewById(R.id.adress_room_layout_name);
+            this.sex = itemView.findViewById(R.id.adress_room_layout_sex);
+            this.age = itemView.findViewById(R.id.adress_room_layout_age);
+            this.km = itemView.findViewById(R.id.adress_room_layout_km);
         }
     }
 }

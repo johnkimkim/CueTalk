@@ -139,6 +139,22 @@ public class LoginActivity extends AppCompatActivity {
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         pd.dismiss();
                         Snackbar.make(findViewById(android.R.id.content), "이미지 업로드 성공", Snackbar.LENGTH_LONG).show();
+
+                        //upload pic in firestore
+                        storageReference.child("images/" + uid).getDownloadUrl()
+                                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        String picUri = uri.toString();
+                                        uploadPicInStore(picUri);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+
+                                    }
+                                });//upload pic in firestore
                         goToMain();
                     }
                 })
@@ -248,6 +264,26 @@ public class LoginActivity extends AppCompatActivity {
                         relativeLayout.setVisibility(View.GONE);
                         progressBar.setVisibility(View.GONE);
                         Toast.makeText(LoginActivity.this, "네트워크문제로 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void uploadPicInStore(String uri) {
+        String user_iod = mAuth.getUid();
+        Map<String, Object> userPic = new HashMap<>();
+        userPic.put("pic", uri);
+        db.collection("users").document(user_iod)
+                .update(userPic)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
                     }
                 });
     }

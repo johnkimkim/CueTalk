@@ -65,10 +65,10 @@ public class Splash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
 
-        double latitudeA = 37.11;
-        double longitudeA = 127.11;
-        double latitudeB = 37.22;
-        double longitudeB = 127.22;
+        double latitudeA = 36.0092179;
+        double longitudeA = 128.2657414;
+        double latitudeB = 36.0052783;
+        double longitudeB = 128.2584149;
 
         String s = String.valueOf(getDistance(latitudeA, longitudeA, latitudeB, longitudeB));
         Log.d("Splash>>>", s);

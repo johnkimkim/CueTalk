@@ -1,9 +1,11 @@
 package com.tistory.starcue.cuetalk;
 
 import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,6 +32,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -47,8 +50,11 @@ public class AdressRoom extends AppCompatActivity {
     private FirebaseDatabase database;
     private View view;
 
+    private ProgressBar progressBar;
+
     private FirebaseAuth mAuth;
     private DatabaseReference reference;
+    private DatabaseReference whoRef;
     FirebaseFirestore db;
 
     String name, sex, age, pic;
@@ -66,9 +72,9 @@ public class AdressRoom extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.adress_room);
 
+
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
-
 
 
 //        getGps();
@@ -89,11 +95,13 @@ public class AdressRoom extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         arrayList = new ArrayList<>();
 
-        adapter = new AdressRoomAdapter(arrayList, AdressRoom.this);
+        Intent intent = getIntent();
+        adapter = new AdressRoomAdapter(arrayList, AdressRoom.this, intent);
         recyclerView.setAdapter(adapter);
 
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("adressRoom").child(adress);
+        whoRef = database.getReference("chatting").child(uid);
 
         reference.addChildEventListener(new ChildEventListener() {
             @Override
@@ -136,17 +144,20 @@ public class AdressRoom extends AppCompatActivity {
         reference.addListenerForSingleValueEvent(new ValueEventListener() {//최초 list 불러오기
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                 //db받아오는곳
                 arrayList.clear();//기존list겹치지않게 제거
                 keyList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {//반복문으로 데이터추출
                     String key = snapshot.getKey();
                     keyList.add(key);
-                    Log.d("AdressRoom>>>", "onDataChange");
+                    Log.d("AdressRoom>>>", "addListenerForSingleValueEvent");
                     AdressRoomItem adressRoomItem = snapshot.getValue(AdressRoomItem.class);
                     arrayList.add(adressRoomItem);
                 }
+                progressBar.setVisibility(View.GONE);
                 adapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -155,10 +166,25 @@ public class AdressRoom extends AppCompatActivity {
                 Log.e("AdressRoom>>>", String.valueOf(error.toException()));
             }
         });
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
+
 
     private void setInit() {
         recyclerView = findViewById(R.id.adress_room_recycelrview);
+        progressBar = findViewById(R.id.adress_room_progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     private void getUser() {
@@ -181,7 +207,8 @@ public class AdressRoom extends AppCompatActivity {
                 name = documentSnapshot.getString("name");
                 sex = documentSnapshot.getString("sex");
                 age = documentSnapshot.getString("age");
-                updateAdressRoom(pic, uid, name, sex, age, latitudeS, longitudeS);
+                int ischat = 1;
+                updateAdressRoom(pic, uid, name, sex, age, latitudeS, longitudeS, ischat);
 
                 setRecyclerView();
             }
@@ -193,16 +220,18 @@ public class AdressRoom extends AppCompatActivity {
         });
     }
 
-    private void updateAdressRoom(String picUri, String uid, String name, String sex, String age, String latitude, String longitude) {
+    private void updateAdressRoom(String picUri, String uid, String name, String sex, String age, String latitude, String longitude, int ischat) {
         String adress = getIntent().getStringExtra("adress");
         reference = FirebaseDatabase.getInstance().getReference();
         Map<String, Object> updateUser = new HashMap<>();
+        updateUser.put("/adressRoom/" + adress + "/" + uid + "/" + "/uid/", uid);
         updateUser.put("/adressRoom/" + adress + "/" + uid + "/" + "/pic/", picUri);
         updateUser.put("/adressRoom/" + adress + "/" + uid + "/" + "/name/", name);
-        updateUser.put("/adressRoom/" + adress + "/" + uid + "/" +  "/sex", sex);
-        updateUser.put("/adressRoom/" + adress + "/" + uid + "/" +  "/age/", age);
+        updateUser.put("/adressRoom/" + adress + "/" + uid + "/" + "/sex", sex);
+        updateUser.put("/adressRoom/" + adress + "/" + uid + "/" + "/age/", age);
         updateUser.put("/adressRoom/" + adress + "/" + uid + "/" + "/latitude/", latitude);
         updateUser.put("/adressRoom/" + adress + "/" + uid + "/" + "/longitude/", longitude);
+        updateUser.put("/adressRoom/" + adress + "/" + uid + "/" + "/ischat/", ischat);
         reference.updateChildren(updateUser);
     }
 
@@ -214,6 +243,7 @@ public class AdressRoom extends AppCompatActivity {
         String uid = mAuth.getUid();
         reference = FirebaseDatabase.getInstance().getReference();
         reference.getRef().child("adressRoom").child(s).child(uid).removeValue();
+        reference.getRef().child("chatting").child(uid).removeValue();
         onBackPressed();
     }
 

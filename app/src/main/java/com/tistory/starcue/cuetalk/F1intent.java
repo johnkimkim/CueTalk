@@ -106,8 +106,10 @@ public class F1intent extends AppCompatActivity {
                     namelist.add(getname);
 
                     adressRoomItem.setName(snapshot1.child(s).getValue(AdressRoomItem.class).getName());
-//                    adressRoomList.setSex(snapshot1.child(s).getValue(AdressRoomList.class).getSex());
-//                    adressRoomList.setAge(snapshot1.child(s).getValue(AdressRoomList.class).getAge());
+//                    adressRoomItem.setSex(snapshot1.child(s).getValue(AdressRoomItem.class).getSex());
+//                    adressRoomItem.setAge(snapshot1.child(s).getValue(AdressRoomItem.class).getAge());
+//                    adressRoomItem.setAge(snapshot1.child(s).getValue(AdressRoomItem.class).getUid());
+//                    adressRoomItem.setAge(snapshot1.child(s).getValue(AdressRoomItem.class).getAge());
                     adressRoomItems.add(adressRoomItem);
 
                 }

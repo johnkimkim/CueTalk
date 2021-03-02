@@ -5,8 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -67,6 +74,12 @@ public class AdressRoom extends AppCompatActivity {
     double latitude;
     double longitude;
 
+    //bottom sheet
+    private BottomSheetBehavior bottomSheetBehavior;
+    LinearLayout linearLayout;
+    RelativeLayout titlebar;
+    RecyclerView sheetlist;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,9 +92,29 @@ public class AdressRoom extends AppCompatActivity {
 
 //        getGps();
 
+        setBottomSheet();
         setInit();
         getUser();
 //        setRecyclerView();
+
+    }
+
+    private void setBottomSheet() {
+        this.titlebar = findViewById(R.id.titlebar);
+        this.sheetlist = findViewById(R.id.sheetlist);
+        linearLayout = findViewById(R.id.bottom_sheet_id);
+        bottomSheetBehavior = BottomSheetBehavior.from(linearLayout);
+
+        titlebar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                } else if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
+            }
+        });
 
     }
 

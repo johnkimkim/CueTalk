@@ -65,11 +65,14 @@ public class AdressRoom extends AppCompatActivity {
     private FirebaseDatabase database;
     private View view;
 
+    public static List<String> userList = new ArrayList<String>();
+
     private ProgressBar progressBar;
 
     private FirebaseAuth mAuth;
     private DatabaseReference reference;
     private DatabaseReference whoRef;
+    private DatabaseReference deleteRef;
     FirebaseFirestore db;
 
     String name, sex, age, pic;
@@ -374,9 +377,11 @@ public class AdressRoom extends AppCompatActivity {
         Log.d("AdressRoom>>>", "onStop");
         String s = getIntent().getStringExtra("adress");
         String uid = mAuth.getUid();
+        deleteBottomList();
         reference = FirebaseDatabase.getInstance().getReference();
         reference.getRef().child("adressRoom").child(s).child(uid).removeValue();
         reference.getRef().child("chatting").child(uid).removeValue();
+        userList.clear();
         onBackPressed();
     }
 
@@ -384,6 +389,15 @@ public class AdressRoom extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         spinner.setSelection(0);
+    }
+
+    private void deleteBottomList() {
+        String myUid = mAuth.getUid();
+        whoRef = FirebaseDatabase.getInstance().getReference();
+        for (int i = 0; i < userList.size(); i++) {
+            String s = userList.get(i);
+            whoRef.getRef().child("chatting").child(s).child(myUid).removeValue();
+        }
     }
 
 

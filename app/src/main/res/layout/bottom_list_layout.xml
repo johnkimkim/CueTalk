@@ -43,7 +43,15 @@
         android:id="@+id/bottom_sheet_layout_chatbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_toLeftOf="@+id/bottom_sheet_layout_delete"
         android:layout_centerVertical="true"
         android:text="대화ㄱ"/>
+
+    <Button
+        android:id="@+id/bottom_sheet_layout_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:text="삭제"/>
 </RelativeLayout>

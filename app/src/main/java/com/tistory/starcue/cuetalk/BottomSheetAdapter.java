@@ -2,6 +2,7 @@ package com.tistory.starcue.cuetalk;
 
 import android.content.Context;
 import android.location.Location;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -21,6 +25,10 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
     private ArrayList<AdressRoomItem> bottomList;
     private GpsTracker gpsTracker;
     private Context context;
+
+    private FirebaseAuth mAuth;
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
 
     BottomSheetAdapter(ArrayList<AdressRoomItem> bottomList, Context context) {
         this.bottomList = bottomList;
@@ -58,10 +66,25 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
         String howkm = Integer.toString(i);
         holder.km.setText(howkm + "km");
 
+//        database = FirebaseDatabase.getInstance();
+//        reference = database.getReference("chatting").child(adress);
+
         holder.btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+            }
+        });
+
+        holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAuth = FirebaseAuth.getInstance();
+                String myUid = mAuth.getUid();
+                String userUid = bottomList.get(position).getUid();
+
+                reference = FirebaseDatabase.getInstance().getReference();
+                reference.getRef().child("chatting").child(myUid).child(userUid).removeValue();
             }
         });
     }
@@ -93,7 +116,7 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
         TextView sex;
         TextView age;
         TextView km;
-        Button btn;
+        Button btn, deleteBtn;
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
             this.imageView = itemView.findViewById(R.id.bottom_sheet_layout_pic);
@@ -102,6 +125,7 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
             this.age = itemView.findViewById(R.id.bottom_sheet_layout_age);
             this.km = itemView.findViewById(R.id.bottom_sheet_layout_km);
             this.btn = itemView.findViewById(R.id.bottom_sheet_layout_chatbtn);
+            this.deleteBtn = itemView.findViewById(R.id.bottom_sheet_layout_delete);
         }
     }
 

@@ -117,6 +117,11 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
             @Override
             public void onClick(View view) {
                 String useruid = arrayList.get(position).getUid();
+                AdressRoom.userList.add(useruid);
+                for (int i = 0; i < AdressRoom.userList.size(); i++) {
+                    String testString = AdressRoom.userList.get(i);
+                    Log.d("AdressRoomAdapter>>>", testString);
+                }
 
                 db = FirebaseFirestore.getInstance();
                 DocumentReference documentReference = db.collection("users").document(myUid);

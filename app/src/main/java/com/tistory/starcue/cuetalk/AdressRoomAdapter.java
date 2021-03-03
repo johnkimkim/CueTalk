@@ -55,6 +55,7 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
     double latitude;
     double longitude;
     String name, sex, age, pic;
+    String myUid;
 
     AdressRoomAdapter(ArrayList<AdressRoomItem> arrayList, Context context, Intent intent) {
         this.arrayList = arrayList;
@@ -106,7 +107,7 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
 //        Log.d("AdressRoomAdapter>>>", howkm);//set km
 
         mAuth = FirebaseAuth.getInstance();
-        String myUid = mAuth.getUid();
+        myUid = mAuth.getUid();
         if (arrayList.get(position).getUid().equals(myUid)) {
             holder.btn.setEnabled(false);
             holder.btn.setBackgroundColor(Color.GRAY);
@@ -116,20 +117,50 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
             @Override
             public void onClick(View view) {
                 String useruid = arrayList.get(position).getUid();
-                Log.d("AdressRoomAdapter>>>", "userUid: " + useruid);
-                updateAdressRoom(myUid, useruid);
+
+                db = FirebaseFirestore.getInstance();
+                DocumentReference documentReference = db.collection("users").document(myUid);
+                documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        gpsTracker = new GpsTracker(context);
+                        Double latitude = gpsTracker.getLatitude();
+                        Double longitude = gpsTracker.getLongitude();
+                        String latitudeS = String.valueOf(latitude);
+                        String longitudeS = String.valueOf(longitude);
+
+                        pic = documentSnapshot.getString("pic");
+                        name = documentSnapshot.getString("name");
+                        sex = documentSnapshot.getString("sex");
+                        age = documentSnapshot.getString("age");
+                        int ischat = 1;
+
+                        updateAdressRoom(useruid, pic, myUid, name, sex, age, latitudeS, longitudeS, ischat);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
             }
         });
 
     }
 
-    private void updateAdressRoom(String myUid, String yourUid) {
+    private void updateAdressRoom(String useruid, String picUri, String uid, String name, String sex, String age, String latitude, String longitude, int ischat) {
         reference = FirebaseDatabase.getInstance().getReference();
         Map<String, Object> updateUser = new HashMap<>();
-        updateUser.put("/chatting/" + "/" + myUid + "/" + "/" + yourUid + "/", yourUid);
+        updateUser.put("/chatting/" + useruid + "/" + uid + "/" + "/uid/", uid);
+        updateUser.put("/chatting/" + useruid + "/" + uid + "/" + "/pic/", picUri);
+        updateUser.put("/chatting/" + useruid + "/" + uid + "/" + "/name/", name);
+        updateUser.put("/chatting/" + useruid + "/" + uid + "/" + "/sex", sex);
+        updateUser.put("/chatting/" + useruid + "/" + uid + "/" + "/age/", age);
+        updateUser.put("/chatting/" + useruid + "/" + uid + "/" + "/latitude/", latitude);
+        updateUser.put("/chatting/" + useruid + "/" + uid + "/" + "/longitude/", longitude);
+        updateUser.put("/chatting/" + useruid + "/" + uid + "/" + "/ischat/", ischat);
         reference.updateChildren(updateUser);
     }
-
 
     public double getDistance(double lat1 , double lng1 , double lat2 , double lng2 ){
         double distance;

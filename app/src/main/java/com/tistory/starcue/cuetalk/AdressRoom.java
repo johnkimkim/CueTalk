@@ -221,8 +221,7 @@ public class AdressRoom extends AppCompatActivity {
     }
 
     private void getUser() {
-        String uid;
-        uid = mAuth.getUid();
+        String uid = mAuth.getUid();
         DocumentReference documentReference = db.collection("users")
                 .document(uid);
         documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

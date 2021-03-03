@@ -3,13 +3,18 @@ package com.tistory.starcue.cuetalk;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -51,9 +56,12 @@ public class AdressRoom extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private AdressRoomAdapter adapter;
+    private BottomSheetAdapter bottomAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private List<String> keyList = new ArrayList<String>();
+    private List<String> bottomKeyList = new ArrayList<String>();
     private ArrayList<AdressRoomItem> arrayList;
+    private ArrayList<AdressRoomItem> bottomList;
     private FirebaseDatabase database;
     private View view;
 
@@ -78,7 +86,8 @@ public class AdressRoom extends AppCompatActivity {
     private BottomSheetBehavior bottomSheetBehavior;
     LinearLayout linearLayout;
     RelativeLayout titlebar;
-    RecyclerView sheetlist;
+    RecyclerView recyclerViewBottom;
+    ImageView upanddown;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -101,7 +110,9 @@ public class AdressRoom extends AppCompatActivity {
 
     private void setBottomSheet() {
         this.titlebar = findViewById(R.id.titlebar);
-        this.sheetlist = findViewById(R.id.sheetlist);
+        this.recyclerViewBottom = findViewById(R.id.sheetlist);
+        this.upanddown = findViewById(R.id.upanddown);
+        upanddown.setBackgroundResource(R.drawable.bottom_up);
         linearLayout = findViewById(R.id.bottom_sheet_id);
         bottomSheetBehavior = BottomSheetBehavior.from(linearLayout);
 
@@ -109,13 +120,104 @@ public class AdressRoom extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                    upanddown.setBackgroundResource(R.drawable.bottom_up);
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 } else if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                    upanddown.setBackgroundResource(R.drawable.bottom_down);
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 }
             }
         });
 
+        recyclerViewBottom.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(AdressRoom.this);
+        recyclerViewBottom.setLayoutManager(layoutManager);
+        bottomList = new ArrayList<>();
+        bottomAdapter = new BottomSheetAdapter(bottomList, AdressRoom.this);
+        recyclerViewBottom.setAdapter(bottomAdapter);
+
+        String uid = mAuth.getUid();
+        database = FirebaseDatabase.getInstance();
+        whoRef = database.getReference("chatting").child(uid);
+
+        whoRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                AdressRoomItem adressRoomItem = snapshot.getValue(AdressRoomItem.class);
+                bottomList.add(adressRoomItem);
+                bottomAdapter.notifyDataSetChanged();
+                String key = snapshot.getKey();
+                bottomKeyList.add(key);
+
+                Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink_animation);
+                upanddown.startAnimation(animation);
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        upanddown.clearAnimation();
+                    }
+                }, 1800);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                String key = snapshot.getKey();
+                int index = bottomKeyList.indexOf(key);
+                bottomList.remove(index);
+                bottomKeyList.remove(index);
+                bottomAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        whoRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //db받아오는곳
+                bottomList.clear();//기존list겹치지않게 제거
+                bottomKeyList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {//반복문으로 데이터추출
+                    String key = snapshot.getKey();
+                    bottomKeyList.add(key);
+                    Log.d("AdressRoom>>>", "addListenerForSingleValueEvent");
+                    AdressRoomItem adressRoomItem = snapshot.getValue(AdressRoomItem.class);
+                    bottomList.add(adressRoomItem);
+                }
+                bottomAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        whoRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int size = (int) snapshot.getChildrenCount();
+                TextView textView = findViewById(R.id.title);
+                textView.setText(Integer.toString(size));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void setRecyclerView() {
@@ -134,7 +236,6 @@ public class AdressRoom extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("adressRoom").child(adress);
-        whoRef = database.getReference("chatting").child(uid);
 
         reference.addChildEventListener(new ChildEventListener() {
             @Override

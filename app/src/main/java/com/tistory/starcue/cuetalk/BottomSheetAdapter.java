@@ -57,6 +57,13 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
         int i = (int) Math.floor(getDistance(myLatitude, myLongitude, latitude, longitude));
         String howkm = Integer.toString(i);
         holder.km.setText(howkm + "km");
+
+        holder.btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     public double getDistance(double lat1 , double lng1 , double lat2 , double lng2 ){

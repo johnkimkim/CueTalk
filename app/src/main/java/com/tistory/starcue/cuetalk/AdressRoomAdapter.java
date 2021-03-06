@@ -41,7 +41,6 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
 
     private ArrayList<AdressRoomItem> arrayList;
     private Context context;
-    private Intent intent;
 
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
@@ -57,10 +56,9 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
     String name, sex, age, pic;
     String myUid;
 
-    AdressRoomAdapter(ArrayList<AdressRoomItem> arrayList, Context context, Intent intent) {
+    AdressRoomAdapter(ArrayList<AdressRoomItem> arrayList, Context context) {
         this.arrayList = arrayList;
         this.context = context;
-        this.intent = intent;
     }
 
     @NonNull

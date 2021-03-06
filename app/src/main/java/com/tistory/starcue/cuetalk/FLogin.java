@@ -164,17 +164,17 @@ public class FLogin extends AppCompatActivity {
                         if (loginstatus) {
                             //다른기기 로그아웃 다이얼로그
                             asklogin();
-                            Log.d("loginstatus", "true");
+                            Log.d("Floging>>>loginstatus", "true");
                         } else {
                             //다른기기없음
                             checkSql();
-                            Log.d("loginstatus", "false");
+                            Log.d("Floging>>>loginstatus", "false");
                         }
                     } else {
-                        Log.d("getdata document: ", "null");
+                        Log.d("Floging>>>getdata doc: ", "null");
                     }
                 } else {
-                    Log.d("getdata: ", "false, ", task.getException());
+                    Log.d("Floging>>>etdata: ", "false, ", task.getException());
                 }
             }
         });
@@ -187,7 +187,7 @@ public class FLogin extends AppCompatActivity {
         Cursor cursor = sqLiteDatabase.rawQuery("select uniqueField from uniqueTable where _rowid_ = 1", null);
         cursor.moveToFirst();
         String uniquestring = cursor.getString(0);
-        Log.d(">>>uniquestring", uniquestring);
+        Log.d("Flogin>>>uniquestring", uniquestring);
 
         String user_uid = mAuth.getUid();
         DocumentReference documentReference = db.collection("users")
@@ -199,17 +199,17 @@ public class FLogin extends AppCompatActivity {
                     DocumentSnapshot documentSnapshot = task.getResult();
                     if (documentSnapshot.exists()) {
                         String unique = documentSnapshot.getString("unique");
-                        Log.d(">>>unique", unique);
+                        Log.d("Flogin>>>unique", unique);
                         if (unique.equals(uniquestring)) { //기존회원 있을때
-                            Log.d(">>>", "same");
+                            Log.d("Flogin>>>", "same");
                             checkSql();
                         } else { //기존회원 없을때
-                            Log.d(">>>", "not same");
+                            Log.d("Flogin>>>", "not same");
                             asklogin();
                         }
                     } else {
                         ifNullDocument();
-                        Log.d(">>>getdata document: ", "null");
+                        Log.d("Flogin>>>getdata doc: ", "null");
                     }
                 } else {
                     Log.d(">>>getdata: ", "false, ", task.getException());
@@ -244,7 +244,7 @@ public class FLogin extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (mCurrentUser == null) {
+        if (mCurrentUser == null) {//필요없음??
             sendUserToLogin();
         }
     }

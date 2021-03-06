@@ -2,6 +2,8 @@ package com.tistory.starcue.cuetalk;
 
 import android.Manifest;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -67,13 +69,17 @@ public class AdressRoom extends AppCompatActivity {
 
     public static List<String> userList = new ArrayList<String>();
 
-    private ProgressBar progressBar;
+    public static ProgressBar progressBar;
 
     private FirebaseAuth mAuth;
     private DatabaseReference reference;
+    private DatabaseReference myReferance;
     private DatabaseReference whoRef;
     private DatabaseReference deleteRef;
     FirebaseFirestore db;
+
+    DatabaseHandler databaseHandler;
+    private SQLiteDatabase sqLiteDatabase;
 
     String name, sex, age, pic;
 
@@ -86,7 +92,7 @@ public class AdressRoom extends AppCompatActivity {
     double longitude;
 
     //bottom sheet
-    private BottomSheetBehavior bottomSheetBehavior;
+    public static BottomSheetBehavior bottomSheetBehavior;
     LinearLayout linearLayout;
     RelativeLayout titlebar;
     RecyclerView recyclerViewBottom;
@@ -97,10 +103,12 @@ public class AdressRoom extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.adress_room);
 
-
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
+        databaseHandler.setDB(AdressRoom.this);
+        databaseHandler = new DatabaseHandler(AdressRoom.this);
+        sqLiteDatabase = databaseHandler.getWritableDatabase();
 
 //        getGps();
 
@@ -136,6 +144,7 @@ public class AdressRoom extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(AdressRoom.this);
         recyclerViewBottom.setLayoutManager(layoutManager);
         bottomList = new ArrayList<>();
+        Intent intent = getIntent();
         bottomAdapter = new BottomSheetAdapter(bottomList, AdressRoom.this);
         recyclerViewBottom.setAdapter(bottomAdapter);
 
@@ -225,7 +234,8 @@ public class AdressRoom extends AppCompatActivity {
 
     private void setRecyclerView() {
 
-        String adress = getIntent().getStringExtra("adress");
+//        String adress = getIntent().getStringExtra("adress");
+        String adress = getAdress();
         String uid = mAuth.getUid();
 
         recyclerView.setHasFixedSize(true);
@@ -234,11 +244,12 @@ public class AdressRoom extends AppCompatActivity {
         arrayList = new ArrayList<>();
 
         Intent intent = getIntent();
-        adapter = new AdressRoomAdapter(arrayList, AdressRoom.this, intent);
+        adapter = new AdressRoomAdapter(arrayList, AdressRoom.this);
         recyclerView.setAdapter(adapter);
 
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("adressRoom").child(adress);
+        myReferance = database.getReference("adressRoom").child(adress).child(uid);
 
         reference.addChildEventListener(new ChildEventListener() {
             @Override
@@ -277,7 +288,6 @@ public class AdressRoom extends AppCompatActivity {
             }
 
         });
-
         reference.addListenerForSingleValueEvent(new ValueEventListener() {//최초 list 불러오기
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -303,13 +313,25 @@ public class AdressRoom extends AppCompatActivity {
                 Log.e("AdressRoom>>>", String.valueOf(error.toException()));
             }
         });
-
-        reference.addValueEventListener(new ValueEventListener() {
+        myReferance.addValueEventListener(new ValueEventListener() {//db변경시
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Long l = dataSnapshot.child("ischat").getValue(Long.class);
+                if (l != null) {
+                    int i = l.intValue();
+                    if (i == 2) {
+                        deleteBottomList();
 
+                        upanddown.setBackgroundResource(R.drawable.bottom_up);
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+                        progressBar.setVisibility(View.GONE);
+                        Intent intent1 = new Intent(AdressRoom.this, ChatRoom.class);
+                        Log.d("AdressRoom>>>", "start activity");
+                        startActivity(intent1);
+                    }
+                }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -324,7 +346,7 @@ public class AdressRoom extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    private void getUser() {
+    private void getUser() {//get my data
         String uid = mAuth.getUid();
         DocumentReference documentReference = db.collection("users")
                 .document(uid);
@@ -357,7 +379,7 @@ public class AdressRoom extends AppCompatActivity {
     }
 
     private void updateAdressRoom(String picUri, String uid, String name, String sex, String age, String latitude, String longitude, int ischat) {
-        String adress = getIntent().getStringExtra("adress");
+        String adress = getAdress();
         reference = FirebaseDatabase.getInstance().getReference();
         Map<String, Object> updateUser = new HashMap<>();
         updateUser.put("/adressRoom/" + adress + "/" + uid + "/" + "/uid/", uid);
@@ -374,21 +396,32 @@ public class AdressRoom extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d("AdressRoom>>>", "onStop");
-        String s = getIntent().getStringExtra("adress");
+    }
+
+    private void goToMain() {
+        Log.d("AdressRoom>>>", "goToMain");
+        String s = getAdress();
         String uid = mAuth.getUid();
         deleteBottomList();
         reference = FirebaseDatabase.getInstance().getReference();
         reference.getRef().child("adressRoom").child(s).child(uid).removeValue();
         reference.getRef().child("chatting").child(uid).removeValue();
-        userList.clear();
-        onBackPressed();
+        databaseHandler.adressdelete();
+//        userList.clear();
+//        keyList.clear();
+//        arrayList.clear();
+//        bottomKeyList.clear();
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        spinner.setSelection(0);
+        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+            upanddown.setBackgroundResource(R.drawable.bottom_up);
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+            super.onBackPressed();
+            goToMain();
+        }
     }
 
     private void deleteBottomList() {
@@ -398,6 +431,13 @@ public class AdressRoom extends AppCompatActivity {
             String s = userList.get(i);
             whoRef.getRef().child("chatting").child(s).child(myUid).removeValue();
         }
+    }
+
+    private String getAdress() {
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from adress where _rowid_ = 1", null);
+        cursor.moveToFirst();
+        String adress = cursor.getString(0);
+        return adress;
     }
 
 

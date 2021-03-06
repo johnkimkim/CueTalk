@@ -120,27 +120,10 @@ public class Splash extends AppCompatActivity {
         databaseHandler.setDB(Splash.this);
         databaseHandler = new DatabaseHandler(this);
         sqLiteDatabase = databaseHandler.getWritableDatabase();
-
-//        new Handler().postDelayed(() -> {
-//            Cursor cursor = sqLiteDatabase.rawQuery("select * from id", null);
-//            int i = cursor.getCount();
-//            if (i == 0) {
-//                String test = Integer.toString(i);
-//                Log.d("splash<<<: ", test);
-//                Intent intent = new Intent(Splash.this, LoginActivity.class);
-//                startActivity(intent);
-//            } else {
-//                String test = Integer.toString(i);
-//                Log.d("splash<<<: ", test);
-//                Intent intent = new Intent(Splash.this, MainActivity.class);
-//                startActivity(intent);
-//            }
-//            cursor.close();
-//        }, 1200);
-
     }
 
     private void checkUnique() {
+        Log.d("Splash>>>", "checkUnique");
         setDB();
         Cursor cursor = sqLiteDatabase.rawQuery("select * from uniqueTable", null);
         int i = cursor.getCount();
@@ -148,7 +131,7 @@ public class Splash extends AppCompatActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Log.d(">>>", "first");
+                    Log.d("Splash>>>", "first");
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putBoolean("checkFirst", true);
                     editor.apply();
@@ -160,7 +143,7 @@ public class Splash extends AppCompatActivity {
                     sqLiteDatabase = databaseHandler.getWritableDatabase();
                     databaseHandler.insertUnique(unique);
 
-                    Log.d(">>>", unique);
+                    Log.d("Splash>>>", unique);
 
                     checkUser();
                 }
@@ -210,22 +193,27 @@ public class Splash extends AppCompatActivity {
     private void checkUser() {
         if (mCurrentUser == null) {
             goToPhoneNumber();
+            Log.d("Splash>>>", "goToPhoneNumber");
         } else {
             checkDevice();
+            Log.d("Splash>>>", "checkDevice");
         }
     }
 
     private void goToFLoing() {
+        Log.d("Splash>>>", "goToFLoing");
         startActivity(new Intent(Splash.this, FLogin.class));
         finish();
     }
 
     private void goToPhoneNumber() {
+        Log.d("Splash>>>", "goToPhoneNumber");
         startActivity(new Intent(Splash.this, PhoneNumber.class));
         finish();
     }
 
     private void checkDevice() {
+        Log.d("Splash>>>", "checkDevice");
         databaseHandler.setDB(Splash.this);
         databaseHandler = new DatabaseHandler(this);
         sqLiteDatabase = databaseHandler.getWritableDatabase();
@@ -266,7 +254,7 @@ public class Splash extends AppCompatActivity {
     }
 
     private void ifNullDocument() {
-
+        Log.d("Splash>>>", "ifNullDocument");
         //get unique
         databaseHandler.setDB(Splash.this);
         databaseHandler = new DatabaseHandler(this);

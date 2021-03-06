@@ -25,14 +25,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final String TABLE_NAME = "id";
     private static final String UNIQUE_TABLE_NAME = "uniqueTable";
+    private static final String ADRESS_TABLE_NAME = "adress";
 
     public static final String CNAME = "name";
     public static final String CSEX = "sex";
     public static final String CAGE = "age";
     public static final String UNIQUE = "uniqueField";
+    public static final String ADRESS = "adressField";
 
     private static final String DATABASE_CREATE_TEAM = "create table if not exists " + TABLE_NAME + "(" + CNAME + " TEXT," + CSEX + " TEXT," + CAGE + "TEXT" + ")";
     private static final String UNIQUE_CREATE_TEAM = "create table if not exists " + UNIQUE_TABLE_NAME + "(" + UNIQUE + "TEXT" + ")";
+    private static final String ADRESS_CREATE_TEAM = "create table if not exists " + ADRESS_TABLE_NAME + "(" + ADRESS + "TEXT" + ")";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSTION);
@@ -76,6 +79,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE " + TABLE_NAME);
         db.execSQL(DATABASE_CREATE_TEAM);
         db.execSQL(UNIQUE_CREATE_TEAM);
+        db.execSQL(ADRESS_CREATE_TEAM);
     }
 
     public void openDatabase() {
@@ -90,6 +94,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (sqLiteDatabase != null) {
             sqLiteDatabase.close();
         }
+    }
+
+    public void adressinsert(String adress) {
+        sqLiteDatabase = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ADRESS, adress);
+        sqLiteDatabase.insert(ADRESS_TABLE_NAME, null, contentValues);
+    }
+    public void adressdelete() {
+        sqLiteDatabase = this.getWritableDatabase();
+        sqLiteDatabase.execSQL("delete from adress");
     }
 
     public void dbinsert(String name, String sex, String age) {

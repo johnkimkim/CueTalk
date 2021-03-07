@@ -199,8 +199,6 @@ public class LoginActivity extends AppCompatActivity {
                 relativeLayout.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.VISIBLE);
 
-                databaseHandler.dbinsert(name, sexstring, agestring);
-
                 updateUser(name, sexstring, agestring);
                 if (imageUri != null) {
                     uploadPic();

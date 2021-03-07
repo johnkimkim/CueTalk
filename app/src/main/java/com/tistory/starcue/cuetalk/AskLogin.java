@@ -45,12 +45,28 @@ public class AskLogin extends AppCompatActivity {
 
     Button yes, no;
 
+    String myUid;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.ask_login);
 
+        setDialog();
+        setFirebase();
+
+
+
+        yes = findViewById(R.id.yes_btn);
+        no = findViewById(R.id.no_btn);
+
+        setOnClickYes();
+        setOnClickNo();
+
+    }
+
+    private void setDialog() {
         final Dialog dialog = new Dialog(this);
 //        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 //        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
@@ -70,18 +86,13 @@ public class AskLogin extends AppCompatActivity {
 //        layoutParams.width = width;
 //        layoutParams.height = height;
         dialog.getWindow().setAttributes(layoutParams);
+    }
 
-
+    private void setFirebase() {
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
-
-        yes = findViewById(R.id.yes_btn);
-        no = findViewById(R.id.no_btn);
-
-        setOnClickYes();
-        setOnClickNo();
-
+        myUid = mAuth.getUid();
     }
 
     private void setOnClickYes() {
@@ -89,7 +100,6 @@ public class AskLogin extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 setfirestoredata();
-                checkSql();
             }
         });
     }
@@ -116,15 +126,15 @@ public class AskLogin extends AppCompatActivity {
         String user_uid = mAuth.getUid();
 
         Map<String, Object> user = new HashMap<>();
-        user.put("uid", user_uid);
         user.put("unique", uniquestring);
+        user.put("new", "yes");
 
         db.collection("users").document(user_uid)
-                .set(user)
+                .update(user)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-
+                        checkUser();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -134,6 +144,20 @@ public class AskLogin extends AppCompatActivity {
                     }
                 });
     }
+
+//    private void checkUser() {
+//        db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//            @Override
+//            public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                String name = documentSnapshot.getString("name").toString();
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//            }
+//        });
+//    }
 
     private void checkSql() {
         Cursor cursor = sqLiteDatabase.rawQuery("select * from id", null);
@@ -150,6 +174,42 @@ public class AskLogin extends AppCompatActivity {
             startActivity(intent);
         }
     }
+
+    private void checkUser() {
+        db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.get("name") == null) {
+                    goToLoginActivity();
+                } else {
+                    goToMain();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }
+
+    private void goToMain() {
+        Intent intent = new Intent(AskLogin.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void goToLoginActivity() {
+        Intent intent = new Intent(AskLogin.this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+
 
     @Override
     public void onBackPressed() {

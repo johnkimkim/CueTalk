@@ -18,13 +18,19 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Fragment5 extends Fragment {
 
@@ -39,6 +45,7 @@ public class Fragment5 extends Fragment {
     FirebaseFirestore db;
     FirebaseStorage storage;
     StorageReference storageReference;
+    String myUid;
 
     public Fragment5() {
         // Required empty public constructor
@@ -59,6 +66,7 @@ public class Fragment5 extends Fragment {
         setFirebse();
         setPic();
         setdb();
+        setView();
         reset_profile();
         logoutBtn();
         deleteUser();
@@ -72,6 +80,7 @@ public class Fragment5 extends Fragment {
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
+        myUid = mAuth.getUid();
     }
 
     private void setdb() {
@@ -79,19 +88,35 @@ public class Fragment5 extends Fragment {
         databaseHandler = new DatabaseHandler(getActivity());
         sqLiteDatabase = databaseHandler.getWritableDatabase();
 
-        Cursor cursorid = sqLiteDatabase.rawQuery("select * from id where _rowid_ = 1", null);
-        cursorid.moveToFirst();
-        int i = cursorid.getCount();
-        if (i != 0) {
-            Cursor cursor = sqLiteDatabase.rawQuery("select * from id where _rowid_ = 1", null);
-            cursor.moveToFirst();
-            name.setText(cursor.getString(0));
-            age.setText(cursor.getString(1));
-            sex.setText(cursor.getString(2));
-            cursor.close();
-        }
+//        Cursor cursorid = sqLiteDatabase.rawQuery("select * from id where _rowid_ = 1", null);
+//        cursorid.moveToFirst();
+//        int i = cursorid.getCount();
+//        if (i != 0) {
+//            Cursor cursor = sqLiteDatabase.rawQuery("select * from id where _rowid_ = 1", null);
+//            cursor.moveToFirst();
+//            name.setText(cursor.getString(0));
+//            age.setText(cursor.getString(1));
+//            sex.setText(cursor.getString(2));
+//            cursor.close();
+//        }
 
 
+    }
+
+    private void setView() {
+        db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                name.setText(documentSnapshot.get("name").toString());
+                sex.setText(documentSnapshot.get("sex").toString());
+                age.setText(documentSnapshot.get("age").toString());
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
     }
 
     private void reset_profile() {
@@ -119,9 +144,20 @@ public class Fragment5 extends Fragment {
                 deleteImage();
                 mAuth.signOut();
                 mCurrentUser.delete();
-                databaseHandler.dbdelete();
+//                mAuth.getCurrentUser().delete();
                 databaseHandler.uniquedelete();
-                startActivity(new Intent(getActivity(), Splash.class));
+                startActivity(new Intent(getActivity(), SplashActivity.class));
+            }
+        });
+    }
+
+    private void setdeleteUser() {
+        mCurrentUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    mCurrentUser.delete();
+                }
             }
         });
     }

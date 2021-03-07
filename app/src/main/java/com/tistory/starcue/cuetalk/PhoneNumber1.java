@@ -1,6 +1,8 @@
 package com.tistory.starcue.cuetalk;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -11,12 +13,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,11 +29,21 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PhoneNumber1 extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
+    private FirebaseFirestore db;
+    private String myUid;
+
+    DatabaseHandler databaseHandler;
+    private SQLiteDatabase sqLiteDatabase;
 
     private String mAuthVerificationId;
 
@@ -44,6 +59,8 @@ public class PhoneNumber1 extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
+
 
         mAuthVerificationId = getIntent().getStringExtra("AuthCredentials");
 
@@ -116,7 +133,7 @@ public class PhoneNumber1 extends AppCompatActivity {
 //
 //                            FirebaseUser user = task.getResult().getUser();
 //                            // ...
-                            sendUserToHome();
+                            updateFirestore();
                         } else {
                             // Sign in failed, display a message and update the UI
                             Log.w(">>>", "signInWithCredential:failure", task.getException());
@@ -126,8 +143,7 @@ public class PhoneNumber1 extends AppCompatActivity {
                                 feedtext.setVisibility(View.VISIBLE);
                             }
                         }
-                        progressBar.setVisibility(View.INVISIBLE);
-                        okbtn.setEnabled(true);
+
                     }
                 });
     }
@@ -136,12 +152,76 @@ public class PhoneNumber1 extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (mCurrentUser != null) {
-            sendUserToHome();
+            updateFirestore();
         }
     }
 
-    public void sendUserToHome() {
-        Intent intent = new Intent(PhoneNumber1.this, FLogin.class);
+    public void updateFirestore() {
+        myUid = mAuth.getUid();
+
+
+        Log.d("PhoneNumber1>>>", "1");
+
+        db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.get("uid") == null) {
+                    Log.d("PhoneNumber1>>>", "2");
+                    Map<String, Object> updateloginstate = new HashMap<>();
+                    updateloginstate.put("uid", myUid);
+                    db.collection("users").document(myUid).update(updateloginstate).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("PhoneNumber1>>>", "3");
+                            goBackSplashActivity();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(PhoneNumber1.this, "네트워크 문제로 오류가 발생했습니다. 다시 시도해주세요", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                } else {
+                    //
+                    goBackSplashActivity();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
+    }
+
+    private void checkUniqueSame() {
+        db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                String fireUnique = documentSnapshot.get("unique").toString();
+                if (fireUnique.equals(getMyUnique())) {
+                    goToAsk();
+                } else {
+
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }
+
+    private void goToAsk() {
+        startActivity(new Intent(PhoneNumber1.this, AskLogin.class));
+    }
+
+    private void goBackSplashActivity() {
+        progressBar.setVisibility(View.INVISIBLE);
+        okbtn.setEnabled(true);
+        Intent intent = new Intent(PhoneNumber1.this, SplashActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
@@ -151,5 +231,15 @@ public class PhoneNumber1 extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
+    }
+
+    private String getMyUnique() {
+        databaseHandler.setDB(PhoneNumber1.this);
+        databaseHandler = new DatabaseHandler(this);
+        sqLiteDatabase = databaseHandler.getWritableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery("select uniqueField from uniqueTable where _rowid_ = 1", null);
+        cursor.moveToFirst();
+        String myUnique = cursor.getString(0);
+        return myUnique;
     }
 }

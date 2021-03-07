@@ -23,17 +23,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "id.sqlite";
     public static final String DBLOCATION = "/data/data/com.tistory.starcue.cuetalk/databases/";
 
-    private static final String TABLE_NAME = "id";
     private static final String UNIQUE_TABLE_NAME = "uniqueTable";
     private static final String ADRESS_TABLE_NAME = "adress";
 
-    public static final String CNAME = "name";
-    public static final String CSEX = "sex";
-    public static final String CAGE = "age";
     public static final String UNIQUE = "uniqueField";
     public static final String ADRESS = "adressField";
 
-    private static final String DATABASE_CREATE_TEAM = "create table if not exists " + TABLE_NAME + "(" + CNAME + " TEXT," + CSEX + " TEXT," + CAGE + "TEXT" + ")";
     private static final String UNIQUE_CREATE_TEAM = "create table if not exists " + UNIQUE_TABLE_NAME + "(" + UNIQUE + "TEXT" + ")";
     private static final String ADRESS_CREATE_TEAM = "create table if not exists " + ADRESS_TABLE_NAME + "(" + ADRESS + "TEXT" + ")";
 
@@ -76,8 +71,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        db.execSQL("DROP TABLE " + TABLE_NAME);
-        db.execSQL(DATABASE_CREATE_TEAM);
+        db.execSQL("DROP TABLE " + UNIQUE_TABLE_NAME);
+        db.execSQL("DROP TABLE " + ADRESS_TABLE_NAME);
         db.execSQL(UNIQUE_CREATE_TEAM);
         db.execSQL(ADRESS_CREATE_TEAM);
     }
@@ -107,22 +102,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("delete from adress");
     }
 
-    public void dbinsert(String name, String sex, String age) {
-        sqLiteDatabase = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(CNAME, name);
-        contentValues.put(CSEX, sex);
-        contentValues.put(CAGE, age);
-        sqLiteDatabase.insert(TABLE_NAME, null, contentValues);
-    }
-
-    public void dbdelete() {
-        sqLiteDatabase = this.getWritableDatabase();
-        sqLiteDatabase.execSQL("delete from id");
-        sqLiteDatabase.execSQL("vacuum");
-        sqLiteDatabase.close();
-    }
-
     public void uniquedelete() {
         sqLiteDatabase = this.getWritableDatabase();
         sqLiteDatabase.execSQL("vacuum");
@@ -131,6 +110,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public void insertUnique(String unique) {
         sqLiteDatabase = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(UNIQUE, unique);
+        sqLiteDatabase.insert(UNIQUE_TABLE_NAME, null, contentValues);
+    }
+
+    public void changeUnique(String unique) {
+        sqLiteDatabase = this.getWritableDatabase();
+        sqLiteDatabase.execSQL("delete from uniqueTable");
         ContentValues contentValues = new ContentValues();
         contentValues.put(UNIQUE, unique);
         sqLiteDatabase.insert(UNIQUE_TABLE_NAME, null, contentValues);

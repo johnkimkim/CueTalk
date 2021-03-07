@@ -70,7 +70,7 @@ public class Access extends AppCompatActivity {
         PermissionListener permissionListener = new PermissionListener() {
             @Override
             public void onPermissionGranted() {
-                Intent intent = new Intent(Access.this, Splash.class);
+                Intent intent = new Intent(Access.this, SplashActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);

@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -32,6 +33,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -50,6 +52,7 @@ public class ChangeProfile extends AppCompatActivity {
     FirebaseFirestore db;
     FirebaseStorage storage;
     StorageReference storageReference;
+    String myUid;
 
     private EditText editid;
     private Button yesbtn, nobtn;
@@ -65,9 +68,6 @@ public class ChangeProfile extends AppCompatActivity {
 
     String[] items = {"나이", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70"};
 
-    DatabaseHandler databaseHandler;
-    private SQLiteDatabase sqLiteDatabase;
-
     ImageView imageView;
     Button addImageBtn;
     Uri imageUri;
@@ -77,15 +77,12 @@ public class ChangeProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.change_profile);
 
-        databaseHandler.setDB(ChangeProfile.this);
-        databaseHandler = new DatabaseHandler(this);
-        sqLiteDatabase = databaseHandler.getWritableDatabase();
-
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
+        myUid = mAuth.getUid();
 
         setinit();
         setPic();
@@ -108,13 +105,39 @@ public class ChangeProfile extends AppCompatActivity {
         imageView = findViewById(R.id.change_profile_image);
         addImageBtn = findViewById(R.id.add_image);
 
-        relativeLayout.setVisibility(View.GONE);
-        progressBar.setVisibility(View.GONE);
+        relativeLayout.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+
+        setView();
 
         addImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 chooosePic();
+            }
+        });
+    }
+
+    private void setView() {
+        db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                editid.setText(documentSnapshot.get("name").toString());
+                String age = documentSnapshot.get("age").toString();
+                int ageint = Integer.parseInt(age);
+                agespin.setSelection(ageint - 19);
+                String sex = documentSnapshot.get("sex").toString();
+                if (sex.equals("남자")) {
+                    radioGroup.check(R.id.change_profile_sexmale);
+                } else if (sex.equals("여자")) {
+                    radioGroup.check(R.id.change_profile_sexfemale);
+                }
+                setPic();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
             }
         });
     }
@@ -136,7 +159,6 @@ public class ChangeProfile extends AppCompatActivity {
     }
 
     private void uploadPic() {
-
 
         if (imageUri != null) {
             final ProgressDialog pd = new ProgressDialog(ChangeProfile.this);
@@ -215,9 +237,6 @@ public class ChangeProfile extends AppCompatActivity {
                 relativeLayout.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.VISIBLE);
 
-                databaseHandler.dbdelete();
-                databaseHandler.dbinsert(name, sexstring, agestring);
-
                 updateUser(name, sexstring, agestring);
                 uploadPic();
             }
@@ -254,13 +273,6 @@ public class ChangeProfile extends AppCompatActivity {
     }
 
     private void updateUser(String name, String sex, String age) {
-//        databaseHandler.setDB(ChangeProfile.this);
-//        databaseHandler = new DatabaseHandler(this);
-//        sqLiteDatabase = databaseHandler.getWritableDatabase();
-//        Cursor cursor = sqLiteDatabase.rawQuery("select uniqueField from uniqueTable where _rowid_ = 1", null);
-//        cursor.moveToFirst();
-//        String uniquestring = cursor.getString(0);
-        //get unique
 
         String user_uid = mAuth.getUid();
 
@@ -294,6 +306,10 @@ public class ChangeProfile extends AppCompatActivity {
         storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
+                if (uri == null) {
+                    Log.d("ChangeProfile>>>", "setPic == null");
+                }
+                Log.d("ChangeProfile>>>", "setPic");
                 Glide.with(ChangeProfile.this)
                         .load(uri.toString())
                         .override(600, 600)
@@ -301,11 +317,15 @@ public class ChangeProfile extends AppCompatActivity {
                         .error(R.drawable.ic_launcher_foreground)
                         .circleCrop()
                         .into(imageView);
+                relativeLayout.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
+                Log.d("ChangeProfile>>>", "load pic fail");
+                relativeLayout.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
             }
         });
     }

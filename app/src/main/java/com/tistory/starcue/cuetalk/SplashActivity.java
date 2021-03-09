@@ -2,6 +2,7 @@ package com.tistory.starcue.cuetalk;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -9,10 +10,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -41,6 +47,8 @@ public class SplashActivity extends AppCompatActivity {
     FirebaseFirestore db;
 
     String myUid;
+
+    AlertDialog alertDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -102,25 +110,6 @@ public class SplashActivity extends AppCompatActivity {
         finish();
     }
 
-    private void checkLoginState() {
-        db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                String loginstate = documentSnapshot.get("loginstate").toString();
-                if (loginstate.equals("yes")) {//로그인중
-                    goToAsk();
-                } else if (loginstate.equals("no")) {//로그인중 아님
-                    setNewUniqueAndLoginStateFirestore();
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });
-    }
-
     private void checkSameUnique() {
         Log.d("SplashActivity>>>", "checkSameUnique");
         db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -136,11 +125,9 @@ public class SplashActivity extends AppCompatActivity {
                         checkUser();
                         Log.d("SplashActivity>>>", "unique same");
                     } else {
-//                        checkLoginState();
-//                    goToAsk();//다른기기에서 로그인
-//                    checkUser();
+                        mAuth.signOut();
+                        logoutDialog();
                         Log.d("SplashActivity>>>", "unique not same");
-                        checkNewField();
 
                     }
                 }
@@ -153,45 +140,12 @@ public class SplashActivity extends AppCompatActivity {
         });
     }
 
-    private void checkNewField() {
-        db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.get("new") == null) {
-                    checkUser();
-                    Log.d("SplashActivity>>>", "new field == null");
-                } else {
-                    Log.d("SplashActivity>>>", "new field != null");
-                    deleteNewField();
-                    mAuth.signOut();
-                    goToPhoneNumber();
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });
-    }
-
-    private void deleteNewField() {
-        DocumentReference dr = db.collection("users").document(myUid);
-        Map<String, Object> deleteFieldData = new HashMap<>();
-        deleteFieldData.put("new", FieldValue.delete());
-        dr.update(deleteFieldData).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-
-            }
-        });
-    }
-
     private void checkUser() {
         db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.get("name") == null) {
+                    Log.d("SplashActivity>>>", "4");
                     goToLoginActivity();
                 } else {
                     goToMain();
@@ -241,22 +195,47 @@ public class SplashActivity extends AppCompatActivity {
         finish();
     }
 
-    private void goToAsk() {
-        startActivity(new Intent(SplashActivity.this, AskLogin.class));
-    }
+
 
     private void setNewUniqueAndLoginStateFirestore() {
         Map<String, Object> updateUnique = new HashMap<>();
+        Log.d("SplashActivity>>>", "2");
         updateUnique.put("unique", getUniqueInSql());
-        db.collection("users").document(myUid).update(updateUnique).addOnSuccessListener(new OnSuccessListener<Void>() {
+        Log.d("SplashActivity>>>", "3");
+        db.collection("users").document(myUid).set(updateUnique).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
+                Log.d("SplashActivity>>>", "1");
                 checkUser();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                Log.d("SplashActivity>>>", e.toString());
+            }
+        });
+    }
 
+    private void logoutDialog() {
+        LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout layout = (LinearLayout) vi.inflate(R.layout.login_another_device, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(SplashActivity.this);
+        builder.setView(layout);
+        alertDialog = builder.create();
+
+        if (!SplashActivity.this.isFinishing()) {
+            alertDialog.show();
+        }
+
+        /*Unable to add window -- token android.os.BinderProxy@7c9958a is not valid; is your activity running?*/
+
+        Button okbtn = layout.findViewById(R.id.login_another_device_okbtn);
+        okbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                okbtn.setEnabled(false);
+                alertDialog.dismiss();
+                goToPhoneNumber();
             }
         });
     }

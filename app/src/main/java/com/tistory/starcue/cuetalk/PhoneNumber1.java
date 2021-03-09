@@ -39,7 +39,7 @@ public class PhoneNumber1 extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
-    private FirebaseFirestore db;
+    FirebaseFirestore db;
     private String myUid;
 
     DatabaseHandler databaseHandler;
@@ -57,15 +57,23 @@ public class PhoneNumber1 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.phonenumber1);
 
+
+        mAuthVerificationId = getIntent().getStringExtra("AuthCredentials");
+
+        setdb();
+
+        setinit();
+        setOnClickbtn();
+    }
+
+    private void setdb() {
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
 
-
-        mAuthVerificationId = getIntent().getStringExtra("AuthCredentials");
-
-        setinit();
-        setOnClickbtn();
+        databaseHandler.setDB(PhoneNumber1.this);
+        databaseHandler = new DatabaseHandler(this);
+        sqLiteDatabase = databaseHandler.getWritableDatabase();
     }
 
     private void setinit() {
@@ -133,7 +141,7 @@ public class PhoneNumber1 extends AppCompatActivity {
 //
 //                            FirebaseUser user = task.getResult().getUser();
 //                            // ...
-                            updateFirestore();
+                            checkSameUnique();
                         } else {
                             // Sign in failed, display a message and update the UI
                             Log.w(">>>", "signInWithCredential:failure", task.getException());
@@ -152,75 +160,13 @@ public class PhoneNumber1 extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (mCurrentUser != null) {
-            updateFirestore();
+            goBackSplashActivity();
         }
-    }
-
-    public void updateFirestore() {
-        myUid = mAuth.getUid();
-
-
-        Log.d("PhoneNumber1>>>", "1");
-
-        db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.get("uid") == null) {
-                    Log.d("PhoneNumber1>>>", "2");
-                    Map<String, Object> updateloginstate = new HashMap<>();
-                    updateloginstate.put("uid", myUid);
-                    db.collection("users").document(myUid).update(updateloginstate).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("PhoneNumber1>>>", "3");
-                            goBackSplashActivity();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(PhoneNumber1.this, "네트워크 문제로 오류가 발생했습니다. 다시 시도해주세요", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                } else {
-                    //
-                    goBackSplashActivity();
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });
-
-    }
-
-    private void checkUniqueSame() {
-        db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                String fireUnique = documentSnapshot.get("unique").toString();
-                if (fireUnique.equals(getMyUnique())) {
-                    goToAsk();
-                } else {
-
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });
-    }
-
-    private void goToAsk() {
-        startActivity(new Intent(PhoneNumber1.this, AskLogin.class));
     }
 
     private void goBackSplashActivity() {
         progressBar.setVisibility(View.INVISIBLE);
-        okbtn.setEnabled(true);
+        okbtn.setEnabled(false);
         Intent intent = new Intent(PhoneNumber1.this, SplashActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -233,13 +179,80 @@ public class PhoneNumber1 extends AppCompatActivity {
 
     }
 
-    private String getMyUnique() {
-        databaseHandler.setDB(PhoneNumber1.this);
-        databaseHandler = new DatabaseHandler(this);
-        sqLiteDatabase = databaseHandler.getWritableDatabase();
+    private void checkSameUnique() {
+        Log.d("PhoneNumber1>>>", "checkSameUnique");
+        myUid = mAuth.getCurrentUser().getUid();
+        db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.get("unique") == null) {
+                    Log.d("SplashActivity>>>", "unique == null");
+                    goBackSplashActivity();
+                } else {
+                    String uniqueInFirestore = documentSnapshot.get("unique").toString();
+                    if (uniqueInFirestore.equals(getUniqueInSql())) {
+//                    goToMain();
+                        checkUser();
+                        Log.d("SplashActivity>>>", "unique same");
+                    } else {
+                        goToAsk();
+                        Log.d("SplashActivity>>>", "unique not same");
+
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }
+
+    private void checkUser() {
+        db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.get("name") == null) {
+                    goToLoginActivity();
+                } else {
+                    goToMain();
+                    Log.d("PhoneNumber1>>>", "go to main");
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }
+
+    private void goToLoginActivity() {
+        Intent intent = new Intent(PhoneNumber1.this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void goToMain() {
+        Intent intent = new Intent(PhoneNumber1.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void goToAsk() {
+        startActivity(new Intent(PhoneNumber1.this, AskLogin.class));
+    }
+
+    private String getUniqueInSql() {
         Cursor cursor = sqLiteDatabase.rawQuery("select uniqueField from uniqueTable where _rowid_ = 1", null);
         cursor.moveToFirst();
-        String myUnique = cursor.getString(0);
-        return myUnique;
+        String uniqueInSql = cursor.getString(0);
+        Log.d("SplashActivity>>>", "my unique: " + uniqueInSql);
+        return uniqueInSql;
     }
 }

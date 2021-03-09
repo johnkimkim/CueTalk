@@ -99,6 +99,8 @@ public class AskLogin extends AppCompatActivity {
         yes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                yes.setEnabled(false);
+                no.setEnabled(false);
                 setfirestoredata();
             }
         });
@@ -108,6 +110,8 @@ public class AskLogin extends AppCompatActivity {
         no.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                yes.setEnabled(false);
+                no.setEnabled(false);
                 mAuth.signOut();
                 startActivity(new Intent(AskLogin.this, PhoneNumber.class));
             }
@@ -127,7 +131,6 @@ public class AskLogin extends AppCompatActivity {
 
         Map<String, Object> user = new HashMap<>();
         user.put("unique", uniquestring);
-        user.put("new", "yes");
 
         db.collection("users").document(user_uid)
                 .update(user)

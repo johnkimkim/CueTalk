@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -19,6 +20,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,17 +32,30 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ChatRoom extends AppCompatActivity {
 
+    private ArrayList<ChatRoomItem> arrayList;
+    private RecyclerView.LayoutManager layoutManager;
+    private ChatRoomAdapter adapter;
+
     private DatabaseReference reference;
-    private DatabaseReference checkRef;
-    private DatabaseReference deleteRef;
     private FirebaseAuth mAuth;
-    private FirebaseDatabase db;
+    private FirebaseFirestore db;
+    String myUid;
+
+    private RecyclerView recyclerView;
+    private Button addbtn, sendbtn;
+    private EditText edit;
 
     DatabaseHandler databaseHandler;
     private SQLiteDatabase sqLiteDatabase;
@@ -52,15 +68,105 @@ public class ChatRoom extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_room);
 
-        db = FirebaseDatabase.getInstance();
-        reference = db.getReference();
-        mAuth = FirebaseAuth.getInstance();
 
-        databaseHandler.setDB(ChatRoom.this);
-        databaseHandler = new DatabaseHandler(ChatRoom.this);
-        sqLiteDatabase = databaseHandler.getWritableDatabase();
 
+        setinit();
+        setdb();
+
+        setinit();
+        setRecyclerView();
         checkDbChange();
+        sendMessege();
+    }
+
+    private void setRecyclerView() {
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(ChatRoom.this);
+        recyclerView.setLayoutManager(layoutManager);
+        arrayList = new ArrayList<>();
+        adapter = new ChatRoomAdapter(ChatRoom.this, arrayList);
+        recyclerView.setAdapter(adapter);
+
+        reference.getRef().child("inchat").child(getMyWhere()).child("messege").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                ChatRoomItem chatRoomItem = snapshot.getValue(ChatRoomItem.class);//error
+                arrayList.add(chatRoomItem);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void sendMessege() {
+        Log.d("ChatRoom>>>", "time: " + getTime());
+        sendbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String messege = edit.getText().toString();
+                if (messege.length() == 0) {
+                    Toast.makeText(ChatRoom.this, "메시지를 입력해주세요", Toast.LENGTH_SHORT).show();
+                } else {
+                    edit.setText("");
+                    reference.getRef().child("adressRoom").child(getMyAdress()).child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                        @Override
+                        public void onSuccess(DataSnapshot dataSnapshot) {
+                            String where = dataSnapshot.child("where").getValue().toString();
+                            String myName = dataSnapshot.child("name").getValue().toString();
+
+                            reference.getRef().child("inchat").child(where).child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                @Override
+                                public void onSuccess(DataSnapshot dataSnapshot) {
+                                    int count = (int) dataSnapshot.getChildrenCount() + 1;
+                                    Map<String, Object> sendMessege = new HashMap<>();
+                                    sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "messege" + "/", messege);
+                                    sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "name" + "/", myName);
+                                    sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "time" + "/", getTime());
+
+                                    reference.updateChildren(sendMessege);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+
+                                }
+                            });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void setinit() {
+        recyclerView = findViewById(R.id.chat_room_recyclerview);
+        addbtn = findViewById(R.id.chat_room_sendimage);
+        sendbtn = findViewById(R.id.chat_room_sendbutton);
+        edit = findViewById(R.id.chat_room_edittext);
     }
 
     @Override
@@ -94,6 +200,8 @@ public class ChatRoom extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 deleteMydb();
+                databaseHandler.deleteWhere();
+//                arrayList.clear();//error
             }
         });
 
@@ -126,6 +234,8 @@ public class ChatRoom extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 deleteMydbA();
+                databaseHandler.deleteWhere();
+//                arrayList.clear();
             }
         });
     }
@@ -137,9 +247,9 @@ public class ChatRoom extends AppCompatActivity {
         reference.getRef().child("adressRoom").child(adress).child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
-                String s = dataSnapshot.child("where").getValue(String.class);
-                Log.d("ChatRoom>>>", "get where: " + s);
-                reference.getRef().child("inchat").child(s).addChildEventListener(new ChildEventListener() {
+                String where = dataSnapshot.child("where").getValue(String.class);
+                Log.d("ChatRoom>>>", "get where: " + where);
+                reference.getRef().child("inchat").child(where).addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
@@ -155,15 +265,26 @@ public class ChatRoom extends AppCompatActivity {
 //                        int i = (int) snapshot.getChildrenCount();
 //                        Log.d("ChatRoom>>>", Integer.toString(i));
 ////                        dialogA();
-                        reference.getRef().child("inchat").child(s).addValueEventListener(new ValueEventListener() {
+                        reference.getRef().child("inchat").child(where).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                int i = (int) snapshot.getChildrenCount();
-                                String s = Integer.toString(i);
-                                Log.d("ChatRoom>>>", "count " + s);
-                                if (i == 1) {
-                                    dialogA();
+                                int test = (int) snapshot.child("messege").getChildrenCount();
+                                if (test == 0) {
+                                    int i = (int) snapshot.getChildrenCount();
+                                    String s = Integer.toString(i);
+                                    Log.d("ChatRoom>>>", "count " + s);
+                                    if (i == 1) {
+                                        dialogA();
+                                    }
+                                } else {
+                                    int i = (int) snapshot.getChildrenCount();
+                                    String s = Integer.toString(i);
+                                    Log.d("ChatRoom>>>", "count " + s);
+                                    if (i == 2) {
+                                        dialogA();
+                                    }
                                 }
+
                             }
 
                             @Override
@@ -204,12 +325,13 @@ public class ChatRoom extends AppCompatActivity {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
                 String where = dataSnapshot.child("where").getValue(String.class);//success
-                reference.getRef().child("inchat").child(where).child(myUid).removeValue();
+
                 Map<String, Object> updateUser = new HashMap<>();
                 updateUser.put("/adressRoom/" + adress + "/" + myUid + "/" + "/where/", null);
                 reference.updateChildren(updateUser);
                 alertDialog.dismiss();
                 ChatRoom.this.finish();
+                reference.getRef().child("inchat").child(where).child(myUid).removeValue();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -230,7 +352,7 @@ public class ChatRoom extends AppCompatActivity {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
                 String where = dataSnapshot.child("where").getValue(String.class);//success
-                reference.getRef().child("inchat").child(where).child(myUid).removeValue();
+                reference.getRef().child("inchat").child(where).removeValue();
                 Map<String, Object> updateUser = new HashMap<>();
                 updateUser.put("/adressRoom/" + adress + "/" + myUid + "/" + "/where/", null);
                 reference.updateChildren(updateUser);
@@ -250,6 +372,47 @@ public class ChatRoom extends AppCompatActivity {
         cursor.moveToFirst();
         String adress = cursor.getString(0);
         return adress;
+    }
+
+    private void setdb() {
+        db = FirebaseFirestore.getInstance();
+        reference = FirebaseDatabase.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
+
+        databaseHandler.setDB(ChatRoom.this);
+        databaseHandler = new DatabaseHandler(ChatRoom.this);
+        sqLiteDatabase = databaseHandler.getWritableDatabase();
+        myUid = mAuth.getUid();
+    }
+
+    private String getMyAdress() {
+        Cursor cursor = sqLiteDatabase.rawQuery("select adressField from adress where _rowid_ = 1", null);
+        cursor.moveToFirst();
+        String where = cursor.getString(0);
+        return where;
+    }
+
+    private String getMyWhere() {
+        Cursor cursor = sqLiteDatabase.rawQuery("select whereField from whereTable where _rowid_ = 1", null);
+        cursor.moveToFirst();
+        String where = cursor.getString(0);
+        return where;
+    }
+
+    private String getTime() {
+        long now = System.currentTimeMillis();
+        Date mDate = new Date(now);
+        SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
+        String date = format.format(mDate);
+        return date;
+    }
+
+    private String getDate() {
+        long now = System.currentTimeMillis();
+        Date mDate = new Date(now);
+        SimpleDateFormat format = new SimpleDateFormat("MM-dd");
+        String date = format.format(mDate);
+        return date;
     }
 
 }

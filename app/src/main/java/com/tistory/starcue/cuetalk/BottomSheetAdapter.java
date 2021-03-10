@@ -130,6 +130,8 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
                         updateUser.put("/adressRoom/" + adress + "/" + userUid + "/" + "/ischat/", 2);
                         updateUser.put("/adressRoom/" + adress + "/" + userUid + "/" + "/where/", count);
                         reference.updateChildren(updateUser);
+
+                        databaseHandler.insertWhere(count);
                     }
 
                     @Override

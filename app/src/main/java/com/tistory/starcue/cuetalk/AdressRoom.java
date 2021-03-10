@@ -320,15 +320,25 @@ public class AdressRoom extends AppCompatActivity {
                 if (l != null) {
                     int i = l.intValue();
                     if (i == 2) {
-                        deleteBottomList();
 
-                        upanddown.setBackgroundResource(R.drawable.bottom_up);
-                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                        reference.getRef().child(uid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                            @Override
+                            public void onSuccess(DataSnapshot dataSnapshot) {
+                                String where = dataSnapshot.child("where").getValue().toString();
+                                databaseHandler.insertWhere(where);
 
-                        progressBar.setVisibility(View.GONE);
-                        Intent intent1 = new Intent(AdressRoom.this, ChatRoom.class);
-                        Log.d("AdressRoom>>>", "start activity");
-                        startActivity(intent1);
+                                deleteBottomList();
+
+                                upanddown.setBackgroundResource(R.drawable.bottom_up);
+                                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+                                progressBar.setVisibility(View.GONE);
+                                Intent intent1 = new Intent(AdressRoom.this, ChatRoom.class);
+                                Log.d("AdressRoom>>>", "start activity");
+                                startActivity(intent1);
+                            }
+                        });
+
                     }
                 }
             }
@@ -338,7 +348,6 @@ public class AdressRoom extends AppCompatActivity {
             }
         });
     }
-
 
     private void setInit() {
         recyclerView = findViewById(R.id.adress_room_recycelrview);
@@ -407,6 +416,7 @@ public class AdressRoom extends AppCompatActivity {
         reference.getRef().child("adressRoom").child(s).child(uid).removeValue();
         reference.getRef().child("chatting").child(uid).removeValue();
         databaseHandler.adressdelete();
+        databaseHandler.deleteWhere();
 //        userList.clear();
 //        keyList.clear();
 //        arrayList.clear();

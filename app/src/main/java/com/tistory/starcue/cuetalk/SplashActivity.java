@@ -33,6 +33,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -57,7 +59,7 @@ public class SplashActivity extends AppCompatActivity {
 
         setdb();
         checkPermission();
-
+        databaseHandler.deleteWhere();
 
     }
 
@@ -201,6 +203,7 @@ public class SplashActivity extends AppCompatActivity {
         Map<String, Object> updateUnique = new HashMap<>();
         Log.d("SplashActivity>>>", "2");
         updateUnique.put("unique", getUniqueInSql());
+        updateUnique.put("uid", myUid);
         Log.d("SplashActivity>>>", "3");
         db.collection("users").document(myUid).set(updateUnique).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override

@@ -140,24 +140,8 @@ public class Fragment5 extends Fragment {
         deleteUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                deleteUser.setEnabled(false);
                 deleteDocument();
-                deleteImage();
-                mAuth.signOut();
-                mCurrentUser.delete();
-//                mAuth.getCurrentUser().delete();
-                databaseHandler.uniquedelete();
-                startActivity(new Intent(getActivity(), SplashActivity.class));
-            }
-        });
-    }
-
-    private void setdeleteUser() {
-        mCurrentUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    mCurrentUser.delete();
-                }
             }
         });
     }
@@ -186,16 +170,16 @@ public class Fragment5 extends Fragment {
     }
 
     private void deleteDocument() {
-//        String dsa = mCurrentUser.getUid();
-        String unique = mAuth.getUid();
-        db.collection("users").document(unique)
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(getActivity(), "document삭제 완료", Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
+        db.collection("users").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                deleteImage();
+                mAuth.signOut();
+                mCurrentUser.delete();
+                databaseHandler.uniquedelete();
+                startActivity(new Intent(getActivity(), SplashActivity.class));
+            }
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(getActivity(), "document삭제 실패", Toast.LENGTH_SHORT).show();

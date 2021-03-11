@@ -174,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
         myUid = mAuth.getUid();
 
         setNameSql();
+        databaseHandler.adressdelete();
     }
 
     private void setNameSql() {

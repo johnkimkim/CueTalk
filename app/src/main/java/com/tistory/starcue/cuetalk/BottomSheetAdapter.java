@@ -120,6 +120,7 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
                         Long l = snapshot.getChildrenCount();
                         int i = l.intValue() + 1;
                         String count = Integer.toString(i);
+                        databaseHandler.insertWhere(count);
                         Log.d("ChatRoom>>>", "snapshot count: " + Integer.toString(i));
 
                         creatChatting(count, myUid, userUid, userPic, userName, userSex, userAge, userLatitude, userLongitude);
@@ -131,7 +132,6 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
                         updateUser.put("/adressRoom/" + adress + "/" + userUid + "/" + "/where/", count);
                         reference.updateChildren(updateUser);
 
-                        databaseHandler.insertWhere(count);
                     }
 
                     @Override

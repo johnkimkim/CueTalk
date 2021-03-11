@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -85,8 +86,24 @@ public class ChatRoom extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         arrayList = new ArrayList<>();
         adapter = new ChatRoomAdapter(ChatRoom.this, arrayList);
-//        recyclerView.smoothScrollToPosition();
+
+//        recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
+
         recyclerView.setAdapter(adapter);
+
+        recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View view, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if (bottom < oldBottom) {
+                    view.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            recyclerView.smoothScrollToPosition(adapter.getItemCount());
+                        }
+                    }, 100);
+                }
+            }
+        });
 
         reference.getRef().child("inchat").child(getMyWhere()).child("messege").addChildEventListener(new ChildEventListener() {
             @Override
@@ -94,6 +111,14 @@ public class ChatRoom extends AppCompatActivity {
                 ChatRoomItem chatRoomItem = snapshot.getValue(ChatRoomItem.class);//error
                 arrayList.add(chatRoomItem);
                 adapter.notifyDataSetChanged();
+
+                recyclerView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerView.smoothScrollToPosition(adapter.getItemCount());
+                    }
+                }, 100);
+//                recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
             }
 
             @Override

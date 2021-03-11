@@ -53,9 +53,9 @@
         <LinearLayout
             android:id="@+id/bbb"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/chat_room_layout_imageView2"
-            android:orientation="horizontal">
+            android:layout_height="65dp"
+            android:orientation="vertical"
+            android:layout_alignParentRight="true">
 
             <TextView
                 android:id="@+id/chat_room_layout_time2"
@@ -71,12 +71,6 @@
 
         </LinearLayout>
 
-
-        <ImageView
-            android:id="@+id/chat_room_layout_imageView2"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignParentRight="true" />
     </RelativeLayout>
 
     <View

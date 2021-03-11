@@ -85,6 +85,7 @@ public class ChatRoom extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         arrayList = new ArrayList<>();
         adapter = new ChatRoomAdapter(ChatRoom.this, arrayList);
+//        recyclerView.smoothScrollToPosition();
         recyclerView.setAdapter(adapter);
 
         reference.getRef().child("inchat").child(getMyWhere()).child("messege").addChildEventListener(new ChildEventListener() {

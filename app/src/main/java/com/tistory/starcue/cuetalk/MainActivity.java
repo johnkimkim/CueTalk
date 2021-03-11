@@ -5,15 +5,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -22,16 +33,24 @@ public class MainActivity extends AppCompatActivity {
     SectionsPagerAdapter sectionsPagerAdapter;
     ViewPager viewPager;
 
+
+    Button btn1, btn2, btn3, btn4, btn5;
+
+    private FirebaseAuth mAuth;
+    private FirebaseUser mCurrentUser;
+    FirebaseFirestore db;
+
     DatabaseHandler databaseHandler;
     private SQLiteDatabase sqLiteDatabase;
 
-    Button btn1, btn2, btn3, btn4, btn5;
+    String myUid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setdb();
         setViewPager();
         setinit();
 
@@ -143,5 +162,31 @@ public class MainActivity extends AppCompatActivity {
         intent.addCategory(Intent.CATEGORY_HOME);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    private void setdb() {
+        databaseHandler.setDB(MainActivity.this);
+        databaseHandler = new DatabaseHandler(this);
+        sqLiteDatabase = databaseHandler.getWritableDatabase();
+        mAuth = FirebaseAuth.getInstance();
+        mCurrentUser = mAuth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
+        myUid = mAuth.getUid();
+
+        setNameSql();
+    }
+
+    private void setNameSql() {
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from nameTable", null);
+        int count = cursor.getCount();
+        if (count == 0) {
+            db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    String name = documentSnapshot.get("name").toString();
+                    databaseHandler.insertName(name);
+                }
+            });
+        }
     }
 }

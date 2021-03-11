@@ -171,7 +171,10 @@ public class SplashActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         myUid = mAuth.getUid();
         Log.d("SplashActivity>>>", "my uid: " + myUid);
+
     }
+
+
 
     private String getUniqueInSql() {
         Cursor cursor = sqLiteDatabase.rawQuery("select uniqueField from uniqueTable where _rowid_ = 1", null);

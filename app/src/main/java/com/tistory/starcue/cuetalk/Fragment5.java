@@ -131,6 +131,7 @@ public class Fragment5 extends Fragment {
 
     private void logoutBtn() {
         logout.setOnClickListener(view -> {
+            databaseHandler.deleteName();
             mAuth.signOut();
             startActivity(new Intent(getActivity(), PhoneNumber.class));
         });
@@ -174,6 +175,7 @@ public class Fragment5 extends Fragment {
             @Override
             public void onSuccess(Void aVoid) {
                 deleteImage();
+                databaseHandler.deleteName();
                 mAuth.signOut();
                 mCurrentUser.delete();
                 databaseHandler.uniquedelete();

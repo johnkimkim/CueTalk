@@ -26,14 +26,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String UNIQUE_TABLE_NAME = "uniqueTable";
     private static final String ADRESS_TABLE_NAME = "adress";
     private static final String WHERE_TABLE_NAME = "whereTable";
+    private static final String NAME_TABLE_NAME = "nameTable";
 
     public static final String UNIQUE = "uniqueField";
     public static final String ADRESS = "adressField";
     public static final String WHERE = "whereField";
+    public static final String NAME = "nameField";
 
     private static final String UNIQUE_CREATE_TEAM = "create table if not exists " + UNIQUE_TABLE_NAME + "(" + UNIQUE + "TEXT" + ")";
     private static final String ADRESS_CREATE_TEAM = "create table if not exists " + ADRESS_TABLE_NAME + "(" + ADRESS + "TEXT" + ")";
     private static final String WHERE_CREATE_TEAM = "create table if not exists " + WHERE_TABLE_NAME + "(" + WHERE + "TEXT" + ")";
+    private static final String NAME_CREATE_TEAM = "create table if not exists " + NAME_TABLE_NAME + "(" + NAME + "TEXT" + ")";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSTION);
@@ -77,9 +80,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE " + UNIQUE_TABLE_NAME);
         db.execSQL("DROP TABLE " + ADRESS_TABLE_NAME);
         db.execSQL("DROP TABLE " + WHERE_TABLE_NAME);
+        db.execSQL("DROP TABLE " + NAME_TABLE_NAME);
         db.execSQL(UNIQUE_CREATE_TEAM);
         db.execSQL(ADRESS_CREATE_TEAM);
         db.execSQL(WHERE_CREATE_TEAM);
+        db.execSQL(NAME_CREATE_TEAM);
     }
 
     public void openDatabase() {
@@ -138,6 +143,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void deleteWhere() {
         sqLiteDatabase = this.getWritableDatabase();
         sqLiteDatabase.execSQL("delete from whereTable");
+        sqLiteDatabase.execSQL("vacuum");
+    }
+
+    public void insertName(String name) {
+        sqLiteDatabase = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(NAME, name);
+        sqLiteDatabase.insert(NAME_TABLE_NAME, null, contentValues);
+    }
+
+    public void changeName(String name) {
+        sqLiteDatabase = this.getWritableDatabase();
+        sqLiteDatabase.execSQL("delete from nameTable");
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(NAME, name);
+        sqLiteDatabase.insert(NAME_TABLE_NAME, null, contentValues);
+    }
+
+    public void deleteName() {
+        sqLiteDatabase = this.getWritableDatabase();
+        sqLiteDatabase.execSQL("delete from nameTable");
         sqLiteDatabase.execSQL("vacuum");
     }
 

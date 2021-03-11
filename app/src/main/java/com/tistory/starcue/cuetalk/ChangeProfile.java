@@ -54,6 +54,9 @@ public class ChangeProfile extends AppCompatActivity {
     StorageReference storageReference;
     String myUid;
 
+    DatabaseHandler databaseHandler;
+    private SQLiteDatabase sqLiteDatabase;
+
     private EditText editid;
     private Button yesbtn, nobtn;
     private String[] age;
@@ -83,6 +86,10 @@ public class ChangeProfile extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
         myUid = mAuth.getUid();
+
+        databaseHandler.setDB(ChangeProfile.this);
+        databaseHandler = new DatabaseHandler(this);
+        sqLiteDatabase = databaseHandler.getWritableDatabase();
 
         setinit();
         setPic();
@@ -280,6 +287,7 @@ public class ChangeProfile extends AppCompatActivity {
         user.put("name", name);
         user.put("sex", sex);
         user.put("age", age);
+        databaseHandler.changeName(name);
 
         db.collection("users").document(user_uid)
                 .update(user)

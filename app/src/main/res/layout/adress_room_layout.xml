@@ -12,7 +12,7 @@
             android:id="@+id/adress_room_layout_pic"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/ic_launcher_background"/>
+            android:src="@drawable/picnull"/>
 
         <TextView
             android:id="@+id/adress_room_layout_name"

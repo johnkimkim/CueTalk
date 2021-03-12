@@ -47,6 +47,9 @@ public class Fragment5 extends Fragment {
     StorageReference storageReference;
     String myUid;
 
+    String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
+    String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
+
     public Fragment5() {
         // Required empty public constructor
     }
@@ -149,8 +152,7 @@ public class Fragment5 extends Fragment {
 
     private void setPic() {
 //        Glide.with(getActivity()).load("gs://cuetalk-c4d03.appspot.com/images/03aUD74hz4MjcbcZcpSMc2KfZWs2").into(pic);
-        String uid = mAuth.getUid();
-        StorageReference storageRef = storage.getReference().child("images/" + uid);
+        StorageReference storageRef = storage.getReference().child("images/" + myUid);
         storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -165,7 +167,33 @@ public class Fragment5 extends Fragment {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d("Fragment5>>>", "load pic fail");
+                db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.get("sex").toString().equals("남자")) {
+                            Glide.with(getActivity())
+                                    .load(nullPic)
+                                    .override(600, 600)
+                                    .placeholder(R.drawable.ic_launcher_background)
+                                    .error(R.drawable.ic_launcher_foreground)
+                                    .circleCrop()
+                                    .into(pic);
+                        } else {
+                            Glide.with(getActivity())
+                                    .load(nullPicF)
+                                    .override(600, 600)
+                                    .placeholder(R.drawable.ic_launcher_background)
+                                    .error(R.drawable.ic_launcher_foreground)
+                                    .circleCrop()
+                                    .into(pic);
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
             }
         });
     }

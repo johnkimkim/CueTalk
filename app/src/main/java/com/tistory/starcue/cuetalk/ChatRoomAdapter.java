@@ -12,6 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.CustomViewHolder>{
@@ -49,6 +51,11 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.Custom
             holder.time1.setText(arrayList.get(position).getTime());
             holder.messege1.setText(arrayList.get(position).getMessege());
         } else {
+            Glide.with(holder.pic)
+                    .load(arrayList.get(position).getPic())
+                    .override(150, 150)
+                    .circleCrop()
+                    .into(holder.pic);
             holder.name.setText(arrayList.get(position).getName());
             holder.messege.setText(arrayList.get(position).getMessege());
             holder.time.setText(arrayList.get(position).getTime());

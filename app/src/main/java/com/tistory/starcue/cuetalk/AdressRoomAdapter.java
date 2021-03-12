@@ -56,6 +56,10 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
     String name, sex, age, pic;
     String myUid;
 
+    String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
+    String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
+
+
     AdressRoomAdapter(ArrayList<AdressRoomItem> arrayList, Context context) {
         this.arrayList = arrayList;
         this.context = context;
@@ -77,11 +81,27 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
         //position에 해당하는 데이터를 뷰홀더의 아이템뷰에 표시
-        Glide.with(holder.imageView)
-                .load(arrayList.get(position).getPic())
-                .override(150, 150)
-                .circleCrop()
-                .into(holder.imageView);
+        if (arrayList.get(position).getPic() == null) {
+            if (arrayList.get(position).getSex().equals("남자")) {
+                Glide.with(holder.imageView)
+                        .load(nullPic)
+                        .override(150, 150)
+                        .circleCrop()
+                        .into(holder.imageView);
+            } else {
+                Glide.with(holder.imageView)
+                        .load(nullPicF)
+                        .override(150, 150)
+                        .circleCrop()
+                        .into(holder.imageView);
+            }
+        } else {
+            Glide.with(holder.imageView)
+                    .load(arrayList.get(position).getPic())
+                    .override(150, 150)
+                    .circleCrop()
+                    .into(holder.imageView);
+        }
         holder.name.setText(arrayList.get(position).getName());
         holder.sex.setText(arrayList.get(position).getSex());
         holder.age.setText(arrayList.get(position).getAge());

@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -182,4 +184,44 @@ public class F1intent extends AppCompatActivity {
         super.onDestroy();
         Log.d("<<<", "destory");
     }
+
+
+//    private void testmemo() {
+//        reference.getRef().child("adressRoom").child(getMyAdress()).child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//            @Override
+//            public void onSuccess(DataSnapshot dataSnapshot) {
+//                String where = dataSnapshot.child("where").getValue().toString();//sql get where로 바꾸기
+//
+//                String myName = dataSnapshot.child("name").getValue().toString();
+//                String myPic = dataSnapshot.child("pic").getValue().toString();
+//
+//                reference.getRef().child("inchat").child(where).child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//                    @Override
+//                    public void onSuccess(DataSnapshot dataSnapshot) {
+//                        int count = (int) dataSnapshot.getChildrenCount() + 1;
+//                        Map<String, Object> sendMessege = new HashMap<>();
+//                        sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "messege" + "/", messege);
+//                        sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "name" + "/", myName);
+//                        sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "time" + "/", getTime());
+//
+//
+////                                    sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "pic" + "/", myPic);
+//
+//                        reference.updateChildren(sendMessege);
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//
+//                    }
+//                });
+//
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//            }
+//        });
+//    }
 }

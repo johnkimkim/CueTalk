@@ -11,8 +11,7 @@
         <ImageView
             android:id="@+id/bottom_sheet_layout_pic"
             android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_launcher_background"/>
+            android:layout_height="50dp"/>
 
         <TextView
             android:id="@+id/bottom_sheet_layout_name"

@@ -72,8 +72,6 @@ public class ChatRoom extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_room);
 
-
-
         setinit();
         setdb();
 
@@ -112,16 +110,16 @@ public class ChatRoom extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 ChatRoomItem chatRoomItem = snapshot.getValue(ChatRoomItem.class);//error
+
                 arrayList.add(chatRoomItem);
                 adapter.notifyDataSetChanged();
 
                 recyclerView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        recyclerView.smoothScrollToPosition(adapter.getItemCount());
+                        recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
                     }
                 }, 100);
-//                recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
             }
 
             @Override

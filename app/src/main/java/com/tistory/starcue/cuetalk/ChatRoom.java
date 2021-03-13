@@ -14,6 +14,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -55,8 +57,10 @@ public class ChatRoom extends AppCompatActivity {
     String myUid;
 
     private RecyclerView recyclerView;
-    private Button addbtn, sendbtn;
+    private Button addbtn, sendbtn, backbtn, callbtn;
+    private TextView title;
     private EditText edit;
+    private ProgressBar progressbar;
 
     DatabaseHandler databaseHandler;
     private SQLiteDatabase sqLiteDatabase;
@@ -67,15 +71,20 @@ public class ChatRoom extends AppCompatActivity {
     String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
 
+    private boolean isClickBtn;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_room);
 
+        isClickBtn = false;
+
         setinit();
         setdb();
 
-        setinit();
+        setOnClickBackbtn();
+
         setRecyclerView();
         checkDbChange();
         sendMessege();
@@ -223,6 +232,11 @@ public class ChatRoom extends AppCompatActivity {
         addbtn = findViewById(R.id.chat_room_sendimage);
         sendbtn = findViewById(R.id.chat_room_sendbutton);
         edit = findViewById(R.id.chat_room_edittext);
+        progressbar = findViewById(R.id.chat_room_progress_bar);
+        backbtn = findViewById(R.id.chat_room_backbtn);
+        callbtn = findViewById(R.id.chat_room_callbtn);
+        title = findViewById(R.id.chat_room_title_user);
+        progressbar.setVisibility(View.GONE);
     }
 
     @Override
@@ -255,6 +269,8 @@ public class ChatRoom extends AppCompatActivity {
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressbar.setVisibility(View.VISIBLE);
+                isClickBtn = true;
                 deleteMydb();
                 databaseHandler.deleteWhere();
 //                arrayList.clear();//error
@@ -274,6 +290,7 @@ public class ChatRoom extends AppCompatActivity {
         LinearLayout layout = (LinearLayout) vi.inflate(R.layout.inchat_dialog_if_user_out, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(ChatRoom.this);
         builder.setView(layout);
+        builder.setCancelable(false);
         alertDialogA = builder.create();
 
         if (!ChatRoom.this.isFinishing()) {
@@ -281,6 +298,7 @@ public class ChatRoom extends AppCompatActivity {
                 alertDialog.dismiss();
             }
             alertDialogA.show();
+            progressbar.setVisibility(View.GONE);
         }
 
         /*Unable to add window -- token android.os.BinderProxy@7c9958a is not valid; is your activity running?*/
@@ -289,9 +307,11 @@ public class ChatRoom extends AppCompatActivity {
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                deleteMydbA();
-                databaseHandler.deleteWhere();
-//                arrayList.clear();
+                if (!isClickBtn) {
+                    progressbar.setVisibility(View.VISIBLE);
+                    deleteMydbA();
+                    databaseHandler.deleteWhere();
+                }
             }
         });
     }
@@ -311,18 +331,18 @@ public class ChatRoom extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-//                        int i = (int) snapshot.getChildrenCount();
-//                        Log.d("ChatRoom>>>", Integer.toString(i));
-////                        dialogA();
+
                 reference.getRef().child("inchat").child(where).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        progressbar.setVisibility(View.VISIBLE);
                         int test = (int) snapshot.child("messege").getChildrenCount();
                         if (test == 0) {
                             int i = (int) snapshot.getChildrenCount();
                             String s = Integer.toString(i);
                             Log.d("ChatRoom>>>", "count " + s);
                             if (i == 1) {
+
                                 dialogA();
                             }
                         } else {
@@ -372,6 +392,7 @@ public class ChatRoom extends AppCompatActivity {
                 reference.updateChildren(updateUser);
                 alertDialog.dismiss();
                 ChatRoom.this.finish();
+                progressbar.setVisibility(View.GONE);
                 reference.getRef().child("inchat").child(where).child(myUid).removeValue();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -399,6 +420,7 @@ public class ChatRoom extends AppCompatActivity {
                 reference.updateChildren(updateUser);
                 alertDialogA.dismiss();
                 ChatRoom.this.finish();
+                progressbar.setVisibility(View.GONE);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -447,6 +469,14 @@ public class ChatRoom extends AppCompatActivity {
         SimpleDateFormat format = new SimpleDateFormat("hh:mm");
         String date = format.format(mDate);
         return date;
+    }
+
+    private void setOnClickBackbtn() {
+        backbtn.setOnClickListener(view -> dialog());
+    }
+
+    private void setOnClickCallbtn() {
+
     }
 
     private String getDate() {

@@ -323,7 +323,7 @@ public class AdressRoom extends AppCompatActivity {
                 if (l != null) {
                     int i = l.intValue();
                     if (i == 2) {
-
+                        progressBar.setVisibility(View.VISIBLE);
                         reference.getRef().child(uid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                             @Override
                             public void onSuccess(DataSnapshot dataSnapshot) {

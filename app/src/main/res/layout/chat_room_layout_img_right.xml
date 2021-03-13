@@ -10,20 +10,20 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:id="@+id/bbb"
+            android:id="@+id/bbb_img"
             android:layout_width="wrap_content"
             android:layout_height="65dp"
             android:orientation="vertical"
             android:layout_alignParentRight="true">
 
             <TextView
-                android:id="@+id/chat_room_layout_time2"
+                android:id="@+id/chat_room_layout_time2_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#000000" />
 
-            <TextView
-                android:id="@+id/chat_room_layout_messege2"
+            <ImageView
+                android:id="@+id/chat_room_layout_messege2_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#000000" />

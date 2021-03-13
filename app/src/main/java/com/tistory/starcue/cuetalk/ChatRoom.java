@@ -297,61 +297,42 @@ public class ChatRoom extends AppCompatActivity {
     }
 
     private void checkDbChange() {
-        String adress = getAdress();
-        String myUid = mAuth.getUid();
-
-        reference.getRef().child("adressRoom").child(adress).child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+        String where = getMyWhere();
+        reference.getRef().child("inchat").child(where).addChildEventListener(new ChildEventListener() {
             @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                String where = dataSnapshot.child("where").getValue(String.class);
-                Log.d("ChatRoom>>>", "get where: " + where);
-                reference.getRef().child("inchat").child(where).addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
-                    }
+            }
 
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
-                    }
+            }
 
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
 //                        int i = (int) snapshot.getChildrenCount();
 //                        Log.d("ChatRoom>>>", Integer.toString(i));
 ////                        dialogA();
-                        reference.getRef().child("inchat").child(where).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                int test = (int) snapshot.child("messege").getChildrenCount();
-                                if (test == 0) {
-                                    int i = (int) snapshot.getChildrenCount();
-                                    String s = Integer.toString(i);
-                                    Log.d("ChatRoom>>>", "count " + s);
-                                    if (i == 1) {
-                                        dialogA();
-                                    }
-                                } else {
-                                    int i = (int) snapshot.getChildrenCount();
-                                    String s = Integer.toString(i);
-                                    Log.d("ChatRoom>>>", "count " + s);
-                                    if (i == 2) {
-                                        dialogA();
-                                    }
-                                }
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-                    }
-
+                reference.getRef().child("inchat").child(where).addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        int test = (int) snapshot.child("messege").getChildrenCount();
+                        if (test == 0) {
+                            int i = (int) snapshot.getChildrenCount();
+                            String s = Integer.toString(i);
+                            Log.d("ChatRoom>>>", "count " + s);
+                            if (i == 1) {
+                                dialogA();
+                            }
+                        } else {
+                            int i = (int) snapshot.getChildrenCount();
+                            String s = Integer.toString(i);
+                            Log.d("ChatRoom>>>", "count " + s);
+                            if (i == 2) {
+                                dialogA();
+                            }
+                        }
 
                     }
 
@@ -360,11 +341,15 @@ public class ChatRoom extends AppCompatActivity {
 
                     }
                 });
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
             }
-        }).addOnFailureListener(new OnFailureListener() {
+
             @Override
-            public void onFailure(@NonNull Exception e) {
+            public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
@@ -452,6 +437,7 @@ public class ChatRoom extends AppCompatActivity {
         Cursor cursor = sqLiteDatabase.rawQuery("select whereField from whereTable where _rowid_ = 1", null);
         cursor.moveToFirst();
         String where = cursor.getString(0);
+        cursor.close();
         return where;
     }
 

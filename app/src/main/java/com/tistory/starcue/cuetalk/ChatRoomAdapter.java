@@ -60,8 +60,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
-
-
         if (holder instanceof CenterViewholder) {
             ((CenterViewholder) holder).textView.setText("입장완료");
         } else if (holder instanceof LeftViewholder) {

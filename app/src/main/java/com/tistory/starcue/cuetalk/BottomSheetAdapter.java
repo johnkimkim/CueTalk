@@ -133,32 +133,16 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
                 String userLongitude = bottomList.get(position).getLongitude();
                 reference = FirebaseDatabase.getInstance().getReference();
 
-                countRef = FirebaseDatabase.getInstance().getReference("inchat");
-                countRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        Long l = snapshot.getChildrenCount();
-                        int i = l.intValue() + 1;
-                        String count = Integer.toString(i);
-                        databaseHandler.insertWhere(count);
-                        Log.d("ChatRoom>>>", "snapshot count: " + Integer.toString(i));
+//                databaseHandler.insertWhere(myUid);
 
-                        creatChatting(count, myUid, userUid, userPic, userName, userSex, userAge, userLatitude, userLongitude);
+                creatChatting(myUid, myUid, userUid, userPic, userName, userSex, userAge, userLatitude, userLongitude);
 
-                        Map<String, Object> updateUser = new HashMap<>();
-                        updateUser.put("/adressRoom/" + adress + "/" + myUid + "/" + "/ischat/", 2);
-                        updateUser.put("/adressRoom/" + adress + "/" + myUid + "/" + "/where/", count);
-                        updateUser.put("/adressRoom/" + adress + "/" + userUid + "/" + "/ischat/", 2);
-                        updateUser.put("/adressRoom/" + adress + "/" + userUid + "/" + "/where/", count);
-                        reference.updateChildren(updateUser);
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                Map<String, Object> updateUser = new HashMap<>();
+                updateUser.put("/adressRoom/" + adress + "/" + myUid + "/" + "/ischat/", 2);
+                updateUser.put("/adressRoom/" + adress + "/" + myUid + "/" + "/where/", myUid);
+                updateUser.put("/adressRoom/" + adress + "/" + userUid + "/" + "/ischat/", 2);
+                updateUser.put("/adressRoom/" + adress + "/" + userUid + "/" + "/where/", myUid);
+                reference.updateChildren(updateUser);
 
             }
         });
@@ -176,7 +160,7 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
         });
     }
 
-    private void creatChatting(String count, String myUid, String userUid, String userPic, String userName, String userSex, String userAge, String userLatitude, String userLongitude) {
+    private void creatChatting(String where, String myUid, String userUid, String userPic, String userName, String userSex, String userAge, String userLatitude, String userLongitude) {
         db = FirebaseFirestore.getInstance();
 
         reference = FirebaseDatabase.getInstance().getReference();
@@ -199,19 +183,19 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
                 String age = documentSnapshot.getString("age");
 
                 Map<String, Object> updateUser = new HashMap<>();
-                updateUser.put("/inchat/" + count + "/" + myUid + "/" + "/pic/", pic);
-                updateUser.put("/inchat/" + count + "/" + myUid + "/" + "/name/", name);
-                updateUser.put("/inchat/" + count + "/" + myUid + "/" + "/sex/", sex);
-                updateUser.put("/inchat/" + count + "/" + myUid + "/" + "/age/", age);
-                updateUser.put("/inchat/" + count + "/" + myUid + "/" + "/latitude/", latitudeS);
-                updateUser.put("/inchat/" + count + "/" + myUid + "/" + "/longitude/", longitudeS);
+                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/pic/", pic);
+                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/name/", name);
+                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/sex/", sex);
+                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/age/", age);
+                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/latitude/", latitudeS);
+                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/longitude/", longitudeS);
 
-                updateUser.put("/inchat/" + count + "/" + userUid + "/" + "/pic/", userPic);
-                updateUser.put("/inchat/" + count + "/" + userUid + "/" + "/name/", userName);
-                updateUser.put("/inchat/" + count + "/" + userUid + "/" + "/sex/", userSex);
-                updateUser.put("/inchat/" + count + "/" + userUid + "/" + "/age/", userAge);
-                updateUser.put("/inchat/" + count + "/" + userUid + "/" + "/latitude/", userLatitude);
-                updateUser.put("/inchat/" + count + "/" + userUid + "/" + "/longitude/", userLongitude);
+                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/pic/", userPic);
+                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/name/", userName);
+                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/sex/", userSex);
+                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/age/", userAge);
+                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/latitude/", userLatitude);
+                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/longitude/", userLongitude);
                 reference.updateChildren(updateUser);
             }
         }).addOnFailureListener(new OnFailureListener() {

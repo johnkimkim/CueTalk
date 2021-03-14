@@ -51,6 +51,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ChatRoom extends AppCompatActivity {
@@ -179,14 +180,14 @@ public class ChatRoom extends AppCompatActivity {
                     reference.getRef().child("adressRoom").child(getMyAdress()).child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                         @Override
                         public void onSuccess(DataSnapshot dataSnapshot) {
-                            String myName = dataSnapshot.child("name").getValue().toString();
+                            String myName = dataSnapshot.child("name").getValue(String.class);
                             if (dataSnapshot.child("pic").getValue() != null) {
                                 Log.d("ChatRoom>>>", "pic have");
-                                String myPic = dataSnapshot.child("pic").getValue().toString();
+                                String myPic = dataSnapshot.child("pic").getValue(String.class);
                                 sendMessegeMap(messege, myName, myPic);
                             } else {
                                 Log.d("ChatRoom>>>", "pic null");
-                                if (dataSnapshot.child("sex").getValue().toString().equals("남자")) {
+                                if (dataSnapshot.child("sex").getValue(String.class).equals("남자")) {
                                     sendMessegeMap(messege, myName, nullPic);
                                 } else {
                                     sendMessegeMap(messege, myName, nullPicF);
@@ -272,6 +273,7 @@ public class ChatRoom extends AppCompatActivity {
                 progressbar.setVisibility(View.VISIBLE);
                 isClickBtn = true;
                 deleteMydb();
+                deleteMyStoragePic();
                 databaseHandler.deleteWhere();
 //                arrayList.clear();//error
             }
@@ -412,7 +414,6 @@ public class ChatRoom extends AppCompatActivity {
 
     private void deleteMydb() {//방장 삭제
         String adress = getAdress();
-        String myUid = mAuth.getUid();
         Map<String, Object> updateUser = new HashMap<>();
         updateUser.put("/adressRoom/" + adress + "/" + myUid + "/" + "/ischat/", 1);
         reference.updateChildren(updateUser);
@@ -422,6 +423,7 @@ public class ChatRoom extends AppCompatActivity {
             public void onSuccess(DataSnapshot dataSnapshot) {
                 String where = dataSnapshot.child("where").getValue(String.class);//success
 
+                deleteMyStoragePic();
                 Map<String, Object> updateUser = new HashMap<>();
                 updateUser.put("/adressRoom/" + adress + "/" + myUid + "/" + "/where/", null);
                 reference.updateChildren(updateUser);
@@ -440,7 +442,6 @@ public class ChatRoom extends AppCompatActivity {
 
     private void deleteMydbA() {//방장 삭제
         String adress = getAdress();
-        String myUid = mAuth.getUid();
         Map<String, Object> updateUser = new HashMap<>();
         updateUser.put("/adressRoom/" + adress + "/" + myUid + "/" + "/ischat/", 1);
         reference.updateChildren(updateUser);
@@ -449,6 +450,7 @@ public class ChatRoom extends AppCompatActivity {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
                 String where = dataSnapshot.child("where").getValue(String.class);//success
+                deleteMyStoragePic();
                 reference.getRef().child("inchat").child(where).removeValue();
                 Map<String, Object> updateUser = new HashMap<>();
                 updateUser.put("/adressRoom/" + adress + "/" + myUid + "/" + "/where/", null);
@@ -469,6 +471,7 @@ public class ChatRoom extends AppCompatActivity {
         Cursor cursor = sqLiteDatabase.rawQuery("select * from adress where _rowid_ = 1", null);
         cursor.moveToFirst();
         String adress = cursor.getString(0);
+        cursor.close();
         return adress;
     }
 
@@ -510,13 +513,6 @@ public class ChatRoom extends AppCompatActivity {
 
     private void setOnClickBackbtn() {
         backbtn.setOnClickListener(view -> dialog());
-    }
-
-    private void setOnClickCallbtn() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, 2);
     }
 
     private void setOnAddbtn() {
@@ -601,14 +597,14 @@ public class ChatRoom extends AppCompatActivity {
         reference.getRef().child("adressRoom").child(getMyAdress()).child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
-                String myName = dataSnapshot.child("name").getValue().toString();
+                String myName = dataSnapshot.child("name").getValue(String.class);
                 if (dataSnapshot.child("pic").getValue() != null) {
                     Log.d("ChatRoom>>>", "pic have");
-                    String myPic = dataSnapshot.child("pic").getValue().toString();
+                    String myPic = dataSnapshot.child("pic").getValue(String.class);
                     sendMessegeMapPic(uri, myName, myPic);
                 } else {
                     Log.d("ChatRoom>>>", "pic null");
-                    if (dataSnapshot.child("sex").getValue().toString().equals("남자")) {
+                    if (dataSnapshot.child("sex").getValue(String.class).equals("남자")) {
                         sendMessegeMapPic(uri, myName, nullPic);
                     } else {
                         sendMessegeMapPic(uri, myName, nullPicF);
@@ -643,12 +639,33 @@ public class ChatRoom extends AppCompatActivity {
         });
     }
 
-    private String getDate() {
-        long now = System.currentTimeMillis();
-        Date mDate = new Date(now);
-        SimpleDateFormat format = new SimpleDateFormat("MM-dd");
-        String date = format.format(mDate);
-        return date;
+    private void deleteMyStoragePic() {
+        storageReference.child(myUid + "/").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
+                for (StorageReference item : listResult.getItems()) {
+                    Log.d("ChatRoom>>>", item.getName());
+
+                    storageReference.child(myUid + "/" + item.getName()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("ChatRoom>>>", "delete pic success");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("ChatRoom>>>", "fail: " + e.toString());
+                        }
+                    });
+
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("ChatRoom>>>", e.toString());
+            }
+        });
     }
 
 }

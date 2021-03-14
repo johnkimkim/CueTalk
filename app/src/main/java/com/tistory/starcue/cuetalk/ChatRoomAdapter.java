@@ -66,10 +66,10 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         if (viewType == Code.ViewType.RIGHT_IMAGE) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_room_layout_img_right, parent, false);
-            return new RightViewholder(view);
+            return new RightImageViewholder(view);
         } else if (viewType == Code.ViewType.LEFT_IMAGE) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_room_layout_img_left, parent, false);
-            return new RightViewholder(view);
+            return new LeftImageViewholder(view);
         } else if (viewType == Code.ViewType.RIGHT_CONTENT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_room_layout_right, parent, false);
             return new RightViewholder(view);
@@ -126,9 +126,9 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (holder instanceof RightImageViewholder) {
             ((RightImageViewholder) holder).timepic.setText(arrayList.get(position).getTime());
             Glide.with(((RightImageViewholder) holder).imagepic)
-                    .load(arrayList.get(position).getMessege())
+                    .load(arrayList.get(position).getUri())
                     .override(150, 150)
-                    .circleCrop()
+                    .centerCrop()
                     .into(((RightImageViewholder) holder).imagepic);
         } else if (holder instanceof LeftImageViewholder) {
             ((LeftImageViewholder) holder).name.setText(arrayList.get(position).getName());
@@ -136,10 +136,10 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             Glide.with(((LeftImageViewholder) holder).pic)
                     .load(arrayList.get(position).getPic())
                     .override(150, 150)
-                    .circleCrop()
+                    .centerCrop()
                     .into(((LeftImageViewholder) holder).pic);
             Glide.with(((LeftImageViewholder) holder).image)
-                    .load(arrayList.get(position).getMessege())
+                    .load(arrayList.get(position).getUri())
                     .override(150, 150)
                     .circleCrop()
                     .into(((LeftImageViewholder) holder).image);
@@ -186,22 +186,39 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 //            return Code.ViewType.CENTER_CONTENT;
 //        }
 
-        if (arrayList.get(position).getName().equals(getMyName())) {
-            if (arrayList.get(position).getMessege().contains(myUid)) {
-                Log.d("ChatRoomAdapter>>>", "viewType: RIGHT_IMAGE");
-                return Code.ViewType.RIGHT_IMAGE;
-            } else {
-                Log.d("ChatRoomAdapter>>>", "viewType: RIGHT_CONTENT");
-                return Code.ViewType.RIGHT_CONTENT;
-            }
-        } else if (!arrayList.get(position).getName().equals(getMyName())) {
-            if (arrayList.get(position).getMessege().contains("https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com")) {
-                Log.d("ChatRoomAdapter>>>", "viewType: LEFT_IMAGE");
-                return Code.ViewType.LEFT_IMAGE;
-            } else {
-                Log.d("ChatRoomAdapter>>>", "viewType: LEFT_CONTENT");
-                return Code.ViewType.LEFT_CONTENT;
-            }
+//        if (arrayList.get(position).getName().equals(getMyName())) {
+//            if (arrayList.get(position).getMessege().contains(myUid)) {
+//                Log.d("ChatRoomAdapter>>>", "viewType: RIGHT_IMAGE");
+//                return Code.ViewType.RIGHT_IMAGE;
+//            } else {
+//                Log.d("ChatRoomAdapter>>>", "viewType: RIGHT_CONTENT");
+//                return Code.ViewType.RIGHT_CONTENT;
+//            }
+//        } else if (!arrayList.get(position).getName().equals(getMyName())) {
+//            if (arrayList.get(position).getMessege().contains("https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com")) {
+//                Log.d("ChatRoomAdapter>>>", "viewType: LEFT_IMAGE");
+//                return Code.ViewType.LEFT_IMAGE;
+//            } else {
+//                Log.d("ChatRoomAdapter>>>", "viewType: LEFT_CONTENT");
+//                return Code.ViewType.LEFT_CONTENT;
+//            }
+//        } else {
+//            Log.d("ChatRoomAdapter>>>", "viewType: CENTER_CONTENT");
+//            return Code.ViewType.CENTER_CONTENT;
+//        }
+
+        if (arrayList.get(position).getName().equals(getMyName()) && arrayList.get(position).getUri() != null) {
+            Log.d("ChatRoomAdapter>>>", "viewType: RIGHT_IMAGE");
+            return Code.ViewType.RIGHT_IMAGE;
+        } else if (arrayList.get(position).getName().equals(getMyName()) && arrayList.get(position).getUri() == null) {
+            Log.d("ChatRoomAdapter>>>", "viewType: RIGHT_CONTENT");
+            return Code.ViewType.RIGHT_CONTENT;
+        } else if (!arrayList.get(position).getName().equals(getMyName()) && arrayList.get(position).getUri() != null) {
+            Log.d("ChatRoomAdapter>>>", "viewType: LEFT_IMAGE");
+            return Code.ViewType.LEFT_IMAGE;
+        } else if (!arrayList.get(position).getName().equals(getMyName()) && arrayList.get(position).getUri() == null) {
+            Log.d("ChatRoomAdapter>>>", "viewType: LEFT_CONTENT");
+            return Code.ViewType.LEFT_CONTENT;
         } else {
             Log.d("ChatRoomAdapter>>>", "viewType: CENTER_CONTENT");
             return Code.ViewType.CENTER_CONTENT;

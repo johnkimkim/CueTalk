@@ -605,13 +605,13 @@ public class ChatRoom extends AppCompatActivity {
                 if (dataSnapshot.child("pic").getValue() != null) {
                     Log.d("ChatRoom>>>", "pic have");
                     String myPic = dataSnapshot.child("pic").getValue().toString();
-                    sendMessegeMap(uri, myName, myPic);
+                    sendMessegeMapPic(uri, myName, myPic);
                 } else {
                     Log.d("ChatRoom>>>", "pic null");
                     if (dataSnapshot.child("sex").getValue().toString().equals("남자")) {
-                        sendMessegeMap(uri, myName, nullPic);
+                        sendMessegeMapPic(uri, myName, nullPic);
                     } else {
-                        sendMessegeMap(uri, myName, nullPicF);
+                        sendMessegeMapPic(uri, myName, nullPicF);
                     }
                 }
             }
@@ -619,6 +619,26 @@ public class ChatRoom extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
 
+            }
+        });
+    }
+
+    private void sendMessegeMapPic(String uri, String myName, String myPic) {
+        reference.getRef().child("inchat").child(getMyWhere()).child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                int count = (int) dataSnapshot.getChildrenCount() + 1;
+                Map<String, Object> sendMessege = new HashMap<>();
+                sendMessege.put("/inchat/" + getMyWhere() + "/" + "messege" + "/" + count + "/" + "uri" + "/", uri);
+                sendMessege.put("/inchat/" + getMyWhere() + "/" + "messege" + "/" + count + "/" + "name" + "/", myName);
+                sendMessege.put("/inchat/" + getMyWhere() + "/" + "messege" + "/" + count + "/" + "pic" + "/", myPic);
+                sendMessege.put("/inchat/" + getMyWhere() + "/" + "messege" + "/" + count + "/" + "time" + "/", getTime());
+                reference.updateChildren(sendMessege);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(ChatRoom.this, "인터넷 연결이 불안정해 메시지 전송에 실패했습니다.", Toast.LENGTH_SHORT).show();
             }
         });
     }

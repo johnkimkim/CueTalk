@@ -46,24 +46,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 //        CustomViewHolder holder = new CustomViewHolder(view);
         View view;
 
-
-//        if (viewType == Code.ViewType.LEFT_CONTENT) {
-//            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_room_layout_left, parent, false);
-//            return new LeftViewholder(view);
-//        } else if (viewType == Code.ViewType.RIGHT_CONTENT) {
-//            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_room_layout_right, parent, false);
-//            return new RightViewholder(view);
-//        } else if (viewType == Code.ViewType.LEFT_IMAGE) {
-//            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_room_layout_img_left, parent, false);
-//            return new RightViewholder(view);
-//        } else if (viewType == Code.ViewType.RIGHT_IMAGE) {
-//            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_room_layout_img_right, parent, false);
-//            return new RightViewholder(view);
-//        } else {
-//            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_room_layout_center, parent, false);
-//            return new CenterViewholder(view);
-//        }
-
         if (viewType == Code.ViewType.RIGHT_IMAGE) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_room_layout_img_right, parent, false);
             return new RightImageViewholder(view);
@@ -85,43 +67,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-
-//        if (holder instanceof CenterViewholder) {
-//            ((CenterViewholder) holder).textView.setText("입장완료");
-//        } else if (holder instanceof LeftViewholder) {
-//            ((LeftViewholder) holder).name.setText(arrayList.get(position).getName());
-//            ((LeftViewholder) holder).messege.setText(arrayList.get(position).getMessege());
-//            ((LeftViewholder) holder).time.setText(arrayList.get(position).getTime());
-//            Glide.with(((LeftViewholder) holder).pic)
-//                    .load(arrayList.get(position).getPic())
-//                    .override(150, 150)
-//                    .circleCrop()
-//                    .into(((LeftViewholder) holder).pic);
-//        } else if (holder instanceof  RightViewholder) {
-//            ((RightViewholder) holder).time1.setText(arrayList.get(position).getTime());
-//            ((RightViewholder) holder).messege1.setText(arrayList.get(position).getMessege());
-//        } else if (holder instanceof LeftImageViewholder) {
-//            ((LeftImageViewholder) holder).name.setText(arrayList.get(position).getName());
-//            ((LeftImageViewholder) holder).time.setText(arrayList.get(position).getTime());
-//            Glide.with(((LeftImageViewholder) holder).pic)
-//                    .load(arrayList.get(position).getPic())
-//                    .override(150, 150)
-//                    .circleCrop()
-//                    .into(((LeftImageViewholder) holder).pic);
-//            Glide.with(((LeftImageViewholder) holder).image)
-//                    .load(arrayList.get(position).getMessege())
-//                    .override(150, 150)
-//                    .circleCrop()
-//                    .into(((LeftImageViewholder) holder).image);
-//        } else if (holder instanceof RightImageViewholder) {
-//            ((RightImageViewholder) holder).timepic.setText(arrayList.get(position).getTime());
-//            Glide.with(((RightImageViewholder) holder).imagepic)
-//                    .load(arrayList.get(position).getMessege())
-//                    .override(150, 150)
-//                    .circleCrop()
-//                    .into(((RightImageViewholder) holder).imagepic);
-//        }
-
 
         if (holder instanceof RightImageViewholder) {
             ((RightImageViewholder) holder).timepic.setText(arrayList.get(position).getTime());
@@ -169,44 +114,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         mAuth = FirebaseAuth.getInstance();
         myUid = mAuth.getUid();
 
-//        if (arrayList.get(position).getMessege().contains(myUid)) {
-//            Log.d("ChatRoomAdapter>>>", "viewType: RIGHT_IMAGE");
-//            return Code.ViewType.RIGHT_IMAGE;
-//        } else if (arrayList.get(position).getMessege().contains("https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com")) {
-//            Log.d("ChatRoomAdapter>>>", "viewType: LEFT_IMAGE");
-//            return Code.ViewType.LEFT_IMAGE;
-//        } else if (arrayList.get(position).getName().equals(getMyName())) {
-//            Log.d("ChatRoomAdapter>>>", "viewType: RIGHT_CONTENT");
-//            return Code.ViewType.RIGHT_CONTENT;
-//        } else if (!arrayList.get(position).getName().equals(getMyName())) {
-//            Log.d("ChatRoomAdapter>>>", "viewType: LEFT_CONTENT");
-//            return Code.ViewType.LEFT_CONTENT;
-//        } else {
-//            Log.d("ChatRoomAdapter>>>", "viewType: CENTER_CONTENT");
-//            return Code.ViewType.CENTER_CONTENT;
-//        }
-
-//        if (arrayList.get(position).getName().equals(getMyName())) {
-//            if (arrayList.get(position).getMessege().contains(myUid)) {
-//                Log.d("ChatRoomAdapter>>>", "viewType: RIGHT_IMAGE");
-//                return Code.ViewType.RIGHT_IMAGE;
-//            } else {
-//                Log.d("ChatRoomAdapter>>>", "viewType: RIGHT_CONTENT");
-//                return Code.ViewType.RIGHT_CONTENT;
-//            }
-//        } else if (!arrayList.get(position).getName().equals(getMyName())) {
-//            if (arrayList.get(position).getMessege().contains("https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com")) {
-//                Log.d("ChatRoomAdapter>>>", "viewType: LEFT_IMAGE");
-//                return Code.ViewType.LEFT_IMAGE;
-//            } else {
-//                Log.d("ChatRoomAdapter>>>", "viewType: LEFT_CONTENT");
-//                return Code.ViewType.LEFT_CONTENT;
-//            }
-//        } else {
-//            Log.d("ChatRoomAdapter>>>", "viewType: CENTER_CONTENT");
-//            return Code.ViewType.CENTER_CONTENT;
-//        }
-
         if (arrayList.get(position).getName().equals(getMyName()) && arrayList.get(position).getUri() != null) {
             Log.d("ChatRoomAdapter>>>", "viewType: RIGHT_IMAGE");
             return Code.ViewType.RIGHT_IMAGE;
@@ -230,20 +137,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public int getItemCount() {
         return (arrayList != null ? arrayList.size() : 0);
     }
-
-//    public class CustomViewHolder extends RecyclerView.ViewHolder{
-//        ImageView pic, pic1;
-//        TextView time, time1, name, messege, messege1;
-//        public CustomViewHolder(@NonNull View itemView) {
-//            super(itemView);
-//            this.pic = itemView.findViewById(R.id.chat_room_layout_imageView1);
-//            this.name = itemView.findViewById(R.id.chat_room_layout_name1);
-//            this.time = itemView.findViewById(R.id.chat_room_layout_time1);
-//            this.time1 = itemView.findViewById(R.id.chat_room_layout_time2);
-//            this.messege = itemView.findViewById(R.id.chat_room_layout_messege1);
-//            this.messege1 = itemView.findViewById(R.id.chat_room_layout_messege2);
-//        }
-//    }
 
     public class CenterViewholder extends RecyclerView.ViewHolder {
         TextView textView;

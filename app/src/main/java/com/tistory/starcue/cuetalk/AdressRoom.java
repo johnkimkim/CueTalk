@@ -457,23 +457,4 @@ public class AdressRoom extends AppCompatActivity {
         return adress;
     }
 
-
-//    private void chatListener(DataSnapshot dataSnapshot) {
-//        String name, sex, age, km, uri;
-//        Iterator i = dataSnapshot.getChildren().iterator();
-//
-//        while (i.hasNext()) {
-//            name = (String) ((DataSnapshot) i.next()).getValue();
-//            sex = (String) ((DataSnapshot) i.next()).getValue();
-//            age = (String) ((DataSnapshot) i.next()).getValue();
-//            km = (String) ((DataSnapshot) i.next()).getValue();
-//            uri = (String) ((DataSnapshot) i.next()).getValue();
-//
-//            //유저이름, 메시지를 가져와서 array에 추가
-//            arrayList.add(arrayList.set(i, name).setName(););
-//        }
-//
-//        //변경된값으로 리스트뷰 갱신
-//        arrayAdapter.notifyDataSetChanged();
-//    }
 }

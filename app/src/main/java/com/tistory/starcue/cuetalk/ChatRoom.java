@@ -1,9 +1,11 @@
 package com.tistory.starcue.cuetalk;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -26,6 +29,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,6 +42,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,6 +62,7 @@ public class ChatRoom extends AppCompatActivity {
     private DatabaseReference reference;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    StorageReference storageReference;
     String myUid;
 
     private RecyclerView recyclerView;
@@ -67,11 +76,15 @@ public class ChatRoom extends AppCompatActivity {
 
     AlertDialog alertDialog;
     AlertDialog alertDialogA;
+    AlertDialog alertDialogC;
 
     String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
 
     private boolean isClickBtn;
+
+    Uri imageUri;
+    String picUri;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -163,22 +176,6 @@ public class ChatRoom extends AppCompatActivity {
                     Toast.makeText(ChatRoom.this, "메시지를 입력해주세요", Toast.LENGTH_SHORT).show();
                 } else {
                     edit.setText("");
-//                    db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//                        @Override
-//                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                            if (documentSnapshot.get("pic") != null) {
-//                                Log.d("ChatRoom>>>", "pic have");
-//
-//                            } else {
-//                                Log.d("ChatRoom>>>", "pic null");
-//                            }
-//                        }
-//                    }).addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//
-//                        }
-//                    });
                     reference.getRef().child("adressRoom").child(getMyAdress()).child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                         @Override
                         public void onSuccess(DataSnapshot dataSnapshot) {
@@ -237,6 +234,8 @@ public class ChatRoom extends AppCompatActivity {
         callbtn = findViewById(R.id.chat_room_callbtn);
         title = findViewById(R.id.chat_room_title_user);
         progressbar.setVisibility(View.GONE);
+
+        setOnAddbtn();
     }
 
     @Override
@@ -269,6 +268,7 @@ public class ChatRoom extends AppCompatActivity {
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                okbtn.setEnabled(false);
                 progressbar.setVisibility(View.VISIBLE);
                 isClickBtn = true;
                 deleteMydb();
@@ -307,11 +307,43 @@ public class ChatRoom extends AppCompatActivity {
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isClickBtn) {
-                    progressbar.setVisibility(View.VISIBLE);
-                    deleteMydbA();
-                    databaseHandler.deleteWhere();
-                }
+                okbtn.setEnabled(false);
+                progressbar.setVisibility(View.VISIBLE);
+                deleteMydbA();
+                databaseHandler.deleteWhere();
+            }
+        });
+    }
+
+    private void dialogImage(String picUri) {
+        LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout layout = (LinearLayout) vi.inflate(R.layout.send_iamge_dialog, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(ChatRoom.this);
+        builder.setView(layout);
+        alertDialogC = builder.create();
+
+        if (!ChatRoom.this.isFinishing()) {
+            alertDialogC.show();
+            //set size
+            WindowManager.LayoutParams layoutParams = alertDialogC.getWindow().getAttributes();
+            layoutParams.copyFrom(alertDialogC.getWindow().getAttributes());
+//            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+//            layoutParams.dimAmount = 0.7f;
+
+            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            alertDialogC.getWindow().setAttributes(layoutParams);
+        }
+
+        ImageView imageView = layout.findViewById(R.id.dialog_img_set);
+        Button okbtn = layout.findViewById(R.id.send_image_okbtn);
+
+        Glide.with(ChatRoom.this).load(picUri).override(100, 100).centerCrop().into(imageView);
+        okbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialogC.dismiss();
+                sendMessegePic(picUri);
             }
         });
     }
@@ -342,15 +374,18 @@ public class ChatRoom extends AppCompatActivity {
                             String s = Integer.toString(i);
                             Log.d("ChatRoom>>>", "count " + s);
                             if (i == 1) {
-
-                                dialogA();
+                                if (!isClickBtn) {
+                                    dialogA();
+                                }
                             }
                         } else {
                             int i = (int) snapshot.getChildrenCount();
                             String s = Integer.toString(i);
                             Log.d("ChatRoom>>>", "count " + s);
                             if (i == 2) {
-                                dialogA();
+                                if (!isClickBtn) {
+                                    dialogA();
+                                }
                             }
                         }
 
@@ -440,6 +475,7 @@ public class ChatRoom extends AppCompatActivity {
     private void setdb() {
         db = FirebaseFirestore.getInstance();
         reference = FirebaseDatabase.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
 
         databaseHandler.setDB(ChatRoom.this);
@@ -452,6 +488,7 @@ public class ChatRoom extends AppCompatActivity {
         Cursor cursor = sqLiteDatabase.rawQuery("select adressField from adress where _rowid_ = 1", null);
         cursor.moveToFirst();
         String where = cursor.getString(0);
+        cursor.close();
         return where;
     }
 
@@ -476,7 +513,114 @@ public class ChatRoom extends AppCompatActivity {
     }
 
     private void setOnClickCallbtn() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 2);
+    }
 
+    private void setOnAddbtn() {
+        addbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, 2);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 2 && resultCode == RESULT_OK && data != null) {
+            imageUri = data.getData();
+            Log.d("ChatRoom>>>", "imageUri: " + imageUri);
+            uploadPic();
+        }
+    }
+
+    private void uploadPic() {
+        if (imageUri != null) {
+
+            String s = imageUri.toString();
+            String fileName = s.replace("/", "");
+
+            final ProgressDialog pd = new ProgressDialog(ChatRoom.this);
+            pd.setTitle("이미지 전송 중...");
+            pd.show();
+
+            StorageReference riverRef = storageReference.child(myUid + "/" + fileName);
+            riverRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                @Override
+                public void onSuccess(ListResult listResult) {
+                    int i = listResult.getItems().size() + 1;
+                    String count = Integer.toString(i);
+                    Log.d("ChatRoom>>>", "image count: " + Integer.toString(i));
+                    riverRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            storageReference.child(myUid + "/" + fileName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    picUri = uri.toString();
+                                    Log.d("ChatRoom>>>", "onSuccess: " + uri.toString());
+                                    dialogImage(picUri);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d("ChatRoom>>>", "onFailure: " + e.toString());
+                                }
+                            });
+                            pd.dismiss();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            pd.dismiss();
+                            Toast.makeText(ChatRoom.this, "업로드실패", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                            double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                            pd.setMessage("Pro: " + (int) progressPercent + "%");
+                        }
+                    });
+                }
+            });
+
+        }
+    }
+
+    private void sendMessegePic(String uri) {
+        Log.d("ChatRoom>>>", "time: " + getTime());
+        edit.setText("");
+        reference.getRef().child("adressRoom").child(getMyAdress()).child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                String myName = dataSnapshot.child("name").getValue().toString();
+                if (dataSnapshot.child("pic").getValue() != null) {
+                    Log.d("ChatRoom>>>", "pic have");
+                    String myPic = dataSnapshot.child("pic").getValue().toString();
+                    sendMessegeMap(uri, myName, myPic);
+                } else {
+                    Log.d("ChatRoom>>>", "pic null");
+                    if (dataSnapshot.child("sex").getValue().toString().equals("남자")) {
+                        sendMessegeMap(uri, myName, nullPic);
+                    } else {
+                        sendMessegeMap(uri, myName, nullPicF);
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
     }
 
     private String getDate() {

@@ -82,6 +82,7 @@ public class AdressRoom extends AppCompatActivity {
     private SQLiteDatabase sqLiteDatabase;
 
     String name, sex, age, pic;
+    String uid;
 
     private GpsTracker gpsTracker;
 
@@ -101,13 +102,18 @@ public class AdressRoom extends AppCompatActivity {
     String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
 
+    boolean isSetList;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.adress_room);
 
+        isSetList = false;
+
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+        uid = mAuth.getUid();
 
         databaseHandler.setDB(AdressRoom.this);
         databaseHandler = new DatabaseHandler(AdressRoom.this);
@@ -151,7 +157,6 @@ public class AdressRoom extends AppCompatActivity {
         bottomAdapter = new BottomSheetAdapter(bottomList, AdressRoom.this);
         recyclerViewBottom.setAdapter(bottomAdapter);
 
-        String uid = mAuth.getUid();
         database = FirebaseDatabase.getInstance();
         whoRef = database.getReference("chatting").child(uid);
 
@@ -239,22 +244,19 @@ public class AdressRoom extends AppCompatActivity {
 
 //        String adress = getIntent().getStringExtra("adress");
         String adress = getAdress();
-        String uid = mAuth.getUid();
 
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(AdressRoom.this);
         recyclerView.setLayoutManager(layoutManager);
         arrayList = new ArrayList<>();
 
-        Intent intent = getIntent();
         adapter = new AdressRoomAdapter(arrayList, AdressRoom.this);
         recyclerView.setAdapter(adapter);
 
         database = FirebaseDatabase.getInstance();
-        reference = database.getReference("adressRoom").child(adress);
-        myReferance = database.getReference("adressRoom").child(adress).child(uid);
+        reference = FirebaseDatabase.getInstance().getReference();
 
-        reference.addChildEventListener(new ChildEventListener() {
+        reference.getRef().child("adressRoom").child(adress).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {//db추가시
                 Log.d("AdressRoom>>>", "onChildAdded");
@@ -266,12 +268,16 @@ public class AdressRoom extends AppCompatActivity {
             }
 
             @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {//db변경시
+                AdressRoomItem adressRoomItem = snapshot.getValue(AdressRoomItem.class);
+                String key = snapshot.getKey();
+                int index = keyList.indexOf(key);
+                arrayList.set(index, adressRoomItem);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {//db제거시
                 String key = snapshot.getKey();
                 int index = keyList.indexOf(key);
                 Log.d("AdressRoom>>>", Integer.toString(index));
@@ -291,7 +297,7 @@ public class AdressRoom extends AppCompatActivity {
             }
 
         });
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {//최초 list 불러오기
+        reference.getRef().child("adressRoom").child(adress).addListenerForSingleValueEvent(new ValueEventListener() {//최초 list 불러오기
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -316,7 +322,7 @@ public class AdressRoom extends AppCompatActivity {
                 Log.e("AdressRoom>>>", String.valueOf(error.toException()));
             }
         });
-        myReferance.addValueEventListener(new ValueEventListener() {//db변경시
+        reference.getRef().child("adressRoom").child(adress).child(uid).addValueEventListener(new ValueEventListener() {//db변경시
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Long l = dataSnapshot.child("ischat").getValue(Long.class);
@@ -324,10 +330,10 @@ public class AdressRoom extends AppCompatActivity {
                     int i = l.intValue();
                     if (i == 2) {
                         progressBar.setVisibility(View.VISIBLE);
-                        reference.getRef().child(uid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                        reference.getRef().child("adressRoom").child(adress).child(uid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                             @Override
                             public void onSuccess(DataSnapshot dataSnapshot) {
-                                String where = dataSnapshot.child("where").getValue().toString();
+                                String where = dataSnapshot.child("where").getValue(String.class);//error
                                 databaseHandler.insertWhere(where);
 
                                 deleteBottomList();
@@ -335,10 +341,10 @@ public class AdressRoom extends AppCompatActivity {
                                 upanddown.setBackgroundResource(R.drawable.bottom_up);
                                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
-                                progressBar.setVisibility(View.GONE);
                                 Intent intent1 = new Intent(AdressRoom.this, ChatRoom.class);
                                 Log.d("AdressRoom>>>", "start activity");
                                 startActivity(intent1);
+                                progressBar.setVisibility(View.GONE);
                             }
                         });
 
@@ -359,7 +365,6 @@ public class AdressRoom extends AppCompatActivity {
     }
 
     private void getUser() {//get my data
-        String uid = mAuth.getUid();
         DocumentReference documentReference = db.collection("users")
                 .document(uid);
         documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -413,7 +418,6 @@ public class AdressRoom extends AppCompatActivity {
     private void goToMain() {
         Log.d("AdressRoom>>>", "goToMain");
         String s = getAdress();
-        String uid = mAuth.getUid();
         deleteBottomList();
         reference = FirebaseDatabase.getInstance().getReference();
         reference.getRef().child("adressRoom").child(s).child(uid).removeValue();
@@ -438,11 +442,10 @@ public class AdressRoom extends AppCompatActivity {
     }
 
     private void deleteBottomList() {
-        String myUid = mAuth.getUid();
         whoRef = FirebaseDatabase.getInstance().getReference();
         for (int i = 0; i < userList.size(); i++) {
             String s = userList.get(i);
-            whoRef.getRef().child("chatting").child(s).child(myUid).removeValue();
+            whoRef.getRef().child("chatting").child(s).child(uid).removeValue();
         }
     }
 
@@ -450,6 +453,7 @@ public class AdressRoom extends AppCompatActivity {
         Cursor cursor = sqLiteDatabase.rawQuery("select * from adress where _rowid_ = 1", null);
         cursor.moveToFirst();
         String adress = cursor.getString(0);
+        cursor.close();
         return adress;
     }
 

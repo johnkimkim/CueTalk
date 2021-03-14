@@ -128,7 +128,13 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
         myUid = mAuth.getUid();
         if (arrayList.get(position).getUid().equals(myUid)) {
             holder.btn.setEnabled(false);
-            holder.btn.setBackgroundColor(Color.GRAY);
+            holder.btn.setText("나");
+        } else if (arrayList.get(position).isIschat() == 2) {
+            holder.btn.setEnabled(false);
+            holder.btn.setText("대화중");
+        } else {
+            holder.btn.setEnabled(true);
+            holder.btn.setText("대화신청");
         }
 
         holder.btn.setOnClickListener(new View.OnClickListener() {

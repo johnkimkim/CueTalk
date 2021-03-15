@@ -118,6 +118,7 @@ public class AdressRoom extends AppCompatActivity {
         databaseHandler.setDB(AdressRoom.this);
         databaseHandler = new DatabaseHandler(AdressRoom.this);
         sqLiteDatabase = databaseHandler.getWritableDatabase();
+        databaseHandler.deleteWhere();
 
 //        getGps();
 
@@ -333,8 +334,9 @@ public class AdressRoom extends AppCompatActivity {
                         reference.getRef().child("adressRoom").child(adress).child(uid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                             @Override
                             public void onSuccess(DataSnapshot dataSnapshot) {
-                                String where = dataSnapshot.child("where").getValue(String.class);//error
-                                databaseHandler.insertWhere(where);
+                                String where = dataSnapshot.child("where").getValue(String.class);//error?
+
+                                databaseHandler.insertWhere(where);//don't need
 
                                 deleteBottomList();
 
@@ -342,6 +344,7 @@ public class AdressRoom extends AppCompatActivity {
                                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
                                 Intent intent1 = new Intent(AdressRoom.this, ChatRoom.class);
+                                intent1.putExtra("intentwhere", where);
                                 Log.d("AdressRoom>>>", "start activity");
                                 startActivity(intent1);
                                 progressBar.setVisibility(View.GONE);

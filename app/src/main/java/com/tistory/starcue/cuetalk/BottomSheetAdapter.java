@@ -135,14 +135,17 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
 
 //                databaseHandler.insertWhere(myUid);
 
-                creatChatting(myUid, myUid, userUid, userPic, userName, userSex, userAge, userLatitude, userLongitude);
-
                 Map<String, Object> updateUser = new HashMap<>();
                 updateUser.put("/adressRoom/" + adress + "/" + myUid + "/" + "/ischat/", 2);
                 updateUser.put("/adressRoom/" + adress + "/" + myUid + "/" + "/where/", myUid);
                 updateUser.put("/adressRoom/" + adress + "/" + userUid + "/" + "/ischat/", 2);
                 updateUser.put("/adressRoom/" + adress + "/" + userUid + "/" + "/where/", myUid);
-                reference.updateChildren(updateUser);
+                reference.updateChildren(updateUser).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        creatChatting(myUid, myUid, userUid, userPic, userName, userSex, userAge, userLatitude, userLongitude);
+                    }
+                });
 
             }
         });

@@ -86,7 +86,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             Glide.with(((LeftImageViewholder) holder).image)
                     .load(arrayList.get(position).getUri())
                     .override(150, 150)
-                    .circleCrop()
+                    .centerCrop()
                     .into(((LeftImageViewholder) holder).image);
         } else if (holder instanceof RightViewholder) {
             ((RightViewholder) holder).time1.setText(arrayList.get(position).getTime());//error
@@ -99,7 +99,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             Glide.with(((LeftViewholder) holder).pic)
                     .load(arrayList.get(position).getPic())
                     .override(150, 150)
-                    .circleCrop()
+                    .centerCrop()
                     .into(((LeftViewholder) holder).pic);
         } else if (holder instanceof CenterViewholder) {
             ((CenterViewholder) holder).textView.setText("입장완료");

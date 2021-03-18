@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 public class Fragment4 extends Fragment {
 
+    private RecyclerView recyclerView;
 
     public Fragment4() {
         // Required empty public constructor
@@ -24,9 +26,13 @@ public class Fragment4 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment4, container, false);
 
-
+        setinit(rootView);
 
         return rootView;
+    }
+
+    private void setinit(ViewGroup v) {
+        recyclerView = v.findViewById(R.id.fragment4_recyclerview);
     }
 
 }

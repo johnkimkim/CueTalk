@@ -34,6 +34,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.zip.Inflater;
 
@@ -115,20 +116,26 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
         double myLatitude = gpsTracker.getLatitude();
         double myLongitude = gpsTracker.getLongitude();
 
-        int i = (int) Math.floor(getDistance(myLatitude, myLongitude, latitude, longitude));
-//        String howkm = Double.toString(Math.floor(getDistance(myLatitude, myLongitude, latitude, longitude)));
-        String howkm = Integer.toString(i);
 
-        holder.km.setText(howkm + "km");
-
-//        holder.km.setText(howkm);
-//        Log.d("AdressRoomAdapter>>>", howkm);//set km
+        double ddd = getDistance(myLatitude, myLongitude, latitude, longitude);
+        if (arrayList.get(position).getUid().equals(myUid)) {
+            holder.km.setText("0m");
+        } else if (!arrayList.get(position).getUid().equals(myUid) && ddd < 50) {
+            holder.km.setText("-50m");
+        } else if (!arrayList.get(position).getUid().equals(myUid) && ddd < 1000) {
+            int i = (int) Math.floor(ddd);
+            holder.km.setText(Integer.toString(i) + "m");
+        } else if (!arrayList.get(position).getUid().equals(myUid) && ddd >= 1000) {
+            int i = (int) Math.floor(ddd) / 1000;
+            holder.km.setText(Integer.toString(i) + "km");
+        }
 
         mAuth = FirebaseAuth.getInstance();
         myUid = mAuth.getUid();
         if (arrayList.get(position).getUid().equals(myUid)) {
             holder.btn.setEnabled(false);
             holder.btn.setText("나");
+            holder.sendmsgbtn.setEnabled(false);
         } else if (arrayList.get(position).isIschat() == 2) {
             holder.btn.setEnabled(false);
             holder.btn.setText("대화중");
@@ -172,6 +179,14 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
 
                     }
                 });
+            }
+        });
+
+        holder.sendmsgbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //쪽지보내기
+
             }
         });
 
@@ -219,7 +234,7 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
         TextView sex;
         TextView age;
         TextView km;
-        Button btn;
+        Button btn, sendmsgbtn;
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
             this.imageView = itemView.findViewById(R.id.adress_room_layout_pic);
@@ -228,6 +243,7 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
             this.age = itemView.findViewById(R.id.adress_room_layout_age);
             this.km = itemView.findViewById(R.id.adress_room_layout_km);
             this.btn = itemView.findViewById(R.id.adress_room_layout_chatbtn);
+            this.sendmsgbtn = itemView.findViewById(R.id.adress_room_layout_send_messege_btn);
         }
     }
 }

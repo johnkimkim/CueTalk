@@ -47,6 +47,8 @@ public class Fragment5 extends Fragment {
     StorageReference storageReference;
     String myUid;
 
+    String myUri;
+
     String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
 
@@ -64,6 +66,7 @@ public class Fragment5 extends Fragment {
         reset = rootView.findViewById(R.id.resetprofile);
         logout = rootView.findViewById(R.id.logout_btn);
         pic = rootView.findViewById(R.id.fragment5image);
+        setOnClickPic();
         deleteUser = rootView.findViewById(R.id.fragment5_delete_user);
 
         setFirebse();
@@ -75,6 +78,15 @@ public class Fragment5 extends Fragment {
         deleteUser();
 
         return rootView;
+    }
+
+    private void setOnClickPic() {
+        pic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SeePicDialog.seePicDialog(getActivity(), myUri);
+            }
+        });
     }
 
     private void setFirebse() {
@@ -156,6 +168,7 @@ public class Fragment5 extends Fragment {
         storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
+                myUri = uri.toString();
                 Glide.with(getActivity())
                         .load(uri.toString())
                         .override(600, 600)
@@ -178,6 +191,7 @@ public class Fragment5 extends Fragment {
                                     .error(R.drawable.ic_launcher_foreground)
                                     .circleCrop()
                                     .into(pic);
+                            pic.setEnabled(false);
                         } else {
                             Glide.with(getActivity())
                                     .load(nullPicF)
@@ -186,6 +200,7 @@ public class Fragment5 extends Fragment {
                                     .error(R.drawable.ic_launcher_foreground)
                                     .circleCrop()
                                     .into(pic);
+                            pic.setEnabled(false);
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {

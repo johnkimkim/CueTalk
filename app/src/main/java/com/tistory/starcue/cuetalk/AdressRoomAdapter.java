@@ -1,16 +1,26 @@
 package com.tistory.starcue.cuetalk;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
+import android.text.Layout;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +70,7 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
     String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
 
+    private static AlertDialog alertDialog;
 
     AdressRoomAdapter(ArrayList<AdressRoomItem> arrayList, Context context) {
         this.arrayList = arrayList;
@@ -96,12 +107,14 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
                         .circleCrop()
                         .into(holder.imageView);
             }
+            holder.imageView.setEnabled(false);
         } else {
             Glide.with(holder.imageView)
                     .load(arrayList.get(position).getPic())
                     .override(150, 150)
                     .circleCrop()
                     .into(holder.imageView);
+            holder.imageView.setEnabled(true);
         }
         holder.name.setText(arrayList.get(position).getName());
         holder.sex.setText(arrayList.get(position).getSex());
@@ -190,6 +203,14 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
             }
         });
 
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String uri = arrayList.get(position).getPic();
+                SeePicDialog.seePicDialog(context, uri);
+            }
+        });
+
     }
 
     private void updateAdressRoom(String useruid, String picUri, String uid, String name, String sex, String age, String latitude, String longitude, int ischat) {
@@ -206,7 +227,7 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
         reference.updateChildren(updateUser);
     }
 
-    public double getDistance(double lat1 , double lng1 , double lat2 , double lng2 ){
+    public double getDistance(double lat1, double lng1, double lat2, double lng2) {
         double distance;
 
         Location locationA = new Location("point A");
@@ -228,13 +249,14 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
         return (arrayList != null ? arrayList.size() : 0);
     }
 
-    public class CustomViewHolder extends RecyclerView.ViewHolder{
+    public class CustomViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView name;
         TextView sex;
         TextView age;
         TextView km;
         Button btn, sendmsgbtn;
+
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
             this.imageView = itemView.findViewById(R.id.adress_room_layout_pic);
@@ -246,4 +268,5 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
             this.sendmsgbtn = itemView.findViewById(R.id.adress_room_layout_send_messege_btn);
         }
     }
+
 }

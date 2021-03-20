@@ -88,12 +88,14 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
                         .circleCrop()
                         .into(holder.imageView);
             }
+            holder.imageView.setEnabled(false);
         } else {
             Glide.with(holder.imageView)
                     .load(bottomList.get(position).getPic())
                     .override(150, 150)
                     .circleCrop()
                     .into(holder.imageView);
+            holder.imageView.setEnabled(true);
         }
 
         holder.name.setText(bottomList.get(position).getName());
@@ -159,6 +161,14 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
 
                 reference = FirebaseDatabase.getInstance().getReference();
                 reference.getRef().child("chatting").child(myUid).child(userUid).removeValue();
+            }
+        });
+
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String myUri = bottomList.get(position).getPic();
+                SeePicDialog.seePicDialog(context, myUri);
             }
         });
     }

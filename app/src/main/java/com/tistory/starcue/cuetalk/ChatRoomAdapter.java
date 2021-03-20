@@ -30,6 +30,9 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     List<String> mytime = new ArrayList<>();
     List<String> yourtime = new ArrayList<>();
 
+    String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
+    String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
+
 
     private Context context;
 
@@ -78,16 +81,33 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (holder instanceof LeftImageViewholder) {
             ((LeftImageViewholder) holder).name.setText(arrayList.get(position).getName());
             ((LeftImageViewholder) holder).time.setText(arrayList.get(position).getTime());
-            Glide.with(((LeftImageViewholder) holder).pic)
+            Glide.with(((LeftImageViewholder) holder).picli)
                     .load(arrayList.get(position).getPic())
                     .override(150, 150)
-                    .centerCrop()
-                    .into(((LeftImageViewholder) holder).pic);
+                    .circleCrop()
+                    .into(((LeftImageViewholder) holder).picli);
             Glide.with(((LeftImageViewholder) holder).image)
                     .load(arrayList.get(position).getUri())
                     .override(150, 150)
                     .centerCrop()
                     .into(((LeftImageViewholder) holder).image);
+            ((LeftImageViewholder) holder).picli.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String uri = arrayList.get(position).getPic();
+                    SeePicDialog.seePicDialog(context, uri);
+                }
+            });
+            ((LeftImageViewholder) holder).image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String uri = arrayList.get(position).getUri();
+                    SeePicDialog.seePicDialog(context, uri);
+                }
+            });
+            if (arrayList.get(position).getPic().equals(nullPic) || arrayList.get(position).getPic().equals(nullPicF)) {
+                ((LeftImageViewholder) holder).picli.setEnabled(false);
+            }
         } else if (holder instanceof RightViewholder) {
             ((RightViewholder) holder).time1.setText(arrayList.get(position).getTime());//error
             ((RightViewholder) holder).messege1.setText(arrayList.get(position).getMessege());
@@ -96,14 +116,25 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((LeftViewholder) holder).name.setText(arrayList.get(position).getName());
             ((LeftViewholder) holder).messege.setText(arrayList.get(position).getMessege());
             ((LeftViewholder) holder).time.setText(arrayList.get(position).getTime());
-            Glide.with(((LeftViewholder) holder).pic)
+            Glide.with(((LeftViewholder) holder).picl)
                     .load(arrayList.get(position).getPic())
                     .override(150, 150)
-                    .centerCrop()
-                    .into(((LeftViewholder) holder).pic);
+                    .circleCrop()
+                    .into(((LeftViewholder) holder).picl);
+            ((LeftViewholder) holder).picl.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String uri = arrayList.get(position).getPic();
+                    SeePicDialog.seePicDialog(context, uri);
+                }
+            });
+            if (arrayList.get(position).getPic().equals(nullPic) || arrayList.get(position).getPic().equals(nullPicF)) {
+                ((LeftViewholder) holder).picl.setEnabled(false);
+            }
         } else if (holder instanceof CenterViewholder) {
             ((CenterViewholder) holder).textView.setText("입장완료");
         }
+
 
     }
 
@@ -148,12 +179,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public class LeftViewholder extends RecyclerView.ViewHolder {
-        ImageView pic;
+        ImageView picl;
         TextView time, name, messege;
 
         public LeftViewholder(@NonNull View itemView) {
             super(itemView);
-            this.pic = itemView.findViewById(R.id.chat_room_layout_imageView1);
+            this.picl = itemView.findViewById(R.id.chat_room_layout_imageView1);
             this.name = itemView.findViewById(R.id.chat_room_layout_name1);
             this.time = itemView.findViewById(R.id.chat_room_layout_time1);
             this.messege = itemView.findViewById(R.id.chat_room_layout_messege1);
@@ -171,12 +202,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public class LeftImageViewholder extends RecyclerView.ViewHolder {
-        ImageView pic, image;
+        ImageView picli, image;
         TextView time, name;
 
         public LeftImageViewholder(@NonNull View itemView) {
             super(itemView);
-            this.pic = itemView.findViewById(R.id.chat_room_layout_imageView1_img);
+            this.picli = itemView.findViewById(R.id.chat_room_layout_imageView1_img);
             this.image = itemView.findViewById(R.id.chat_room_layout_messege1_img);
             this.name = itemView.findViewById(R.id.chat_room_layout_name1_img);
             this.time = itemView.findViewById(R.id.chat_room_layout_time1_img);

@@ -54,6 +54,8 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
     String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
 
+    String myUid;
+
     BottomSheetAdapter(ArrayList<AdressRoomItem> bottomList, Context context) {
         this.bottomList = bottomList;
         this.context = context;
@@ -73,6 +75,8 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
         databaseHandler.setDB(context);
         databaseHandler = new DatabaseHandler(context);
         sqLiteDatabase = databaseHandler.getWritableDatabase();
+        mAuth = FirebaseAuth.getInstance();
+        myUid = mAuth.getUid();
 
         if (bottomList.get(position).getPic() == null) {
             if (bottomList.get(position).getSex().equals("남자")) {
@@ -110,9 +114,18 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
         double myLatitude = gpsTracker.getLatitude();
         double myLongitude = gpsTracker.getLongitude();
 
-        int i = (int) Math.floor(getDistance(myLatitude, myLongitude, latitude, longitude));
-        String howkm = Integer.toString(i);
-        holder.km.setText(howkm + "km");
+        double ddd = getDistance(myLatitude, myLongitude, latitude, longitude);
+        if (bottomList.get(position).getUid().equals(myUid)) {
+            holder.km.setText("0m");
+        } else if (!bottomList.get(position).getUid().equals(myUid) && ddd < 50) {
+            holder.km.setText("-50m");
+        } else if (!bottomList.get(position).getUid().equals(myUid) && ddd < 1000) {
+            int i = (int) Math.floor(ddd);
+            holder.km.setText(Integer.toString(i) + "m");
+        } else if (!bottomList.get(position).getUid().equals(myUid) && ddd >= 1000) {
+            int i = (int) Math.floor(ddd) / 1000;
+            holder.km.setText(Integer.toString(i) + "km");
+        }
 
 //        database = FirebaseDatabase.getInstance();
 //        reference = database.getReference("chatting").child(adress);
@@ -124,8 +137,7 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
                 AdressRoom.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
                 String adress = getAdress();
-                mAuth = FirebaseAuth.getInstance();
-                String myUid = mAuth.getUid();
+                myUid = mAuth.getUid();
                 String userUid = bottomList.get(position).getUid();
                 String userPic = bottomList.get(position).getPic();
                 String userName = bottomList.get(position).getName();

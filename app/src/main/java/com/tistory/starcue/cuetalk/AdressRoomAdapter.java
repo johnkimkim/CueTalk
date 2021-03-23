@@ -67,10 +67,10 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
     String name, sex, age, pic;
     String myUid;
 
+    private AlertDialog messegeDialog;
+
     String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
-
-    private static AlertDialog alertDialog;
 
     AdressRoomAdapter(ArrayList<AdressRoomItem> arrayList, Context context) {
         this.arrayList = arrayList;
@@ -199,7 +199,8 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
             @Override
             public void onClick(View view) {
                 //쪽지보내기
-
+                SendMessege sendMessege = new SendMessege(context);
+                sendMessege.setSendMessegeDialog(context);
             }
         });
 
@@ -226,6 +227,8 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
         updateUser.put("/chatting/" + useruid + "/" + uid + "/" + "/ischat/", ischat);
         reference.updateChildren(updateUser);
     }
+
+
 
     public double getDistance(double lat1, double lng1, double lat2, double lng2) {
         double distance;
@@ -268,5 +271,7 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
             this.sendmsgbtn = itemView.findViewById(R.id.adress_room_layout_send_messege_btn);
         }
     }
+
+
 
 }

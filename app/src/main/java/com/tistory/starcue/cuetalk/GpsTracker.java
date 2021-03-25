@@ -15,6 +15,13 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class GpsTracker extends Service implements LocationListener {
 
     private Context mContext;
@@ -135,5 +142,13 @@ public class GpsTracker extends Service implements LocationListener {
         if (locationManager != null) {
             locationManager.removeUpdates(GpsTracker.this);
         }
+    }
+
+    public void updateFirestoreGps(FirebaseFirestore db, DatabaseReference reference, String myUid) {
+        DocumentReference documentReference = db.collection("users").document(myUid);
+        Map<String, Object> updateGps = new HashMap<>();
+        updateGps.put("latitude", getLatitude());
+        updateGps.put("longitude", getLongitude());
+        documentReference.update(updateGps);
     }
 }

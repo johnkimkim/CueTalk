@@ -379,7 +379,6 @@ public class AdressRoom extends AppCompatActivity {
                 longitude = gpsTracker.getLongitude();//경도
                 String latitudeS = String.valueOf(latitude);
                 String longitudeS = String.valueOf(longitude);
-                Toast.makeText(AdressRoom.this, "현재위치 \n위도 " + latitude + "\n경도 " + longitude, Toast.LENGTH_LONG).show();
 
                 pic = documentSnapshot.getString("pic");
                 name = documentSnapshot.getString("name");

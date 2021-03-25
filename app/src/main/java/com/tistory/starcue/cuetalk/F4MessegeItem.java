@@ -2,14 +2,38 @@ package com.tistory.starcue.cuetalk;
 
 public class F4MessegeItem {
 
-    String uri, name, sex, age, messege, time;
+    String uid, pic, name, sex, age, latitude, longitude;
 
-    public String getUri() {
-        return uri;
+    public String getUid() {
+        return uid;
     }
 
-    public void setUri(String uri) {
-        this.uri = uri;
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getPic() {
+        return pic;
+    }
+
+    public void setPic(String pic) {
+        this.pic = pic;
     }
 
     public String getName() {
@@ -34,21 +58,5 @@ public class F4MessegeItem {
 
     public void setAge(String age) {
         this.age = age;
-    }
-
-    public String getMessege() {
-        return messege;
-    }
-
-    public void setMessege(String messege) {
-        this.messege = messege;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
     }
 }

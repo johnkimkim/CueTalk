@@ -22,6 +22,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -44,7 +46,7 @@ public class SendMessege {
         this.context = context;
     }
 
-    public void setSendMessegeDialog(Context context) {
+    public void setSendMessegeDialog(Context context, String userUid) {
         reference = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -79,6 +81,8 @@ public class SendMessege {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
 
+                        String edit = editText.getText().toString();
+
                         gpsTracker = new GpsTracker(context);
                         Double latitude = gpsTracker.getLatitude();//위도
                         Double longitude = gpsTracker.getLongitude();//경도
@@ -86,11 +90,19 @@ public class SendMessege {
                         String longitudeS = String.valueOf(longitude);
 
                         String pic, name, sex, age;
+                        pic = documentSnapshot.getString("pic");
+                        name = documentSnapshot.getString("name");
+                        sex = documentSnapshot.getString("sex");
+                        age = documentSnapshot.getString("age");
+                        firstSendMessege(edit, myUid, userUid, pic, name, sex, age, latitudeS, longitudeS);
+
+                        alertDialog.dismiss();
+                        Toast.makeText(context, "메시지 전송 성공", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-
+                        Toast.makeText(context, "네트워크 오류로 인해 메시지 전송에 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -104,7 +116,7 @@ public class SendMessege {
         });
     }
 
-    public void firstSendMessege(String messege, String myUid, String userUid, String uri, String name, String sex, String age, String latitude, String longitude) {
+    public void firstSendMessege(String messege, String myUid, String userUid, String pic, String name, String sex, String age, String latitude, String longitude) {
 
         reference.child("messege").child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
@@ -112,27 +124,33 @@ public class SendMessege {
                 int count = (int) dataSnapshot.getChildrenCount() + 1;
                 String countString = Integer.toString(count);
 
-                String uuid = UUID.randomUUID().toString();
-
                 Map<String, Object> messegeMap = new HashMap<>();
 
-                messegeMap.put("/messege/" + myUid + "/" + "pic/", uri);
-                messegeMap.put("/messege/" + myUid + "/" + "name/", name);
-                messegeMap.put("/messege/" + myUid + "/" + "sex/", sex);
-                messegeMap.put("/messege/" + myUid + "/" + "age/", age);
-                messegeMap.put("/messege/" + myUid + "/" + "latitude/", latitude);
-                messegeMap.put("/messege/" + myUid + "/" + "longitude/", longitude);
+                messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/uid/", myUid);
+                messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/name/", name);
+                messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/sex/", sex);
+                messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/age/", age);
+                messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/latitude/", latitude);
+                messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/longitude/", longitude);
+                if (pic != null) {
+                    messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/pic/", pic);
+                    messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "1" + "/pic/", pic);
+                }
 
-                messegeMap.put("/messege/" + userUid + "/" + "pic/", uri);
-                messegeMap.put("/messege/" + userUid + "/" + "name/", name);
-                messegeMap.put("/messege/" + userUid + "/" + "sex/", sex);
-                messegeMap.put("/messege/" + userUid + "/" + "age/", age);
-                messegeMap.put("/messege/" + userUid + "/" + "latitude/", latitude);
-                messegeMap.put("/messege/" + userUid + "/" + "longitude/", longitude);
+                messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "1" + "/messege/", messege);
+                messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "1" + "/name/", name);
+                messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "1" + "/sex/", sex);
+                messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "1" + "/age/", age);
+                messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "1" + "/time/", getTime());
+
+                messegeMap.put("/messege/" + myUid+userUid + "/lastmsg/" + "lastmessege/", messege);
+                messegeMap.put("/messege/" + myUid+userUid + "/lastmsg/" + "lasttime/", getTime());
+
+
                 reference.updateChildren(messegeMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-
+                        updateUserInRoom(userUid, myUid+userUid);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -150,8 +168,84 @@ public class SendMessege {
 
     }
 
-    public void sendMessege() {
-//        reference.getRef().child("messege").child();
+    public void updateUserInRoom(String userUid, String key) {
+        DocumentReference documentReference = db.collection("users").document(userUid);
+        documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                String name = documentSnapshot.getString("name");
+                String sex = documentSnapshot.getString("sex");
+                String age = documentSnapshot.getString("age");
+                String pic = documentSnapshot.getString("pic");
+                Double latitude = (Double) documentSnapshot.get("latitude");
+                Double longitude = (Double) documentSnapshot.get("longitude");
+                String latitudeS = String.valueOf(latitude);
+                String longitudeS = String.valueOf(longitude);
+
+                Map<String, Object> userUpdate = new HashMap<>();
+                userUpdate.put("/messege/" + key + "/" + userUid + "/uid/", userUid);
+                userUpdate.put("/messege/" + key + "/" + userUid + "/name/", name);
+                userUpdate.put("/messege/" + key + "/" + userUid + "/sex/", sex);
+                userUpdate.put("/messege/" + key + "/" + userUid + "/age/", age);
+                if (pic != null) {
+                    userUpdate.put("/messege/" + key + "/" + userUid + "/pic/", pic);
+                }
+                userUpdate.put("/messege/" + key + "/" + userUid + "/latitude/", latitudeS);
+                userUpdate.put("/messege/" + key + "/" + userUid + "/longitude/", longitudeS);
+                reference.updateChildren(userUpdate);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
+    }
+
+    public void sendMessege(DatabaseReference reference, String key, String myUid, String pic, String name, String sex, String age, String latitude, String longitude) {
+        Map<String, Object> messegeMap = new HashMap<>();
+
+        messegeMap.put("/messege/" + key + "/" + myUid + "/uid/", myUid);
+        messegeMap.put("/messege/" + key + "/" + myUid + "/name/", name);
+        messegeMap.put("/messege/" + key + "/" + myUid + "/sex/", sex);
+        messegeMap.put("/messege/" + key + "/" + myUid + "/age/", age);
+        messegeMap.put("/messege/" + key + "/" + myUid + "/latitude/", latitude);
+        messegeMap.put("/messege/" + key + "/" + myUid + "/longitude/", longitude);
+        if (pic != null) {
+            messegeMap.put("/messege/" + key + "/" + myUid + "/pic/", pic);
+        }
+        reference.updateChildren(messegeMap);
+//        reference.getRef().child("messege").child(key).child("msg").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//            @Override
+//            public void onSuccess(DataSnapshot dataSnapshot) {
+//                int count = (int) dataSnapshot.getChildrenCount() + 1;
+//
+//                Map<String, Object> messegeMap = new HashMap<>();
+//
+//                messegeMap.put("/messege/" + key + "/" + myUid + "/name/", name);
+//                messegeMap.put("/messege/" + key + "/" + myUid + "/sex/", sex);
+//                messegeMap.put("/messege/" + key + "/" + myUid + "/age/", age);
+//                messegeMap.put("/messege/" + key + "/" + myUid + "/latitude/", latitude);
+//                messegeMap.put("/messege/" + key + "/" + myUid + "/longitude/", longitude);
+//                if (uri != null) {
+//                    messegeMap.put("/messege/" + key + "/" + myUid + "/uri/", uri);
+//                }
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//            }
+//        });
+    }
+
+    private String getTime() {
+        long now = System.currentTimeMillis();
+        Date mDate = new Date(now);
+        SimpleDateFormat format = new SimpleDateFormat("hh:mm");
+        String date = format.format(mDate);
+        return date;
     }
 
 }

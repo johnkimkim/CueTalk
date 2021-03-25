@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
+import android.provider.ContactsContract;
 import android.text.Layout;
 import android.util.Log;
 import android.view.Display;
@@ -34,6 +35,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
@@ -199,8 +201,37 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
             @Override
             public void onClick(View view) {
                 //쪽지보내기
-                SendMessege sendMessege = new SendMessege(context);
-                sendMessege.setSendMessegeDialog(context);
+                reference = FirebaseDatabase.getInstance().getReference();
+                reference.getRef().child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        int i = (int) dataSnapshot.getChildrenCount();
+                        Log.d("AdressRoomAdapter>>>", "count: " + i);//messege 밑에 child 갯수
+
+                        Log.d("AdressRoomAdapter>>>", "position key: " + arrayList.get(position).getUid());
+                        String roomkey = arrayList.get(position).getUid() + myUid;
+                        String roomkey1 = myUid + arrayList.get(position).getUid();
+
+                        Log.d("AdressRoomAdpater>>>", "snapshot get key: " + dataSnapshot.getKey());
+
+                        if (i == 0) {
+                            Log.d("AdressRoomAdapter>>>", "count = 0");
+                            String userUid = arrayList.get(position).getUid();
+                            SendMessege sendMessege = new SendMessege(context);
+                            sendMessege.setSendMessegeDialog(context, userUid);
+                        } else {
+                            if (dataSnapshot.hasChild(roomkey) || dataSnapshot.hasChild(roomkey1)) {
+                                Toast.makeText(context, "이미 대화 중 입니다. 메시지함을 확인해주세요", Toast.LENGTH_SHORT).show();
+                            } else {
+                                String userUid = arrayList.get(position).getUid();
+                                SendMessege sendMessege = new SendMessege(context);
+                                sendMessege.setSendMessegeDialog(context, userUid);
+                            }
+                        }
+
+                    }
+                });
+
             }
         });
 

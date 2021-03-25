@@ -38,6 +38,7 @@
         <activity android:name=".AdressRoom" android:screenOrientation="portrait"/>
         <activity android:name=".Access" android:screenOrientation="portrait"/>
         <activity android:name=".ChatRoom" android:screenOrientation="portrait"/>
+        <activity android:name=".Fragment4ChatRoom" android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

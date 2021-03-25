@@ -30,6 +30,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    GpsTracker gpsTracker;
+
     SectionsPagerAdapter sectionsPagerAdapter;
     ViewPager viewPager;
 
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
     FirebaseFirestore db;
+    DatabaseReference reference;
 
     DatabaseHandler databaseHandler;
     private SQLiteDatabase sqLiteDatabase;
@@ -54,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         setViewPager();
         setinit();
 
+        updateGps();
     }
 
     //init
@@ -156,6 +160,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void updateGps() {
+        gpsTracker = new GpsTracker(MainActivity.this);
+        gpsTracker.updateFirestoreGps(db, reference, myUid);
+    }
+
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -171,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
+        reference = FirebaseDatabase.getInstance().getReference();
         myUid = mAuth.getUid();
 
         setNameSql();

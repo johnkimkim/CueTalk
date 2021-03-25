@@ -68,7 +68,7 @@ public class ChatRoom extends AppCompatActivity {
     String myUid;
 
     private RecyclerView recyclerView;
-    private Button addbtn, sendbtn, backbtn, callbtn;
+    private Button addbtn, sendbtn, backbtn, callbtn, sendMessegeBtn;
     private TextView title;
     private EditText edit;
     private ProgressBar progressbar;
@@ -244,8 +244,53 @@ public class ChatRoom extends AppCompatActivity {
         callbtn = findViewById(R.id.chat_room_callbtn);
         title = findViewById(R.id.chat_room_title_user);
         progressbar.setVisibility(View.GONE);
+        sendMessegeBtn = findViewById(R.id.chat_room_send_messege);
 
         setOnAddbtn();
+    }
+
+    private void sendMessegeBtnOnClick() {
+        sendMessegeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+
+                reference.getRef().child("inchat").child(where).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            if (!snapshot.getKey().equals(myUid) && !snapshot.getKey().equals("messege")) {
+
+                                String userUid = snapshot.getKey();
+
+                                reference.getRef().child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DataSnapshot dataSnapshot) {
+                                        int i = (int) dataSnapshot.getChildrenCount();
+                                        String roomkey = userUid + myUid;
+                                        String roomkey1 = myUid + userUid;
+
+                                        if (i == 0) {
+                                            SendMessege sendMessege = new SendMessege(ChatRoom.this);
+                                            sendMessege.setSendMessegeDialog(ChatRoom.this, userUid);
+                                        } else {
+                                            if (dataSnapshot.hasChild(roomkey) || dataSnapshot.hasChild(roomkey1)) {
+                                                Toast.makeText(ChatRoom.this, "이미 대화 중 입니다. 메시지함을 확인해주세요", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                SendMessege sendMessege = new SendMessege(ChatRoom.this);
+                                                sendMessege.setSendMessegeDialog(ChatRoom.this, userUid);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        }
+
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -504,6 +549,8 @@ public class ChatRoom extends AppCompatActivity {
 
 //        where = getMyWhere();
         where = getIntent().getStringExtra("intentwhere");
+
+        sendMessegeBtnOnClick();
 
     }
 

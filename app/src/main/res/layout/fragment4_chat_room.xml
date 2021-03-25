@@ -4,12 +4,12 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/chat_room_toolbar"
+        android:id="@+id/fragment4_chat_room_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize">
 
         <Button
-            android:id="@+id/chat_room_backbtn"
+            android:id="@+id/fragment4_chat_room_backbtn"
             android:layout_width="45dp"
             android:layout_height="35dp"
             android:layout_centerVertical="true"
@@ -17,7 +17,7 @@
             android:background="@drawable/backbtn"/>
 
         <TextView
-            android:id="@+id/chat_room_title_user"
+            android:id="@+id/fragment4_chat_room_title_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -26,15 +26,15 @@
             android:textStyle="bold"/>
 
         <Button
-            android:id="@+id/chat_room_send_messege"
+            android:id="@+id/fragment4_chat_room_send_messege"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/chat_room_callbtn"
+            android:layout_toLeftOf="@+id/fragment4_chat_room_callbtn"
             android:text="메시지"/>
 
         <Button
-            android:id="@+id/chat_room_callbtn"
+            android:id="@+id/fragment4_chat_room_callbtn"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_alignParentRight="true"
@@ -45,23 +45,23 @@
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chat_room_recyclerview"
-        android:layout_below="@+id/chat_room_toolbar"
+        android:id="@+id/fragment4_chat_room_recyclerview"
+        android:layout_below="@+id/fragment4_chat_room_toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/chat_room_nlayout"
+        android:layout_above="@+id/fragment4_chat_room_nlayout"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="8dp"/>
 
     <LinearLayout
-        android:id="@+id/chat_room_nlayout"
+        android:id="@+id/fragment4_chat_room_nlayout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/chat_room_sendimage"
+            android:id="@+id/fragment4_chat_room_sendimage"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_marginLeft="10dp"
@@ -69,14 +69,14 @@
             android:background="@drawable/addimage" />
 
         <EditText
-            android:id="@+id/chat_room_edittext"
+            android:id="@+id/fragment4_chat_room_edittext"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:hint="메시지 입력" />
 
         <Button
-            android:id="@+id/chat_room_sendbutton"
+            android:id="@+id/fragment4_chat_room_sendbutton"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_marginLeft="5dp"
@@ -86,7 +86,7 @@
     </LinearLayout>
 
     <ProgressBar
-        android:id="@+id/chat_room_progress_bar"
+        android:id="@+id/fragment4_chat_room_progress_bar"
         style="?android:attr/progressBarStyle"
         android:layout_width="50dp"
         android:layout_height="50dp"

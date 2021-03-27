@@ -30,6 +30,9 @@ import java.util.UUID;
 
 public class SendMessege {
 
+    String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
+    String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
+
     AlertDialog alertDialog;
     EditText editText;
     Button okbtn, nobtn;
@@ -133,14 +136,18 @@ public class SendMessege {
                 messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/latitude/", latitude);
                 messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/longitude/", longitude);
                 if (pic != null) {
-                    messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/pic/", pic);
-                    messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "1" + "/pic/", pic);
+                    messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/pic/", pic);
+                    messegeMap.put("/messege/" + myUid + userUid + "/msg/" + "1" + "/pic/", pic);
+                } else {
+                    if (name.equals("남자")) {
+                        messegeMap.put("/messege/" + myUid + userUid + "/msg/" + "1" + "/pic/", nullPic);
+                    } else {
+                        messegeMap.put("/messege/" + myUid + userUid + "/msg/" + "1" + "/pic/", nullPicF);
+                    }
                 }
 
                 messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "1" + "/messege/", messege);
                 messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "1" + "/name/", name);
-                messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "1" + "/sex/", sex);
-                messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "1" + "/age/", age);
                 messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "1" + "/time/", getTime());
 
                 messegeMap.put("/messege/" + myUid+userUid + "/lastmsg/" + "lastmessege/", messege);

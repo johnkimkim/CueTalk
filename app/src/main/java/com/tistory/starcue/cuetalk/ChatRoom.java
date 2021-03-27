@@ -58,7 +58,6 @@ import java.util.Map;
 public class ChatRoom extends AppCompatActivity {
 
     private ArrayList<ChatRoomItem> arrayList;
-    private RecyclerView.LayoutManager layoutManager;
     private ChatRoomAdapter adapter;
 
     private DatabaseReference reference;
@@ -115,28 +114,15 @@ public class ChatRoom extends AppCompatActivity {
 
     private void setRecyclerView() {
         recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(ChatRoom.this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(ChatRoom.this);
+        layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
         arrayList = new ArrayList<>();
         adapter = new ChatRoomAdapter(ChatRoom.this, arrayList);
 
-//        recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
+        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
 
         recyclerView.setAdapter(adapter);
-
-        recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View view, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if (bottom < oldBottom) {
-                    view.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            recyclerView.smoothScrollToPosition(adapter.getItemCount());
-                        }
-                    }, 100);
-                }
-            }
-        });
 
         reference.getRef().child("inchat").child(where).child("messege").addChildEventListener(new ChildEventListener() {
             @Override

@@ -1,6 +1,7 @@
 package com.tistory.starcue.cuetalk;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,6 +99,9 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
             @Override
             public void onClick(View view) {
                 Toast.makeText(context, arrayList.get(position).getUid(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, Fragment4ChatRoom.class);
+                intent.putExtra("child", arrayList.get(position).getUid());
+                context.startActivity(intent);
             }
         });
 

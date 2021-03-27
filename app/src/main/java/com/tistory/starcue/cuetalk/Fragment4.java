@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -93,6 +95,7 @@ public class Fragment4 extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         arrayList = new ArrayList<>();
         lastList = new ArrayList<>();
+        keyList = new ArrayList<>();
 
         adapter = new F4ReAdapter(arrayList, lastList, getActivity());
         recyclerView.setAdapter(adapter);
@@ -113,7 +116,37 @@ public class Fragment4 extends Fragment {
                             }
                             if (snapshot2.getKey().equals("lastmsg")) {
                                 LastListItem lastListItem = snapshot2.getValue(LastListItem.class);
+                                keyList.add(snapshot2.getKey());
                                 lastList.add(lastListItem);
+                            }
+                        }
+                        Log.d("fragment4>>>", "3");
+                        adapter.notifyDataSetChanged();
+                        progressBar.setVisibility(View.GONE);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });//최초set
+
+        reference.getRef().child("messege").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    String key = snapshot1.getKey();
+                    assert key != null;
+                    Log.d("fragment4>>>", key);
+                    if (key.contains(myUid)) {
+                        Log.d("fragment4>>>", "2");
+                        for (DataSnapshot snapshot2 : snapshot1.getChildren()) {
+                            if (snapshot2.getKey().equals("lastmsg")) {
+                                LastListItem lastListItem = snapshot2.getValue(LastListItem.class);
+                                int index = keyList.indexOf(snapshot2.getKey());
+                                lastList.set(index, lastListItem);
                             }
                         }
                         Log.d("fragment4>>>", "3");
@@ -129,31 +162,40 @@ public class Fragment4 extends Fragment {
             }
         });
 
-//        reference.getRef().child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//        reference.getRef().child("messege").addChildEventListener(new ChildEventListener() {
 //            @Override
-//            public void onSuccess(DataSnapshot dataSnapshot) {
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    String key = snapshot.getKey();
-//                    assert key != null;
-//                    if (key.contains(myUid)) {
-//                        for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-//                            Log.d("Fragment4>>>", snapshot1.getKey().toString());
-//                            if (!snapshot1.getKey().equals(myUid) && !snapshot1.getKey().equals("msg")) {
-//                                F4MessegeItem f4MessegeItem = snapshot1.getValue(F4MessegeItem.class);
-//                                arrayList.add(f4MessegeItem);
-//                            }
-//                        }
-//                        adapter.notifyDataSetChanged();
-//                    }
-//                }
-//                progressBar.setVisibility(View.GONE);
+//            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//                F4MessegeItem f4MessegeItem = snapshot.getValue(F4MessegeItem.class);
+//                arrayList.add(f4MessegeItem);
+//                adapter.notifyDataSetChanged();
+//                String key = snapshot.getKey();
+//                keyList.add(key);
 //            }
-//        }).addOnFailureListener(new OnFailureListener() {
+//
 //            @Override
-//            public void onFailure(@NonNull Exception e) {
+//            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+//                String key = snapshot.getKey();
+//                int index = keyList.indexOf(key);
+//                arrayList.remove(index);
+//                adapter.notifyDataSetChanged();
+//            }
+//
+//            @Override
+//            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
 //
 //            }
 //        });
+
     }
 
 }

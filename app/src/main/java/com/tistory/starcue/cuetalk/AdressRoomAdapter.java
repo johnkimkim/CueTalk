@@ -77,6 +77,9 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
     AdressRoomAdapter(ArrayList<AdressRoomItem> arrayList, Context context) {
         this.arrayList = arrayList;
         this.context = context;
+
+        mAuth = FirebaseAuth.getInstance();
+        myUid = mAuth.getUid();
     }
 
     @NonNull
@@ -94,6 +97,7 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
 
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
+
         //position에 해당하는 데이터를 뷰홀더의 아이템뷰에 표시
         if (arrayList.get(position).getPic() == null) {
             if (arrayList.get(position).getSex().equals("남자")) {
@@ -144,9 +148,10 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
             int i = (int) Math.floor(ddd) / 1000;
             holder.km.setText(Integer.toString(i) + "km");
         }
+        Log.d("AdressRoomAdapter>>>", "myUid: " + myUid);
+        Log.d("AdressRoomAdapter>>>", "text: " + arrayList.get(position).getUid());
 
-        mAuth = FirebaseAuth.getInstance();
-        myUid = mAuth.getUid();
+
         if (arrayList.get(position).getUid().equals(myUid)) {
             holder.btn.setEnabled(false);
             holder.btn.setText("나");

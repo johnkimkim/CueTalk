@@ -3,6 +3,7 @@ package com.tistory.starcue.cuetalk;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,23 +58,17 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
         mAuth = FirebaseAuth.getInstance();
         myUid = mAuth.getUid();
 
-        if (arrayList.get(position).getPic() == null) {
-            if (arrayList.get(position).getSex().equals("남자")) {
-                Glide.with(holder.pic).load(nullPic).override(150, 150).circleCrop().into(holder.pic);
-            } else {
-                Glide.with(holder.pic).load(nullPicF).override(150, 150).circleCrop().into(holder.pic);
-            }
-        } else {
-            Glide.with(holder.pic).load(arrayList.get(position).getPic()).override(150, 150).circleCrop().into(holder.pic);
-        }
+        Glide.with(holder.pic).load(arrayList.get(position).getPic()).override(150, 150).circleCrop().into(holder.pic);
 
         holder.name.setText(arrayList.get(position).getName());
         holder.sex.setText(arrayList.get(position).getSex());
         holder.age.setText(arrayList.get(position).getAge());
+
         holder.time.setText(lastList.get(position).getLasttime());
         holder.messege.setText(lastList.get(position).getLastmessege());
 
         String latitudeS = arrayList.get(position).getLatitude();//set km
+        Log.d("F4ReAdapter>>>", "get latitudeS: " + arrayList.get(position).getName() + " / " + latitudeS);
         String longitudeS = arrayList.get(position).getLongitude();
         double latitude = Double.parseDouble(latitudeS);
         double longitude = Double.parseDouble(longitudeS);
@@ -111,6 +106,7 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
         ImageView pic;
         TextView name, sex, age, km, messege, time;
         RelativeLayout relativeLayout;
+
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
             this.pic = itemView.findViewById(R.id.f4re_pic);

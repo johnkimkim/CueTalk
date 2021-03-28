@@ -42,7 +42,8 @@ public class Fragment4 extends Fragment {
     private RecyclerView recyclerView;
     private ArrayList<F4MessegeItem> arrayList;
     private ArrayList<LastListItem> lastList;
-    private List<String> keyList;
+    private List<String> arrayKeyList;
+    private List<String> lastKeyList;
     private RecyclerView.LayoutManager layoutManager;
 
     private F4ReAdapter adapter;
@@ -95,99 +96,74 @@ public class Fragment4 extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         arrayList = new ArrayList<>();
         lastList = new ArrayList<>();
-        keyList = new ArrayList<>();
+        arrayKeyList = new ArrayList<>();
+        lastKeyList = new ArrayList<>();
 
         adapter = new F4ReAdapter(arrayList, lastList, getActivity());
         recyclerView.setAdapter(adapter);
 
-        reference.getRef().child("messege").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                    String key = snapshot1.getKey();
-                    assert key != null;
-                    Log.d("fragment4>>>", key);
-                    if (key.contains(myUid)) {
-                        Log.d("fragment4>>>", "2");
-                        for (DataSnapshot snapshot2 : snapshot1.getChildren()) {
-                            if (!snapshot2.getKey().equals("msg") && !snapshot2.getKey().equals("lastmsg") && !snapshot2.getKey().equals(myUid)) {
-                                F4MessegeItem f4MessegeItem = snapshot2.getValue(F4MessegeItem.class);
-                                arrayList.add(f4MessegeItem);
-                            }
-                            if (snapshot2.getKey().equals("lastmsg")) {
-                                LastListItem lastListItem = snapshot2.getValue(LastListItem.class);
-                                keyList.add(snapshot2.getKey());
-                                lastList.add(lastListItem);
-                            }
-                        }
-                        Log.d("fragment4>>>", "3");
-                        adapter.notifyDataSetChanged();
-                        progressBar.setVisibility(View.GONE);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });//최초set
-
-        reference.getRef().child("messege").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                    String key = snapshot1.getKey();
-                    assert key != null;
-                    Log.d("fragment4>>>", key);
-                    if (key.contains(myUid)) {
-                        Log.d("fragment4>>>", "2");
-                        for (DataSnapshot snapshot2 : snapshot1.getChildren()) {
-                            if (snapshot2.getKey().equals("lastmsg")) {
-                                LastListItem lastListItem = snapshot2.getValue(LastListItem.class);
-                                int index = keyList.indexOf(snapshot2.getKey());
-                                lastList.set(index, lastListItem);
-                            }
-                        }
-                        Log.d("fragment4>>>", "3");
-                        adapter.notifyDataSetChanged();
-                        progressBar.setVisibility(View.GONE);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-//        reference.getRef().child("messege").addChildEventListener(new ChildEventListener() {
+//        reference.getRef().child("messege").addListenerForSingleValueEvent(new ValueEventListener() {
 //            @Override
-//            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-//                F4MessegeItem f4MessegeItem = snapshot.getValue(F4MessegeItem.class);
-//                arrayList.add(f4MessegeItem);
-//                adapter.notifyDataSetChanged();
-//                String key = snapshot.getKey();
-//                keyList.add(key);
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                Log.d("Fragment4>>>", "111onDataChange");
+//                arrayList.clear();
+//                arrayKeyList.clear();
+//                lastList.clear();
+//                lastKeyList.clear();
+//
+//                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+//                    String key = snapshot1.getKey();
+//                    assert key != null;
+//                    Log.d("fragment4>>>", key);
+//                    if (key.contains(myUid)) {
+//                        Log.d("fragment4>>>", "2");
+//                        for (DataSnapshot snapshot2 : snapshot1.getChildren()) {
+//                            if (!snapshot2.getKey().equals("msg") && !snapshot2.getKey().equals("lastmsg") && !snapshot2.getKey().equals(myUid)) {
+//                                F4MessegeItem f4MessegeItem = snapshot2.getValue(F4MessegeItem.class);
+//                                arrayKeyList.add(snapshot2.getKey());
+//                                arrayList.add(f4MessegeItem);
+//                            }
+//                            if (snapshot2.getKey().equals("lastmsg")) {
+//                                LastListItem lastListItem = snapshot2.getValue(LastListItem.class);
+//                                lastKeyList.add(snapshot2.getKey());
+//                                lastList.add(lastListItem);
+//                            }
+//                        }
+//                        Log.d("fragment4>>>", "3");
+//                        adapter.notifyDataSetChanged();
+//                        progressBar.setVisibility(View.GONE);
+//                    }
+//                }
 //            }
 //
 //            @Override
-//            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//            public void onCancelled(@NonNull DatabaseError error) {
 //
 //            }
-//
+//        });//최초set
+
+//        reference.getRef().child("messege").addValueEventListener(new ValueEventListener() {
 //            @Override
-//            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-//                String key = snapshot.getKey();
-//                int index = keyList.indexOf(key);
-//                arrayList.remove(index);
-//                adapter.notifyDataSetChanged();
-//            }
-//
-//            @Override
-//            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-//
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                Log.d("Fragment4>>>", "onDataChange");
+////                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+////                    String key = snapshot1.getKey();
+////                    assert key != null;
+////                    Log.d("fragment4>>>", key);
+////                    if (key.contains(myUid)) {
+////                        Log.d("fragment4>>>", "2");
+////                        for (DataSnapshot snapshot2 : snapshot1.getChildren()) {
+////                            if (snapshot2.getKey().equals("lastmsg")) {
+////                                LastListItem lastListItem = snapshot2.getValue(LastListItem.class);
+////                                int index = keyList.indexOf(snapshot2.getKey());
+////                                lastList.set(index, lastListItem);
+////                            }
+////                        }
+////                        Log.d("fragment4>>>", "3");
+////                        adapter.notifyDataSetChanged();
+////                        progressBar.setVisibility(View.GONE);
+////                    }
+////                }
 //            }
 //
 //            @Override
@@ -195,6 +171,70 @@ public class Fragment4 extends Fragment {
 //
 //            }
 //        });
+
+        reference.getRef().child("messege").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                if (snapshot.getKey().contains(myUid)) {
+                    Log.d("Fragment4>>>", "!!!snaphot key: " + snapshot.getKey());
+                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                        if (!snapshot1.getKey().equals("msg") && !snapshot1.getKey().equals("lastmsg") && !snapshot1.getKey().equals(myUid)) {
+                            Log.d("Fragment4>>>", "!!!snaphot1 key: " + snapshot1.getKey());
+                            String key = snapshot1.getKey();
+                            F4MessegeItem f4MessegeItem = snapshot1.getValue(F4MessegeItem.class);
+                            arrayList.add(f4MessegeItem);
+                            arrayKeyList.add(key);
+                        }
+                        if (snapshot1.getKey().equals("lastmsg")) {
+                            String key = snapshot1.getKey();
+                            LastListItem lastListItem = snapshot1.getValue(LastListItem.class);
+                            lastList.add(lastListItem);
+                            lastKeyList.add(key);
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged();
+
+                progressBar.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Log.d("Fragment4>>>", "onChildChange");
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    if (snapshot1.getKey().equals("lastmsg")) {
+                        LastListItem lastListItem = snapshot1.getValue(LastListItem.class);
+                        String key = snapshot1.getKey();
+                        int index = lastKeyList.indexOf(key);
+                        lastList.set(index, lastListItem);
+
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                Log.d("Fragment4>>>", "onChildRemoved");
+                String key = snapshot.getKey();
+                int index = lastKeyList.indexOf(key);
+                arrayList.remove(index);
+                lastList.remove(index);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
     }
 

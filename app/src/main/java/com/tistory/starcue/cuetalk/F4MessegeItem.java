@@ -4,6 +4,10 @@ public class F4MessegeItem {
 
     String uid, pic, name, sex, age, latitude, longitude;
 
+    public F4MessegeItem() {
+
+    }
+
     public String getUid() {
         return uid;
     }

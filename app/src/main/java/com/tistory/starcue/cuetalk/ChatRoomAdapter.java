@@ -61,9 +61,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (viewType == Code.ViewType.LEFT_CONTENT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_room_layout_left, parent, false);
             return new LeftViewholder(view);
-        } else {
+        } else if (viewType == Code.ViewType.CENTER_CONTENT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_room_layout_center, parent, false);
             return new CenterViewholder(view);
+        } else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_room_layout_center_bottom, parent, false);
+            return new CenterBottomViewholder(view);
         }
 
     }
@@ -133,6 +136,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         } else if (holder instanceof CenterViewholder) {
             ((CenterViewholder) holder).textView.setText("입장완료");
+        } else if (holder instanceof CenterBottomViewholder) {
+            ((CenterBottomViewholder) holder).titletext.setText("상대방이 대화방을 나갔습니다.");
         }
 
 
@@ -145,7 +150,14 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         mAuth = FirebaseAuth.getInstance();
         myUid = mAuth.getUid();
 
-        if (arrayList.get(position).getName().equals(getMyName()) && arrayList.get(position).getUri() != null) {
+        if (arrayList.get(position).getName() == null
+                && arrayList.get(position).getPic() == null
+                && arrayList.get(position).getUri() == null
+                && arrayList.get(position).getTime().equals("dlqwkddhksfycjtaptlwl")
+                && arrayList.get(position).getMessege().equals("dlqwkddhksfycjtaptlwl")) {
+            Log.d("ChatRoomAdapter>>>", "viewType: CENTER_CONTENT");
+            return Code.ViewType.CENTER_CONTENT;
+        } else if (arrayList.get(position).getName().equals(getMyName()) && arrayList.get(position).getUri() != null) {
             Log.d("ChatRoomAdapter>>>", "viewType: RIGHT_IMAGE");
             return Code.ViewType.RIGHT_IMAGE;
         } else if (arrayList.get(position).getName().equals(getMyName()) && arrayList.get(position).getUri() == null) {
@@ -158,8 +170,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             Log.d("ChatRoomAdapter>>>", "viewType: LEFT_CONTENT");
             return Code.ViewType.LEFT_CONTENT;
         } else {
-            Log.d("ChatRoomAdapter>>>", "viewType: CENTER_CONTENT");
-            return Code.ViewType.CENTER_CONTENT;
+            Log.d("ChatRoomAdapter>>>", "viewType: CENTER_BOTTOM_CONTENT");
+            return Code.ViewType.CENTER_BOTTOM_CONTENT;
         }
 
     }
@@ -224,6 +236,15 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.imagepic = itemView.findViewById(R.id.chat_room_layout_messege2_img);
         }
     }
+
+    public class CenterBottomViewholder extends RecyclerView.ViewHolder {
+        TextView titletext;
+        public CenterBottomViewholder(@NonNull View itemView) {
+            super(itemView);
+            titletext = itemView.findViewById(R.id.center_bottom_text);
+        }
+    }
+
 
 
     public String getMyName() {

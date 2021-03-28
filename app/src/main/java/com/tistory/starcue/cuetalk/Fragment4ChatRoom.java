@@ -150,19 +150,6 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
-//        recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-//            @Override
-//            public void onLayoutChange(View view, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-//                if (bottom < oldBottom) {
-//                    view.postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            recyclerView.smoothScrollToPosition(adapter.getItemCount());
-//                        }
-//                    }, 100);
-//                }
-//            }
-//        });
 
         reference.getRef().child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
@@ -185,24 +172,24 @@ public class Fragment4ChatRoom extends AppCompatActivity {
 
     private void setRecyclerviewList(String roomName) {
         getroomname = roomName;
-        reference.getRef().child("messege").child(roomName).child("msg").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                arrayList.clear();
-                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                    Log.d("Fragment4ChatRoom>>>", snapshot1.getKey());
-                    ChatRoomItem chatRoomItem = snapshot1.getValue(ChatRoomItem.class);
-                    arrayList.add(chatRoomItem);
-                }
-                adapter.notifyDataSetChanged();
-                progressBar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+//        reference.getRef().child("messege").child(roomName).child("msg").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                arrayList.clear();
+//                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+//                    Log.d("Fragment4ChatRoom>>>", snapshot1.getKey());
+//                    ChatRoomItem chatRoomItem = snapshot1.getValue(ChatRoomItem.class);
+//                    arrayList.add(chatRoomItem);
+//                }
+//                adapter.notifyDataSetChanged();
+//                progressBar.setVisibility(View.GONE);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
         getNewMessege();
     }
 
@@ -220,6 +207,8 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                         recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
                     }
                 }, 100);
+
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override

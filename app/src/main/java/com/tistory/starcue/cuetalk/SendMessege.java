@@ -128,6 +128,8 @@ public class SendMessege {
                 String countString = Integer.toString(count);
 
                 Map<String, Object> messegeMap = new HashMap<>();
+                messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "1/" + "messege/", "dlqwkddhksfycjtaptlwl");
+                messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "1/" + "time/", "dlqwkddhksfycjtaptlwl");
 
                 messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/uid/", myUid);
                 messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/name/", name);
@@ -135,20 +137,23 @@ public class SendMessege {
                 messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/age/", age);
                 messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/latitude/", latitude);
                 messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/longitude/", longitude);
+
                 if (pic != null) {
                     messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/pic/", pic);
-                    messegeMap.put("/messege/" + myUid + userUid + "/msg/" + "1" + "/pic/", pic);
+                    messegeMap.put("/messege/" + myUid + userUid + "/msg/" + "2" + "/pic/", pic);
                 } else {
                     if (name.equals("남자")) {
-                        messegeMap.put("/messege/" + myUid + userUid + "/msg/" + "1" + "/pic/", nullPic);
+                        messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/pic/", nullPic);
+                        messegeMap.put("/messege/" + myUid + userUid + "/msg/" + "2" + "/pic/", nullPic);
                     } else {
-                        messegeMap.put("/messege/" + myUid + userUid + "/msg/" + "1" + "/pic/", nullPicF);
+                        messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/pic/", nullPicF);
+                        messegeMap.put("/messege/" + myUid + userUid + "/msg/" + "2" + "/pic/", nullPicF);
                     }
                 }
 
-                messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "1" + "/messege/", messege);
-                messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "1" + "/name/", name);
-                messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "1" + "/time/", getTime());
+                messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "2" + "/messege/", messege);
+                messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "2" + "/name/", name);
+                messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "2" + "/time/", getTime());
 
                 messegeMap.put("/messege/" + myUid+userUid + "/lastmsg/" + "lastmessege/", messege);
                 messegeMap.put("/messege/" + myUid+userUid + "/lastmsg/" + "lasttime/", getTime());
@@ -196,6 +201,12 @@ public class SendMessege {
                 userUpdate.put("/messege/" + key + "/" + userUid + "/age/", age);
                 if (pic != null) {
                     userUpdate.put("/messege/" + key + "/" + userUid + "/pic/", pic);
+                } else {
+                    if (sex.equals("남자")) {
+                        userUpdate.put("/messege/" + key + "/" + userUid + "/pic/", nullPic);
+                    } else {
+                        userUpdate.put("/messege/" + key + "/" + userUid + "/pic/", nullPicF);
+                    }
                 }
                 userUpdate.put("/messege/" + key + "/" + userUid + "/latitude/", latitudeS);
                 userUpdate.put("/messege/" + key + "/" + userUid + "/longitude/", longitudeS);

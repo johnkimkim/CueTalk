@@ -274,6 +274,7 @@ public class AdressRoom extends AppCompatActivity {
                 String key = snapshot.getKey();
                 int index = keyList.indexOf(key);
                 arrayList.set(index, adressRoomItem);
+                Log.d("AdressRoom>>>", "onChildChange : " + Integer.toString(index));
                 adapter.notifyDataSetChanged();
             }
 

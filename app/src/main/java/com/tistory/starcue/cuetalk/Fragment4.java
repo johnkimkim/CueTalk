@@ -102,79 +102,9 @@ public class Fragment4 extends Fragment {
         adapter = new F4ReAdapter(arrayList, lastList, getActivity());
         recyclerView.setAdapter(adapter);
 
-        reference.getRef().child("messege").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                arrayList.clear();
-                arrayKeyList.clear();
-                lastList.clear();
-                lastKeyList.clear();
-
-                for (DataSnapshot sn : snapshot.getChildren()) {
-                    if (sn.getKey().contains(myUid)) {
-                        for (DataSnapshot snapshot1 : sn.getChildren()) {
-                            if (!snapshot1.getKey().equals("msg") && !snapshot1.getKey().equals(myUid)) {
-                                if (snapshot1.getKey().contains("lastmsg")) {
-                                    String key = snapshot1.getKey();
-                                    LastListItem lastListItem = snapshot1.getValue(LastListItem.class);
-                                    lastList.add(lastListItem);
-                                    lastKeyList.add(key);
-                                } else {
-                                    String key = snapshot1.getKey();
-                                    F4MessegeItem f4MessegeItem = snapshot1.getValue(F4MessegeItem.class);
-                                    arrayList.add(f4MessegeItem);
-                                    arrayKeyList.add(key);
-                                }
-
-                            }
-                        }
-                    }
-                }
-                adapter.notifyDataSetChanged();
-
-                progressBar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });//최초set
-
-//        reference.getRef().child("messege").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                Log.d("Fragment4>>>", "onDataChange");
-////                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-////                    String key = snapshot1.getKey();
-////                    assert key != null;
-////                    Log.d("fragment4>>>", key);
-////                    if (key.contains(myUid)) {
-////                        Log.d("fragment4>>>", "2");
-////                        for (DataSnapshot snapshot2 : snapshot1.getChildren()) {
-////                            if (snapshot2.getKey().equals("lastmsg")) {
-////                                LastListItem lastListItem = snapshot2.getValue(LastListItem.class);
-////                                int index = keyList.indexOf(snapshot2.getKey());
-////                                lastList.set(index, lastListItem);
-////                            }
-////                        }
-////                        Log.d("fragment4>>>", "3");
-////                        adapter.notifyDataSetChanged();
-////                        progressBar.setVisibility(View.GONE);
-////                    }
-////                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-
         reference.getRef().child("messege").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d("Fragment4>>>", "onChildAdded key: " + snapshot.getKey());
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                     if (!snapshot1.getKey().equals("msg") && !snapshot1.getKey().equals(myUid)) {
                         if (snapshot1.getKey().contains("lastmsg")) {
@@ -190,6 +120,8 @@ public class Fragment4 extends Fragment {
                         }
                     }
                 }
+                Log.d("Fragment4>>>", "get list size2: " + arrayList.size());
+
             }
 
             @Override
@@ -219,6 +151,59 @@ public class Fragment4 extends Fragment {
             @Override
             public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        reference.getRef().child("messege").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d("Fragment4>>>", "onDataChangezzz");
+
+                arrayList.clear();
+                arrayKeyList.clear();
+                lastList.clear();
+                lastKeyList.clear();
+                for (DataSnapshot sn : snapshot.getChildren()) {
+                    if (sn.getKey().contains(myUid)) {
+                        for (DataSnapshot snapshot1 : sn.getChildren()) {
+                            if (!snapshot1.getKey().equals("msg") && !snapshot1.getKey().equals(myUid)) {
+                                if (snapshot1.getKey().contains("lastmsg")) {
+                                    String key = snapshot1.getKey();
+                                    LastListItem lastListItem = snapshot1.getValue(LastListItem.class);
+                                    lastList.add(lastListItem);
+                                    lastKeyList.add(key);
+                                } else {
+                                    String key = snapshot1.getKey();
+                                    F4MessegeItem f4MessegeItem = snapshot1.getValue(F4MessegeItem.class);
+                                    arrayList.add(f4MessegeItem);
+                                    arrayKeyList.add(key);
+                                }
+
+                            }
+                        }
+                    }
+                }
+                Log.d("Fragment4>>>", "get list size: " + arrayList.size());
+                adapter.notifyDataSetChanged();
+
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });//최초set
+
+        reference.getRef().child("messege").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //count check
             }
 
             @Override

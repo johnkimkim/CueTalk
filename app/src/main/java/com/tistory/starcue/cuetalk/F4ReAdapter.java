@@ -28,9 +28,9 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
     String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
 
-    private ArrayList<F4MessegeItem> arrayList;
-    private ArrayList<LastListItem> lastList;
-    private Context context;
+    ArrayList<F4MessegeItem> arrayList;
+    ArrayList<LastListItem> lastList;
+    Context context;
 
     FirebaseAuth mAuth;
     String myUid;
@@ -64,11 +64,11 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
         holder.sex.setText(arrayList.get(position).getSex());
         holder.age.setText(arrayList.get(position).getAge());
 
+        Log.d("F4ReAdapter>>>", "holder.time: " + lastList.get(position).getLasttime());
         holder.time.setText(lastList.get(position).getLasttime());
         holder.messege.setText(lastList.get(position).getLastmessege());
 
         String latitudeS = arrayList.get(position).getLatitude();//set km
-        Log.d("F4ReAdapter>>>", "get latitudeS: " + arrayList.get(position).getName() + " / " + latitudeS);
         String longitudeS = arrayList.get(position).getLongitude();
         double latitude = Double.parseDouble(latitudeS);
         double longitude = Double.parseDouble(longitudeS);
@@ -122,7 +122,7 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
 
     @Override
     public int getItemCount() {
-        return (arrayList != null ? arrayList.size() : 0);
+        return (lastList != null ? lastList.size() : 0);
     }
 
     public double getDistance(double lat1, double lng1, double lat2, double lng2) {

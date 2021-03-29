@@ -309,6 +309,8 @@ public class AdressRoom extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {//반복문으로 데이터추출
                     String key = snapshot.getKey();
                     keyList.add(key);
+                    int index = keyList.indexOf(key);
+                    Log.d("AdressRoom>>>", "test index: " + index);
                     Log.d("AdressRoom>>>", "addListenerForSingleValueEvent");
                     AdressRoomItem adressRoomItem = snapshot.getValue(AdressRoomItem.class);
                     arrayList.add(adressRoomItem);

@@ -155,8 +155,8 @@ public class SendMessege {
                 messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "2" + "/name/", name);
                 messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "2" + "/time/", getTime());
 
-                messegeMap.put("/messege/" + myUid+userUid + "/lastmsg/" + "lastmessege/", messege);
-                messegeMap.put("/messege/" + myUid+userUid + "/lastmsg/" + "lasttime/", getTime());
+                messegeMap.put("/messege/" + myUid+userUid + "/lastmsg" + myUid+userUid + "/lastmessege/", messege);
+                messegeMap.put("/messege/" + myUid+userUid + "/lastmsg" + myUid+userUid + "/lasttime/", getTime());
 
 
                 reference.updateChildren(messegeMap).addOnSuccessListener(new OnSuccessListener<Void>() {

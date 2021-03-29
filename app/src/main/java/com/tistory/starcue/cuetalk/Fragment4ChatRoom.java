@@ -248,9 +248,11 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                         sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/pic/", myPic);
                         sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/time/", getTime());
 
-                        sendmsg.put("/messege/" + getroomname + "/lastmsg/" + "lastmessege/", messege);
-                        sendmsg.put("/messege/" + getroomname + "/lastmsg/" + "lasttime/", getTime());
+                        sendmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lastmessege/", messege);
+                        sendmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lasttime/", getTime());
+
                         reference.updateChildren(sendmsg);
+
                         editText.setText("");
                     }
                 }).addOnFailureListener(new OnFailureListener() {

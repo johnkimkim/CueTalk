@@ -157,6 +157,13 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 && arrayList.get(position).getMessege().equals("dlqwkddhksfycjtaptlwl")) {
             Log.d("ChatRoomAdapter>>>", "viewType: CENTER_CONTENT");
             return Code.ViewType.CENTER_CONTENT;
+        } else if (arrayList.get(position).getName() == null
+                && arrayList.get(position).getPic() == null
+                && arrayList.get(position).getUri() == null
+                && arrayList.get(position).getTime().equals("tkdeoqkddlskrkskrk")
+                && arrayList.get(position).getMessege().equals("tkdeoqkddlskrkskrk")) {
+            Log.d("ChatRoomAdapter>>>", "viewType: CENTER_BOTTOM_CONTENT");
+            return Code.ViewType.CENTER_BOTTOM_CONTENT;
         } else if (arrayList.get(position).getName().equals(getMyName()) && arrayList.get(position).getUri() != null) {
             Log.d("ChatRoomAdapter>>>", "viewType: RIGHT_IMAGE");
             return Code.ViewType.RIGHT_IMAGE;
@@ -170,8 +177,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             Log.d("ChatRoomAdapter>>>", "viewType: LEFT_CONTENT");
             return Code.ViewType.LEFT_CONTENT;
         } else {
-            Log.d("ChatRoomAdapter>>>", "viewType: CENTER_BOTTOM_CONTENT");
-            return Code.ViewType.CENTER_BOTTOM_CONTENT;
+            return 6;
         }
 
     }

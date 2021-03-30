@@ -137,6 +137,7 @@ public class SendMessege {
                 messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/age/", age);
                 messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/latitude/", latitude);
                 messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/longitude/", longitude);
+                messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/ischat/", "1");
 
                 if (pic != null) {
                     messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/pic/", pic);
@@ -199,6 +200,7 @@ public class SendMessege {
                 userUpdate.put("/messege/" + key + "/" + userUid + "/name/", name);
                 userUpdate.put("/messege/" + key + "/" + userUid + "/sex/", sex);
                 userUpdate.put("/messege/" + key + "/" + userUid + "/age/", age);
+                userUpdate.put("/messege/" + key + "/" + userUid + "/ischat/", "1");
                 if (pic != null) {
                     userUpdate.put("/messege/" + key + "/" + userUid + "/pic/", pic);
                 } else {

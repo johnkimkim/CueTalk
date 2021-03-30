@@ -53,7 +53,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
 
-//    private RecyclerView.LayoutManager layoutManager;
+    //    private RecyclerView.LayoutManager layoutManager;
     private ArrayList<ChatRoomItem> arrayList;
     private ChatRoomAdapter adapter;
 
@@ -457,40 +457,105 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         });
     }
 
-    private void deleteData() {
-//        reference.getRef().child("messege").child(getroomname).child(myUid).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-//            @Override
-//            public void onSuccess(Void aVoid) {
-//                StorageReference removeStorage = storageReference.child(myUid + "/" + getroomname);
-//                removeStorage.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        Log.d("Fragment4ChatRoom>>>", "delete onSuccess");
-//                    }
-//                });
-//            }
-//        });
-        storageReference.child(myUid + "/" + getroomname + "/").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
-            @Override
-            public void onSuccess(ListResult listResult) {
-                for (StorageReference item : listResult.getItems()) {
-                    storageReference.child(myUid + "/" + getroomname + "/" + item.getName()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            //
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
+    private void userGoOutDialog() {
+        LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout layout = (LinearLayout) vi.inflate(R.layout.go_out_user_chat_room_dialog, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(Fragment4ChatRoom.this);
+        builder.setView(layout);
+        alertDialogD = builder.create();
+        Log.d("Fragment4ChatRoom>>>", "dialogImage");
 
-                        }
-                    });
-                }
+        if (!Fragment4ChatRoom.this.isFinishing()) {
+            Log.d("Fragment4ChatRoom>>>", "dialogImage2");
+            alertDialogD.show();
+            //set size
+            WindowManager.LayoutParams layoutParams = alertDialogD.getWindow().getAttributes();
+            layoutParams.copyFrom(alertDialogD.getWindow().getAttributes());
+//            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+//            layoutParams.dimAmount = 0.7f;
+
+            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            alertDialogD.getWindow().setAttributes(layoutParams);
+        }
+
+        Button okbtn = layout.findViewById(R.id.fragment4_chat_room_dialog_user_out_okbtn);
+
+        okbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteAllChatRoom();
+            }
+        });
+    }
+
+    private void deleteAllChatRoom() {
+        reference.getRef().child("messege").child(getroomname).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                finish();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
 
+            }
+        });
+    }
+
+    private void deleteData() {
+        reference.getRef().child("messege").child(getroomname).child("msg").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                int i = (int) dataSnapshot.getChildrenCount() + 1;
+                Map<String, Object> outmap = new HashMap<>();
+                outmap.put("/messege/" + getroomname + "/" + myUid + "/ischat/", "2");
+                outmap.put("/messege/" + myUid + userUid + "/msg/" + i + "/messege/", "tkdeoqkddlskrkskrk");
+                outmap.put("/messege/" + myUid + userUid + "/msg/" + i + "/time/", "tkdeoqkddlskrkskrk");
+                reference.updateChildren(outmap);
+                finish();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
+//        storageReference.child(myUid + "/" + getroomname + "/").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+//            @Override
+//            public void onSuccess(ListResult listResult) {
+//                for (StorageReference item : listResult.getItems()) {
+//                    storageReference.child(myUid + "/" + getroomname + "/" + item.getName()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+//                        @Override
+//                        public void onSuccess(Void aVoid) {
+//                        }
+//                    }).addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//
+//                        }
+//                    });
+//                }
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//            }
+//        });
+    }
+
+    private void checkOut() {
+        reference.getRef().child("messege").child(getroomname).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                int i = (int) dataSnapshot.getChildrenCount();
+                if (i == 5) {
+
+                } else {
+
+                }
             }
         });
     }

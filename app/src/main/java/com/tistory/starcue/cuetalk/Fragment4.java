@@ -106,7 +106,7 @@ public class Fragment4 extends Fragment {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                    if (!snapshot1.getKey().equals("msg") && !snapshot1.getKey().equals(myUid)) {
+                    if (!snapshot1.getKey().equals("msg") && !snapshot1.getKey().equals(myUid) && !snapshot1.getKey().equals("finished")) {
                         if (snapshot1.getKey().contains("lastmsg")) {
                             String key = snapshot1.getKey();
                             LastListItem lastListItem = snapshot1.getValue(LastListItem.class);
@@ -128,10 +128,26 @@ public class Fragment4 extends Fragment {
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                     if (snapshot1.getKey().contains("lastmsg")) {
-                        LastListItem lastListItem = snapshot1.getValue(LastListItem.class);
                         String key = snapshot1.getKey();
+                        Log.d("Fragment4>>>", "lastmsg change string: " + key);
+                        LastListItem lastListItem = snapshot1.getValue(LastListItem.class);
                         int index = lastKeyList.indexOf(key);
+                        Log.d("Fragment4>>>", "lastmsg change index: " + index);
                         lastList.set(index, lastListItem);
+                    } else if (snapshot1.getKey().equals(myUid)) {
+                        if (snapshot1.child("ischat").getValue().equals("2")) {
+                            String keysnapshot = "lastmsg" + snapshot.getKey();
+                            int index = lastKeyList.indexOf(keysnapshot);
+//                            Log.d("Fragment4>>>", "index last key index: " + indexlast);
+//                            Log.d("Fragment4>>>", "index last snapshot key: " + keylast);
+                            Log.d("Fragment4>>>", "index lastkeylist string: " + keysnapshot);
+                            Log.d("Fragment4>>>", "index lastkeylist: " + index);
+//                            Log.d("Fragment4>>>", "index array snapshot1 key: " + key);
+                            arrayList.remove(index);
+                            arrayKeyList.remove(index);
+                            lastList.remove(index);
+                            lastKeyList.remove(index);
+                        }
                     }
                     adapter.notifyDataSetChanged();
                 }
@@ -139,13 +155,7 @@ public class Fragment4 extends Fragment {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                Log.d("Fragment4>>>", "onChildRemoved");
-
-//                String key = snapshot.getKey();
-//                int index = lastKeyList.indexOf(key);
-//                arrayList.remove(index);
-//                lastList.remove(index);
-//                adapter.notifyDataSetChanged();
+                Log.d("Fragment4>>>", "removed: " + snapshot.getKey());
             }
 
             @Override
@@ -171,24 +181,36 @@ public class Fragment4 extends Fragment {
                 for (DataSnapshot sn : snapshot.getChildren()) {
                     if (sn.getKey().contains(myUid)) {
                         for (DataSnapshot snapshot1 : sn.getChildren()) {
-                            if (!snapshot1.getKey().equals("msg") && !snapshot1.getKey().equals(myUid)) {
-                                if (snapshot1.getKey().contains("lastmsg")) {
-                                    String key = snapshot1.getKey();
-                                    LastListItem lastListItem = snapshot1.getValue(LastListItem.class);
-                                    lastList.add(lastListItem);
-                                    lastKeyList.add(key);
-                                } else {
-                                    String key = snapshot1.getKey();
-                                    F4MessegeItem f4MessegeItem = snapshot1.getValue(F4MessegeItem.class);
-                                    arrayList.add(f4MessegeItem);
-                                    arrayKeyList.add(key);
-                                }
+                            if (snapshot1.getKey().equals(myUid)) {
+                                if (snapshot1.child("ischat").getValue().equals("1")) {
+                                    Log.d("Fragment4>>>", "text: " + snapshot1.child("ischat").getValue().equals("1"));
+                                    for (DataSnapshot snapshot2 : sn.getChildren()) {
+                                        if (!snapshot2.getKey().equals("msg") && !snapshot2.getKey().equals(myUid) && !snapshot2.getKey().equals("finished")) {
+                                            if (snapshot2.getKey().contains("lastmsg")) {
+                                                String key = snapshot2.getKey();
+                                                LastListItem lastListItem = snapshot2.getValue(LastListItem.class);
+                                                lastList.add(lastListItem);
+                                                lastKeyList.add(key);
+                                                Log.d("fragment4>>>", "ok last key string: " + key);
+                                                Log.d("Fragment4>>>", "ok last key index: " + lastKeyList.indexOf(key));
+                                            } else {
+                                                String key = snapshot2.getKey();
+                                                F4MessegeItem f4MessegeItem = snapshot2.getValue(F4MessegeItem.class);
+                                                arrayList.add(f4MessegeItem);
+                                                arrayKeyList.add(key);
+                                                Log.d("fragment4>>>", "ok array key string: " + key);
+                                                Log.d("Fragment4>>>", "ok array key index: " + arrayKeyList.indexOf(key));
+                                            }
+                                        }
+                                    }
 
+
+                                }
                             }
+
                         }
                     }
                 }
-                Log.d("Fragment4>>>", "get list size: " + arrayList.size());
                 adapter.notifyDataSetChanged();
 
                 progressBar.setVisibility(View.GONE);
@@ -204,6 +226,12 @@ public class Fragment4 extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 //count check
+//                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+//                    if (snapshot1.getKey().contains(myUid)) {
+//                        if (snap) {
+//                        }
+//                    }
+//                }
             }
 
             @Override

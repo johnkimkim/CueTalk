@@ -64,7 +64,6 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
         holder.sex.setText(arrayList.get(position).getSex());
         holder.age.setText(arrayList.get(position).getAge());
 
-        Log.d("F4ReAdapter>>>", "holder.time: " + lastList.get(position).getLasttime());
         holder.time.setText(lastList.get(position).getLasttime());
         holder.messege.setText(lastList.get(position).getLastmessege());
 

@@ -77,11 +77,14 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     AlertDialog alertDialogC;
     AlertDialog alertDialogD;
 
+    boolean isOpen;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment4_chat_room);
 
+        isOpen = false;
         setinit();
     }
 
@@ -192,7 +195,11 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                                             String ischat = dataSnapshot2.getValue(String.class);
                                             if (ischat.equals("2")) {
                                                 Log.d("Fragment4ChatRoom>>>", "Success");
-                                                userGoOutDialog();
+                                                if (!isOpen) {
+                                                    userGoOutDialog();
+                                                }
+                                                isOpen = true;
+
                                             }
                                         }
                                     }
@@ -475,10 +482,8 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(Fragment4ChatRoom.this);
         builder.setView(layout);
         alertDialogD = builder.create();
-        Log.d("Fragment4ChatRoom>>>", "dialogImage");
 
         if (!Fragment4ChatRoom.this.isFinishing()) {
-            Log.d("Fragment4ChatRoom>>>", "dialogImage2");
             alertDialogD.show();
             //set size
             WindowManager.LayoutParams layoutParams = alertDialogD.getWindow().getAttributes();
@@ -497,8 +502,8 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("Fragment4ChatRoom>>>", "first out onclick");
                 goOutSetIsChat();
-                alertDialogD.dismiss();
             }
         });
 
@@ -536,8 +541,8 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                deleteAllChatRoom();
-                alertDialogD.dismiss();
+                Log.d("Fragment4ChatRoom>>>", "okbtn onclick");
+                deleteImageISendB();
             }
         });
     }
@@ -563,9 +568,10 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                 int i = (int) dataSnapshot.getChildrenCount() + 1;
                 Map<String, Object> outmap = new HashMap<>();
                 outmap.put("/messege/" + getroomname + "/" + myUid + "/ischat/", "2");
-                outmap.put("/messege/" + myUid + userUid + "/msg/" + i + "/messege/", "tkdeoqkddlskrkskrk");
-                outmap.put("/messege/" + myUid + userUid + "/msg/" + i + "/time/", "tkdeoqkddlskrkskrk");
+                outmap.put("/messege/" + getroomname + "/msg/" + i + "/messege/", "tkdeoqkddlskrkskrk");
+                outmap.put("/messege/" + getroomname + "/msg/" + i + "/time/", "tkdeoqkddlskrkskrk");
                 reference.updateChildren(outmap);
+                Log.d("Fragment4ChatRoom>>>", "set ischat success");
                 deleteImageISend();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -580,24 +586,65 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         storageReference.child(myUid + "/" + getroomname + "/").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
             public void onSuccess(ListResult listResult) {
-                for (StorageReference item : listResult.getItems()) {
-                    storageReference.child(myUid + "/" + getroomname + "/" + item.getName()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            finish();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-
-                        }
-                    });
+                Log.d("Fragment4ChatRoom>>>", "ddd1");
+                int i  = listResult.getItems().size();
+                Log.d("Fragment4ChatRoom>>>", "ddd1 get count: " + i);
+                if (i >= 1) {
+                    for (StorageReference item : listResult.getItems()) {
+                        Log.d("Fragment4ChatRoom>>>", "ddd2");
+                        storageReference.child(myUid + "/" + getroomname + "/" + item.getName()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d("Fragment4ChatRoom>>>", "deleteImageISend success");
+                                finish();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d("Fragment4ChatRoom>>>", "ddd3");
+                            }
+                        });
+                    }
+                } else {
+                    finish();
                 }
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                Log.d("Fragment4ChatRoom>>>", "ddd4");
+            }
+        });
+    }
 
+    private void deleteImageISendB() {
+        storageReference.child(myUid + "/" + getroomname + "/").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
+                int i = listResult.getItems().size();
+                if (i >= 1) {
+                    for (StorageReference item : listResult.getItems()) {
+                        storageReference.child(myUid + "/" + getroomname + "/" + item.getName()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                deleteAllChatRoom();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                            }
+                        });
+                    }
+                } else {
+                    deleteAllChatRoom();
+                }
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("Fragment4ChatRoom>>>", "check state: " + "4");
             }
         });
     }

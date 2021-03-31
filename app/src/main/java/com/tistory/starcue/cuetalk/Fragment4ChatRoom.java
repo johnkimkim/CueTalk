@@ -548,15 +548,22 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     }
 
     private void deleteAllChatRoom() {
-        reference.getRef().child("messege").child(getroomname).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+        Map<String, Object> outmap = new HashMap<>();
+        outmap.put("/messege/" + getroomname + "/" + myUid + "/ischat/", "2");
+        reference.updateChildren(outmap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                finish();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+                reference.getRef().child("messege").child(getroomname).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        finish();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
 
+                    }
+                });
             }
         });
     }

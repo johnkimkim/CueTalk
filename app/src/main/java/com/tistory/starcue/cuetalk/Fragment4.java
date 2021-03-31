@@ -145,11 +145,8 @@ public class Fragment4 extends Fragment {
                                     } else if (ischat.equals("2")) {
                                         String keysnapshot = "lastmsg" + snapshot.getKey();
                                         int index = lastKeyList.indexOf(keysnapshot);
-//                            Log.d("Fragment4>>>", "index last key index: " + indexlast);
-//                            Log.d("Fragment4>>>", "index last snapshot key: " + keylast);
                                         Log.d("Fragment4>>>", "index lastkeylist string: " + keysnapshot);
                                         Log.d("Fragment4>>>", "index lastkeylist: " + index);
-//                            Log.d("Fragment4>>>", "index array snapshot1 key: " + key);
                                         arrayList.remove(index);
                                         arrayKeyList.remove(index);
                                         lastList.remove(index);

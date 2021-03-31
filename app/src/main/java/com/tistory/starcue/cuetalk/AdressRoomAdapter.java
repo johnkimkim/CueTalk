@@ -230,7 +230,7 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
                             } else {
                                 String userUid = arrayList.get(position).getUid();
                                 SendMessege sendMessege = new SendMessege(context);
-                                sendMessege.setSendMessegeDialog(context, userUid);
+                                sendMessege.setSendMessegeDialog(context, userUid);//laskdfjkl
                             }
                         }
 

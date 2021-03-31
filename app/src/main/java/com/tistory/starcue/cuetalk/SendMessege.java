@@ -1,6 +1,7 @@
 package com.tistory.starcue.cuetalk;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -92,12 +93,13 @@ public class SendMessege {
                         String latitudeS = String.valueOf(latitude);
                         String longitudeS = String.valueOf(longitude);
 
-                        String pic, name, sex, age;
-                        pic = documentSnapshot.getString("pic");
-                        name = documentSnapshot.getString("name");
-                        sex = documentSnapshot.getString("sex");
-                        age = documentSnapshot.getString("age");
-                        firstSendMessege(edit, myUid, userUid, pic, name, sex, age, latitudeS, longitudeS);
+                        String myPic, myName, mySex, myAge;
+                        myPic = documentSnapshot.getString("pic");
+                        myName = documentSnapshot.getString("name");
+                        mySex = documentSnapshot.getString("sex");
+                        Log.d("SendMessege>>>", "get my Sex: " + mySex);
+                        myAge = documentSnapshot.getString("age");
+                        firstSendMessege(edit, myUid, userUid, myPic, myName, mySex, myAge, latitudeS, longitudeS);
 
                         alertDialog.dismiss();
                         Toast.makeText(context, "메시지 전송 성공", Toast.LENGTH_SHORT).show();
@@ -142,13 +144,16 @@ public class SendMessege {
                 if (pic != null) {
                     messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/pic/", pic);
                     messegeMap.put("/messege/" + myUid + userUid + "/msg/" + "2" + "/pic/", pic);
+                    Log.d("SendMessege>>>", "if pic null");
                 } else {
-                    if (name.equals("남자")) {
+                    if (sex.equals("남자")) {
                         messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/pic/", nullPic);
                         messegeMap.put("/messege/" + myUid + userUid + "/msg/" + "2" + "/pic/", nullPic);
+                        Log.d("SendMessege>>>", "if pic 남자: " + name);
                     } else {
                         messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/pic/", nullPicF);
                         messegeMap.put("/messege/" + myUid + userUid + "/msg/" + "2" + "/pic/", nullPicF);
+                        Log.d("SendMessege>>>", "if pic 여자: " + name);
                     }
                 }
 
@@ -186,10 +191,11 @@ public class SendMessege {
         documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                String name = documentSnapshot.getString("name");
-                String sex = documentSnapshot.getString("sex");
-                String age = documentSnapshot.getString("age");
-                String pic = documentSnapshot.getString("pic");
+                String userName = documentSnapshot.getString("name");
+                String userSex = documentSnapshot.getString("sex");
+                Log.d("SendMessege>>>", "get user sex: " + userSex);
+                String userAge = documentSnapshot.getString("age");
+                String userPic = documentSnapshot.getString("pic");
                 Double latitude = (Double) documentSnapshot.get("latitude");
                 Double longitude = (Double) documentSnapshot.get("longitude");
                 String latitudeS = String.valueOf(latitude);
@@ -197,14 +203,14 @@ public class SendMessege {
 
                 Map<String, Object> userUpdate = new HashMap<>();
                 userUpdate.put("/messege/" + key + "/" + userUid + "/uid/", userUid);
-                userUpdate.put("/messege/" + key + "/" + userUid + "/name/", name);
-                userUpdate.put("/messege/" + key + "/" + userUid + "/sex/", sex);
-                userUpdate.put("/messege/" + key + "/" + userUid + "/age/", age);
+                userUpdate.put("/messege/" + key + "/" + userUid + "/name/", userName);
+                userUpdate.put("/messege/" + key + "/" + userUid + "/sex/", userSex);
+                userUpdate.put("/messege/" + key + "/" + userUid + "/age/", userAge);
                 userUpdate.put("/messege/" + key + "/" + userUid + "/ischat/", "1");
-                if (pic != null) {
-                    userUpdate.put("/messege/" + key + "/" + userUid + "/pic/", pic);
+                if (userPic != null) {
+                    userUpdate.put("/messege/" + key + "/" + userUid + "/pic/", userPic);
                 } else {
-                    if (sex.equals("남자")) {
+                    if (userSex.equals("남자")) {
                         userUpdate.put("/messege/" + key + "/" + userUid + "/pic/", nullPic);
                     } else {
                         userUpdate.put("/messege/" + key + "/" + userUid + "/pic/", nullPicF);

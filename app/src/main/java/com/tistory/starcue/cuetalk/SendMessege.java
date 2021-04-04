@@ -160,6 +160,8 @@ public class SendMessege {
                 messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "2" + "/messege/", messege);
                 messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "2" + "/name/", name);
                 messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "2" + "/time/", getTime());
+                messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "2" + "/read/", "1");
+
 
                 messegeMap.put("/messege/" + myUid+userUid + "/lastmsg" + myUid+userUid + "/lastmessege/", messege);
                 messegeMap.put("/messege/" + myUid+userUid + "/lastmsg" + myUid+userUid + "/lasttime/", getTime());

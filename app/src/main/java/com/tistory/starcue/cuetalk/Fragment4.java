@@ -106,15 +106,18 @@ public class Fragment4 extends Fragment {
         reference.getRef().child("messege").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Log.d("Fragment4>>>", "check added get snapshot key : " + snapshot.getKey());
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                    if (!snapshot1.getKey().equals("msg") && !snapshot1.getKey().equals(myUid) && !snapshot1.getKey().equals("finished")) {
+                    if (!snapshot1.getKey().equals("msg") && !snapshot1.getKey().equals(myUid)) {
                         if (snapshot1.getKey().contains("lastmsg")) {
                             String key = snapshot1.getKey();
+                            Log.d("Fragment4>>>", "check added last key : " + key);
                             LastListItem lastListItem = snapshot1.getValue(LastListItem.class);
                             lastList.add(lastListItem);
                             lastKeyList.add(key);
                         } else {
                             String key = snapshot1.getKey();
+                            Log.d("Fragment4>>>", "check added array key : " + key);
                             F4MessegeItem f4MessegeItem = snapshot1.getValue(F4MessegeItem.class);
                             arrayList.add(f4MessegeItem);
                             arrayKeyList.add(key);
@@ -162,20 +165,47 @@ public class Fragment4 extends Fragment {
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
 //                Log.d("Fragment4>>>", "removed: " + snapshot.getKey());//getroomname
-//                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-//                    if (!snapshot1.getKey().equals("msg") && !snapshot1.getKey().equals(myUid) && !snapshot1.getKey().equals("finished")) {
-//                        String key = snapshot1.getKey();
-//                        LastListItem lastListItem = snapshot1.getValue(LastListItem.class);
-//                        lastList.remove(lastListItem);
-//                        lastKeyList.remove(key);
-//                    } else {
-//                        String key = snapshot1.getKey();
-//                        F4MessegeItem f4MessegeItem = snapshot1.getValue(F4MessegeItem.class);
-//                        arrayList.remove(f4MessegeItem);
-//                        arrayKeyList.remove(key);
+//                int i;
+//                for (i = 0; i >= arrayList.size(); i++) {
+//                    Log.d("Fragment4>>>", "removed: " + "1");
+//                    if (!snapshot.getKey().contains(arrayList.get(i).getUid())) {
+//                        Log.d("Fragment4>>>", "removed: " + "2");
+//                        for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+//                            Log.d("Fragment4>>>", "removed: " + "3 / " + snapshot1.getKey());
+//                            if (!snapshot1.getKey().equals("msg") && !snapshot1.getKey().equals(myUid) && !snapshot1.getKey().equals("finished")) {
+//                                Log.d("Fragment4>>>", "removed: " + "4");
+//                                String key = snapshot1.getKey();
+//                                LastListItem lastListItem = snapshot1.getValue(LastListItem.class);
+//                                lastList.remove(lastListItem);
+//                                lastKeyList.remove(key);
+//                            } else {
+//                                Log.d("Fragment4>>>", "removed: " + "5");
+//                                String key = snapshot1.getKey();
+//                                F4MessegeItem f4MessegeItem = snapshot1.getValue(F4MessegeItem.class);
+//                                arrayList.remove(f4MessegeItem);
+//                                arrayKeyList.remove(key);
+//                            }
+//                        }
+//                        adapter.notifyDataSetChanged();
 //                    }
 //                }
-//                adapter.notifyDataSetChanged();
+
+
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    if (snapshot1.getKey().contains("lastmsg")) {
+                        String key = snapshot1.getKey();
+                        LastListItem lastListItem = snapshot1.getValue(LastListItem.class);
+                        lastList.remove(lastListItem);
+                        lastKeyList.remove(key);
+                    } else if (!snapshot1.getKey().equals("msg") && !snapshot1.getKey().equals(myUid) && !snapshot1.getKey().contains("lastmsg")) {
+                        String key = snapshot1.getKey();
+                        F4MessegeItem f4MessegeItem = snapshot1.getValue(F4MessegeItem.class);
+                        arrayList.remove(f4MessegeItem);
+                        arrayKeyList.remove(key);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+
             }
 
             @Override

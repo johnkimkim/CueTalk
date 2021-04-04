@@ -56,7 +56,7 @@
             android:textColor="#000000"/>
     </LinearLayout>
 
-    <ImageView
+    <TextView
         android:id="@+id/f4re_count"
         android:layout_width="30dp"
         android:layout_height="30dp"

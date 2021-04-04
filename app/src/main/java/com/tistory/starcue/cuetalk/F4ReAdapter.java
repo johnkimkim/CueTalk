@@ -103,7 +103,7 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
         ImageView pic;
-        TextView name, sex, age, km, messege, time;
+        TextView name, sex, age, km, messege, time, count;
         RelativeLayout relativeLayout;
 
         public CustomViewHolder(@NonNull View itemView) {
@@ -116,6 +116,8 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
             this.messege = itemView.findViewById(R.id.f4re_messege);
             this.time = itemView.findViewById(R.id.f4re_time);
             this.relativeLayout = itemView.findViewById(R.id.f4_recyclerview);
+            this.count = itemView.findViewById(R.id.f4re_count);
+
         }
     }
 

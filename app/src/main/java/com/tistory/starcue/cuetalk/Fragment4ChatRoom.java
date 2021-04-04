@@ -54,8 +54,8 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
 
     //    private RecyclerView.LayoutManager layoutManager;
-    private ArrayList<ChatRoomItem> arrayList;
-    private ChatRoomAdapter adapter;
+    private ArrayList<F4ChatRoomItem> arrayList;
+    private F4ChatRoomAdapter adapter;
 
     RecyclerView recyclerView;
     Button sendimg, sendmsg, gobackbtn, outroombtn;
@@ -150,7 +150,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
         arrayList = new ArrayList<>();
-        adapter = new ChatRoomAdapter(Fragment4ChatRoom.this, arrayList);
+        adapter = new F4ChatRoomAdapter(Fragment4ChatRoom.this, arrayList);
         recyclerView.setAdapter(adapter);
 
         recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
@@ -182,7 +182,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 arrayList.clear();
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                    ChatRoomItem chatRoomItem = snapshot1.getValue(ChatRoomItem.class);
+                    F4ChatRoomItem chatRoomItem = snapshot1.getValue(F4ChatRoomItem.class);
                     arrayList.add(chatRoomItem);
 
                     reference.getRef().child("messege").child(roomName).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
@@ -223,7 +223,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         reference.getRef().child("messege").child(getroomname).child("msg").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                ChatRoomItem chatRoomItem = snapshot.getValue(ChatRoomItem.class);
+                F4ChatRoomItem chatRoomItem = snapshot.getValue(F4ChatRoomItem.class);
                 arrayList.add(chatRoomItem);
                 adapter.notifyDataSetChanged();
 
@@ -308,6 +308,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                         sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/name/", myName);
                         sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/pic/", myPic);
                         sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/time/", getTime());
+                        sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/read/", "1");
 
                         sendmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lastmessege/", messege);
                         sendmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lasttime/", getTime());
@@ -454,6 +455,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                 sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/name/", myName);
                 sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/pic/", myPic);
                 sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/time/", getTime());
+                sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/read/", "1");
 
                 sendmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lastmessege/", "사진이 전송되었습니다.");
                 sendmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lasttime/", getTime());
@@ -548,22 +550,34 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     }
 
     private void deleteAllChatRoom() {
-        Map<String, Object> outmap = new HashMap<>();
-        outmap.put("/messege/" + getroomname + "/" + myUid + "/ischat/", "2");
-        reference.updateChildren(outmap).addOnSuccessListener(new OnSuccessListener<Void>() {
+//        Map<String, Object> outmap = new HashMap<>();
+//        outmap.put("/messege/" + getroomname + "/" + myUid + "/ischat/", "2");
+//        reference.updateChildren(outmap).addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void aVoid) {
+//                reference.getRef().child("messege").child(getroomname).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        finish();
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//
+//                    }
+//                });
+//            }
+//        });
+        reference.getRef().child("messege").child(getroomname).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                reference.getRef().child("messege").child(getroomname).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        finish();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+                alertDialogD.dismiss();
+                finish();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
 
-                    }
-                });
             }
         });
     }

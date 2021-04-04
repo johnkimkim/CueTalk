@@ -61,6 +61,7 @@ public class ChatRoom extends AppCompatActivity {
     private ChatRoomAdapter adapter;
 
     private DatabaseReference reference;
+    private DatabaseReference reference1;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     StorageReference storageReference;
@@ -127,6 +128,7 @@ public class ChatRoom extends AppCompatActivity {
         reference.getRef().child("inchat").child(where).child("messege").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Log.d("ChatRoom>>>", "messege get key: " + snapshot.getKey());
                 ChatRoomItem chatRoomItem = snapshot.getValue(ChatRoomItem.class);//error
 
                 arrayList.add(chatRoomItem);
@@ -201,23 +203,30 @@ public class ChatRoom extends AppCompatActivity {
     }
 
     private void sendMessegeMap(String messege, String myName, String myPic) {
-        reference.getRef().child("inchat").child(where).child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-            @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                int count = (int) dataSnapshot.getChildrenCount() + 1;
-                Map<String, Object> sendMessege = new HashMap<>();
-                sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "messege" + "/", messege);
-                sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "name" + "/", myName);
-                sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "pic" + "/", myPic);
-                sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "time" + "/", getTime());
-                reference.updateChildren(sendMessege);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(ChatRoom.this, "인터넷 연결이 불안정해 메시지 전송에 실패했습니다.", Toast.LENGTH_SHORT).show();
-            }
-        });
+        Map<String, Object> sendmsg = new HashMap<>();
+        sendmsg.put("/messege/", messege);
+        sendmsg.put("/name/", myName);
+        sendmsg.put("/pic/", myPic);
+        sendmsg.put("/time/", getTime());
+        reference.child("inchat").child(where).child("messege").push().updateChildren(sendmsg);
+
+//        reference.getRef().child("inchat").child(where).child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//            @Override
+//            public void onSuccess(DataSnapshot dataSnapshot) {
+//                int count = (int) dataSnapshot.getChildrenCount() + 1;
+//                Map<String, Object> sendMessege = new HashMap<>();
+//                sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "messege" + "/", messege);
+//                sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "name" + "/", myName);
+//                sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "pic" + "/", myPic);
+//                sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "time" + "/", getTime());
+//                reference.updateChildren(sendMessege);
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Toast.makeText(ChatRoom.this, "인터넷 연결이 불안정해 메시지 전송에 실패했습니다.", Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 
     private void setinit() {
@@ -674,23 +683,29 @@ public class ChatRoom extends AppCompatActivity {
     }
 
     private void sendMessegeMapPic(String uri, String myName, String myPic) {
-        reference.getRef().child("inchat").child(where).child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-            @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                int count = (int) dataSnapshot.getChildrenCount() + 1;
-                Map<String, Object> sendMessege = new HashMap<>();
-                sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "uri" + "/", uri);
-                sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "name" + "/", myName);
-                sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "pic" + "/", myPic);
-                sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "time" + "/", getTime());
-                reference.updateChildren(sendMessege);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(ChatRoom.this, "인터넷 연결이 불안정해 메시지 전송에 실패했습니다.", Toast.LENGTH_SHORT).show();
-            }
-        });
+        Map<String, Object> sendimgmap = new HashMap<>();
+        sendimgmap.put("uri", uri);
+        sendimgmap.put("name", myName);
+        sendimgmap.put("pic", myPic);
+        reference.child("inchat").child(where).child("messege").push().updateChildren(sendimgmap);
+
+//        reference.getRef().child("inchat").child(where).child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//            @Override
+//            public void onSuccess(DataSnapshot dataSnapshot) {
+//                int count = (int) dataSnapshot.getChildrenCount() + 1;
+//                Map<String, Object> sendMessege = new HashMap<>();
+//                sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "uri" + "/", uri);
+//                sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "name" + "/", myName);
+//                sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "pic" + "/", myPic);
+//                sendMessege.put("/inchat/" + where + "/" + "messege" + "/" + count + "/" + "time" + "/", getTime());
+//                reference.updateChildren(sendMessege);
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Toast.makeText(ChatRoom.this, "인터넷 연결이 불안정해 메시지 전송에 실패했습니다.", Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 
     private void deleteMyStoragePic() {

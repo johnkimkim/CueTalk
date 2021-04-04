@@ -221,6 +221,14 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
                 updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/age/", userAge);
                 updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/latitude/", userLatitude);
                 updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/longitude/", userLongitude);
+
+                Map<String, Object> firstmsg = new HashMap<>();
+                firstmsg.put("time", "dlqwkddhksfycjtaptlwl");
+                firstmsg.put("messege", "dlqwkddhksfycjtaptlwl");
+                firstmsg.put("pic", null);
+                firstmsg.put("name", null);
+                firstmsg.put("uri", null);
+                reference.child("inchat").child(where).child("messege").push().updateChildren(firstmsg);
                 reference.updateChildren(updateUser);
             }
         }).addOnFailureListener(new OnFailureListener() {

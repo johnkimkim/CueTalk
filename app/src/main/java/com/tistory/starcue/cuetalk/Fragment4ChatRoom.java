@@ -144,6 +144,18 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         setSendimg();
     }
 
+    private void setState() {
+        Map<String, Object> setState = new HashMap<>();
+        setState.put("/messege/" + getroomname + "/" + myUid + "/state/", "2");//채팅중
+        reference.updateChildren(setState);
+    }
+
+    private void setOutState() {
+        Map<String, Object> setState = new HashMap<>();
+        setState.put("/messege/" + getroomname + "/" + myUid + "/state/", "1");//채팅방 나감
+        reference.updateChildren(setState);
+    }
+
     private void setRecyclerView() {
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(Fragment4ChatRoom.this);
@@ -176,6 +188,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         getroomname = roomName;
         getNewMessege();
         checkUserIsChat();
+        setState();
 
         reference.getRef().child("messege").child(roomName).child("msg").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -299,30 +312,46 @@ public class Fragment4ChatRoom extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String messege = editText.getText().toString();
-                reference.getRef().child("messege").child(getroomname).child("msg").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                    @Override
-                    public void onSuccess(DataSnapshot dataSnapshot) {
-                        int i = (int) dataSnapshot.getChildrenCount() + 1;
-                        Map<String, Object> sendmsg = new HashMap<>();
-                        sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/messege/", messege);
-                        sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/name/", myName);
-                        sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/pic/", myPic);
-                        sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/time/", getTime());
-                        sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/read/", "1");
 
-                        sendmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lastmessege/", messege);
-                        sendmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lasttime/", getTime());
+                Map<String, Object> sendmsg = new HashMap<>();
+                Map<String, Object> lastmsg = new HashMap<>();
+                sendmsg.put("messege", messege);
+                sendmsg.put("name", myName);
+                sendmsg.put("pic", myPic);
+                sendmsg.put("time", getTime());
+                sendmsg.put("read", "1");
 
-                        reference.updateChildren(sendmsg);
+                lastmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lastmessege/", messege);
+                lastmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lasttime/", getTime());
+                reference.child("messege").child(getroomname).child("msg").push().updateChildren(sendmsg);
+                reference.updateChildren(lastmsg);
 
-                        editText.setText("");
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(Fragment4ChatRoom.this, "인터넷 연결이 불안정해 메시지 전송에 실패했습니다.", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                editText.setText("");
+
+//                reference.getRef().child("messege").child(getroomname).child("msg").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//                    @Override
+//                    public void onSuccess(DataSnapshot dataSnapshot) {
+//                        int i = (int) dataSnapshot.getChildrenCount() + 1;
+//                        Map<String, Object> sendmsg = new HashMap<>();
+//                        sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/messege/", messege);
+//                        sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/name/", myName);
+//                        sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/pic/", myPic);
+//                        sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/time/", getTime());
+//                        sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/read/", "1");
+//
+//                        sendmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lastmessege/", messege);
+//                        sendmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lasttime/", getTime());
+//
+//                        reference.updateChildren(sendmsg);
+//
+//                        editText.setText("");
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Toast.makeText(Fragment4ChatRoom.this, "인터넷 연결이 불안정해 메시지 전송에 실패했습니다.", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
             }
         });
     }
@@ -446,27 +475,40 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     }
 
     private void sendMessegeMapPic(String uri, String myName, String myPic) {
-        reference.getRef().child("messege").child(getroomname).child("msg").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-            @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                int i = (int) dataSnapshot.getChildrenCount() + 1;
-                Map<String, Object> sendmsg = new HashMap<>();
-                sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/uri/", uri);
-                sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/name/", myName);
-                sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/pic/", myPic);
-                sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/time/", getTime());
-                sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/read/", "1");
+        Map<String, Object> sendmsgpic = new HashMap<>();
+        Map<String, Object> lastmsg = new HashMap<>();
+        sendmsgpic.put("uri", uri);
+        sendmsgpic.put("name", myName);
+        sendmsgpic.put("pic", myPic);
+        sendmsgpic.put("time", getTime());
+        sendmsgpic.put("read", "1");
 
-                sendmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lastmessege/", "사진이 전송되었습니다.");
-                sendmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lasttime/", getTime());
-                reference.updateChildren(sendmsg);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(Fragment4ChatRoom.this, "인터넷 연결이 불안정해 메시지 전송에 실패했습니다.", Toast.LENGTH_SHORT).show();
-            }
-        });
+        lastmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lastmessege/", "사진이 전송되었습니다.");
+        lastmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lasttime/", getTime());
+        reference.child("messege").child(getroomname).child("msg").push().updateChildren(sendmsgpic);
+        reference.updateChildren(lastmsg);
+
+//        reference.getRef().child("messege").child(getroomname).child("msg").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//            @Override
+//            public void onSuccess(DataSnapshot dataSnapshot) {
+//                int i = (int) dataSnapshot.getChildrenCount() + 1;
+//                Map<String, Object> sendmsg = new HashMap<>();
+//                sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/uri/", uri);
+//                sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/name/", myName);
+//                sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/pic/", myPic);
+//                sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/time/", getTime());
+//                sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/read/", "1");
+//
+//                sendmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lastmessege/", "사진이 전송되었습니다.");
+//                sendmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lasttime/", getTime());
+//                reference.updateChildren(sendmsg);
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Toast.makeText(Fragment4ChatRoom.this, "인터넷 연결이 불안정해 메시지 전송에 실패했습니다.", Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 
     private void setOutroombtn() {
@@ -682,6 +724,12 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        setOutState();
     }
 
     private String getTime() {

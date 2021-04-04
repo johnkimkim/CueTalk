@@ -130,8 +130,11 @@ public class SendMessege {
                 String countString = Integer.toString(count);
 
                 Map<String, Object> messegeMap = new HashMap<>();
-                messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "1/" + "messege/", "dlqwkddhksfycjtaptlwl");
-                messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "1/" + "time/", "dlqwkddhksfycjtaptlwl");
+                Map<String, Object> fmsg = new HashMap<>();
+                Map<String, Object> firstmsg = new HashMap<>();
+
+                fmsg.put("messege/", "dlqwkddhksfycjtaptlwl");
+                fmsg.put("time/", "dlqwkddhksfycjtaptlwl");
 
                 messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/uid/", myUid);
                 messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/name/", name);
@@ -140,33 +143,34 @@ public class SendMessege {
                 messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/latitude/", latitude);
                 messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/longitude/", longitude);
                 messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/ischat/", "1");
+                messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/state/", "1");
 
                 if (pic != null) {
                     messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/pic/", pic);
-                    messegeMap.put("/messege/" + myUid + userUid + "/msg/" + "2" + "/pic/", pic);
+                    firstmsg.put("pic", pic);
                     Log.d("SendMessege>>>", "if pic null");
                 } else {
                     if (sex.equals("남자")) {
                         messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/pic/", nullPic);
-                        messegeMap.put("/messege/" + myUid + userUid + "/msg/" + "2" + "/pic/", nullPic);
+                        firstmsg.put("pic", nullPic);
                         Log.d("SendMessege>>>", "if pic 남자: " + name);
                     } else {
                         messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/pic/", nullPicF);
-                        messegeMap.put("/messege/" + myUid + userUid + "/msg/" + "2" + "/pic/", nullPicF);
+                        firstmsg.put("pic", nullPicF);
                         Log.d("SendMessege>>>", "if pic 여자: " + name);
                     }
                 }
 
-                messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "2" + "/messege/", messege);
-                messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "2" + "/name/", name);
-                messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "2" + "/time/", getTime());
-                messegeMap.put("/messege/" + myUid+userUid + "/msg/" + "2" + "/read/", "1");
-
+                firstmsg.put("messege", messege);
+                firstmsg.put("name", name);
+                firstmsg.put("time", getTime());
+                firstmsg.put("read", "1");
 
                 messegeMap.put("/messege/" + myUid+userUid + "/lastmsg" + myUid+userUid + "/lastmessege/", messege);
                 messegeMap.put("/messege/" + myUid+userUid + "/lastmsg" + myUid+userUid + "/lasttime/", getTime());
 
-
+                reference.child("messege").child(myUid+userUid).child("msg").push().updateChildren(fmsg);
+                reference.child("messege").child(myUid+userUid).child("msg").push().updateChildren(firstmsg);
                 reference.updateChildren(messegeMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -209,6 +213,7 @@ public class SendMessege {
                 userUpdate.put("/messege/" + key + "/" + userUid + "/sex/", userSex);
                 userUpdate.put("/messege/" + key + "/" + userUid + "/age/", userAge);
                 userUpdate.put("/messege/" + key + "/" + userUid + "/ischat/", "1");
+                userUpdate.put("/messege/" + key + "/" + userUid + "/state/", "1");
                 if (userPic != null) {
                     userUpdate.put("/messege/" + key + "/" + userUid + "/pic/", userPic);
                 } else {

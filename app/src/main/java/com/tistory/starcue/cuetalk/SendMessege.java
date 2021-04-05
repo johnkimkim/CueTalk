@@ -126,8 +126,6 @@ public class SendMessege {
         reference.child("messege").child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
-                int count = (int) dataSnapshot.getChildrenCount() + 1;
-                String countString = Integer.toString(count);
 
                 Map<String, Object> messegeMap = new HashMap<>();
                 Map<String, Object> fmsg = new HashMap<>();
@@ -171,22 +169,26 @@ public class SendMessege {
 
                 reference.child("messege").child(myUid+userUid).child("msg").push().updateChildren(fmsg);
                 reference.child("messege").child(myUid+userUid).child("msg").push().updateChildren(firstmsg);
+
+                updateUserInRoom(userUid, myUid+userUid);
                 reference.updateChildren(messegeMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        updateUserInRoom(userUid, myUid+userUid);
+//                        updateUserInRoom(userUid, myUid+userUid);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(context, "네트워크 문제로 메시지 전송에 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show();
+                        reference.getRef().child("messege").child(myUid+userUid).removeValue();
                     }
                 });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
+                Toast.makeText(context, "네트워크 문제로 메시지 전송에 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show();
+                reference.getRef().child("messege").child(myUid+userUid).removeValue();
             }
         });
 
@@ -225,12 +227,24 @@ public class SendMessege {
                 }
                 userUpdate.put("/messege/" + key + "/" + userUid + "/latitude/", latitudeS);
                 userUpdate.put("/messege/" + key + "/" + userUid + "/longitude/", longitudeS);
-                reference.updateChildren(userUpdate);
+                reference.updateChildren(userUpdate).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context, "네트워크 문제로 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                        reference.getRef().child("messege").child(myUid+userUid).removeValue();
+                    }
+                });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
+                Toast.makeText(context, "네트워크 문제로 메시지 전송에 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show();
+                reference.getRef().child("messege").child(myUid+userUid).removeValue();
             }
         });
 
@@ -277,6 +291,14 @@ public class SendMessege {
         long now = System.currentTimeMillis();
         Date mDate = new Date(now);
         SimpleDateFormat format = new SimpleDateFormat("hh:mm");
+        String date = format.format(mDate);
+        return date;
+    }
+
+    private String getSecond() {
+        long now = System.currentTimeMillis();
+        Date mDate = new Date(now);
+        SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
         String date = format.format(mDate);
         return date;
     }

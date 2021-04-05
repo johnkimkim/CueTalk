@@ -78,6 +78,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     AlertDialog alertDialogD;
 
     boolean isOpen;
+    boolean outAlready;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,6 +86,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         setContentView(R.layout.fragment4_chat_room);
 
         isOpen = false;
+        outAlready = false;
         setinit();
     }
 
@@ -592,27 +594,10 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     }
 
     private void deleteAllChatRoom() {
-//        Map<String, Object> outmap = new HashMap<>();
-//        outmap.put("/messege/" + getroomname + "/" + myUid + "/ischat/", "2");
-//        reference.updateChildren(outmap).addOnSuccessListener(new OnSuccessListener<Void>() {
-//            @Override
-//            public void onSuccess(Void aVoid) {
-//                reference.getRef().child("messege").child(getroomname).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        finish();
-//                    }
-//                }).addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//
-//                    }
-//                });
-//            }
-//        });
         reference.getRef().child("messege").child(getroomname).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
+                outAlready = true;
                 alertDialogD.dismiss();
                 finish();
             }
@@ -650,7 +635,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
             @Override
             public void onSuccess(ListResult listResult) {
                 Log.d("Fragment4ChatRoom>>>", "ddd1");
-                int i  = listResult.getItems().size();
+                int i = listResult.getItems().size();
                 Log.d("Fragment4ChatRoom>>>", "ddd1 get count: " + i);
                 if (i >= 1) {
                     for (StorageReference item : listResult.getItems()) {
@@ -658,7 +643,9 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                         storageReference.child(myUid + "/" + getroomname + "/" + item.getName()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
+                                outAlready = true;
                                 Log.d("Fragment4ChatRoom>>>", "deleteImageISend success");
+                                alertDialogD.dismiss();
                                 finish();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
@@ -669,6 +656,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                         });
                     }
                 } else {
+                    alertDialogD.dismiss();
                     finish();
                 }
 
@@ -729,7 +717,11 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        setOutState();
+
+        if (!outAlready) {
+            setOutState();
+        }
+
     }
 
     private String getTime() {

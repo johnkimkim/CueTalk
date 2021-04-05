@@ -2,10 +2,18 @@ package com.tistory.starcue.cuetalk;
 
 public class F4MessegeItem {
 
-    String uid, pic, name, sex, age, latitude, longitude, ischat;
+    String uid, pic, name, sex, age, latitude, longitude, ischat, state;
 
     public F4MessegeItem() {
 
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     public String getUid() {

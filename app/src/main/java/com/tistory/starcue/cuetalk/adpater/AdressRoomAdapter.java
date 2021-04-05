@@ -1,27 +1,14 @@
-package com.tistory.starcue.cuetalk;
+package com.tistory.starcue.cuetalk.adpater;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
 import android.location.Location;
-import android.provider.ContactsContract;
-import android.text.Layout;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,10 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -43,12 +28,16 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.tistory.starcue.cuetalk.AdressRoom;
+import com.tistory.starcue.cuetalk.item.AdressRoomItem;
+import com.tistory.starcue.cuetalk.GpsTracker;
+import com.tistory.starcue.cuetalk.R;
+import com.tistory.starcue.cuetalk.SeePicDialog;
+import com.tistory.starcue.cuetalk.SendMessege;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
-import java.util.zip.Inflater;
 
 public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.CustomViewHolder> {
 
@@ -74,7 +63,7 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
     String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
 
-    AdressRoomAdapter(ArrayList<AdressRoomItem> arrayList, Context context) {
+    public AdressRoomAdapter(ArrayList<AdressRoomItem> arrayList, Context context) {
         this.arrayList = arrayList;
         this.context = context;
 

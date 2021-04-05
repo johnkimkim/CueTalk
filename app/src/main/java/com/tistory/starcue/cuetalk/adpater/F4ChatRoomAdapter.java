@@ -1,4 +1,4 @@
-package com.tistory.starcue.cuetalk;
+package com.tistory.starcue.cuetalk.adpater;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -15,6 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
+import com.tistory.starcue.cuetalk.Code;
+import com.tistory.starcue.cuetalk.DatabaseHandler;
+import com.tistory.starcue.cuetalk.item.F4ChatRoomItem;
+import com.tistory.starcue.cuetalk.R;
+import com.tistory.starcue.cuetalk.SeePicDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +41,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private Context context;
 
-    F4ChatRoomAdapter(Context context, ArrayList<F4ChatRoomItem> arrayList) {
+    public F4ChatRoomAdapter(Context context, ArrayList<F4ChatRoomItem> arrayList) {
         this.arrayList = arrayList;
         this.context = context;
     }

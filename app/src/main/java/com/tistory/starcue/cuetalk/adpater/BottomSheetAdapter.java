@@ -1,12 +1,9 @@
-package com.tistory.starcue.cuetalk;
+package com.tistory.starcue.cuetalk.adpater;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,14 +20,17 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.tistory.starcue.cuetalk.AdressRoom;
+import com.tistory.starcue.cuetalk.item.AdressRoomItem;
+import com.tistory.starcue.cuetalk.DatabaseHandler;
+import com.tistory.starcue.cuetalk.GpsTracker;
+import com.tistory.starcue.cuetalk.R;
+import com.tistory.starcue.cuetalk.SeePicDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,7 +56,7 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
 
     String myUid;
 
-    BottomSheetAdapter(ArrayList<AdressRoomItem> bottomList, Context context) {
+    public BottomSheetAdapter(ArrayList<AdressRoomItem> bottomList, Context context) {
         this.bottomList = bottomList;
         this.context = context;
     }

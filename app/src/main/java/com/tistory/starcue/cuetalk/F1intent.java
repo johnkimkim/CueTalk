@@ -12,20 +12,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.tistory.starcue.cuetalk.adpater.F1intenrAdapter;
+import com.tistory.starcue.cuetalk.item.AdressRoomItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.tistory.starcue.cuetalk.Fragment1.spinner;
+import static com.tistory.starcue.cuetalk.fragment.Fragment1.spinner;
 
 public class F1intent extends AppCompatActivity {
 

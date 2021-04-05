@@ -1,13 +1,11 @@
-package com.tistory.starcue.cuetalk;
+package com.tistory.starcue.cuetalk.adpater;
 
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -18,8 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.tistory.starcue.cuetalk.item.F4MessegeItem;
+import com.tistory.starcue.cuetalk.Fragment4ChatRoom;
+import com.tistory.starcue.cuetalk.GpsTracker;
+import com.tistory.starcue.cuetalk.item.LastListItem;
+import com.tistory.starcue.cuetalk.R;
 
 import java.util.ArrayList;
 
@@ -37,7 +38,7 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
 
     GpsTracker gpsTracker;
 
-    F4ReAdapter(ArrayList<F4MessegeItem> arrayList, ArrayList<LastListItem> lastList, Context context) {
+    public F4ReAdapter(ArrayList<F4MessegeItem> arrayList, ArrayList<LastListItem> lastList, Context context) {
         this.arrayList = arrayList;
         this.lastList = lastList;
         this.context = context;

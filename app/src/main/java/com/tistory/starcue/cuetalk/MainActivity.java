@@ -5,18 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,6 +22,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.tistory.starcue.cuetalk.fragment.Fragment1;
+import com.tistory.starcue.cuetalk.fragment.Fragment2;
+import com.tistory.starcue.cuetalk.fragment.Fragment3;
+import com.tistory.starcue.cuetalk.fragment.Fragment4;
+import com.tistory.starcue.cuetalk.fragment.Fragment5;
 
 import java.util.ArrayList;
 
@@ -145,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
     public static class SectionsPagerAdapter extends FragmentPagerAdapter {
         ArrayList<Fragment> items = new ArrayList<Fragment>();
         public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
+            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         }
         public void addItem(Fragment item) {
             items.add(item);

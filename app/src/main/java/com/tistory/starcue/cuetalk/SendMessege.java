@@ -46,7 +46,7 @@ public class SendMessege {
 
     private GpsTracker gpsTracker;
 
-    SendMessege(Context context) {
+    public SendMessege(Context context) {
         this.context = context;
     }
 
@@ -142,6 +142,7 @@ public class SendMessege {
                 messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/longitude/", longitude);
                 messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/ischat/", "1");
                 messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/state/", "1");
+                messegeMap.put("/myroom/" + myUid + "/" + myUid+userUid, myUid+userUid);
 
                 if (pic != null) {
                     messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/pic/", pic);
@@ -167,22 +168,14 @@ public class SendMessege {
                 messegeMap.put("/messege/" + myUid+userUid + "/lastmsg" + myUid+userUid + "/lastmessege/", messege);
                 messegeMap.put("/messege/" + myUid+userUid + "/lastmsg" + myUid+userUid + "/lasttime/", getTime());
 
-                reference.child("messege").child(myUid+userUid).child("msg").push().updateChildren(fmsg);
-                reference.child("messege").child(myUid+userUid).child("msg").push().updateChildren(firstmsg);
 
-                updateUserInRoom(userUid, myUid+userUid);
                 reference.updateChildren(messegeMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-//                        updateUserInRoom(userUid, myUid+userUid);
+                        updateUserInRoom(userUid, myUid+userUid, fmsg, firstmsg);
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(context, "네트워크 문제로 메시지 전송에 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show();
-                        reference.getRef().child("messege").child(myUid+userUid).removeValue();
-                    }
-                });
+                });//last
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -194,7 +187,7 @@ public class SendMessege {
 
     }
 
-    public void updateUserInRoom(String userUid, String key) {
+    public void updateUserInRoom(String userUid, String key, Map<String, Object> fmsg, Map<String, Object> firstmsg) {
         DocumentReference documentReference = db.collection("users").document(userUid);
         documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -216,6 +209,7 @@ public class SendMessege {
                 userUpdate.put("/messege/" + key + "/" + userUid + "/age/", userAge);
                 userUpdate.put("/messege/" + key + "/" + userUid + "/ischat/", "1");
                 userUpdate.put("/messege/" + key + "/" + userUid + "/state/", "1");
+                userUpdate.put("/myroom/" + userUid + "/" + key + "/", key);
                 if (userPic != null) {
                     userUpdate.put("/messege/" + key + "/" + userUid + "/pic/", userPic);
                 } else {
@@ -230,7 +224,19 @@ public class SendMessege {
                 reference.updateChildren(userUpdate).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+                        reference.child("messege").child(myUid+userUid).child("msg").push().updateChildren(fmsg);
+                        reference.child("messege").child(myUid+userUid).child("msg").push().updateChildren(firstmsg).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
 
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(context, "네트워크 문제로 메시지 전송에 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show();
+                                reference.getRef().child("messege").child(myUid+userUid).removeValue();
+                            }
+                        });
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override

@@ -1,4 +1,4 @@
-package com.tistory.starcue.cuetalk;
+package com.tistory.starcue.cuetalk.fragment;
 
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,6 +17,9 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.tistory.starcue.cuetalk.AdressRoom;
+import com.tistory.starcue.cuetalk.DatabaseHandler;
+import com.tistory.starcue.cuetalk.R;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.tistory.starcue.cuetalk;
+package com.tistory.starcue.cuetalk.fragment;
 
 import android.os.Bundle;
 
@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.tistory.starcue.cuetalk.R;
 
 public class Fragment2 extends Fragment {
 

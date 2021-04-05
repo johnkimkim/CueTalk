@@ -1,4 +1,4 @@
-package com.tistory.starcue.cuetalk;
+package com.tistory.starcue.cuetalk.fragment;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -28,6 +28,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.tistory.starcue.cuetalk.ChangeProfile;
+import com.tistory.starcue.cuetalk.DatabaseHandler;
+import com.tistory.starcue.cuetalk.PhoneNumber;
+import com.tistory.starcue.cuetalk.R;
+import com.tistory.starcue.cuetalk.SeePicDialog;
+import com.tistory.starcue.cuetalk.SplashActivity;
 
 import java.util.HashMap;
 import java.util.Map;

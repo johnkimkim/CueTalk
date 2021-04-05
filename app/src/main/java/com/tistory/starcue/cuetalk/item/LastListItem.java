@@ -1,4 +1,4 @@
-package com.tistory.starcue.cuetalk;
+package com.tistory.starcue.cuetalk.item;
 
 public class LastListItem {
 

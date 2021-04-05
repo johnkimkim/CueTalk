@@ -1,4 +1,4 @@
-package com.tistory.starcue.cuetalk;
+package com.tistory.starcue.cuetalk.adpater;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,6 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.tistory.starcue.cuetalk.item.AdressRoomItem;
+import com.tistory.starcue.cuetalk.R;
 
 import java.util.ArrayList;
 

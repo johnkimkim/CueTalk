@@ -41,6 +41,9 @@ import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.tistory.starcue.cuetalk.adpater.F4ChatRoomAdapter;
+import com.tistory.starcue.cuetalk.item.F4ChatRoomItem;
+import com.tistory.starcue.cuetalk.item.F4MessegeItem;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -656,6 +659,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                         });
                     }
                 } else {
+                    outAlready = true;
                     alertDialogD.dismiss();
                     finish();
                 }

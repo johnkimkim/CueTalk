@@ -46,4 +46,11 @@
 
     </LinearLayout>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/f2linear"
+        android:id="@+id/f2re"/>
+
+
 </RelativeLayout>

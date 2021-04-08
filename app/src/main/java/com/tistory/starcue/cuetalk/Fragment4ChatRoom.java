@@ -600,9 +600,14 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         reference.getRef().child("messege").child(getroomname).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                outAlready = true;
-                alertDialogD.dismiss();
-                finish();
+                reference.getRef().child("myroom").child(myUid).child(getroomname).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        outAlready = true;
+                        alertDialogD.dismiss();
+                        finish();
+                    }
+                });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -623,7 +628,12 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                 outmap.put("/messege/" + getroomname + "/msg/" + i + "/time/", "tkdeoqkddlskrkskrk");
                 reference.updateChildren(outmap);
                 Log.d("Fragment4ChatRoom>>>", "set ischat success");
-                deleteImageISend();
+                reference.getRef().child("myroom").child(myUid).child(getroomname).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        deleteImageISend();
+                    }
+                });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

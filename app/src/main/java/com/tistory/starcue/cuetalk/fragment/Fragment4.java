@@ -114,32 +114,41 @@ public class Fragment4 extends Fragment {
 
                 Log.d("Fragment4>>>", "onChildAdded snapshot key: " + snapshot.getKey());
                 if (snapshot.getKey().contains(myUid)) {
-                    reference.getRef().child("messege").child(snapshot.getKey()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                        @Override
-                        public void onSuccess(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                                if (dataSnapshot1.getKey().contains("lastmsg")) {
-                                    if (!lastKeyList.contains(dataSnapshot1.getKey())) {
-                                        String key = dataSnapshot1.getKey();
-                                        LastListItem lastListItem = dataSnapshot1.getValue(LastListItem.class);
-                                        lastList.add(lastListItem);
-                                        lastKeyList.add(key);
-                                        Log.d("Fragment4>>>", "last add");
+
+                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                        if (snapshot1.getKey().equals(myUid)) {
+                            String ischat = snapshot1.child("ischat").getValue(String.class);
+                            if (ischat.equals("1")) {
+                                reference.getRef().child("messege").child(snapshot.getKey()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DataSnapshot dataSnapshot) {
+                                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                                            if (dataSnapshot1.getKey().contains("lastmsg")) {
+                                                if (!lastKeyList.contains(dataSnapshot1.getKey())) {
+                                                    String key = dataSnapshot1.getKey();
+                                                    LastListItem lastListItem = dataSnapshot1.getValue(LastListItem.class);
+                                                    lastList.add(lastListItem);
+                                                    lastKeyList.add(key);
+                                                    Log.d("Fragment4>>>", "last add, key: " + key);
+                                                }
+                                            } else if (!dataSnapshot1.getKey().equals("msg") && !dataSnapshot1.getKey().equals(myUid) && !dataSnapshot1.getKey().contains("lastmsg")) {
+                                                if (!arrayKeyList.contains(dataSnapshot1.getKey())) {
+                                                    String key = dataSnapshot1.getKey();
+                                                    F4MessegeItem f4MessegeItem = dataSnapshot1.getValue(F4MessegeItem.class);
+                                                    arrayList.add(f4MessegeItem);
+                                                    arrayKeyList.add(key);
+                                                    Log.d("Fragment4>>>", "array add, key: " + key);
+                                                }
+                                            }
+                                        }
+                                        adapter.notifyDataSetChanged();
+                                        progressBar.setVisibility(View.GONE);
                                     }
-                                } else if (!dataSnapshot1.getKey().equals("msg") && !dataSnapshot1.getKey().equals(myUid) && !dataSnapshot1.getKey().contains("lastmsg")) {
-                                    if (!arrayKeyList.contains(dataSnapshot1.getKey())) {
-                                        String key = dataSnapshot1.getKey();
-                                        F4MessegeItem f4MessegeItem = dataSnapshot1.getValue(F4MessegeItem.class);
-                                        arrayList.add(f4MessegeItem);
-                                        arrayKeyList.add(key);
-                                        Log.d("Fragment4>>>", "array add");
-                                    }
-                                }
+                                });
                             }
-                            adapter.notifyDataSetChanged();
-                            progressBar.setVisibility(View.GONE);
                         }
-                    });
+                    }
+
                 }
 
             }
@@ -147,7 +156,37 @@ public class Fragment4 extends Fragment {
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
-                Log.d("Fragment4>>>", "onchild Change");
+                Log.d("Fragment4>>>", "onchild change: " + snapshot.getKey());
+                if (snapshot.getKey().contains(myUid)) {
+                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                        if (snapshot1.getKey().equals(myUid)) {
+                            String test = snapshot1.child("ischat").getValue(String.class);
+                            Log.d("Fragment4>>>", "myuid get : " + test);
+                            if (snapshot1.child("ischat").getValue().equals("2")) {
+                                for (DataSnapshot snapshota : snapshot.getChildren()) {
+                                    if (snapshota.getKey().contains("lastmsg")) {
+                                        String key = snapshota.getKey();
+                                        Log.d("Fragment4>>>", "last remove, key: " + key);
+                                        int index = lastKeyList.indexOf(key);
+                                        if (lastKeyList.contains(key)) {
+                                            lastList.remove(index);
+                                            lastKeyList.remove(index);
+                                        }
+                                    } else if (!snapshota.getKey().equals("msg") && !snapshota.getKey().equals(myUid) && !snapshota.getKey().contains("lastmsg")) {
+                                        String key = snapshota.getKey();
+                                        Log.d("Fragment4>>>", "array remove, key: " + key);
+                                        int index = arrayKeyList.indexOf(key);
+                                        if (arrayKeyList.contains(key)) {
+                                            arrayList.remove(index);
+                                            arrayKeyList.remove(index);
+                                        }
+                                    }
+                                }
+                            }
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                }
 
 //                if (snapshot.getKey().contains(myUid)) {
 //                    reference.getRef().child("messege").child(snapshot.getKey()).child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
@@ -186,18 +225,27 @@ public class Fragment4 extends Fragment {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                Log.d("Fragment4>>>", "onChildRemoved");
                 if (snapshot.getKey().contains(myUid)) {
                     for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                         if (snapshot1.getKey().contains("lastmsg")) {
                             String key = snapshot1.getKey();
                             int indexlast = lastKeyList.indexOf(key);
-                            lastList.remove(indexlast);
-                            lastKeyList.remove(indexlast);
+                            Log.d("Fragment4>>>", "get lastkey: " + key);
+                            if (lastKeyList.contains(key)) {
+                                Log.d("Fragment4>>>", "last key 포함");
+                                lastList.remove(indexlast);
+                                lastKeyList.remove(indexlast);
+                            }
                         } else if (!snapshot1.getKey().equals("msg") && !snapshot1.getKey().equals(myUid) && !snapshot1.getKey().contains("lastmsg")) {
                             String key = snapshot1.getKey();
                             int indexarray = arrayKeyList.indexOf(key);
-                            arrayList.remove(indexarray);
-                            arrayKeyList.remove(indexarray);
+                            Log.d("Fragment4>>>", "get arraykey: " + key);
+                            if (arrayKeyList.contains(key)) {
+                                Log.d("Fragment4>>>", "array key 포함");
+                                arrayList.remove(indexarray);
+                                arrayKeyList.remove(indexarray);
+                            }
                         }
                     }
                     adapter.notifyDataSetChanged();
@@ -235,11 +283,13 @@ public class Fragment4 extends Fragment {
                                             if (!snapshot2.getKey().equals("msg") && !snapshot2.getKey().equals(myUid)) {
                                                 if (snapshot2.getKey().contains("lastmsg")) {
                                                     String key = snapshot2.getKey();
+                                                    Log.d("Fragment4>>>", "last add key: " + key);
                                                     LastListItem lastListItem = snapshot2.getValue(LastListItem.class);
                                                     lastList.add(lastListItem);
                                                     lastKeyList.add(key);
                                                 } else {
                                                     String key = snapshot2.getKey();
+                                                    Log.d("Fragment4>>>", "array add key: " + key);
                                                     F4MessegeItem f4MessegeItem = snapshot2.getValue(F4MessegeItem.class);
                                                     arrayList.add(f4MessegeItem);
                                                     arrayKeyList.add(key);
@@ -377,33 +427,33 @@ public class Fragment4 extends Fragment {
         reference.getRef().child("messege").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.getKey().contains(myUid)) {
-                    Log.d("Fragment4>>>", "ischat 2 snapshot key: " + snapshot.getKey());
-                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                        if (snapshot1.getKey().equals(myUid)) {
-                            if (snapshot1.child("ischat").equals("2")) {
-                                for (DataSnapshot snapshot2 : snapshot.getChildren()) {
-                                    if (snapshot2.getKey().contains("lastmsg")) {
-                                        String key = snapshot2.getKey();
-                                        int indexlast = lastKeyList.indexOf(key);
-                                        lastList.remove(indexlast);
-                                        lastKeyList.remove(indexlast);
-                                        Log.d("Fragment4>>>", "ischat 2 last remove");
-                                    } else if (!snapshot1.getKey().equals("msg") && !snapshot1.getKey().equals(myUid) && !snapshot1.getKey().contains("lastmsg")) {
-                                        String key = snapshot2.getKey();
-                                        int indexarray = arrayKeyList.indexOf(key);
-                                        arrayList.remove(indexarray);
-                                        arrayKeyList.remove(indexarray);
-                                        Log.d("Fragment4>>>", "ischat 2 array remove");
-                                    }
-                                }
-
-                                adapter.notifyDataSetChanged();
-                                progressBar.setVisibility(View.GONE);
-                            }
-                        }
-                    }
-                }
+//                if (snapshot.getKey().contains(myUid)) {
+//                    Log.d("Fragment4>>>", "333: " + snapshot.getKey());
+//                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+//                        if (snapshot1.getKey().equals(myUid)) {
+//                            if (snapshot1.child("ischat").equals("2")) {
+//                                for (DataSnapshot snapshot2 : snapshot.getChildren()) {
+//                                    if (snapshot2.getKey().contains("lastmsg")) {
+//                                        String key = snapshot2.getKey();
+//                                        int indexlast = lastKeyList.indexOf(key);
+//                                        lastList.remove(indexlast);
+//                                        lastKeyList.remove(indexlast);
+//                                        Log.d("Fragment4>>>", "ischat 2 last remove");
+//                                    } else if (!snapshot1.getKey().equals("msg") && !snapshot1.getKey().equals(myUid) && !snapshot1.getKey().contains("lastmsg")) {
+//                                        String key = snapshot2.getKey();
+//                                        int indexarray = arrayKeyList.indexOf(key);
+//                                        arrayList.remove(indexarray);
+//                                        arrayKeyList.remove(indexarray);
+//                                        Log.d("Fragment4>>>", "ischat 2 array remove");
+//                                    }
+//                                }
+//
+//                                adapter.notifyDataSetChanged();
+//                                progressBar.setVisibility(View.GONE);
+//                            }
+//                        }
+//                    }
+//                }
 
 //                arrayList.clear();
 //                arrayKeyList.clear();

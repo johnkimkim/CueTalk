@@ -44,13 +44,40 @@
             android:layout_margin="2dp"
             android:text="내글"/>
 
+        <Button
+            android:id="@+id/writemsg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
+            android:text="글쓰기"/>
+
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <ProgressBar
+        android:id="@+id/fragment2_progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="invisible" />
+
+
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/f2_swipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/f2linear"
-        android:id="@+id/f2re"/>
+        android:layout_below="@+id/f2linear">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/f2linear"
+            android:id="@+id/f2re"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
 </RelativeLayout>

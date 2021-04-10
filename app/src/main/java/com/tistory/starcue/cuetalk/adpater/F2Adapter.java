@@ -2,20 +2,27 @@ package com.tistory.starcue.cuetalk.adpater;
 
 import android.content.Context;
 import android.location.Location;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.tistory.starcue.cuetalk.GpsTracker;
 import com.tistory.starcue.cuetalk.R;
+import com.tistory.starcue.cuetalk.SendMessege;
 import com.tistory.starcue.cuetalk.item.F2Item;
 
 import java.util.ArrayList;
@@ -29,6 +36,8 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
     private Context context;
 
     private GpsTracker gpsTracker;
+
+    private DatabaseReference reference;
 
     public F2Adapter(ArrayList<F2Item> arrayList, Context context) {
         this.arrayList = arrayList;
@@ -55,7 +64,15 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
         holder.sex.setText(arrayList.get(position).getSex());
         holder.age.setText(arrayList.get(position).getAge());
         holder.messege.setText(arrayList.get(position).getMessege());
-        holder.time.setText(arrayList.get(position).getTime());
+
+        String time = arrayList.get(position).getTime();
+        String time2 = time.substring(11);
+        String time3 = time2.substring(0, time2.length()-3);
+        holder.time.setText(time3);
+
+        if (arrayList.get(position).getUid().equals(myUid)) {
+            holder.sendbtn.setEnabled(false);
+        }
 
         String latitudeS = arrayList.get(position).getLatitude();//set km
         String longitudeS = arrayList.get(position).getLongitude();
@@ -77,6 +94,40 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
             int i = (int) Math.floor(ddd) / 1000;
             holder.km.setText(Integer.toString(i) + "km");
         }
+
+        holder.sendbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("Fragment2>>>", "sendbtn onClick");
+                reference = FirebaseDatabase.getInstance().getReference();
+                reference.getRef().child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        Log.d("Fragment2>>>", "sendbtn onClick1");
+                        int i = (int) dataSnapshot.getChildrenCount();
+
+                        String roomkey = arrayList.get(position).getUid() + myUid;
+                        String roomkey1 = myUid + arrayList.get(position).getUid();
+
+
+                        if (i == 0) {
+                            String userUid = arrayList.get(position).getUid();
+                            SendMessege sendMessege = new SendMessege(context);
+                            sendMessege.setSendMessegeDialog(context, userUid);
+                        } else {
+                            if (dataSnapshot.hasChild(roomkey) || dataSnapshot.hasChild(roomkey1)) {
+                                Toast.makeText(context, "이미 대화 중 입니다. 메시지함을 확인해주세요", Toast.LENGTH_SHORT).show();
+                            } else {
+                                String userUid = arrayList.get(position).getUid();
+                                SendMessege sendMessege = new SendMessege(context);
+                                sendMessege.setSendMessegeDialog(context, userUid);//laskdfjkl
+                            }
+                        }
+
+                    }
+                });
+            }
+        });
     }
 
     @Override

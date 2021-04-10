@@ -741,7 +741,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     private String getTime() {
         long now = System.currentTimeMillis();
         Date mDate = new Date(now);
-        SimpleDateFormat format = new SimpleDateFormat("hh:mm");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM_dd hh:mm:ss");
         String date = format.format(mDate);
         return date;
     }

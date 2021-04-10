@@ -12,37 +12,48 @@
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/f2btn1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_margin="2dp"
-            android:text="전체"/>
+            android:text="전체"
+            android:textSize="12dp"/>
 
         <Button
+            android:id="@+id/f2btn2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_margin="2dp"
-            android:text="광범위"/>
+            android:text="-30km"
+            android:textSize="12dp" />
 
         <Button
+            android:id="@+id/f2btn3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_margin="2dp"/>
+            android:layout_margin="2dp"
+            android:text="-15km"
+            android:textSize="12dp"/>
 
         <Button
+            android:id="@+id/f2btn4"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_margin="2dp"
-            android:text="가까운"/>
+            android:text="-5km"
+            android:textSize="12dp"/>
         <Button
+            android:id="@+id/f2btn5"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_margin="2dp"
-            android:text="내글"/>
+            android:text="내글"
+            android:textSize="12dp"/>
 
         <Button
             android:id="@+id/writemsg"
@@ -50,7 +61,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_margin="2dp"
-            android:text="글쓰기"/>
+            android:text="글쓰기"
+            android:textSize="12dp"/>
 
     </LinearLayout>
 

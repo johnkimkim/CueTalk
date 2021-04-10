@@ -31,10 +31,14 @@ import com.tistory.starcue.cuetalk.GpsTracker;
 import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.SendMessege;
 import com.tistory.starcue.cuetalk.adpater.F4ReAdapter;
+import com.tistory.starcue.cuetalk.item.F2Item;
 import com.tistory.starcue.cuetalk.item.F4MessegeItem;
 import com.tistory.starcue.cuetalk.item.LastListItem;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Fragment4 extends Fragment {
@@ -128,6 +132,7 @@ public class Fragment4 extends Fragment {
                                                     String key = dataSnapshot1.getKey();
                                                     LastListItem lastListItem = dataSnapshot1.getValue(LastListItem.class);
                                                     lastList.add(lastListItem);
+                                                    setListTimeSort(lastList);
                                                     lastKeyList.add(key);
                                                     Log.d("Fragment4>>>", "last add, key: " + key);
                                                 }
@@ -286,6 +291,7 @@ public class Fragment4 extends Fragment {
                                                     Log.d("Fragment4>>>", "last add key: " + key);
                                                     LastListItem lastListItem = snapshot2.getValue(LastListItem.class);
                                                     lastList.add(lastListItem);
+                                                    setListTimeSort(lastList);
                                                     lastKeyList.add(key);
                                                 } else {
                                                     String key = snapshot2.getKey();
@@ -514,6 +520,18 @@ public class Fragment4 extends Fragment {
         super.onPause();
 //        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
         Log.d("Fragment4>>>", "state: onPause");
+    }
+
+    private static class Descending implements Comparator<LastListItem> {
+        @Override
+        public int compare(LastListItem lastListItem, LastListItem t1) {
+            return t1.getLasttime().compareTo(lastListItem.getLasttime());
+        }
+    }
+
+    private void setListTimeSort(ArrayList<LastListItem> lastListItems) {
+        Descending descending = new Descending();
+        Collections.sort(lastListItems, descending);
     }
 
 }

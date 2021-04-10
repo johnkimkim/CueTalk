@@ -65,7 +65,11 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
         holder.sex.setText(arrayList.get(position).getSex());
         holder.age.setText(arrayList.get(position).getAge());
 
-        holder.time.setText(lastList.get(position).getLasttime());
+        String time = lastList.get(position).getLasttime();
+        String time1 = time.substring(11);
+        String time2 = time1.substring(0, time1.length()-3);
+        holder.time.setText(time2);
+
         holder.messege.setText(lastList.get(position).getLastmessege());
 
         String latitudeS = arrayList.get(position).getLatitude();//set km

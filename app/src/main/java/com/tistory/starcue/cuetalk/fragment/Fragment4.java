@@ -46,6 +46,7 @@ public class Fragment4 extends Fragment {
     private RecyclerView recyclerView;
     private ArrayList<F4MessegeItem> arrayList;
     private ArrayList<LastListItem> lastList;
+    private ArrayList<LastListItem> testlist;
     private List<String> arrayKeyList;
     private List<String> lastKeyList;
     private RecyclerView.LayoutManager layoutManager;
@@ -109,6 +110,8 @@ public class Fragment4 extends Fragment {
         arrayKeyList = new ArrayList<>();
         lastKeyList = new ArrayList<>();
 
+        testlist = new ArrayList<>();
+
         adapter = new F4ReAdapter(arrayList, lastList, getActivity());
         recyclerView.setAdapter(adapter);
 
@@ -132,8 +135,8 @@ public class Fragment4 extends Fragment {
                                                     String key = dataSnapshot1.getKey();
                                                     LastListItem lastListItem = dataSnapshot1.getValue(LastListItem.class);
                                                     lastList.add(lastListItem);
-                                                    setListTimeSort(lastList);
                                                     lastKeyList.add(key);
+                                                    testlist.add(lastListItem);
                                                     Log.d("Fragment4>>>", "last add, key: " + key);
                                                 }
                                             } else if (!dataSnapshot1.getKey().equals("msg") && !dataSnapshot1.getKey().equals(myUid) && !dataSnapshot1.getKey().contains("lastmsg")) {
@@ -146,6 +149,8 @@ public class Fragment4 extends Fragment {
                                                 }
                                             }
                                         }
+
+                                        setListTimeSort(lastList, lastList);
                                         adapter.notifyDataSetChanged();
                                         progressBar.setVisibility(View.GONE);
                                     }
@@ -291,8 +296,8 @@ public class Fragment4 extends Fragment {
                                                     Log.d("Fragment4>>>", "last add key: " + key);
                                                     LastListItem lastListItem = snapshot2.getValue(LastListItem.class);
                                                     lastList.add(lastListItem);
-                                                    setListTimeSort(lastList);
                                                     lastKeyList.add(key);
+                                                    testlist.add(lastListItem);
                                                 } else {
                                                     String key = snapshot2.getKey();
                                                     Log.d("Fragment4>>>", "array add key: " + key);
@@ -302,6 +307,8 @@ public class Fragment4 extends Fragment {
                                                 }
                                             }
                                         }
+
+                                        setListTimeSort(lastList, lastList);
                                     }
                                 }
                             }
@@ -529,9 +536,25 @@ public class Fragment4 extends Fragment {
         }
     }
 
-    private void setListTimeSort(ArrayList<LastListItem> lastListItems) {
+    private void setListTimeSort(ArrayList<LastListItem> prev, ArrayList<LastListItem> lastListItems) {
         Descending descending = new Descending();
         Collections.sort(lastListItems, descending);
+
+        for (int i = 1; i <= lastListItems.size(); i++) {
+            Log.d("Fragment4>>>", "get position: " + i);
+            Log.d("Fragment4>>>", testlist.get(i).getLastmessege());
+            LastListItem lastListItem = lastListItems.get(i);
+            int a = prev.indexOf(lastListItem);//기존position
+
+            String b = lastKeyList.get(a);
+            F4MessegeItem f4MessegeItem = arrayList.get(a);
+            String c = arrayKeyList.get(a);
+
+            lastKeyList.set(i, b);
+            arrayList.set(i, f4MessegeItem);
+            arrayKeyList.set(i, c);
+
+        }
     }
 
 }

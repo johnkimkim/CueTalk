@@ -2,7 +2,7 @@ package com.tistory.starcue.cuetalk.item;
 
 public class F4MessegeItem {
 
-    String uid, pic, name, sex, age, latitude, longitude, ischat, state;
+    String uid, pic, name, sex, age, latitude, longitude, ischat, state, time;
 
     public F4MessegeItem() {
 
@@ -78,5 +78,13 @@ public class F4MessegeItem {
 
     public void setIschat(String ischat) {
         this.ischat = ischat;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }

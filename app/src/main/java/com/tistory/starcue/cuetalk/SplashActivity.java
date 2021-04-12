@@ -167,7 +167,7 @@ public class SplashActivity extends AppCompatActivity {
         databaseHandler = new DatabaseHandler(this);
         sqLiteDatabase = databaseHandler.getWritableDatabase();
         mAuth = FirebaseAuth.getInstance();
-        mCurrentUser = mAuth.getCurrentUser();
+        mCurrentUser = mAuth.getCurrentUser();//error 1time
         db = FirebaseFirestore.getInstance();
         myUid = mAuth.getUid();
         Log.d("SplashActivity>>>", "my uid: " + myUid);

@@ -1,6 +1,7 @@
 package com.tistory.starcue.cuetalk.fragment;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +29,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tistory.starcue.cuetalk.GpsTracker;
 import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.SendMessege;
@@ -35,6 +39,7 @@ import com.tistory.starcue.cuetalk.item.F2Item;
 import com.tistory.starcue.cuetalk.item.F4MessegeItem;
 import com.tistory.starcue.cuetalk.item.LastListItem;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -43,11 +48,13 @@ import java.util.List;
 
 public class Fragment4 extends Fragment {
 
+    private SharedPreferences sharedPreferences;
+
     private RecyclerView recyclerView;
     private ArrayList<F4MessegeItem> arrayList;
     private ArrayList<F4MessegeItem> beforeArrayList;
     private ArrayList<LastListItem> lastList;
-    private ArrayList<LastListItem> beforeList;
+    private ArrayList<LastListItem> beforeLastList;
     private List<String> arrayKeyList;
     private List<String> beforeArrayKeyList;
     private List<String> lastKeyList;
@@ -69,6 +76,7 @@ public class Fragment4 extends Fragment {
     private ProgressBar progressBar;
 
     boolean setAready;
+    boolean stayF4;
 
     //    private boolean setAlready;
     public Fragment4() {
@@ -112,7 +120,7 @@ public class Fragment4 extends Fragment {
         lastList = new ArrayList<>();
         arrayKeyList = new ArrayList<>();
         lastKeyList = new ArrayList<>();
-        beforeList = new ArrayList<>();
+        beforeLastList = new ArrayList<>();
         beforeArrayList = new ArrayList<>();
         beforeArrayKeyList = new ArrayList<>();
         beforLastkeyList = new ArrayList<>();
@@ -123,7 +131,7 @@ public class Fragment4 extends Fragment {
 
         reference.getRef().child("messege").addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {//추가됐을때만 쓰기로 수정하기. if !lastkeylist.constains(getkey)
                 if (snapshot.getKey().contains(myUid)) {
                     for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                         if (snapshot1.getKey().equals(myUid)) {
@@ -138,7 +146,7 @@ public class Fragment4 extends Fragment {
                                                     String key = dataSnapshot1.getKey();
                                                     LastListItem lastListItem = dataSnapshot1.getValue(LastListItem.class);
                                                     lastList.add(lastListItem);
-                                                    beforeList.add(lastListItem);
+                                                    beforeLastList.add(lastListItem);
                                                     lastKeyList.add(key);
                                                     beforLastkeyList.add(key);
                                                     Log.d("Fragment4>>>", "last add, key: " + key);
@@ -172,37 +180,30 @@ public class Fragment4 extends Fragment {
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 //여기서 새로운 메시지 업데이트하기
-//                Log.d("Fragment4>>>", "onchild change: " + snapshot.getKey());
-//                if (snapshot.getKey().contains(myUid)) {
-//                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-//                        if (snapshot1.getKey().equals(myUid)) {
-//                            String test = snapshot1.child("ischat").getValue(String.class);
-//                            Log.d("Fragment4>>>", "myuid get : " + test);
-//                            if (snapshot1.child("ischat").getValue().equals("2")) {
-//                                for (DataSnapshot snapshota : snapshot.getChildren()) {
-//                                    if (snapshota.getKey().contains("lastmsg")) {
-//                                        String key = snapshota.getKey();
-//                                        Log.d("Fragment4>>>", "last remove, key: " + key);
-//                                        int index = lastKeyList.indexOf(key);
-//                                        if (lastKeyList.contains(key)) {
-//                                            lastList.remove(index);
-//                                            lastKeyList.remove(index);
-//                                        }
-//                                    } else if (!snapshota.getKey().equals("msg") && !snapshota.getKey().equals(myUid) && !snapshota.getKey().contains("lastmsg")) {
-//                                        String key = snapshota.getKey();
-//                                        Log.d("Fragment4>>>", "array remove, key: " + key);
-//                                        int index = arrayKeyList.indexOf(key);
-//                                        if (arrayKeyList.contains(key)) {
-//                                            arrayList.remove(index);
-//                                            arrayKeyList.remove(index);
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                            adapter.notifyDataSetChanged();
-//                        }
-//                    }
-//                }
+                Log.d("Fragment4>>>", "onchild change: " + snapshot.getKey());//room key
+                if (snapshot.getKey().contains(myUid)) {
+                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                        if (snapshot1.getKey().contains("lastmsg")) {
+                            LastListItem lastListItem = snapshot1.getValue(LastListItem.class);
+                            Log.d("Fragment4>>>", "see getvalue messege: " + lastListItem.getLastmessege());
+                            Log.d("Fragment4>>>", "see getvalue time: " + lastListItem.getLasttime());
+
+                            int index = lastKeyList.indexOf(snapshot1.getKey());
+                            Log.d("Fragment4>>>", "key index: " + index);
+                            if (lastList.get(index).equals(lastListItem)) {
+                                Log.d("Fragment4>>>", "if key has lastmsg: " + snapshot1.getKey());
+                                String key = snapshot1.getKey();
+                                int index1 = lastKeyList.indexOf(key);
+                                LastListItem lastListItem1 = snapshot1.getValue(LastListItem.class);
+                                lastList.set(index1, lastListItem1);
+                                setListTimeSort();
+                            }
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
+                    Log.d("Fragment4>>>", "on change notify change");
+
+                }
             }
 
             @Override
@@ -268,7 +269,7 @@ public class Fragment4 extends Fragment {
                                                     Log.d("Fragment4>>>", "last add key: " + key);
                                                     LastListItem lastListItem = snapshot2.getValue(LastListItem.class);
                                                     lastList.add(lastListItem);
-                                                    beforeList.add(lastListItem);
+                                                    beforeLastList.add(lastListItem);
                                                     lastKeyList.add(key);
                                                     beforLastkeyList.add(key);
                                                 } else {
@@ -434,18 +435,21 @@ public class Fragment4 extends Fragment {
         Collections.sort(lastList, descending);
 
         List<Integer> beforeIndex = new ArrayList<>();
-        for (int i = 0; i < lastList.size(); i++) {
-            int index = beforeList.indexOf(lastList.get(i));
-            beforeIndex.add(i, index);
-            Log.d("Fragment4>>>", "lastList.get i " + lastList.get(i).getLastmessege());
-            Log.d("Frament4>>>", "beforeindex: " + beforeIndex);
+        if (beforeLastList.size() > 1) {
+            for (int i = 0; i < lastList.size(); i++) {
+                int index = beforeLastList.indexOf(lastList.get(i));
+                beforeIndex.add(i, index);
+                Log.d("Fragment4>>>", "lastList.get i " + lastList.get(i).getLastmessege());
+                Log.d("Frament4>>>", "beforeindex: " + beforeIndex);
+            }
+
+            for (int i = 0; i < beforeIndex.size(); i++) {
+                arrayList.set(i, beforeArrayList.get(beforeIndex.get(i)));
+                lastKeyList.set(i, beforLastkeyList.get(beforeIndex.get(i)));
+                arrayKeyList.set(i, beforeArrayKeyList.get(beforeIndex.get(i)));
+            }
         }
 
-        for (int i = 0; i < beforeIndex.size(); i++) {
-            arrayList.set(i, beforeArrayList.get(beforeIndex.get(i)));
-            lastKeyList.set(i, beforLastkeyList.get(beforeIndex.get(i)));
-            arrayKeyList.set(i, beforeArrayKeyList.get(beforeIndex.get(i)));
-        }
 
     }
 

@@ -95,6 +95,8 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment2, container, false);
 
+        Log.d("Fragment2>>>", "start onCreate");
+
         gpsTracker = new GpsTracker(getActivity());
 
         setfiredb();

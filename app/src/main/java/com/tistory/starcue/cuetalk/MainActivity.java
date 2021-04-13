@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         Fragment5 fragment5 = new Fragment5();
         sectionsPagerAdapter.addItem(fragment5);
         viewPager = findViewById(R.id.viewpager);
-        viewPager.setOffscreenPageLimit(0);
+        viewPager.setOffscreenPageLimit(5);
         viewPager.setAdapter(sectionsPagerAdapter);
 
         viewPager.setPageTransformer(true, new ViewPager.PageTransformer() {

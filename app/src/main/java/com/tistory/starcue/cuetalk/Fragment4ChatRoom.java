@@ -84,6 +84,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
 
     boolean isOpen;
     boolean outAlready;
+    boolean finishedAll;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -158,9 +159,11 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     }
 
     private void setOutState() {
-        Map<String, Object> setState = new HashMap<>();
-        setState.put("/messege/" + getroomname + "/" + myUid + "/state/", "1");//채팅방 나감
-        reference.updateChildren(setState);
+        if (!finishedAll) {
+            Map<String, Object> setState = new HashMap<>();
+            setState.put("/messege/" + getroomname + "/" + myUid + "/state/", "1");//채팅방 나감
+            reference.updateChildren(setState);
+        }
     }
 
     private void setRecyclerView() {
@@ -659,6 +662,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 outAlready = true;
+                                finishedAll = true;
                                 Log.d("Fragment4ChatRoom>>>", "deleteImageISend success");
                                 alertDialogD.dismiss();
                                 finish();
@@ -672,6 +676,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                     }
                 } else {
                     outAlready = true;
+                    finishedAll = true;
                     alertDialogD.dismiss();
                     finish();
                 }

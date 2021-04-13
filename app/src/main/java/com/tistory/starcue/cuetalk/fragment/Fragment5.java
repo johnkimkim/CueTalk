@@ -66,6 +66,8 @@ public class Fragment5 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment5, container, false);
 
+        Log.d("Fragment5>>>", "start onCreate");
+
         name = rootView.findViewById(R.id.profilename);
         age = rootView.findViewById(R.id.profileage);
         sex = rootView.findViewById(R.id.profilesex);

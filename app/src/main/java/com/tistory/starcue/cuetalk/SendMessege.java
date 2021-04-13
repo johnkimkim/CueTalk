@@ -1,10 +1,12 @@
 package com.tistory.starcue.cuetalk;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -28,6 +30,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class SendMessege {
 
@@ -80,6 +84,9 @@ public class SendMessege {
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                InputMethodManager manager = (InputMethodManager) context.getSystemService(INPUT_METHOD_SERVICE);//키보드내리기
+//                manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);//키보드내리기
+                MainActivity.loading.setVisibility(View.VISIBLE);
                 DocumentReference documentReference = db.collection("users").document(myUid);
                 documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -228,7 +235,7 @@ public class SendMessege {
                         reference.child("messege").child(myUid+userUid).child("msg").push().updateChildren(firstmsg).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-
+                                MainActivity.loading.setVisibility(View.GONE);
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override

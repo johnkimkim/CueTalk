@@ -42,6 +42,8 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.tistory.starcue.cuetalk.adpater.F4ChatRoomAdapter;
+import com.tistory.starcue.cuetalk.adpater.F4ReAdapter;
+import com.tistory.starcue.cuetalk.fragment.Fragment4;
 import com.tistory.starcue.cuetalk.item.F4ChatRoomItem;
 import com.tistory.starcue.cuetalk.item.F4MessegeItem;
 
@@ -732,9 +734,10 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        if (!outAlready) {
-            setOutState();
-        }
+//        if (!outAlready) {
+//            setOutState();
+//        }
+        setOutState();
 
     }
 
@@ -744,5 +747,11 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM_dd hh:mm:ss");
         String date = format.format(mDate);
         return date;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Fragment4.stayf4chatroom = false;
     }
 }

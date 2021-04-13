@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
+import com.tistory.starcue.cuetalk.fragment.Fragment4;
 import com.tistory.starcue.cuetalk.item.F4MessegeItem;
 import com.tistory.starcue.cuetalk.Fragment4ChatRoom;
 import com.tistory.starcue.cuetalk.GpsTracker;
@@ -100,6 +101,7 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
                 Toast.makeText(context, arrayList.get(position).getUid(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(context, Fragment4ChatRoom.class);
                 intent.putExtra("child", arrayList.get(position).getUid());
+                Fragment4.stayf4chatroom = true;
                 context.startActivity(intent);
             }
         });

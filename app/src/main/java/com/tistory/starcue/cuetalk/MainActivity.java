@@ -14,6 +14,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     Button btn1, btn2, btn3, btn4, btn5;
+    public static RelativeLayout loading;
+    public static ProgressBar mainProgressBar;
 
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
@@ -69,6 +73,10 @@ public class MainActivity extends AppCompatActivity {
         btn3 = findViewById(R.id.btn3);
         btn4 = findViewById(R.id.btn4);
         btn5 = findViewById(R.id.btn5);
+        loading = findViewById(R.id.loading);
+        mainProgressBar = findViewById(R.id.mainpro);
+        loading.setVisibility(View.GONE);
+        loading.bringToFront();
 
         btn1.setOnClickListener((View v) -> {
             viewPager.setCurrentItem(0);

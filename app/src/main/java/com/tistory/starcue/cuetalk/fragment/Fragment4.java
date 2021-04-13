@@ -408,7 +408,7 @@ public class Fragment4 extends Fragment {
         if (!stayf4chatroom) {
             stayF4 = false;
         }
-        Log.d("Fragment4>>>", "state: onStop");
+        Log.d("Fragment4>>>", "state: onStop " + arrayList.size());
     }
 
     private static class Descending implements Comparator<LastListItem> {

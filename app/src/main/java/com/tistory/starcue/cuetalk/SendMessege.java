@@ -141,15 +141,15 @@ public class SendMessege {
                 fmsg.put("messege/", "dlqwkddhksfycjtaptlwl");
                 fmsg.put("time/", "dlqwkddhksfycjtaptlwl");
 
-                messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/uid/", myUid);
-                messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/name/", name);
-                messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/sex/", sex);
-                messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/age/", age);
-                messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/latitude/", latitude);
-                messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/longitude/", longitude);
-                messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/ischat/", "1");
-                messegeMap.put("/messege/" + myUid+userUid + "/" + myUid + "/state/", "1");
-                messegeMap.put("/myroom/" + myUid + "/" + myUid+userUid, myUid+userUid);
+                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/uid/", myUid);
+                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/name/", name);
+                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/sex/", sex);
+                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/age/", age);
+                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/latitude/", latitude);
+                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/longitude/", longitude);
+                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/ischat/", "1");
+                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/state/", "1");
+                messegeMap.put("/myroom/" + myUid + "/" + myUid + userUid, myUid + userUid);
 
                 if (pic != null) {
                     messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/pic/", pic);
@@ -172,29 +172,30 @@ public class SendMessege {
                 firstmsg.put("time", getTime());
                 firstmsg.put("read", "1");
 
-                messegeMap.put("/messege/" + myUid+userUid + "/lastmsg" + myUid+userUid + "/lastmessege/", messege);
-                messegeMap.put("/messege/" + myUid+userUid + "/lastmsg" + myUid+userUid + "/lasttime/", getTime());
+                messegeMap.put("/messege/" + myUid + userUid + "/lastmsg" + myUid + userUid + "/lastmessege/", messege);
+                messegeMap.put("/messege/" + myUid + userUid + "/lastmsg" + myUid + userUid + "/lasttime/", getTime());
 
 
-                reference.updateChildren(messegeMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        updateUserInRoom(userUid, myUid+userUid, fmsg, firstmsg);
-                    }
-                });//last
+                updateUserInRoom(messegeMap, userUid, myUid + userUid, fmsg, firstmsg);
+//                reference.updateChildren(messegeMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        updateUserInRoom(messegeMap, userUid, myUid+userUid, fmsg, firstmsg);
+//                    }
+//                });//last
 
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(context, "네트워크 문제로 메시지 전송에 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show();
-                reference.getRef().child("messege").child(myUid+userUid).removeValue();
+                reference.getRef().child("messege").child(myUid + userUid).removeValue();
             }
         });
 
     }
 
-    public void updateUserInRoom(String userUid, String key, Map<String, Object> fmsg, Map<String, Object> firstmsg) {
+    public void updateUserInRoom(Map<String, Object> messegeMap, String userUid, String key, Map<String, Object> fmsg, Map<String, Object> firstmsg) {
         DocumentReference documentReference = db.collection("users").document(userUid);
         documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -210,54 +211,68 @@ public class SendMessege {
                 String longitudeS = String.valueOf(longitude);
 
                 Map<String, Object> userUpdate = new HashMap<>();
-                userUpdate.put("/messege/" + key + "/" + userUid + "/uid/", userUid);
-                userUpdate.put("/messege/" + key + "/" + userUid + "/name/", userName);
-                userUpdate.put("/messege/" + key + "/" + userUid + "/sex/", userSex);
-                userUpdate.put("/messege/" + key + "/" + userUid + "/age/", userAge);
-                userUpdate.put("/messege/" + key + "/" + userUid + "/ischat/", "1");
-                userUpdate.put("/messege/" + key + "/" + userUid + "/state/", "1");
-                userUpdate.put("/myroom/" + userUid + "/" + key + "/", key);
+                messegeMap.put("/messege/" + key + "/" + userUid + "/uid/", userUid);
+                messegeMap.put("/messege/" + key + "/" + userUid + "/name/", userName);
+                messegeMap.put("/messege/" + key + "/" + userUid + "/sex/", userSex);
+                messegeMap.put("/messege/" + key + "/" + userUid + "/age/", userAge);
+                messegeMap.put("/messege/" + key + "/" + userUid + "/ischat/", "1");
+                messegeMap.put("/messege/" + key + "/" + userUid + "/state/", "1");
+                messegeMap.put("/myroom/" + userUid + "/" + key + "/", key);
                 if (userPic != null) {
-                    userUpdate.put("/messege/" + key + "/" + userUid + "/pic/", userPic);
+                    messegeMap.put("/messege/" + key + "/" + userUid + "/pic/", userPic);
                 } else {
                     if (userSex.equals("남자")) {
-                        userUpdate.put("/messege/" + key + "/" + userUid + "/pic/", nullPic);
+                        messegeMap.put("/messege/" + key + "/" + userUid + "/pic/", nullPic);
                     } else {
-                        userUpdate.put("/messege/" + key + "/" + userUid + "/pic/", nullPicF);
+                        messegeMap.put("/messege/" + key + "/" + userUid + "/pic/", nullPicF);
                     }
                 }
-                userUpdate.put("/messege/" + key + "/" + userUid + "/latitude/", latitudeS);
-                userUpdate.put("/messege/" + key + "/" + userUid + "/longitude/", longitudeS);
-                reference.updateChildren(userUpdate).addOnSuccessListener(new OnSuccessListener<Void>() {
+                messegeMap.put("/messege/" + key + "/" + userUid + "/latitude/", latitudeS);
+                messegeMap.put("/messege/" + key + "/" + userUid + "/longitude/", longitudeS);
+                reference.updateChildren(messegeMap);
+                reference.child("messege").child(myUid + userUid).child("msg").push().updateChildren(fmsg);
+                reference.child("messege").child(myUid + userUid).child("msg").push().updateChildren(firstmsg).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        reference.child("messege").child(myUid+userUid).child("msg").push().updateChildren(fmsg);
-                        reference.child("messege").child(myUid+userUid).child("msg").push().updateChildren(firstmsg).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                MainActivity.loading.setVisibility(View.GONE);
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(context, "네트워크 문제로 메시지 전송에 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show();
-                                reference.getRef().child("messege").child(myUid+userUid).removeValue();
-                            }
-                        });
+                        MainActivity.loading.setVisibility(View.GONE);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(context, "네트워크 문제로 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
-                        reference.getRef().child("messege").child(myUid+userUid).removeValue();
+                        Toast.makeText(context, "네트워크 문제로 메시지 전송에 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show();
+                        reference.getRef().child("messege").child(key).removeValue();
                     }
                 });
+//                reference.updateChildren(userUpdate).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        reference.child("messege").child(myUid+userUid).child("msg").push().updateChildren(fmsg);
+//                        reference.child("messege").child(myUid+userUid).child("msg").push().updateChildren(firstmsg).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                            @Override
+//                            public void onSuccess(Void aVoid) {
+//                                MainActivity.loading.setVisibility(View.GONE);
+//                            }
+//                        }).addOnFailureListener(new OnFailureListener() {
+//                            @Override
+//                            public void onFailure(@NonNull Exception e) {
+//                                Toast.makeText(context, "네트워크 문제로 메시지 전송에 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show();
+//                                reference.getRef().child("messege").child(myUid+userUid).removeValue();
+//                            }
+//                        });
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Toast.makeText(context, "네트워크 문제로 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+//                        reference.getRef().child("messege").child(myUid+userUid).removeValue();
+//                    }
+//                });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(context, "네트워크 문제로 메시지 전송에 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show();
-                reference.getRef().child("messege").child(myUid+userUid).removeValue();
+                reference.getRef().child("messege").child(myUid + userUid).removeValue();
             }
         });
 

@@ -216,13 +216,16 @@ public class Fragment4 extends Fragment {
                             } else {
                                 for (DataSnapshot snapshot2 : snapshot.getChildren()) {
                                     if (snapshot2.getKey().contains("lastmsg")) {
-                                        String key = snapshot2.getKey();
-                                        LastListItem lastListItem = snapshot2.getValue(LastListItem.class);
-                                        if (!lastList.contains(lastListItem)) {
-                                            int index = lastKeyList.indexOf(key);
-                                            lastList.set(index, lastListItem);
-                                            setListTimeSort();
-                                            adapter.notifyDataSetChanged();
+                                        if (lastKeyList.contains(snapshot2.getKey())) {
+                                            Log.d("Fragment4>>>", "onchild change if key lasgmsg");
+                                            String key = snapshot2.getKey();
+                                            LastListItem lastListItem = snapshot2.getValue(LastListItem.class);
+                                            if (!lastList.contains(lastListItem)) {
+                                                int index = lastKeyList.indexOf(key);
+                                                lastList.set(index, lastListItem);
+                                                setListTimeSort();
+                                                adapter.notifyDataSetChanged();
+                                            }
                                         }
                                     }
                                 }

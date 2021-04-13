@@ -79,19 +79,19 @@ public class MainActivity extends AppCompatActivity {
         loading.bringToFront();
 
         btn1.setOnClickListener((View v) -> {
-            viewPager.setCurrentItem(0);
+            viewPager.setCurrentItem(0, false);
         });
         btn2.setOnClickListener((View v) -> {
-            viewPager.setCurrentItem(1);
+            viewPager.setCurrentItem(1, false);
         });
         btn3.setOnClickListener((View v) -> {
-            viewPager.setCurrentItem(2);
+            viewPager.setCurrentItem(2, false);
         });
         btn4.setOnClickListener((View v) -> {
-            viewPager.setCurrentItem(3);
+            viewPager.setCurrentItem(3, false);
         });
         btn5.setOnClickListener(view -> {
-            viewPager.setCurrentItem(4);
+            viewPager.setCurrentItem(4, false);
         });
 
     }
@@ -113,20 +113,20 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setOffscreenPageLimit(5);
         viewPager.setAdapter(sectionsPagerAdapter);
 
-        viewPager.setPageTransformer(true, new ViewPager.PageTransformer() {
-            @Override
-            public void transformPage(@NonNull View page, float position) {
-                page.setTranslationX(page.getWidth() * -position);
-                if (position <= -1.0F || position >= 1.0F) {
-                    page.setAlpha(0.0F);
-                } else if (position == 0.0F) {
-                    page.setAlpha(1.0F);
-                } else {
-                    page.setAlpha(1.0F - Math.abs(position));
-                }
-
-            }
-        });
+//        viewPager.setPageTransformer(true, new ViewPager.PageTransformer() {
+//            @Override
+//            public void transformPage(@NonNull View page, float position) {
+//                page.setTranslationX(page.getWidth() * -position);
+//                if (position <= -1.0F || position >= 1.0F) {
+//                    page.setAlpha(0.0F);
+//                } else if (position == 0.0F) {
+//                    page.setAlpha(1.0F);
+//                } else {
+//                    page.setAlpha(1.0F - Math.abs(position));
+//                }
+//
+//            }
+//        });
 
 //        int i = viewPager.getCurrentItem();
 //        if (i == 0) {

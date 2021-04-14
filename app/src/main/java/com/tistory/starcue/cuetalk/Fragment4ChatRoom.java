@@ -159,11 +159,24 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     }
 
     private void setOutState() {
-        if (!finishedAll) {
-            Map<String, Object> setState = new HashMap<>();
-            setState.put("/messege/" + getroomname + "/" + myUid + "/state/", "1");//채팅방 나감
-            reference.updateChildren(setState);
-        }
+        reference.getRef().child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild(getroomname)) {
+                    Log.d("Fragment4ChatRoom>>>", "getroomname has");
+                    Map<String, Object> setState = new HashMap<>();
+                    setState.put("/messege/" + getroomname + "/" + myUid + "/state/", "1");//채팅방 나감
+                    reference.updateChildren(setState);
+                } else {
+                    Log.d("Fragment4ChatRoom>>>", "getroomname null");
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
     }
 
     private void setRecyclerView() {
@@ -759,4 +772,5 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         super.onStop();
         Fragment4.stayf4chatroom = false;
     }
+
 }

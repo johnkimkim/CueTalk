@@ -15,11 +15,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.tistory.starcue.cuetalk.GpsTracker;
 import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.SendMessege;
@@ -38,6 +40,7 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
     private GpsTracker gpsTracker;
 
     private DatabaseReference reference;
+    private FirebaseFirestore firestore;
 
     public F2Adapter(ArrayList<F2Item> arrayList, Context context) {
         this.arrayList = arrayList;
@@ -71,7 +74,11 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
         holder.time.setText(time3);
 
         if (arrayList.get(position).getUid().equals(myUid)) {
-            holder.sendbtn.setEnabled(false);
+            holder.sendbtn.setText("삭제");
+            holder.sendbtn.setTextColor(context.getResources().getColor(R.color.my_red));
+        } else {
+            holder.sendbtn.setText("메시지");
+            holder.sendbtn.setTextColor(context.getResources().getColor(R.color.black));
         }
 
         String latitudeS = arrayList.get(position).getLatitude();//set km
@@ -99,33 +106,48 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
             @Override
             public void onClick(View view) {
                 Log.d("Fragment2>>>", "sendbtn onClick");
-                reference = FirebaseDatabase.getInstance().getReference();
-                reference.getRef().child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                    @Override
-                    public void onSuccess(DataSnapshot dataSnapshot) {
-                        Log.d("Fragment2>>>", "sendbtn onClick1");
-                        int i = (int) dataSnapshot.getChildrenCount();
+                if (arrayList.get(position).getUid().equals(myUid)) {
+                    firestore = FirebaseFirestore.getInstance();
+                    firestore.collection("f2messege").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(context, "삭제완료", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(context, "네트워크 오류로 게시물 삭제에 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    reference = FirebaseDatabase.getInstance().getReference();
+                    reference.getRef().child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                        @Override
+                        public void onSuccess(DataSnapshot dataSnapshot) {
+                            Log.d("Fragment2>>>", "sendbtn onClick1");
+                            int i = (int) dataSnapshot.getChildrenCount();
 
-                        String roomkey = arrayList.get(position).getUid() + myUid;
-                        String roomkey1 = myUid + arrayList.get(position).getUid();
+                            String roomkey = arrayList.get(position).getUid() + myUid;
+                            String roomkey1 = myUid + arrayList.get(position).getUid();
 
 
-                        if (i == 0) {
-                            String userUid = arrayList.get(position).getUid();
-                            SendMessege sendMessege = new SendMessege(context);
-                            sendMessege.setSendMessegeDialog(context, userUid);
-                        } else {
-                            if (dataSnapshot.hasChild(roomkey) || dataSnapshot.hasChild(roomkey1)) {
-                                Toast.makeText(context, "이미 대화 중 입니다. 메시지함을 확인해주세요", Toast.LENGTH_SHORT).show();
-                            } else {
+                            if (i == 0) {
                                 String userUid = arrayList.get(position).getUid();
                                 SendMessege sendMessege = new SendMessege(context);
-                                sendMessege.setSendMessegeDialog(context, userUid);//laskdfjkl
+                                sendMessege.setSendMessegeDialog(context, userUid);
+                            } else {
+                                if (dataSnapshot.hasChild(roomkey) || dataSnapshot.hasChild(roomkey1)) {
+                                    Toast.makeText(context, "이미 대화 중 입니다. 메시지함을 확인해주세요", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    String userUid = arrayList.get(position).getUid();
+                                    SendMessege sendMessege = new SendMessege(context);
+                                    sendMessege.setSendMessegeDialog(context, userUid);//laskdfjkl
+                                }
                             }
-                        }
 
-                    }
-                });
+                        }
+                    });
+                }
             }
         });
     }

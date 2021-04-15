@@ -78,27 +78,33 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
         mAuth = FirebaseAuth.getInstance();
         myUid = mAuth.getUid();
 
-        if (bottomList.get(position).getPic() == null) {
-            if (bottomList.get(position).getSex().equals("남자")) {
-                Glide.with(holder.imageView)
-                        .load(nullPic)
-                        .override(150, 150)
-                        .circleCrop()
-                        .into(holder.imageView);
-            } else {
-                Glide.with(holder.imageView)
-                        .load(nullPicF)
-                        .override(150, 150)
-                        .circleCrop()
-                        .into(holder.imageView);
-            }
+//        if (bottomList.get(position).getPic() == null) {
+//            if (bottomList.get(position).getSex().equals("남자")) {
+//                Glide.with(holder.imageView)
+//                        .load(nullPic)
+//                        .override(150, 150)
+//                        .circleCrop()
+//                        .into(holder.imageView);
+//            } else {
+//                Glide.with(holder.imageView)
+//                        .load(nullPicF)
+//                        .override(150, 150)
+//                        .circleCrop()
+//                        .into(holder.imageView);
+//            }
+//            holder.imageView.setEnabled(false);
+//        } else {
+//            Glide.with(holder.imageView)
+//                    .load(bottomList.get(position).getPic())
+//                    .override(150, 150)
+//                    .circleCrop()
+//                    .into(holder.imageView);
+//            holder.imageView.setEnabled(true);
+//        }
+        Glide.with(holder.imageView).load(bottomList.get(position).getPic()).override(150,150).circleCrop().into(holder.imageView);
+        if (bottomList.get(position).getPic().equals(nullPic) && bottomList.get(position).getPic().equals(nullPicF)) {
             holder.imageView.setEnabled(false);
         } else {
-            Glide.with(holder.imageView)
-                    .load(bottomList.get(position).getPic())
-                    .override(150, 150)
-                    .circleCrop()
-                    .into(holder.imageView);
             holder.imageView.setEnabled(true);
         }
 

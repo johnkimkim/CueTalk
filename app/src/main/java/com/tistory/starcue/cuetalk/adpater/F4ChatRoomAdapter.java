@@ -115,6 +115,8 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             });
             if (arrayList.get(position).getPic().equals(nullPic) || arrayList.get(position).getPic().equals(nullPicF)) {
                 ((F4ChatRoomAdapter.LeftImageViewholder) holder).picli.setEnabled(false);
+            } else {
+                ((F4ChatRoomAdapter.LeftImageViewholder) holder).picli.setEnabled(true);
             }
         } else if (holder instanceof F4ChatRoomAdapter.RightViewholder) {
             ((F4ChatRoomAdapter.RightViewholder) holder).time1.setText(arrayList.get(position).getTime());//error
@@ -124,6 +126,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             ((F4ChatRoomAdapter.LeftViewholder) holder).name.setText(arrayList.get(position).getName());
             ((F4ChatRoomAdapter.LeftViewholder) holder).messege.setText(arrayList.get(position).getMessege());
             ((F4ChatRoomAdapter.LeftViewholder) holder).time.setText(arrayList.get(position).getTime());
+            Log.d("F4ChatRoomAdapter>>>", "array get pic: " + arrayList.get(position).getPic());
             Glide.with(((F4ChatRoomAdapter.LeftViewholder) holder).picl)
                     .load(arrayList.get(position).getPic())
                     .override(150, 150)
@@ -138,6 +141,8 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             });
             if (arrayList.get(position).getPic().equals(nullPic) || arrayList.get(position).getPic().equals(nullPicF)) {
                 ((F4ChatRoomAdapter.LeftViewholder) holder).picl.setEnabled(false);
+            } else {
+                ((F4ChatRoomAdapter.LeftViewholder) holder).picl.setEnabled(true);
             }
         } else if (holder instanceof F4ChatRoomAdapter.CenterViewholder) {
             ((F4ChatRoomAdapter.CenterViewholder) holder).textView.setText("입장완료");

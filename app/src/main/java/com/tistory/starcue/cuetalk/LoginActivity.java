@@ -40,6 +40,9 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
+    String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
+    String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
+
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
     FirebaseFirestore db;
@@ -132,46 +135,66 @@ public class LoginActivity extends AppCompatActivity {
         pd.show();
 
         String uid = mAuth.getUid();
-        StorageReference riversRef = storageReference.child("images/" + uid);
-        riversRef.putFile(imageUri)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        pd.dismiss();
-                        Snackbar.make(findViewById(android.R.id.content), "이미지 업로드 성공", Snackbar.LENGTH_LONG).show();
 
-                        //upload pic in firestore
-                        storageReference.child("images/" + uid).getDownloadUrl()
-                                .addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        String picUri = uri.toString();
-                                        uploadPicInStore(picUri);
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
+        if (imageUri != null) {
+            StorageReference riversRef = storageReference.child("images/" + uid);
+            riversRef.putFile(imageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            pd.dismiss();
+                            Snackbar.make(findViewById(android.R.id.content), "이미지 업로드 성공", Snackbar.LENGTH_LONG).show();
 
-                                    }
-                                });//upload pic in firestore
-                        goToMain();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        pd.dismiss();
-                        Toast.makeText(LoginActivity.this, "업로드실패", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                        double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
-                        pd.setMessage("Pro: " + (int) progressPercent + "%");
-                    }
-                });
+                            //upload pic in firestore
+                            storageReference.child("images/" + uid).getDownloadUrl()
+                                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            String picUri = uri.toString();
+                                            uploadPicInStore(picUri);
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+
+                                        }
+                                    });//upload pic in firestore
+                            goToMain();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            pd.dismiss();
+                            Toast.makeText(LoginActivity.this, "업로드실패", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                            double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                            pd.setMessage("Pro: " + (int) progressPercent + "%");
+                        }
+                    });
+        }
+
+    }
+
+    private void ifNullPic() {
+        String uid = mAuth.getUid();
+        Map<String, Object> map = new HashMap<>();
+        if (sexstring.equals("남자")) {
+            map.put("pic", nullPic);
+        } else {
+            map.put("pic", nullPicF);
+        }
+        db.collection("users").document(uid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                goToMain();
+            }
+        });
     }
 
     private void setLoginbtn() {
@@ -203,7 +226,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (imageUri != null) {
                     uploadPic();
                 } else {
-                    goToMain();
+                    ifNullPic();
                 }
 
             }

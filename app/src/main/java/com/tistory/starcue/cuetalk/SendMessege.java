@@ -151,21 +151,8 @@ public class SendMessege {
                 messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/state/", "1");
                 messegeMap.put("/myroom/" + myUid + "/" + myUid + userUid, myUid + userUid);
 
-                if (pic != null) {
-                    messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/pic/", pic);
-                    firstmsg.put("pic", pic);
-                    Log.d("SendMessege>>>", "if pic null");
-                } else {
-                    if (sex.equals("남자")) {
-                        messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/pic/", nullPic);
-                        firstmsg.put("pic", nullPic);
-                        Log.d("SendMessege>>>", "if pic 남자: " + name);
-                    } else {
-                        messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/pic/", nullPicF);
-                        firstmsg.put("pic", nullPicF);
-                        Log.d("SendMessege>>>", "if pic 여자: " + name);
-                    }
-                }
+                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/pic/", pic);
+                firstmsg.put("pic", pic);
 
                 firstmsg.put("messege", messege);
                 firstmsg.put("name", name);
@@ -218,15 +205,8 @@ public class SendMessege {
                 messegeMap.put("/messege/" + key + "/" + userUid + "/ischat/", "1");
                 messegeMap.put("/messege/" + key + "/" + userUid + "/state/", "1");
                 messegeMap.put("/myroom/" + userUid + "/" + key + "/", key);
-                if (userPic != null) {
-                    messegeMap.put("/messege/" + key + "/" + userUid + "/pic/", userPic);
-                } else {
-                    if (userSex.equals("남자")) {
-                        messegeMap.put("/messege/" + key + "/" + userUid + "/pic/", nullPic);
-                    } else {
-                        messegeMap.put("/messege/" + key + "/" + userUid + "/pic/", nullPicF);
-                    }
-                }
+                messegeMap.put("/messege/" + key + "/" + userUid + "/pic/", userPic);
+
                 messegeMap.put("/messege/" + key + "/" + userUid + "/latitude/", latitudeS);
                 messegeMap.put("/messege/" + key + "/" + userUid + "/longitude/", longitudeS);
                 reference.updateChildren(messegeMap);

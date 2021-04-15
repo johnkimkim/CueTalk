@@ -88,27 +88,33 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
 
         //position에 해당하는 데이터를 뷰홀더의 아이템뷰에 표시
-        if (arrayList.get(position).getPic() == null) {
-            if (arrayList.get(position).getSex().equals("남자")) {
-                Glide.with(holder.imageView)
-                        .load(nullPic)
-                        .override(150, 150)
-                        .circleCrop()
-                        .into(holder.imageView);
-            } else {
-                Glide.with(holder.imageView)
-                        .load(nullPicF)
-                        .override(150, 150)
-                        .circleCrop()
-                        .into(holder.imageView);
-            }
+//        if (arrayList.get(position).getPic() == null) {
+//            if (arrayList.get(position).getSex().equals("남자")) {
+//                Glide.with(holder.imageView)
+//                        .load(nullPic)
+//                        .override(150, 150)
+//                        .circleCrop()
+//                        .into(holder.imageView);
+//            } else {
+//                Glide.with(holder.imageView)
+//                        .load(nullPicF)
+//                        .override(150, 150)
+//                        .circleCrop()
+//                        .into(holder.imageView);
+//            }
+//            holder.imageView.setEnabled(false);
+//        } else {
+//            Glide.with(holder.imageView)
+//                    .load(arrayList.get(position).getPic())
+//                    .override(150, 150)
+//                    .circleCrop()
+//                    .into(holder.imageView);
+//            holder.imageView.setEnabled(true);
+//        }
+        Glide.with(holder.imageView).load(arrayList.get(position).getPic()).override(150,150).circleCrop().into(holder.imageView);
+        if (arrayList.get(position).getPic().equals(nullPic) && arrayList.get(position).getPic().equals(nullPicF)) {
             holder.imageView.setEnabled(false);
         } else {
-            Glide.with(holder.imageView)
-                    .load(arrayList.get(position).getPic())
-                    .override(150, 150)
-                    .circleCrop()
-                    .into(holder.imageView);
             holder.imageView.setEnabled(true);
         }
         holder.name.setText(arrayList.get(position).getName());

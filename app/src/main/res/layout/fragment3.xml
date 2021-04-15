@@ -6,13 +6,49 @@
     tools:context=".fragment.Fragment3">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/f3linear"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="fragment3"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:textSize="30dp"
-        android:textColor="#000000"/>
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/f3b1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="1"/>
+        <Button
+            android:id="@+id/f3b2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="2"/>
+        <Button
+            android:id="@+id/f3b3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="3"/>
+        <Button
+            android:id="@+id/fragment3_write"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="글쓰기"/>
+
+    </LinearLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/f2_swipe"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/f3linear">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fragment3_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

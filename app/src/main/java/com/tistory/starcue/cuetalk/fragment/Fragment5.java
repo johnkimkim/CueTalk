@@ -103,6 +103,7 @@ public class Fragment5 extends Fragment {
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
+
         myUid = mAuth.getUid();
     }
 
@@ -172,53 +173,64 @@ public class Fragment5 extends Fragment {
 
     private void setPic() {
 //        Glide.with(getActivity()).load("gs://cuetalk-c4d03.appspot.com/images/03aUD74hz4MjcbcZcpSMc2KfZWs2").into(pic);
-        StorageReference storageRef = storage.getReference().child("images/" + myUid);
-        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                myUri = uri.toString();
-                Glide.with(getActivity())
-                        .load(uri.toString())
-                        .override(600, 600)
-                        .placeholder(R.drawable.ic_launcher_background)
-                        .error(R.drawable.ic_launcher_foreground)
-                        .circleCrop()
-                        .into(pic);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.get("sex").toString().equals("남자")) {
-                            Glide.with(getActivity())
-                                    .load(nullPic)
-                                    .override(600, 600)
-                                    .placeholder(R.drawable.ic_launcher_background)
-                                    .error(R.drawable.ic_launcher_foreground)
-                                    .circleCrop()
-                                    .into(pic);
-                            pic.setEnabled(false);
-                        } else {
-                            Glide.with(getActivity())
-                                    .load(nullPicF)
-                                    .override(600, 600)
-                                    .placeholder(R.drawable.ic_launcher_background)
-                                    .error(R.drawable.ic_launcher_foreground)
-                                    .circleCrop()
-                                    .into(pic);
-                            pic.setEnabled(false);
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
 
-                    }
-                });
+        db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                String picUri = documentSnapshot.get("pic").toString();
+                Glide.with(getActivity()).load(picUri).override(300, 300).placeholder(R.drawable.ic_launcher_background)
+                        .error(R.drawable.ic_launcher_foreground)
+                        .circleCrop().into(pic);
             }
         });
+
+//        StorageReference storageRef = storage.getReference().child("images/" + myUid);
+//        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//            @Override
+//            public void onSuccess(Uri uri) {
+//                myUri = uri.toString();
+//                Glide.with(getActivity())
+//                        .load(uri.toString())
+//                        .override(600, 600)
+//                        .placeholder(R.drawable.ic_launcher_background)
+//                        .error(R.drawable.ic_launcher_foreground)
+//                        .circleCrop()
+//                        .into(pic);
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+////                db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+////                    @Override
+////                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+////                        if (documentSnapshot.get("sex").toString().equals("남자")) {
+////                            Glide.with(getActivity())
+////                                    .load(nullPic)
+////                                    .override(600, 600)
+////                                    .placeholder(R.drawable.ic_launcher_background)
+////                                    .error(R.drawable.ic_launcher_foreground)
+////                                    .circleCrop()
+////                                    .into(pic);
+////                            pic.setEnabled(false);
+////                        } else {
+////                            Glide.with(getActivity())
+////                                    .load(nullPicF)
+////                                    .override(600, 600)
+////                                    .placeholder(R.drawable.ic_launcher_background)
+////                                    .error(R.drawable.ic_launcher_foreground)
+////                                    .circleCrop()
+////                                    .into(pic);
+////                            pic.setEnabled(false);
+////                        }
+////                    }
+////                }).addOnFailureListener(new OnFailureListener() {
+////                    @Override
+////                    public void onFailure(@NonNull Exception e) {
+////
+////                    }
+////                });
+//            }
+//        });
     }
 
     private void deleteDocument() {

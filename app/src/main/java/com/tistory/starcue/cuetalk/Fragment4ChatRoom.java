@@ -51,6 +51,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Fragment4ChatRoom extends AppCompatActivity {
@@ -101,15 +102,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.getString("pic") == null) {
-                    if (documentSnapshot.getString("sex").equals("남자")) {
-                        myPic = nullPic;
-                    } else {
-                        myPic = nullPicF;
-                    }
-                } else {
-                    myPic = documentSnapshot.getString("pic");
-                }
+                myPic = documentSnapshot.getString("pic");
                 myName = documentSnapshot.getString("name");
             }
         });
@@ -198,22 +191,61 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                     Log.d("Fragment4ChatRoom>>>", myUiduserUid);
                     Log.d("Fragment4ChatRoom>>>", userUidmyUid);
                     if (snapshot.getKey().equals(myUiduserUid)) {
-                        setRecyclerviewList(myUiduserUid);
+                        getroomname = myUiduserUid;
+                        setRecyclerviewList();
                     } else if (snapshot.getKey().equals(userUidmyUid)) {
-                        setRecyclerviewList(userUidmyUid);
+                        getroomname = userUidmyUid;
+                        setRecyclerviewList();
                     }
                 }
             }
         });
     }
 
-    private void setRecyclerviewList(String roomName) {
-        getroomname = roomName;
+    private void setNewPic() {
+        reference.getRef().child("messege").child(getroomname).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    Map<String, Object> map = new HashMap<>();
+                    if (!dataSnapshot1.getKey().equals("msg") && !dataSnapshot1.getKey().contains("lastmsg") && !dataSnapshot1.getKey().equals(myUid)) {
+                        for (DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()) {
+                            if (dataSnapshot2.getKey().equals("pic")) {
+                                String youPic = dataSnapshot2.getValue(String.class);
+                                for (DataSnapshot dataSnapshot3 : dataSnapshot.getChildren()) {
+                                    if (dataSnapshot3.getKey().equals("msg")) {
+                                        Log.d("Fragment4ChatRoom>>>", "check: " + dataSnapshot3.getKey());
+                                        for (DataSnapshot dataSnapshot4 : dataSnapshot3.getChildren()) {
+                                            String key = dataSnapshot4.getKey();
+                                            if (dataSnapshot4.child("pic").equals(arrayList.get(arrayList.size() - 1)) && dataSnapshot4.child("pic") != null) {
+                                                map.put("/" + key + "/pic/", youPic);
+                                            }
+                                        }
+                                        reference.getRef().child("messege").updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+//                                                setRecyclerviewList();
+                                            }
+                                        });
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        });
+    }
+
+    private void setRecyclerviewList() {
         getNewMessege();
         checkUserIsChat();
         setState();
 
-        reference.getRef().child("messege").child(roomName).child("msg").addListenerForSingleValueEvent(new ValueEventListener() {
+        reference.getRef().child("messege").child(getroomname).child("msg").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 arrayList.clear();
@@ -221,7 +253,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                     F4ChatRoomItem chatRoomItem = snapshot1.getValue(F4ChatRoomItem.class);
                     arrayList.add(chatRoomItem);
 
-                    reference.getRef().child("messege").child(roomName).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    reference.getRef().child("messege").child(getroomname).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                         @Override
                         public void onSuccess(DataSnapshot dataSnapshot) {
                             for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
@@ -243,6 +275,10 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                             }
                         }
                     });
+                }
+                String newPic = arrayList.get(arrayList.size() - 1).getPic();
+                for (int i = 0; i < arrayList.size(); i++) {
+
                 }
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);

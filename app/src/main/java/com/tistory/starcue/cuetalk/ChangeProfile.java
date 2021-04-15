@@ -31,8 +31,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.ObjectKey;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -41,6 +43,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -73,6 +76,7 @@ public class ChangeProfile extends AppCompatActivity {
     private String[] age;
     NumberPicker picker;
     RadioButton radiomale, radiofemale;
+    String myName;
     String agestring;
     String sexstring;
     RadioGroup radioGroup;
@@ -110,7 +114,6 @@ public class ChangeProfile extends AppCompatActivity {
         sqLiteDatabase = databaseHandler.getWritableDatabase();
 
         setinit();
-        setPic();
         setagespin();
         setYesBtn();
         setNoBtn();
@@ -131,25 +134,6 @@ public class ChangeProfile extends AppCompatActivity {
         addImageBtn = findViewById(R.id.add_image);
         deletePic = findViewById(R.id.change_profile_delete_pic);
 
-        if (willdelete) {
-            db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    mySex = documentSnapshot.getString("sex");
-                    if (mySex.equals("남자")) {
-                        Glide.with(imageView).load(nullPic).circleCrop().into(imageView);
-                    } else {
-                        Glide.with(imageView).load(nullPicF).circleCrop().into(imageView);
-                    }
-                }
-            });
-        } else {
-            setPic();
-        }
-
-        relativeLayout.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
-
         setView();
 
         addImageBtn.setOnClickListener(new View.OnClickListener() {
@@ -159,58 +143,59 @@ public class ChangeProfile extends AppCompatActivity {
             }
         });
 
-        setDeletePic();
-    }
-
-    private void setDeletePic() {
         deletePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Log.d("ChangeProfile>>>", "deletepic onClick");
-                        db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                mySex = documentSnapshot.get("sex").toString();
-                                Log.d("ChangeProfile>>>", "mySex: " + mySex);
-                                if (mySex.equals("남자")) {
-                                    Glide.with(imageView).load(nullPic).signature(new ObjectKey(System.currentTimeMillis()))
-                                            .circleCrop().into(imageView);
-                                } else {
-                                    Glide.with(imageView).load(nullPicF).signature(new ObjectKey(System.currentTimeMillis()))
-                                            .circleCrop().into(imageView);
-                                }
-                                willdelete = true;
-                            }
-                        });
-                    }
-                });
+                setDeletePic();
             }
         });
+
     }
 
     private void setView() {
         db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
+                myName = documentSnapshot.get("name").toString();
                 editid.setText(documentSnapshot.get("name").toString());
                 String age = documentSnapshot.get("age").toString();
                 int ageint = Integer.parseInt(age);
                 agespin.setSelection(ageint - 19);
                 String sex = documentSnapshot.get("sex").toString();
+                String picUri = documentSnapshot.get("pic").toString();
                 if (sex.equals("남자")) {
                     radioGroup.check(R.id.change_profile_sexmale);
                 } else if (sex.equals("여자")) {
                     radioGroup.check(R.id.change_profile_sexfemale);
                 }
-                setPic();
+                Log.d("ChangeProfile>>>", "get pic uri: " + picUri);
+                Glide.with(ChangeProfile.this).load(picUri).override(300, 300).circleCrop().into(imageView);
+                relativeLayout.setVisibility(View.GONE);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
 
+            }
+        });
+    }
+
+    private void setDeletePic() {
+        db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (!documentSnapshot.get("pic").equals(nullPic) && !documentSnapshot.get("pic").equals(nullPicF)) {
+                    mySex = documentSnapshot.get("sex").toString();
+                    Log.d("ChangeProfile>>>", "mySex: " + mySex);
+                    if (mySex.equals("남자")) {
+                        Glide.with(imageView).load(nullPic).signature(new ObjectKey(System.currentTimeMillis()))
+                                .circleCrop().into(imageView);
+                    } else {
+                        Glide.with(imageView).load(nullPicF).signature(new ObjectKey(System.currentTimeMillis()))
+                                .circleCrop().into(imageView);
+                    }
+                    willdelete = true;
+                }
             }
         });
     }
@@ -232,54 +217,50 @@ public class ChangeProfile extends AppCompatActivity {
     }
 
     private void uploadPic() {
-
-        if (imageUri != null) {
+        if (imageUri != null) { //pic 변경 및 신규등록
             final ProgressDialog pd = new ProgressDialog(ChangeProfile.this);
             pd.setTitle("이미지 업로드 중...");
             pd.show();
 
             String uid = mAuth.getUid();
             StorageReference riversRef = storageReference.child("images/" + uid);
-            riversRef.putFile(imageUri)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            riversRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    //upload pic in firestore
+                    storageReference.child("images/" + uid).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            //upload pic in firestore
-                            storageReference.child("images/" + uid).getDownloadUrl()
-                                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                        @Override
-                                        public void onSuccess(Uri uri) {
-                                            String picUri = uri.toString();
-                                            uploadPicInStore(picUri);
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-
-                                        }
-                                    });//upload pic in firestore
-                            pd.dismiss();
-                            Snackbar.make(findViewById(android.R.id.content), "이미지 업로드 성공", Snackbar.LENGTH_LONG).show();
+                        public void onSuccess(Uri uri) {
+                            String picUri = uri.toString();
+                            uploadPicInStore(picUri);
                         }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
+                    }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            pd.dismiss();
-                            Toast.makeText(ChangeProfile.this, "업로드실패", Toast.LENGTH_SHORT).show();
+
                         }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                            double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
-                            pd.setMessage("Pro: " + (int) progressPercent + "%");
-                        }
-                    });
+                    });//upload pic in firestore
+                    pd.dismiss();
+                    relativeLayout.setVisibility(View.GONE);
+                    Snackbar.make(findViewById(android.R.id.content), "이미지 업로드 성공", Snackbar.LENGTH_LONG).show();
+                    goToMain();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    pd.dismiss();
+                    relativeLayout.setVisibility(View.GONE);
+                    Toast.makeText(ChangeProfile.this, "업로드실패", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                    double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                    pd.setMessage("Pro: " + (int) progressPercent + "%");
+                }
+            });
         } else {
             if (willdelete) {//사진 삭제변경할때
-                relativeLayout.setVisibility(View.VISIBLE);
                 Map<String, Object> map = new HashMap<>();
                 if (mySex.equals("남자")) {
                     map.put("pic", nullPic);
@@ -289,61 +270,83 @@ public class ChangeProfile extends AppCompatActivity {
                 db.collection("users").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {//store변경
                     @Override
                     public void onSuccess(Void aVoid) {
-
-                        //f2 change pic
-                        Map<String, Object> map2 = new HashMap<>();
-                        if (mySex.equals("남자")) {
-                            map2.put("pic", nullPic);
-                        } else {
-                            map2.put("pic", nullPicF);
-                        }
-                        db.collection("f2messege").document(myUid).update(map2).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        storageReference.child("images/" + myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
-                            public void onSuccess(Void aVoid) {//storage mypic delete
-                                storageReference.child("images/" + myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            public void onSuccess(Void aVoid) {
+                                reference.getRef().child("myroom").child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                     @Override
-                                    public void onSuccess(Void aVoid) {
-                                        reference.getRef().child("myroom").child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                                            @Override
-                                            public void onSuccess(DataSnapshot dataSnapshot) {
-                                                Map<String, Object> map1 = new HashMap<>();//실시간 채팅 pic 변경
-                                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                                    if (mySex.equals("남자")) {
-                                                        map1.put("/messege/" + snapshot.getKey() + "/" + myUid + "/" + "pic/", nullPic);
-                                                    } else {
-                                                        map1.put("/messege/" + snapshot.getKey() + "/" + myUid + "/" + "pic/", nullPicF);
-                                                    }
-                                                    reference.updateChildren(map1).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            Log.d("ChangeProfile>>>", "db.delete success");
-                                                            relativeLayout.setVisibility(View.GONE);
-                                                            Toast.makeText(ChangeProfile.this, "everything success", Toast.LENGTH_SHORT).show();
-                                                            goToMain();
-                                                        }
-                                                    });
+                                    public void onSuccess(DataSnapshot dataSnapshot) {
+                                        int i = (int) dataSnapshot.getChildrenCount();
+                                        if (i > 0) {
+                                            Map<String, Object> map1 = new HashMap<>();//실시간 채팅 pic 변경
+                                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                                if (mySex.equals("남자")) {
+                                                    map1.put("/messege/" + snapshot.getKey() + "/" + myUid + "/" + "pic/", nullPic);
+                                                } else {
+                                                    map1.put("/messege/" + snapshot.getKey() + "/" + myUid + "/" + "pic/", nullPicF);
                                                 }
+                                                reference.updateChildren(map1).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+
+
+                                                        //f2 change pic
+                                                        f2changepic();
+                                                    }
+                                                }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                    }
+                                                });
                                             }
-                                        });
-
-
-
+                                        } else {
+                                            //f2 change pic
+                                            f2changepic();
+                                        }
                                     }
                                 });
                             }
                         });
 
-
-
-
-                        Log.d("ChangeProfile>>>", "db.updqte success");
+//                        Log.d("ChangeProfile>>>", "db.updqte success");
 
                     }
                 });
-            } else {
-                goToMain();
             }
         }
+
+
+    }
+
+    private void f2changepic() {
+        //f2 change pic
+        Map<String, Object> map2 = new HashMap<>();
+        if (mySex.equals("남자")) {
+            map2.put("pic", nullPic);
+        } else {
+            map2.put("pic", nullPicF);
+        }
+
+        db.collection("f2messege").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot snapshot = task.getResult();
+                    if (snapshot != null && snapshot.exists()) {
+                        db.collection("f2messege").document(myUid).update(map2).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {//storage mypic delete
+                                goToMain();
+                            }
+                        });
+                    } else {
+                        goToMain();
+                    }
+                } else {
+                    Log.d("ChangeProfile>>>", "onFailed2");
+                }
+            }
+        });
 
 
     }
@@ -374,10 +377,7 @@ public class ChangeProfile extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
 
                 updateUser(name, sexstring, agestring);
-                uploadPic();
             }
-
-//            mAuth.signOut();
 
         });
     }
@@ -423,7 +423,7 @@ public class ChangeProfile extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-
+                        uploadPic();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -434,37 +434,6 @@ public class ChangeProfile extends AppCompatActivity {
                         Toast.makeText(ChangeProfile.this, "네트워크문제로 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show();
                     }
                 });
-    }
-
-    private void setPic() {
-//        Glide.with(getActivity()).load("gs://cuetalk-c4d03.appspot.com/images/03aUD74hz4MjcbcZcpSMc2KfZWs2").into(pic);
-        String uid = mAuth.getUid();
-        StorageReference storageRef = storage.getReference().child("images/" + uid);
-        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                if (uri == null) {
-                    Log.d("ChangeProfile>>>", "setPic == null");
-                }
-                Log.d("ChangeProfile>>>", "setPic");
-                Glide.with(ChangeProfile.this)
-                        .load(uri.toString())
-                        .override(600, 600)
-                        .placeholder(R.drawable.ic_launcher_background)
-                        .error(R.drawable.ic_launcher_foreground)
-                        .circleCrop()
-                        .into(imageView);
-                relativeLayout.setVisibility(View.GONE);
-                progressBar.setVisibility(View.GONE);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("ChangeProfile>>>", "load pic fail");
-                relativeLayout.setVisibility(View.GONE);
-                progressBar.setVisibility(View.GONE);
-            }
-        });
     }
 
     private void uploadPicInStore(String uri) {
@@ -493,6 +462,11 @@ public class ChangeProfile extends AppCompatActivity {
                                                 goToMain();
                                             }
                                         }
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        goToMain();
                                     }
                                 });
                             }

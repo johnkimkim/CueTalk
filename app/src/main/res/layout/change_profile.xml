@@ -110,7 +110,8 @@
         android:id="@+id/change_profile_progresslayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#8F323232">
+        android:background="#8F323232"
+        android:clickable="false">
 
         <ProgressBar
             android:id="@+id/change_profile_progress_bar"

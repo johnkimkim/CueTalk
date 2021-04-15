@@ -227,6 +227,14 @@ public class Fragment4 extends Fragment {
                                                 adapter.notifyDataSetChanged();
                                             }
                                         }
+                                    } else if (!snapshot2.getKey().equals(myUid) && !snapshot2.getKey().equals("msg") && !snapshot2.getKey().contains("lastmsg")) {
+                                        for (DataSnapshot snapshot3 : snapshot2.getChildren()) {//상대방 uid. 상대방이 pic 변경시
+                                            F4MessegeItem f4MessegeItem = snapshot3.getValue(F4MessegeItem.class);
+                                            if (!arrayList.contains(f4MessegeItem)) {
+                                                int index = arrayList.indexOf(f4MessegeItem);
+                                                arrayList.set(index, f4MessegeItem);
+                                            }
+                                        }
                                     }
                                 }
                             }

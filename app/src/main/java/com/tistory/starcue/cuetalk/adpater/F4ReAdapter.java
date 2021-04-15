@@ -3,6 +3,7 @@ package com.tistory.starcue.cuetalk.adpater;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.tistory.starcue.cuetalk.fragment.Fragment4;
 import com.tistory.starcue.cuetalk.item.F4MessegeItem;
 import com.tistory.starcue.cuetalk.Fragment4ChatRoom;
@@ -33,6 +38,7 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
     ArrayList<F4MessegeItem> arrayList;
     ArrayList<LastListItem> lastList;
     Context context;
+    private DatabaseReference reference;
 
     FirebaseAuth mAuth;
     String myUid;
@@ -98,11 +104,29 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, arrayList.get(position).getUid(), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(context, Fragment4ChatRoom.class);
-                intent.putExtra("child", arrayList.get(position).getUid());
-                Fragment4.stayf4chatroom = true;
-                context.startActivity(intent);
+                reference = FirebaseDatabase.getInstance().getReference();
+                reference.getRef().child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                            if (dataSnapshot1.getKey().contains(myUid) || dataSnapshot1.getKey().contains(arrayList.get(position).getUid())) {
+                                for (DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()) {
+                                    if (dataSnapshot2.getKey().equals(arrayList.get(position).getUid())) {
+                                        String yourPic = dataSnapshot2.child("pic").getValue(String.class);
+                                        Toast.makeText(context, arrayList.get(position).getUid(), Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(context, Fragment4ChatRoom.class);
+                                        intent.putExtra("child", arrayList.get(position).getUid());
+                                        intent.putExtra("yourPic", yourPic);
+                                        Fragment4.stayf4chatroom = true;
+                                        context.startActivity(intent);
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }
+                });
+
             }
         });
 

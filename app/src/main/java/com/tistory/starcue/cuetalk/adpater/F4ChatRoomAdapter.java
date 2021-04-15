@@ -1,6 +1,8 @@
 package com.tistory.starcue.cuetalk.adpater;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -14,7 +16,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.tistory.starcue.cuetalk.Code;
 import com.tistory.starcue.cuetalk.DatabaseHandler;
 import com.tistory.starcue.cuetalk.item.F4ChatRoomItem;
@@ -28,8 +34,12 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     DatabaseHandler databaseHandler;
     private SQLiteDatabase sqLiteDatabase;
+    private DatabaseReference reference;
     private FirebaseAuth mAuth;
     String myUid;
+    String yourUid;
+    String yourPic;
+    Intent intent;
 
     private ArrayList<F4ChatRoomItem> arrayList;
     List<String> mytime = new ArrayList<>();
@@ -53,6 +63,11 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 //        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_room_layout_center, parent, false);
 //        CustomViewHolder holder = new CustomViewHolder(view);
         View view;
+        intent = ((Activity) context).getIntent();
+        yourUid = intent.getStringExtra("child");
+        yourPic = intent.getStringExtra("yourPic");
+        Log.d("F4ChatRoomAdapter>>>", "get intent uid: " + yourUid);
+        Log.d("F4ChatRoomAdapter>>>", "get intent pic: " + yourPic);
 
         if (viewType == Code.ViewType.RIGHT_IMAGE) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_room_layout_img_right, parent, false);
@@ -90,7 +105,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             ((F4ChatRoomAdapter.LeftImageViewholder) holder).name.setText(arrayList.get(position).getName());
             ((F4ChatRoomAdapter.LeftImageViewholder) holder).time.setText(arrayList.get(position).getTime());
             Glide.with(((F4ChatRoomAdapter.LeftImageViewholder) holder).picli)
-                    .load(arrayList.get(position).getPic())
+                    .load(yourPic)
                     .override(150, 150)
                     .circleCrop()
                     .into(((F4ChatRoomAdapter.LeftImageViewholder) holder).picli);
@@ -102,7 +117,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             ((F4ChatRoomAdapter.LeftImageViewholder) holder).picli.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String uri = arrayList.get(position).getPic();
+                    String uri = yourPic;
                     SeePicDialog.seePicDialog(context, uri);
                 }
             });
@@ -113,7 +128,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     SeePicDialog.seePicDialog(context, uri);
                 }
             });
-            if (arrayList.get(position).getPic().equals(nullPic) || arrayList.get(position).getPic().equals(nullPicF)) {
+            if (yourPic.equals(nullPic) || yourPic.equals(nullPicF)) {
                 ((F4ChatRoomAdapter.LeftImageViewholder) holder).picli.setEnabled(false);
             } else {
                 ((F4ChatRoomAdapter.LeftImageViewholder) holder).picli.setEnabled(true);
@@ -126,20 +141,20 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             ((F4ChatRoomAdapter.LeftViewholder) holder).name.setText(arrayList.get(position).getName());
             ((F4ChatRoomAdapter.LeftViewholder) holder).messege.setText(arrayList.get(position).getMessege());
             ((F4ChatRoomAdapter.LeftViewholder) holder).time.setText(arrayList.get(position).getTime());
-            Log.d("F4ChatRoomAdapter>>>", "array get pic: " + arrayList.get(position).getPic());
+            Log.d("F4ChatRoomAdapter>>>", "array get pic: " + yourPic);
             Glide.with(((F4ChatRoomAdapter.LeftViewholder) holder).picl)
-                    .load(arrayList.get(position).getPic())
+                    .load(yourPic)
                     .override(150, 150)
                     .circleCrop()
                     .into(((F4ChatRoomAdapter.LeftViewholder) holder).picl);
             ((F4ChatRoomAdapter.LeftViewholder) holder).picl.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String uri = arrayList.get(position).getPic();
+                    String uri = yourPic;
                     SeePicDialog.seePicDialog(context, uri);
                 }
             });
-            if (arrayList.get(position).getPic().equals(nullPic) || arrayList.get(position).getPic().equals(nullPicF)) {
+            if (yourPic.equals(nullPic) || yourPic.equals(nullPicF)) {
                 ((F4ChatRoomAdapter.LeftViewholder) holder).picl.setEnabled(false);
             } else {
                 ((F4ChatRoomAdapter.LeftViewholder) holder).picl.setEnabled(true);
@@ -161,14 +176,12 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         myUid = mAuth.getUid();
 
         if (arrayList.get(position).getName() == null
-                && arrayList.get(position).getPic() == null
                 && arrayList.get(position).getUri() == null
                 && arrayList.get(position).getTime().equals("dlqwkddhksfycjtaptlwl")
                 && arrayList.get(position).getMessege().equals("dlqwkddhksfycjtaptlwl")) {
             Log.d("F4ChatRoomAdapter>>>", "viewType: CENTER_CONTENT");
             return Code.ViewType.CENTER_CONTENT;
         } else if (arrayList.get(position).getName() == null
-                && arrayList.get(position).getPic() == null
                 && arrayList.get(position).getUri() == null
                 && arrayList.get(position).getTime().equals("tkdeoqkddlskrkskrk")
                 && arrayList.get(position).getMessege().equals("tkdeoqkddlskrkskrk")) {

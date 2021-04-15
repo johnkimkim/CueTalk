@@ -152,7 +152,6 @@ public class SendMessege {
                 messegeMap.put("/myroom/" + myUid + "/" + myUid + userUid, myUid + userUid);
 
                 messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/pic/", pic);
-                firstmsg.put("pic", pic);
 
                 firstmsg.put("messege", messege);
                 firstmsg.put("name", name);

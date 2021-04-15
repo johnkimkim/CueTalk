@@ -376,7 +376,6 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                 Map<String, Object> lastmsg = new HashMap<>();
                 sendmsg.put("messege", messege);
                 sendmsg.put("name", myName);
-                sendmsg.put("pic", myPic);
                 sendmsg.put("time", getTime());
                 sendmsg.put("read", "1");
 

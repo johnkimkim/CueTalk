@@ -250,6 +250,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 arrayList.clear();
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    int i = (int) snapshot1.getChildrenCount();
                     F4ChatRoomItem chatRoomItem = snapshot1.getValue(F4ChatRoomItem.class);
                     arrayList.add(chatRoomItem);
 
@@ -275,13 +276,12 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                             }
                         }
                     });
-                }
-                String newPic = arrayList.get(arrayList.size() - 1).getPic();
-                for (int i = 0; i < arrayList.size(); i++) {
+
 
                 }
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
+
             }
 
             @Override

@@ -2,7 +2,7 @@ package com.tistory.starcue.cuetalk.item;
 
 public class F3Item {
 
-    String category, uid, pic, name, sex, age, latitude, longitude, messege, time;
+    String category, uid, pic, ppic, name, sex, age, latitude, longitude, messege, time;
 
     public String getCategory() {
         return category;
@@ -10,6 +10,14 @@ public class F3Item {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getPpic() {
+        return ppic;
+    }
+
+    public void setPpic(String ppic) {
+        this.ppic = ppic;
     }
 
     public String getUid() {

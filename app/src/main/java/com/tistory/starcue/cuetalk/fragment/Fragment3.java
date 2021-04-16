@@ -1,11 +1,13 @@
 package com.tistory.starcue.cuetalk.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -28,12 +30,22 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.tistory.starcue.cuetalk.AdressRoom;
+import com.tistory.starcue.cuetalk.ChangeProfile;
 import com.tistory.starcue.cuetalk.GpsTracker;
 import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.adpater.F2Adapter;
@@ -60,6 +72,8 @@ public class Fragment3 extends Fragment {
 
     private FirebaseFirestore firestore;
     private FirebaseAuth mAuth;
+    private StorageReference storageReference;
+    private DatabaseReference reference;
     private String myUid;
 
     private RecyclerView recyclerView;
@@ -240,14 +254,17 @@ public class Fragment3 extends Fragment {
         dialogyes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                messege = dialogEditText.getText().toString();
+
                 if (category.equals("0")) {
                     Toast.makeText(getActivity(), "카테고리를 선택해주세요", Toast.LENGTH_SHORT).show();
                 } else if (picUri == null) {
                     Toast.makeText(getActivity(), "이미지를 선택해주세요", Toast.LENGTH_SHORT).show();
-                } else if (messege.length() == 0) {
+                } else if (messege.equals("")) {
                     Toast.makeText(getActivity(), "메시지를 선택해주세요", Toast.LENGTH_SHORT).show();
                 } else {
-                    write();
+                    Log.d("Fragment3>>>", "get pic uri: " + picUri);
+                    firstUploadPicInStorage();
                 }
             }
         });
@@ -270,7 +287,56 @@ public class Fragment3 extends Fragment {
         }
     }
 
-    private void write() {
+    private void firstUploadPicInStorage() {
+        if (imageUri != null) { //pic 변경 및 신규등록
+            storageReference = FirebaseStorage.getInstance().getReference();
+            final ProgressDialog pd = new ProgressDialog(getActivity());
+            pd.setTitle("이미지 업로드 중...");
+            pd.show();
+
+            String uid = mAuth.getUid();
+            StorageReference riversRef = storageReference.child("fragment3/" + uid);
+            riversRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Log.d("Fragment3>>>", "test 1");
+                    //upload pic in firestore
+                    storageReference.child("fragment3/" + uid).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Log.d("Fragment3>>>", "test 2");
+                            String picUri = uri.toString();
+                            write(picUri);
+                            Snackbar.make(getActivity().findViewById(android.R.id.content), "이미지 업로드 성공", Snackbar.LENGTH_LONG).show();
+                            pd.dismiss();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });//upload pic in firestore
+//                    relativeLayout.setVisibility(View.GONE);
+//                    alertDialog.dismiss();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    pd.dismiss();
+//                    relativeLayout.setVisibility(View.GONE);
+                    Toast.makeText(getActivity(), "업로드실패", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                    double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                    pd.setMessage("Pro: " + (int) progressPercent + "%");
+                }
+            });
+        }
+    }
+
+    private void write(String storageUri) {
         Map<String, Object> map = new HashMap<>();
         firestore.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -288,21 +354,27 @@ public class Fragment3 extends Fragment {
                     myPic = documentSnapshot.get("pic").toString();
                 }
 
-                latitude = String.valueOf(gpsTracker.getLatitude());
-                longitude = String.valueOf(gpsTracker.getLocation());
+                double Dlatitude = gpsTracker.getLatitude();
+                double Dlongitude = gpsTracker.getLongitude();
 
-                messege = dialogEditText.getText().toString();
+                latitude = String.valueOf(Dlatitude);
+                longitude = String.valueOf(Dlongitude);
+                Log.d("Fragment3>>>", "get string latitude: " + latitude);
+                Log.d("Fragment3>>>", "get string longitude: " + longitude);
 
                 map.put("uid", myUid);
                 map.put("pic", myPic);
                 map.put("age", age);
                 map.put("sex", sex);
                 map.put("name", name);
+                map.put("category", category);
                 map.put("latitude", latitude);
                 map.put("longitude", longitude);
                 map.put("messege", messege);
                 map.put("time", getTime());
-                map.put("ppic", picUri);
+                map.put("ppic", storageUri);
+
+//                uploadPic(map);
 
                 firestore.collection("f3messege").document(myUid).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -310,6 +382,19 @@ public class Fragment3 extends Fragment {
                         closeKeyBoard();
                         Toast.makeText(getActivity(), "중고장터 글쓰기 성공", Toast.LENGTH_SHORT).show();
                         alertDialog.dismiss();
+
+                        if (page == 0) {
+                            getDataListAll();
+                        } else if (page == 1) {
+                            getDataList1();
+                        } else if (page == 2) {
+                            getDataList2();
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
                     }
                 });
             }

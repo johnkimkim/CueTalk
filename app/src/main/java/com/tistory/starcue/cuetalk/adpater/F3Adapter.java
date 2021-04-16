@@ -51,7 +51,7 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
     @Override
     public F3Adapter.CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.f2_list_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.f3_list_layout, parent, false);
         F3Adapter.CustomViewHolder holder = new F3Adapter.CustomViewHolder(view);
         mAuth = FirebaseAuth.getInstance();
         myUid = mAuth.getUid();
@@ -62,6 +62,7 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull F3Adapter.CustomViewHolder holder, int position) {
         Glide.with(holder.imageView).load(arrayList.get(position).getPic()).override(150, 150).circleCrop().into(holder.imageView);
+        Glide.with(holder.ppic).load(arrayList.get(position).getPpic()).override(150, 150).centerInside().into(holder.ppic);
         holder.name.setText(arrayList.get(position).getName());
         holder.sex.setText(arrayList.get(position).getSex());
         holder.age.setText(arrayList.get(position).getAge());
@@ -157,13 +158,14 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
     }
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
+        ImageView imageView, ppic;
         TextView name, sex, age, km, messege, time;
         Button sendbtn;
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
             this.imageView = itemView.findViewById(R.id.f3re_pic);
+            this.ppic = itemView.findViewById(R.id.f3re_ppic);
             this.name = itemView.findViewById(R.id.f3re_name);
             this.sex = itemView.findViewById(R.id.f3re_sex);
             this.age = itemView.findViewById(R.id.f3re_age);

@@ -13,11 +13,17 @@
         android:layout_height="50dp"
         android:src="@drawable/picnull" />
 
+    <ImageView
+        android:id="@+id/f3re_ppic"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_toRightOf="@+id/f3re_pic"/>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_toRightOf="@+id/f3re_pic">
+        android:layout_toRightOf="@+id/f3re_ppic">
 
         <LinearLayout
             android:layout_width="wrap_content"

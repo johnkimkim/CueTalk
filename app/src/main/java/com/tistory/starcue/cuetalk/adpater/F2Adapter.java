@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.ObjectKey;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -62,7 +63,9 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull F2Adapter.CustomViewHolder holder, int position) {
 
-        Glide.with(holder.imageView).load(arrayList.get(position).getPic()).override(150, 150).circleCrop().into(holder.imageView);
+        Glide.with(holder.imageView).load(arrayList.get(position).getPic())
+                .signature(new ObjectKey(System.currentTimeMillis()))
+                .override(150, 150).circleCrop().into(holder.imageView);
         holder.name.setText(arrayList.get(position).getName());
         holder.sex.setText(arrayList.get(position).getSex());
         holder.age.setText(arrayList.get(position).getAge());
@@ -148,6 +151,13 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
                         }
                     });
                 }
+            }
+        });
+
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
     }

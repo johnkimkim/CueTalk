@@ -15,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.signature.ObjectKey;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -61,8 +63,20 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull F3Adapter.CustomViewHolder holder, int position) {
-        Glide.with(holder.imageView).load(arrayList.get(position).getPic()).override(150, 150).circleCrop().into(holder.imageView);
-        Glide.with(holder.ppic).load(arrayList.get(position).getPpic()).override(150, 150).centerInside().into(holder.ppic);
+//        Glide.with(holder.imageView).load(arrayList.get(position).getPic())
+//                .signature(new ObjectKey(System.currentTimeMillis()))
+//                .override(150, 150).circleCrop().into(holder.imageView);
+
+//        Glide.with(holder.imageView).load(arrayList.get(position).getPic())
+//                .diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true)
+//                .override(150, 150).circleCrop().into(holder.imageView);
+
+        Glide.with(holder.imageView).load(arrayList.get(position).getPic())
+                .signature(new ObjectKey(System.currentTimeMillis()))
+                .override(150, 150).circleCrop().into(holder.imageView);
+
+        Glide.with(holder.ppic).load(arrayList.get(position).getPpic())
+                .override(150, 150).centerInside().into(holder.ppic);
         holder.name.setText(arrayList.get(position).getName());
         holder.sex.setText(arrayList.get(position).getSex());
         holder.age.setText(arrayList.get(position).getAge());
@@ -148,6 +162,13 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
                         }
                     });
                 }
+            }
+        });
+
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("F3Adapter>>>", "get pic uri: " + arrayList.get(position).getPic());
             }
         });
     }

@@ -31,6 +31,12 @@
             android:layout_weight="1"
             android:text="3"/>
         <Button
+            android:id="@+id/fragment3_my"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="내글"/>
+        <Button
             android:id="@+id/fragment3_write"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

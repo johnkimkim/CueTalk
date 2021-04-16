@@ -82,7 +82,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
 
     private ArrayList<F3Item> arrayList;
 
-    Button b1, b2, b3, write;
+    Button b1, b2, b3, my, write;
     SwipeRefreshLayout swipeRefreshLayout;
 
     private AlertDialog alertDialog;
@@ -125,6 +125,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         b1 = v.findViewById(R.id.f3b1);
         b2 = v.findViewById(R.id.f3b2);
         b3 = v.findViewById(R.id.f3b3);
+        my = v.findViewById(R.id.fragment3_my);
         write = v.findViewById(R.id.fragment3_write);
         swipeRefreshLayout = v.findViewById(R.id.f3_swipe);
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -160,6 +161,9 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                 for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
                     F3Item f3Item = snapshot.toObject(F3Item.class);
                     arrayList.add(f3Item);
+                    if (arrayList.size() == 2) {
+                        Log.d("Fragment3>>>", "user pic: " + arrayList.get(1).getPic());
+                    }
                     setListTimeSort(arrayList);
                 }
                 swipeRefreshLayout.setRefreshing(false);
@@ -193,6 +197,24 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                 arrayList.clear();
                 for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
                     if (snapshot.get("category").equals("2")) {
+                        F3Item f3Item = snapshot.toObject(F3Item.class);
+                        arrayList.add(f3Item);
+                        setListTimeSort(arrayList);
+                    }
+                }
+                swipeRefreshLayout.setRefreshing(false);
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void getDataListMy() {
+        firestore.collection("f3messege").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                arrayList.clear();
+                for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                    if (snapshot.get("uid").equals(myUid)) {
                         F3Item f3Item = snapshot.toObject(F3Item.class);
                         arrayList.add(f3Item);
                         setListTimeSort(arrayList);
@@ -441,6 +463,14 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
             public void onClick(View view) {
                 page = 2;
                 getDataList2();
+            }
+        });
+
+        my.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                page = 3;
+                getDataListMy();
             }
         });
     }

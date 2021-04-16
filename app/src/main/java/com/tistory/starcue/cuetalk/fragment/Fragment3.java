@@ -45,13 +45,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.tistory.starcue.cuetalk.AdressRoom;
-import com.tistory.starcue.cuetalk.ChangeProfile;
 import com.tistory.starcue.cuetalk.GpsTracker;
 import com.tistory.starcue.cuetalk.R;
-import com.tistory.starcue.cuetalk.adpater.F2Adapter;
 import com.tistory.starcue.cuetalk.adpater.F3Adapter;
-import com.tistory.starcue.cuetalk.item.F2Item;
 import com.tistory.starcue.cuetalk.item.F3Item;
 
 import java.text.SimpleDateFormat;
@@ -166,6 +162,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                     arrayList.add(f3Item);
                     setListTimeSort(arrayList);
                 }
+                swipeRefreshLayout.setRefreshing(false);
                 adapter.notifyDataSetChanged();
             }
         });
@@ -183,6 +180,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                         setListTimeSort(arrayList);
                     }
                 }
+                swipeRefreshLayout.setRefreshing(false);
                 adapter.notifyDataSetChanged();
             }
         });
@@ -200,6 +198,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                         setListTimeSort(arrayList);
                     }
                 }
+                swipeRefreshLayout.setRefreshing(false);
                 adapter.notifyDataSetChanged();
             }
         });
@@ -415,7 +414,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
     private String getTime() {
         long now = System.currentTimeMillis();
         Date mDate = new Date(now);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM_dd hh:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM_dd HH:mm:ss");//hh = 12, HH = 24
         String date = format.format(mDate);
         return date;
     }
@@ -489,19 +488,13 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
 
     @Override
     public void onRefresh() {
-        firestore.collection("f3messege").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                arrayList.clear();
-                for (DocumentSnapshot queryDocumentSnapshots1 : queryDocumentSnapshots.getDocuments()) {
-                    F3Item f3Item = queryDocumentSnapshots1.toObject(F3Item.class);
-                    arrayList.add(f3Item);
-                    setListTimeSort(arrayList);
-                }
-                adapter.notifyDataSetChanged();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
+        if (page == 0) {
+            getDataListAll();
+        } else if (page == 1) {
+            getDataList1();
+        } else if (page == 2) {
+            getDataList2();
+        }
     }
 
     private static class Descending implements Comparator<F3Item> {
@@ -512,6 +505,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
     }
 
     private void setListTimeSort(ArrayList<F3Item> arrayList) {
+        Log.d("Fragment3>>>", "setListTimeSort");
         Descending descending = new Descending();
         Collections.sort(arrayList, descending);
     }

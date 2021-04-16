@@ -317,7 +317,7 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
     private String getTime() {
         long now = System.currentTimeMillis();
         Date mDate = new Date(now);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM_dd hh:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM_dd HH:mm:ss");
         String date = format.format(mDate);
         return date;
     }
@@ -358,19 +358,34 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
 
     @Override
     public void onRefresh() {
-        firestore.collection("f2messege").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                arrayList.clear();
-                for (DocumentSnapshot queryDocumentSnapshots1 : queryDocumentSnapshots.getDocuments()) {
-                    F2Item f2Item = queryDocumentSnapshots1.toObject(F2Item.class);
-                    arrayList.add(f2Item);
-                    setListTimeSort(arrayList);
-                }
-                adapter.notifyDataSetChanged();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
+//        String resetPage = Integer.toString(page);
+//        Log.d("Fragment2>>>", "resetPage: " + resetPage);
+//        firestore.collection("f2messege").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//            @Override
+//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                arrayList.clear();
+//                for (DocumentSnapshot queryDocumentSnapshots1 : queryDocumentSnapshots.getDocuments()) {
+//                    F2Item f2Item = queryDocumentSnapshots1.toObject(F2Item.class);
+//                    arrayList.add(f2Item);
+//                    setListTimeSort(arrayList);
+//                }
+//                adapter.notifyDataSetChanged();
+//                swipeRefreshLayout.setRefreshing(false);
+//            }
+//        });
+        if (page == 0) {
+            setListBtn1();
+        } else if (page == 1) {
+            setListBtn2();
+        } else if (page == 2) {
+            setListBtn2();
+        } else if (page == 3) {
+            setListBtn3();
+        } else if (page == 4) {
+            setListBtn4();
+        } else if (page == 5) {
+            setListBtn5();
+        }
     }
 
 
@@ -407,6 +422,7 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                     arrayList.add(f2Item);
                     setListTimeSort(arrayList);
                 }
+                swipeRefreshLayout.setRefreshing(false);
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
             }
@@ -436,6 +452,7 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                     }
 
                 }
+                swipeRefreshLayout.setRefreshing(false);
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
             }
@@ -465,6 +482,7 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                     }
 
                 }
+                swipeRefreshLayout.setRefreshing(false);
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
             }
@@ -494,6 +512,7 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                     }
 
                 }
+                swipeRefreshLayout.setRefreshing(false);
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
             }
@@ -512,6 +531,7 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                         setListTimeSort(arrayList);
                     }
                 }
+                swipeRefreshLayout.setRefreshing(false);
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
             }

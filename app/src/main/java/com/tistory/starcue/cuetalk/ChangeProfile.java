@@ -319,6 +319,7 @@ public class ChangeProfile extends AppCompatActivity {
     }
 
     private void f2changepic() {
+        //if delete pic
         //f2 change pic
         Map<String, Object> map2 = new HashMap<>();
         if (mySex.equals("남자")) {
@@ -336,7 +337,7 @@ public class ChangeProfile extends AppCompatActivity {
                         db.collection("f2messege").document(myUid).update(map2).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {//storage mypic delete
-                                goToMain();
+                                f3changePic();
                             }
                         });
                     } else {
@@ -347,8 +348,33 @@ public class ChangeProfile extends AppCompatActivity {
                 }
             }
         });
+    }
 
-
+    private void f3changePic() {
+        Map<String, Object> map2 = new HashMap<>();
+        if (mySex.equals("남자")) {
+            map2.put("pic", nullPic);
+        } else {
+            map2.put("pic", nullPicF);
+        }
+        db.collection("f3messege").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot snapshot = task.getResult();
+                    if (snapshot != null && snapshot.exists()) {
+                        db.collection("f3messege").document(myUid).update(map2).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {//storage mypic delete
+                                goToMain();
+                            }
+                        });
+                    } else {
+                        goToMain();
+                    }
+                }
+            }
+        });
     }
 
     private void setYesBtn() {
@@ -448,27 +474,7 @@ public class ChangeProfile extends AppCompatActivity {
                         db.collection("f2messege").document(myUid).update(userPic).addOnSuccessListener(new OnSuccessListener<Void>() {//f2messege update pic
                             @Override
                             public void onSuccess(Void aVoid) {
-                                reference.getRef().child("myroom").child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                                    @Override
-                                    public void onSuccess(DataSnapshot dataSnapshot) {
-                                        //realtime messege update pic
-                                        int i = (int) dataSnapshot.getChildrenCount();
-                                        Map<String, Object> map = new HashMap<>();
-                                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                            map.put("/messege/" + snapshot.getKey() + "/" + myUid + "/pic/", uri);
-                                            if (map.size() == i) {
-                                                reference.updateChildren(map);
-                                                Log.d("ChangeProfile>>>", "add map finished");
-                                                goToMain();
-                                            }
-                                        }
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        goToMain();
-                                    }
-                                });
+                                f3changePic2(uri);
                             }
                         });
                     }
@@ -479,6 +485,37 @@ public class ChangeProfile extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    private void f3changePic2(String uri) {
+        Map<String, Object> userPic = new HashMap<>();
+        userPic.put("pic", uri);
+        db.collection("f2messege").document(myUid).update(userPic).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                reference.getRef().child("myroom").child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        //realtime messege update pic
+                        int i = (int) dataSnapshot.getChildrenCount();
+                        Map<String, Object> map = new HashMap<>();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            map.put("/messege/" + snapshot.getKey() + "/" + myUid + "/pic/", uri);
+                            if (map.size() == i) {
+                                reference.updateChildren(map);
+                                Log.d("ChangeProfile>>>", "add map finished");
+                                goToMain();
+                            }
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        goToMain();
+                    }
+                });
+            }
+        });
     }
 
     private void goToMain() {

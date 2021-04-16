@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,10 +51,13 @@ import com.tistory.starcue.cuetalk.GpsTracker;
 import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.adpater.F2Adapter;
 import com.tistory.starcue.cuetalk.adpater.F3Adapter;
+import com.tistory.starcue.cuetalk.item.F2Item;
 import com.tistory.starcue.cuetalk.item.F3Item;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,7 +65,7 @@ import java.util.Map;
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
-public class Fragment3 extends Fragment {
+public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private SharedPreferences sharedPreferences;
 
     String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
@@ -83,6 +87,7 @@ public class Fragment3 extends Fragment {
     private ArrayList<F3Item> arrayList;
 
     Button b1, b2, b3, write;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     private AlertDialog alertDialog;
     Spinner dialogSpinner;
@@ -125,6 +130,8 @@ public class Fragment3 extends Fragment {
         b2 = v.findViewById(R.id.f3b2);
         b3 = v.findViewById(R.id.f3b3);
         write = v.findViewById(R.id.fragment3_write);
+        swipeRefreshLayout = v.findViewById(R.id.f3_swipe);
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         write.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,9 +160,11 @@ public class Fragment3 extends Fragment {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 arrayList.clear();
+                Log.d("Fragment3>>>", "getDataListAll");
                 for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
                     F3Item f3Item = snapshot.toObject(F3Item.class);
                     arrayList.add(f3Item);
+                    setListTimeSort(arrayList);
                 }
                 adapter.notifyDataSetChanged();
             }
@@ -171,6 +180,7 @@ public class Fragment3 extends Fragment {
                     if (snapshot.get("category").equals("1")) {
                         F3Item f3Item = snapshot.toObject(F3Item.class);
                         arrayList.add(f3Item);
+                        setListTimeSort(arrayList);
                     }
                 }
                 adapter.notifyDataSetChanged();
@@ -187,6 +197,7 @@ public class Fragment3 extends Fragment {
                     if (snapshot.get("category").equals("2")) {
                         F3Item f3Item = snapshot.toObject(F3Item.class);
                         arrayList.add(f3Item);
+                        setListTimeSort(arrayList);
                     }
                 }
                 adapter.notifyDataSetChanged();
@@ -414,6 +425,7 @@ public class Fragment3 extends Fragment {
             @Override
             public void onClick(View view) {
                 page = 0;
+                getDataListAll();
             }
         });
 
@@ -421,6 +433,7 @@ public class Fragment3 extends Fragment {
             @Override
             public void onClick(View view) {
                 page = 1;
+                getDataList1();
             }
         });
 
@@ -428,6 +441,7 @@ public class Fragment3 extends Fragment {
             @Override
             public void onClick(View view) {
                 page = 2;
+                getDataList2();
             }
         });
     }
@@ -441,12 +455,13 @@ public class Fragment3 extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Log.d("Fragment3>>>", "get page in onResume: " + page);
         getPage();
         if (page == 0) {
             getDataListAll();
-        } else if (page == 2) {
+        } else if (page == 1) {
             getDataList1();
-        } else if (page == 3) {
+        } else if (page == 2) {
             getDataList2();
         }
     }
@@ -459,16 +474,45 @@ public class Fragment3 extends Fragment {
     }
 
     private void savePage() {
-        sharedPreferences = getActivity().getSharedPreferences("pageSP", Context.MODE_PRIVATE);
+        sharedPreferences = getActivity().getSharedPreferences("pageSP3", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("page", page);
+        editor.putInt("page3", page);
         editor.apply();
         Log.d("Fragment3>>>", "savePage");
     }
 
     private void getPage() {
-        sharedPreferences = getActivity().getSharedPreferences("pageSP", Context.MODE_PRIVATE);
-        page = sharedPreferences.getInt("page", 1);
-        Log.d("Fragment3>>>", "get page: " + page);
+        sharedPreferences = getActivity().getSharedPreferences("pageSP3", Context.MODE_PRIVATE);
+        page = sharedPreferences.getInt("page3", 0);
+        Log.d("Fragment3>>>", "get page in getPage: " + page);
+    }
+
+    @Override
+    public void onRefresh() {
+        firestore.collection("f3messege").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                arrayList.clear();
+                for (DocumentSnapshot queryDocumentSnapshots1 : queryDocumentSnapshots.getDocuments()) {
+                    F3Item f3Item = queryDocumentSnapshots1.toObject(F3Item.class);
+                    arrayList.add(f3Item);
+                    setListTimeSort(arrayList);
+                }
+                adapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+    }
+
+    private static class Descending implements Comparator<F3Item> {
+        @Override
+        public int compare(F3Item f3Item, F3Item t1) {
+            return t1.getTime().compareTo(f3Item.getTime());
+        }
+    }
+
+    private void setListTimeSort(ArrayList<F3Item> arrayList) {
+        Descending descending = new Descending();
+        Collections.sort(arrayList, descending);
     }
 }

@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -72,6 +73,7 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
     RecyclerView recyclerView;
     Button write;
     Button btn1, btn2, btn3, btn4, btn5;
+    public static CheckBox f2fragdec;
 
     EditText dialogEditText;
     Button dialogyes, dialogno;
@@ -113,12 +115,30 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         btn4 = v.findViewById(R.id.f2btn4);
         btn5 = v.findViewById(R.id.f2btn5);
         write = v.findViewById(R.id.writemsg);
+        f2fragdec = v.findViewById(R.id.f2fragdec);
+        f2fragdec.setChecked(false);
         progressBar = v.findViewById(R.id.fragment2_progress_bar);
         swipeRefreshLayout = v.findViewById(R.id.f2_swipe);
         swipeRefreshLayout.setOnRefreshListener(this);
         setWrite();
         setRecyclerView();
         setBtn();
+        setDec();
+    }
+
+    private void setDec() {
+        f2fragdec.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (f2fragdec.isChecked()) {
+                    recyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                } else {
+                    recyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 
     private void setfiredb() {

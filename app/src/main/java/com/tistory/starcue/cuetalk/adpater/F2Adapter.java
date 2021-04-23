@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,9 +24,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.tistory.starcue.cuetalk.DecDialog;
 import com.tistory.starcue.cuetalk.GpsTracker;
 import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.SendMessege;
+import com.tistory.starcue.cuetalk.fragment.Fragment2;
 import com.tistory.starcue.cuetalk.item.F2Item;
 
 import java.util.ArrayList;
@@ -160,6 +163,13 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
 
             }
         });
+
+        holder.f2dec.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DecDialog.DicDialog(context);
+            }
+        });
     }
 
     @Override
@@ -167,10 +177,11 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
         return (arrayList != null ? arrayList.size() : 0);
     }
 
-    public class CustomViewHolder extends RecyclerView.ViewHolder {
+    public static class CustomViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView name, sex, age, km, messege, time;
         Button sendbtn;
+        Button f2dec;
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -182,6 +193,12 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
             this.messege = itemView.findViewById(R.id.f2re_messege);
             this.time = itemView.findViewById(R.id.f2re_time);
             this.sendbtn = itemView.findViewById(R.id.f2re_sendmsg);
+            this.f2dec = itemView.findViewById(R.id.f2dec);
+            if (Fragment2.f2fragdec.isChecked()) {
+                f2dec.setVisibility(View.VISIBLE);
+            } else {
+                f2dec.setVisibility(View.GONE);
+            }
         }
     }
 

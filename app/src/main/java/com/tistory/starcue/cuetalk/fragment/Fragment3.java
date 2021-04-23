@@ -24,6 +24,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -84,6 +85,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
 
     Button b1, b2, b3, my, write;
     SwipeRefreshLayout swipeRefreshLayout;
+    public static CheckBox f3fragdec;
 
     private AlertDialog alertDialog;
     Spinner dialogSpinner;
@@ -127,6 +129,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         b3 = v.findViewById(R.id.f3b3);
         my = v.findViewById(R.id.fragment3_my);
         write = v.findViewById(R.id.fragment3_write);
+        f3fragdec = v.findViewById(R.id.f3dec);
         swipeRefreshLayout = v.findViewById(R.id.f3_swipe);
         swipeRefreshLayout.setOnRefreshListener(this);
 
@@ -139,6 +142,22 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
 
         setRecyclerView();
         setCategory();
+        setDec();
+    }
+
+    private void setDec() {
+        f3fragdec.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (f3fragdec.isChecked()) {
+                    recyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                } else {
+                    recyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 
     private void setRecyclerView() {

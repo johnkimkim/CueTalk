@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/f2_recyclerview"
     android:layout_width="match_parent"
     android:layout_height="70dp"
     android:layout_marginLeft="10dp"
     android:layout_marginTop="7dp"
-    android:layout_marginRight="10dp"
-    android:id="@+id/f2_recyclerview">
+    android:layout_marginRight="10dp">
 
     <ImageView
         android:id="@+id/f2re_pic"
@@ -16,8 +16,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_toRightOf="@+id/f2re_pic">
+        android:layout_toRightOf="@+id/f2re_pic"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -53,29 +53,44 @@
             android:id="@+id/f2re_messege"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000000"/>
+            android:textColor="#000000" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/f2re_count"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_alignParentRight="true"/><!--필요없음-->
+        android:layout_alignParentRight="true" /><!--필요없음-->
 
     <TextView
         android:id="@+id/f2re_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/f2re_sendmsg"
-        android:layout_below="@+id/f2re_count"/>
+        android:layout_below="@+id/f2re_count"
+        android:layout_toLeftOf="@+id/f2btnlayout" />
 
-    <Button
-        android:id="@+id/f2re_sendmsg"
+    <LinearLayout
+        android:id="@+id/f2btnlayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:text="메시지"/>
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/f2re_sendmsg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="메시지" />
+
+        <Button
+            android:id="@+id/f2dec"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:text="신고"
+            android:visibility="gone"/>
+
+    </LinearLayout>
 
 
 </RelativeLayout>

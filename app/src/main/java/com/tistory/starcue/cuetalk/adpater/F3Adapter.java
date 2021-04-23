@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,9 +25,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.tistory.starcue.cuetalk.DecDialog;
 import com.tistory.starcue.cuetalk.GpsTracker;
 import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.SendMessege;
+import com.tistory.starcue.cuetalk.fragment.Fragment2;
 import com.tistory.starcue.cuetalk.item.F3Item;
 
 import java.util.ArrayList;
@@ -171,6 +174,13 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
                 Log.d("F3Adapter>>>", "get pic uri: " + arrayList.get(position).getPic());
             }
         });
+
+        holder.f3dec.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DecDialog.DicDialog(context);
+            }
+        });
     }
 
     @Override
@@ -182,6 +192,7 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
         ImageView imageView, ppic;
         TextView name, sex, age, km, messege, time;
         Button sendbtn;
+        CheckBox f3dec;
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -194,6 +205,12 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
             this.messege = itemView.findViewById(R.id.f3re_messege);
             this.time = itemView.findViewById(R.id.f3re_time);
             this.sendbtn = itemView.findViewById(R.id.f3re_sendmsg);
+            this.f3dec = itemView.findViewById(R.id.f3dec);
+            if (Fragment2.f2fragdec.isChecked()) {
+                f3dec.setVisibility(View.VISIBLE);
+            } else {
+                f3dec.setVisibility(View.GONE);
+            }
         }
     }
     public double getDistance(double lat1, double lng1, double lat2, double lng2) {

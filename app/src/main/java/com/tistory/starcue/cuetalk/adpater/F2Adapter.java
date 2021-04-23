@@ -67,7 +67,6 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
     public void onBindViewHolder(@NonNull F2Adapter.CustomViewHolder holder, int position) {
 
         Glide.with(holder.imageView).load(arrayList.get(position).getPic())
-                .signature(new ObjectKey(System.currentTimeMillis()))
                 .override(150, 150).circleCrop().into(holder.imageView);
         holder.name.setText(arrayList.get(position).getName());
         holder.sex.setText(arrayList.get(position).getSex());

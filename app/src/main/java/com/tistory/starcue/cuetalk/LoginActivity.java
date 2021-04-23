@@ -146,7 +146,7 @@ public class LoginActivity extends AppCompatActivity {
                             Snackbar.make(findViewById(android.R.id.content), "이미지 업로드 성공", Snackbar.LENGTH_LONG).show();
 
                             //upload pic in firestore
-                            storageReference.child("images/" + uid).getDownloadUrl()
+                            storageReference.child("images/" + uid + "/" + uid + "count1").getDownloadUrl()
                                     .addOnSuccessListener(new OnSuccessListener<Uri>() {
                                         @Override
                                         public void onSuccess(Uri uri) {

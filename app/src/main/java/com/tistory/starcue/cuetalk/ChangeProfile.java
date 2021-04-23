@@ -45,6 +45,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -222,43 +223,31 @@ public class ChangeProfile extends AppCompatActivity {
             pd.setTitle("이미지 업로드 중...");
             pd.show();
 
-            String uid = mAuth.getUid();
-            StorageReference riversRef = storageReference.child("images/" + uid);
-            riversRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            StorageReference storageReference1 = storageReference.child("images/" + myUid);
+            storageReference1.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
                 @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    //upload pic in firestore
-                    storageReference.child("images/" + uid).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            String picUri = uri.toString();
-                            uploadPicInStore(picUri);
+                public void onSuccess(ListResult listResult) {
+                    if (listResult.getItems().size() == 0) {
+                        uploadPic2(myUid + "count1", pd);
+                    } else {
+                        for (StorageReference listResult1 : listResult.getItems()) {
+                            if (listResult1.getName().equals(myUid + "count1")) {
+                                uploadPic2(myUid + "count2", pd);
+                                storageReference.child("images/" + myUid + "/" + myUid + "count1").delete();
+                            } else if (listResult1.getName().equals(myUid + "count2")) {
+                                uploadPic2(myUid + "count1", pd);
+                                storageReference.child("images/" + myUid + "/" + myUid + "count2").delete();
+                            }
                         }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-
-                        }
-                    });//upload pic in firestore
-                    pd.dismiss();
-                    relativeLayout.setVisibility(View.GONE);
-                    Snackbar.make(findViewById(android.R.id.content), "이미지 업로드 성공", Snackbar.LENGTH_LONG).show();
-                    goToMain();
+                    }
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    pd.dismiss();
-                    relativeLayout.setVisibility(View.GONE);
-                    Toast.makeText(ChangeProfile.this, "업로드실패", Toast.LENGTH_SHORT).show();
-                }
-            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                    double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
-                    pd.setMessage("Pro: " + (int) progressPercent + "%");
+                    Log.d("ChangeProfile>>>", "onFailure");
                 }
             });
+
         } else {
             if (willdelete) {//사진 삭제변경할때
                 Map<String, Object> map = new HashMap<>();
@@ -270,43 +259,27 @@ public class ChangeProfile extends AppCompatActivity {
                 db.collection("users").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {//store변경
                     @Override
                     public void onSuccess(Void aVoid) {
-                        storageReference.child("images/" + myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                        StorageReference storageReference1 = storageReference.child("images/" + myUid);
+                        storageReference1.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
                             @Override
-                            public void onSuccess(Void aVoid) {
-                                reference.getRef().child("myroom").child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                                    @Override
-                                    public void onSuccess(DataSnapshot dataSnapshot) {
-                                        int i = (int) dataSnapshot.getChildrenCount();
-                                        if (i > 0) {
-                                            Map<String, Object> map1 = new HashMap<>();//실시간 채팅 pic 변경
-                                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                                if (mySex.equals("남자")) {
-                                                    map1.put("/messege/" + snapshot.getKey() + "/" + myUid + "/" + "pic/", nullPic);
-                                                } else {
-                                                    map1.put("/messege/" + snapshot.getKey() + "/" + myUid + "/" + "pic/", nullPicF);
-                                                }
-                                                reference.updateChildren(map1).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-
-
-                                                        //f2 change pic
-                                                        f2changepic();
-                                                    }
-                                                }).addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                    }
-                                                });
-                                            }
-                                        } else {
-                                            //f2 change pic
-                                            f2changepic();
-                                        }
+                            public void onSuccess(ListResult listResult) {
+                                for (StorageReference listResult1 : listResult.getItems()) {
+                                    if (listResult1.getName().equals(myUid + "count1")) {
+                                        updatePic2(myUid + "count1");
+                                    } else if (listResult1.getName().equals(myUid + "count2")) {
+                                        updatePic2(myUid + "count2");
                                     }
-                                });
+                                }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d("ChangeProfile>>>", "onFailure");
                             }
                         });
+
+
 
 //                        Log.d("ChangeProfile>>>", "db.updqte success");
 
@@ -316,6 +289,86 @@ public class ChangeProfile extends AppCompatActivity {
         }
 
 
+    }
+
+    private void uploadPic2(String fileName, ProgressDialog pd) {
+        String uid = mAuth.getUid();
+        StorageReference riversRef = storageReference.child("images/" + myUid + "/" + fileName);
+        riversRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                //upload pic in firestore
+                storageReference.child("images/" + myUid + "/" + fileName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        String picUri = uri.toString();
+                        uploadPicInStore(picUri);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });//upload pic in firestore
+                pd.dismiss();
+                relativeLayout.setVisibility(View.GONE);
+                Snackbar.make(findViewById(android.R.id.content), "이미지 업로드 성공", Snackbar.LENGTH_LONG).show();
+                goToMain();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                pd.dismiss();
+                relativeLayout.setVisibility(View.GONE);
+                Toast.makeText(ChangeProfile.this, "업로드실패", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                pd.setMessage("Pro: " + (int) progressPercent + "%");
+            }
+        });
+    }
+
+    private void updatePic2(String filename) {
+        storageReference.child("images/" + myUid + "/" + filename).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                reference.getRef().child("myroom").child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        int i = (int) dataSnapshot.getChildrenCount();
+                        if (i > 0) {
+                            Map<String, Object> map1 = new HashMap<>();//실시간 채팅 pic 변경
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                if (mySex.equals("남자")) {
+                                    map1.put("/messege/" + snapshot.getKey() + "/" + myUid + "/" + "pic/", nullPic);
+                                } else {
+                                    map1.put("/messege/" + snapshot.getKey() + "/" + myUid + "/" + "pic/", nullPicF);
+                                }
+                                reference.updateChildren(map1).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+
+
+                                        //f2 change pic
+                                        f2changepic();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                    }
+                                });
+                            }
+                        } else {
+                            //f2 change pic
+                            f2changepic();
+                        }
+                    }
+                });
+            }
+        });
     }
 
     private void f2changepic() {
@@ -490,7 +543,7 @@ public class ChangeProfile extends AppCompatActivity {
     private void f3changePic2(String uri) {
         Map<String, Object> userPic = new HashMap<>();
         userPic.put("pic", uri);
-        db.collection("f2messege").document(myUid).update(userPic).addOnSuccessListener(new OnSuccessListener<Void>() {
+        db.collection("f3messege").document(myUid).update(userPic).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 reference.getRef().child("myroom").child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
@@ -511,6 +564,7 @@ public class ChangeProfile extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        Log.d("ChangeProfile>>>", "change realtime fail");
                         goToMain();
                     }
                 });

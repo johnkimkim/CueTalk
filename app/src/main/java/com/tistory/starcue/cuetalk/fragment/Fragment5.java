@@ -254,7 +254,7 @@ public class Fragment5 extends Fragment {
 
     private void deleteImage() {
         String uid = mAuth.getUid();
-        StorageReference storageRef = storage.getReference().child("images/" + uid);
+        StorageReference storageRef = storage.getReference().child("images/" + myUid + "/" + uid);
         storageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {

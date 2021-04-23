@@ -75,7 +75,6 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
 //                .override(150, 150).circleCrop().into(holder.imageView);
 
         Glide.with(holder.imageView).load(arrayList.get(position).getPic())
-                .signature(new ObjectKey(System.currentTimeMillis()))
                 .override(150, 150).circleCrop().into(holder.imageView);
 
         Glide.with(holder.ppic).load(arrayList.get(position).getPpic())
@@ -175,12 +174,12 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
             }
         });
 
-        holder.f3dec.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DecDialog.DicDialog(context);
-            }
-        });
+//        holder.f3dec.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                DecDialog.DicDialog(context);
+//            }
+//        });
     }
 
     @Override
@@ -206,11 +205,11 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
             this.time = itemView.findViewById(R.id.f3re_time);
             this.sendbtn = itemView.findViewById(R.id.f3re_sendmsg);
             this.f3dec = itemView.findViewById(R.id.f3dec);
-            if (Fragment2.f2fragdec.isChecked()) {
-                f3dec.setVisibility(View.VISIBLE);
-            } else {
-                f3dec.setVisibility(View.GONE);
-            }
+//            if (Fragment2.f2fragdec.isChecked()) {
+//                f3dec.setVisibility(View.VISIBLE);
+//            } else {
+//                f3dec.setVisibility(View.GONE);
+//            }
         }
     }
     public double getDistance(double lat1, double lng1, double lat2, double lng2) {

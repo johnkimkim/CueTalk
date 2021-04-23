@@ -5,6 +5,14 @@
     android:layout_height="match_parent"
     tools:context=".fragment.Fragment1">
 
+    <Button
+        android:id="@+id/testbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="30dp"/>
+
     <Spinner
         android:id="@+id/f1spinner"
         android:layout_width="250dp"

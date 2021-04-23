@@ -67,7 +67,7 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
         mAuth = FirebaseAuth.getInstance();
         myUid = mAuth.getUid();
 
-        Glide.with(holder.pic).load(arrayList.get(position).getPic()).signature(new ObjectKey(System.currentTimeMillis()))
+        Glide.with(holder.pic).load(arrayList.get(position).getPic())
                 .override(150, 150).circleCrop().into(holder.pic);
 
         holder.name.setText(arrayList.get(position).getName());

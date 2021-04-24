@@ -129,7 +129,8 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         b3 = v.findViewById(R.id.f3b3);
         my = v.findViewById(R.id.fragment3_my);
         write = v.findViewById(R.id.fragment3_write);
-        f3fragdec = v.findViewById(R.id.f3dec);
+        f3fragdec = v.findViewById(R.id.f3fragdec);
+        f3fragdec.setChecked(false);
         swipeRefreshLayout = v.findViewById(R.id.f3_swipe);
         swipeRefreshLayout.setOnRefreshListener(this);
 
@@ -346,13 +347,13 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
             pd.show();
 
             String uid = mAuth.getUid();
-            StorageReference riversRef = storageReference.child("fragment3/" + uid);
+            StorageReference riversRef = storageReference.child("fragment3/" + uid + "/" + uid);
             riversRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Log.d("Fragment3>>>", "test 1");
                     //upload pic in firestore
-                    storageReference.child("fragment3/" + uid).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    storageReference.child("fragment3/" + uid + "/" + uid).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
                             Log.d("Fragment3>>>", "test 2");

@@ -72,16 +72,31 @@
         android:id="@+id/f3re_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/f3re_sendmsg"
+        android:layout_toLeftOf="@+id/f3btnlayout"
         android:layout_below="@+id/f3re_count"/>
 
-    <Button
-        android:id="@+id/f3re_sendmsg"
+    <LinearLayout
+        android:id="@+id/f3btnlayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:text="메시지"/>
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/f3re_sendmsg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="메시지" />
+
+        <Button
+            android:id="@+id/f3dec"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:text="신고"
+            android:visibility="gone"/>
+
+    </LinearLayout>
 
 
 </RelativeLayout>

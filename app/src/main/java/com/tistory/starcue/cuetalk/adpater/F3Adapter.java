@@ -23,9 +23,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.tistory.starcue.cuetalk.DecDialog;
 import com.tistory.starcue.cuetalk.GpsTracker;
 import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.SendMessege;
+import com.tistory.starcue.cuetalk.fragment.Fragment3;
 import com.tistory.starcue.cuetalk.item.F3Item;
 
 import java.util.ArrayList;
@@ -170,12 +172,12 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
             }
         });
 
-//        holder.f3dec.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                DecDialog.DicDialog(context);
-//            }
-//        });
+        holder.f3dec.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DecDialog.F3DecDialog(context, arrayList.get(position).getUid(), myUid);
+            }
+        });
     }
 
     @Override
@@ -187,7 +189,7 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
         ImageView imageView, ppic;
         TextView name, sex, age, km, messege, time;
         Button sendbtn;
-        CheckBox f3dec;
+        Button f3dec;
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -201,11 +203,11 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
             this.time = itemView.findViewById(R.id.f3re_time);
             this.sendbtn = itemView.findViewById(R.id.f3re_sendmsg);
             this.f3dec = itemView.findViewById(R.id.f3dec);
-//            if (Fragment2.f2fragdec.isChecked()) {
-//                f3dec.setVisibility(View.VISIBLE);
-//            } else {
-//                f3dec.setVisibility(View.GONE);
-//            }
+            if (Fragment3.f3fragdec.isChecked()) {
+                f3dec.setVisibility(View.VISIBLE);
+            } else {
+                f3dec.setVisibility(View.GONE);
+            }
         }
     }
     public double getDistance(double lat1, double lng1, double lat2, double lng2) {

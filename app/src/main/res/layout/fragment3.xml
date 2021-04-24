@@ -6,7 +6,7 @@
     tools:context=".fragment.Fragment3">
 
     <CheckBox
-        android:id="@+id/f3dec"
+        android:id="@+id/f3fragdec"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@+id/f3dec">
+        android:layout_below="@+id/f3fragdec">
 
         <Button
             android:id="@+id/f3b1"

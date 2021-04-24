@@ -239,6 +239,16 @@ public class ChatRoom extends AppCompatActivity {
         sendMessegeBtn = findViewById(R.id.chat_room_send_messege);
 
         setOnAddbtn();
+        setCallBtn();
+    }
+
+    private void setCallBtn() {
+        callbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                DecDialog.DicDialog(ChatRoom.this);
+            }
+        });
     }
 
     private void sendMessegeBtnOnClick() {

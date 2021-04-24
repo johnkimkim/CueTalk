@@ -289,6 +289,7 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                 map.put("name", name);
                 map.put("uid", myUid);
                 map.put("sex", sex);
+                map.put("age", age);
                 map.put("messege", messege);
                 map.put("latitude", latitudeS);
                 map.put("longitude", longitudeS);

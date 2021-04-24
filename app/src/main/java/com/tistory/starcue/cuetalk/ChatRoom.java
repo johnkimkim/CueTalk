@@ -246,7 +246,18 @@ public class ChatRoom extends AppCompatActivity {
         callbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                DecDialog.DicDialog(ChatRoom.this);
+                Log.d("ChatRoom>>>", "get where: ");
+                Log.d("ChatRoom>>>", "get where: " + where);
+                reference.getRef().child("inchat").child(where).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            if (!snapshot.getKey().equals(myUid) && !snapshot.getKey().equals("messege")) {
+                                DecDialog.ChatRoomDecDialog(ChatRoom.this, snapshot.getKey(), myUid, where);
+                            }
+                        }
+                    }
+                });
             }
         });
     }

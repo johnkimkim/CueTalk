@@ -16,15 +16,19 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
+import com.tistory.starcue.cuetalk.item.ChatRoomItem;
 import com.tistory.starcue.cuetalk.item.F2Item;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -242,7 +246,7 @@ public class DecDialog {
     }
 
 
-    public static void ChatRoomDecDialog(Context context) {
+    public static void ChatRoomDecDialog(Context context, String userUid, String myUid, String where) {
 
         LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout layout = (LinearLayout) vi.inflate(R.layout.dec_dialog, null);
@@ -270,13 +274,25 @@ public class DecDialog {
         yesbtn = layout.findViewById(R.id.dec_dialog_ok);
         nobtn = layout.findViewById(R.id.dec_dialog_no);
 
-        ChatRoomyesOrNo();
-    }
-    private static void ChatRoomyesOrNo() {
         yesbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ChatRoomSaveDec();
+                if (radio1.isChecked()) {
+                    category = "음란";
+                } else if (radio2.isChecked()) {
+                    category = "스팸";
+                } else if (radio3.isChecked()) {
+                    category = "폭력";
+                } else if (radio4.isChecked()) {
+                    category = "기타";
+                }
+
+                if (category.equals("")) {
+                    Toast.makeText(context, "카테고리 선택해주세요", Toast.LENGTH_SHORT).show();
+                } else if (editText.getText().toString().equals("")) {
+                    Toast.makeText(context, "이유 선택해주세요", Toast.LENGTH_SHORT).show();
+                }
+                ChatRoomSaveDec(context, userUid, myUid, where, editText.getText().toString(), category);
             }
         });
 
@@ -287,8 +303,45 @@ public class DecDialog {
             }
         });
     }
-    private static void ChatRoomSaveDec() {
 
+    private static void ChatRoomSaveDec(Context context, String userUid, String myUid, String where, String cuz, String category) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Map<String, Object> map = new HashMap<>();
+        map.put("userUid", userUid);
+        map.put("myUid", myUid);
+        map.put("cuz", cuz);
+        map.put("category", category);
+        reference.child("chatroomdec").child(myUid).updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                reference.getRef().child("inchat").child(where).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            if (snapshot.getKey().equals("messege")) {
+                                Map<String, Object> map1 = new HashMap<>();
+                                ArrayList<ChatRoomItem> count = new ArrayList<>();
+                                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                    ChatRoomItem chatRoomItem = snapshot1.getValue(ChatRoomItem.class);
+                                    count.add(chatRoomItem);
+                                    Log.d("DecDialog>>>", "count listL: " + count.size() + " / snapshot size: " + snapshot.getChildrenCount());
+                                    map1.put("messege", snapshot1.child("messege").getValue(String.class));
+                                    map1.put("name", snapshot1.child("name").getValue(String.class));
+                                    map1.put("time", snapshot1.child("time").getValue(String.class));
+                                    reference.child("chatroomdec").child(myUid).push().updateChildren(map1);
+                                    if (count.size() == snapshot.getChildrenCount()) {
+                                        count.clear();
+                                        Toast.makeText(context, "신고완료", Toast.LENGTH_SHORT).show();
+                                        alertDialog.dismiss();
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                });
+            }
+        });
     }
 
 

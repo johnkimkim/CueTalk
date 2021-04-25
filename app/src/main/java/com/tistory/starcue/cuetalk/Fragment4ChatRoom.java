@@ -66,7 +66,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     private F4ChatRoomAdapter adapter;
 
     RecyclerView recyclerView;
-    Button sendimg, sendmsg, gobackbtn, outroombtn;
+    Button sendimg, sendmsg, gobackbtn, outroombtn, decbtn;
     EditText editText;
     ProgressBar progressBar;
 
@@ -124,6 +124,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         gobackbtn = findViewById(R.id.fragment4_chat_room_backbtn);
         outroombtn = findViewById(R.id.fragment4_chat_room_outroom);
         editText = findViewById(R.id.fragment4_chat_room_edittext);
+        decbtn = findViewById(R.id.fragment4_chat_room_send_callbtn);
         progressBar = findViewById(R.id.fragment4_chat_room_progress_bar);
         progressBar.setVisibility(View.VISIBLE);
 
@@ -132,6 +133,13 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         setRecyclerView();
 
         setOutroombtn();
+
+        decbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DecDialog.F4ChatRoomDecDialog(Fragment4ChatRoom.this, userUid, myUid, getroomname);
+            }
+        });
     }
 
     private void setdb() {

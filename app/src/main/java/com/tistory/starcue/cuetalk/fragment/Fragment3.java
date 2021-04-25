@@ -306,6 +306,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         dialogyes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                alertDialog.setCancelable(false);
                 messege = dialogEditText.getText().toString();
 
                 if (category.equals("0")) {
@@ -343,6 +344,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         if (imageUri != null) { //pic 변경 및 신규등록
             storageReference = FirebaseStorage.getInstance().getReference();
             final ProgressDialog pd = new ProgressDialog(getActivity());
+            pd.setCancelable(false);
             pd.setTitle("이미지 업로드 중...");
             pd.show();
 

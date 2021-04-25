@@ -90,6 +90,7 @@ public class DecDialog {
         yesbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                alertDialog.setCancelable(false);
                 progressBar.setVisibility(View.VISIBLE);
                 hideKB(context, decmain);
                 if (radio1.isChecked()) {
@@ -177,6 +178,7 @@ public class DecDialog {
                                     @Override
                                     public void onAnimationEnd(Animation animation) {
                                         dec2.setVisibility(View.VISIBLE);
+                                        alertDialog.setCancelable(true);
                                     }
 
                                     @Override
@@ -237,6 +239,7 @@ public class DecDialog {
         yesbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                alertDialog.setCancelable(false);
                 progressBar.setVisibility(View.VISIBLE);
                 hideKB(context, decmain);
                 if (radio1.isChecked()) {
@@ -325,6 +328,7 @@ public class DecDialog {
                                     @Override
                                     public void onAnimationEnd(Animation animation) {
                                         dec2.setVisibility(View.VISIBLE);
+                                        alertDialog.setCancelable(true);
                                     }
 
                                     @Override
@@ -384,6 +388,7 @@ public class DecDialog {
         yesbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                alertDialog.setCancelable(false);
                 progressBar.setVisibility(View.VISIBLE);
                 hideKB(context, decmain);
                 if (radio1.isChecked()) {
@@ -462,6 +467,7 @@ public class DecDialog {
                                                     @Override
                                                     public void onAnimationEnd(Animation animation) {
                                                         dec2.setVisibility(View.VISIBLE);
+                                                        alertDialog.setCancelable(true);
                                                     }
 
                                                     @Override
@@ -489,7 +495,7 @@ public class DecDialog {
 
 
 
-    public static void F4ChatRoomDecDialog(Context context, String userUid, String myUid, String where) {
+    public static void F4ChatRoomDecDialog(Context context, String userUid, String myUid, String getroomname) {
 
         LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout layout = (LinearLayout) vi.inflate(R.layout.dec_dialog, null);
@@ -516,10 +522,17 @@ public class DecDialog {
         editText = layout.findViewById(R.id.dec_dialog_edit);
         yesbtn = layout.findViewById(R.id.dec_dialog_ok);
         nobtn = layout.findViewById(R.id.dec_dialog_no);
+        dec1 = layout.findViewById(R.id.dec_1);
+        dec2 = layout.findViewById(R.id.dec_2);
+        progressBar = layout.findViewById(R.id.dec_dialog_progress_bar);
+        decmain = layout.findViewById(R.id.dec_main);
+
+        dec2.setVisibility(View.INVISIBLE);
 
         yesbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                alertDialog.setCancelable(false);
                 progressBar.setVisibility(View.VISIBLE);
                 hideKB(context, decmain);
                 if (radio1.isChecked()) {
@@ -537,7 +550,7 @@ public class DecDialog {
                 } else if (editText.getText().toString().equals("")) {
                     Toast.makeText(context, "이유 선택해주세요", Toast.LENGTH_SHORT).show();
                 }
-                F4ChatRoomSaveDec(context, userUid, myUid, editText.getText().toString(), category);
+                F4ChatRoomSaveDec(context, userUid, myUid, editText.getText().toString(), category, getroomname);
             }
         });
 
@@ -549,7 +562,7 @@ public class DecDialog {
         });
     }
 
-    private static void F4ChatRoomSaveDec(Context context, String userUid, String myUid, String cuz, String category) {
+    private static void F4ChatRoomSaveDec(Context context, String userUid, String myUid, String cuz, String category, String getroomname) {
         Animation out = AnimationUtils.loadAnimation(context, R.anim.dec_fadeout);
         Animation in = AnimationUtils.loadAnimation(context, R.anim.dec_fadein);
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -561,27 +574,35 @@ public class DecDialog {
         reference.child("messegedec").child(myUid).updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                reference.getRef().child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                reference.getRef().child("messege").child(getroomname).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                     @Override
                     public void onSuccess(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            if (snapshot.getKey().contains(userUid) && snapshot.getKey().contains(myUid)) {
-                                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                                    if (snapshot1.getKey().equals("msg")) {
-                                        Map<String, Object> map1 = new HashMap<>();
-                                        ArrayList<F4ChatRoomItem> count = new ArrayList<>();
-                                        for (DataSnapshot snapshot2 : snapshot1.getChildren()) {
-                                            F4ChatRoomItem f4ChatRoomItem = snapshot2.getValue(F4ChatRoomItem.class);
-                                            count.add(f4ChatRoomItem);
-                                            map1.put("messege", snapshot2.child("messege").getValue(String.class));
-                                            map1.put("name", snapshot2.child("name").getValue(String.class));
-                                            map1.put("time", snapshot2.child("time").getValue(String.class));
-                                            map1.put("uri", snapshot2.child("uri").getValue(String.class));
-                                            reference.child("messegedec").child(myUid).push().updateChildren(map1);
-                                            if (count.size() == snapshot.getChildrenCount()) {
-                                                count.clear();
-                                                dec1.startAnimation(out);
-                                                out.setAnimationListener(new Animation.AnimationListener() {
+                        for (DataSnapshot snapshot1 : dataSnapshot.getChildren()) {
+                            if (snapshot1.getKey().equals("msg")) {
+                                Map<String, Object> map1 = new HashMap<>();
+                                ArrayList<F4ChatRoomItem> count = new ArrayList<>();
+                                for (DataSnapshot snapshot2 : snapshot1.getChildren()) {
+                                    F4ChatRoomItem f4ChatRoomItem = snapshot2.getValue(F4ChatRoomItem.class);
+                                    count.add(f4ChatRoomItem);
+                                    map1.put("messege", snapshot2.child("messege").getValue(String.class));
+                                    map1.put("name", snapshot2.child("name").getValue(String.class));
+                                    map1.put("time", snapshot2.child("time").getValue(String.class));
+                                    map1.put("uri", snapshot2.child("uri").getValue(String.class));
+                                    reference.child("messegedec").child(myUid).push().updateChildren(map1);
+                                    if (count.size() == snapshot2.getChildrenCount()) {
+                                        count.clear();
+                                        dec1.startAnimation(out);
+                                        out.setAnimationListener(new Animation.AnimationListener() {
+                                            @Override
+                                            public void onAnimationStart(Animation animation) {
+
+                                            }
+
+                                            @Override
+                                            public void onAnimationEnd(Animation animation) {
+                                                dec1.setVisibility(View.INVISIBLE);
+                                                dec2.startAnimation(in);
+                                                in.setAnimationListener(new Animation.AnimationListener() {
                                                     @Override
                                                     public void onAnimationStart(Animation animation) {
 
@@ -589,24 +610,8 @@ public class DecDialog {
 
                                                     @Override
                                                     public void onAnimationEnd(Animation animation) {
-                                                        dec1.setVisibility(View.INVISIBLE);
-                                                        dec2.startAnimation(in);
-                                                        in.setAnimationListener(new Animation.AnimationListener() {
-                                                            @Override
-                                                            public void onAnimationStart(Animation animation) {
-
-                                                            }
-
-                                                            @Override
-                                                            public void onAnimationEnd(Animation animation) {
-                                                                dec2.setVisibility(View.VISIBLE);
-                                                            }
-
-                                                            @Override
-                                                            public void onAnimationRepeat(Animation animation) {
-
-                                                            }
-                                                        });
+                                                        dec2.setVisibility(View.VISIBLE);
+                                                        alertDialog.setCancelable(true);
                                                     }
 
                                                     @Override
@@ -615,10 +620,14 @@ public class DecDialog {
                                                     }
                                                 });
                                             }
-                                        }
+
+                                            @Override
+                                            public void onAnimationRepeat(Animation animation) {
+
+                                            }
+                                        });
                                     }
                                 }
-                                break;
                             }
                         }
                     }

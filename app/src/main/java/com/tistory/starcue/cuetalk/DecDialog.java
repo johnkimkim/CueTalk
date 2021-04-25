@@ -588,7 +588,7 @@ public class DecDialog {
                                     map1.put("name", snapshot2.child("name").getValue(String.class));
                                     map1.put("time", snapshot2.child("time").getValue(String.class));
                                     map1.put("uri", snapshot2.child("uri").getValue(String.class));
-                                    reference.child("messegedec").child(myUid).push().updateChildren(map1);
+                                    reference.child("messegedec").child(getroomname).push().updateChildren(map1);
                                     if (count.size() == snapshot2.getChildrenCount()) {
                                         count.clear();
                                         dec1.startAnimation(out);

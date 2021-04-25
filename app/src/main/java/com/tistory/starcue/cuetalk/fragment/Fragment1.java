@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -23,6 +24,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
@@ -54,35 +60,25 @@ public class Fragment1 extends Fragment {
         testbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                StorageReference storageReference;
-                storageReference = FirebaseStorage.getInstance().getReference();
-                StorageReference storageReference1 = storageReference.child("images/" + myUid);
-                storageReference1.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+//                firestore.collection("blacklist").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                        for (DocumentSnapshot queryDocumentSnapshots1 : queryDocumentSnapshots.getDocuments()) {
+//                            Log.d("PhoneNumber>>>", "get black list: " + queryDocumentSnapshots1.getId());
+//                        }
+//                    }
+//                });
+                firestore.collection("blacklist").addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(ListResult listResult) {
-                        for (StorageReference listResult1 : listResult.getItems()) {
-                            Log.d("Fragment1>>>", "test1: " + listResult1.getName().toString());
-                            storageReference.child("images/" + myUid + "/" + listResult1.getName()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    Log.d("Fragment1>>>", "test2: " + uri.toString());
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d("Fragment1>>>", "onFailure");
-                                }
-                            });
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        for (DocumentSnapshot value1 : value.getDocuments()) {
+                            Log.d("Fragment1>>>", "get black list: " + value1.getId());
+                            Log.d("Fragment1>>>", "get black list size: " + value.size());
+
                         }
                     }
                 });
-
-//                storageReference1.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                    @Override
-//                    public void onSuccess(Uri uri) {
-//                        Log.d("Fragment1>>>", "test: " + uri.toString());
-//                    }
-//                });
 
             }
         });

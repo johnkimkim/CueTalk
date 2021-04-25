@@ -20,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
@@ -29,7 +30,14 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -58,6 +66,9 @@ public class PhoneNumber extends AppCompatActivity {
 
         setunit();
         setOnClickBtn();
+
+//        FirebaseUser user = mAuth.getCurrentUser();
+//        String pn = user.getPhoneNumber();
 
     }
 
@@ -97,20 +108,35 @@ public class PhoneNumber extends AppCompatActivity {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mProgressBar.setVisibility(View.VISIBLE);
+                FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+                firestore.collection("blacklist").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        for (DocumentSnapshot value1 : value.getDocuments()) {
+                            Log.d("Fragment1>>>", "get black list: " + value1.getId());
+                            Log.d("Fragment1>>>", "get black list size: " + value.size());
+                            List<String> count = new ArrayList<>();
+                            count.add(value1.getId());
+                            if (count.size() == value.size()) {
+                                InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                                manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
-                InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                                String phoneNum = "+82" + mPhoneNumber.getText().toString().substring(1);
+                                Log.d("PHoneNumber>>>", phoneNum);
 
-                String phoneNum = "+82" + mPhoneNumber.getText().toString().substring(1);
-                Log.d("PHoneNumber>>>", phoneNum);
-
-                if (phoneNum.isEmpty()) {
-                    feedtext.setVisibility(View.VISIBLE);
-                    feedtext.setText("전화번호를 입력해주세요");
-                } else {
-                    feedtext.setVisibility(View.GONE);
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    mButton.setEnabled(false);
+                                if (phoneNum.isEmpty()) {
+                                    feedtext.setVisibility(View.VISIBLE);
+                                    mProgressBar.setVisibility(View.GONE);
+                                    feedtext.setText("전화번호를 입력해주세요");
+                                } else if (count.contains(phoneNum)) {
+                                    feedtext.setVisibility(View.VISIBLE);
+                                    mProgressBar.setVisibility(View.GONE);
+                                    feedtext.setText("해당 전화번호는 정책위반으로 인해 서비스 이용이 정지되었습니다.");
+                                } else {
+                                    feedtext.setVisibility(View.GONE);
+                                    mProgressBar.setVisibility(View.VISIBLE);
+                                    mButton.setEnabled(false);
 
 //                    PhoneAuthProvider.getInstance().verifyPhoneNumber(
 //                            phoneNum,
@@ -120,14 +146,20 @@ public class PhoneNumber extends AppCompatActivity {
 //                            mCallback
 //                    );
 
-                    PhoneAuthOptions options = PhoneAuthOptions.newBuilder(mAuth)
-                            .setPhoneNumber(phoneNum)
-                            .setTimeout(60L, TimeUnit.SECONDS)
-                            .setActivity(PhoneNumber.this)
-                            .setCallbacks(mCallback)
-                            .build();
-                    PhoneAuthProvider.verifyPhoneNumber(options);
-                }
+                                    PhoneAuthOptions options = PhoneAuthOptions.newBuilder(mAuth)
+                                            .setPhoneNumber(phoneNum)
+                                            .setTimeout(60L, TimeUnit.SECONDS)
+                                            .setActivity(PhoneNumber.this)
+                                            .setCallbacks(mCallback)
+                                            .build();
+                                    PhoneAuthProvider.verifyPhoneNumber(options);
+                                }
+                            }
+                        }
+                    }
+                });
+
+
             }
         });
 

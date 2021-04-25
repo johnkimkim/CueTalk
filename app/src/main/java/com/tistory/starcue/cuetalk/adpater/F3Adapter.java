@@ -23,7 +23,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
+import com.google.firebase.storage.StorageReference;
 import com.tistory.starcue.cuetalk.DecDialog;
+import com.tistory.starcue.cuetalk.DeleteMyDialog;
 import com.tistory.starcue.cuetalk.GpsTracker;
 import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.SendMessege;
@@ -89,9 +93,11 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
 
         if (arrayList.get(position).getUid().equals(myUid)) {
             holder.sendbtn.setText("삭제");
+            holder.f3dec.setEnabled(false);
             holder.sendbtn.setTextColor(context.getResources().getColor(R.color.my_red));
         } else {
             holder.sendbtn.setText("메시지");
+            holder.f3dec.setEnabled(true);
             holder.sendbtn.setTextColor(context.getResources().getColor(R.color.black));
         }
 
@@ -122,10 +128,16 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
                 Log.d("Fragment2>>>", "sendbtn onClick");
                 if (arrayList.get(position).getUid().equals(myUid)) {
                     firestore = FirebaseFirestore.getInstance();
-                    firestore.collection("f2messege").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    firestore.collection("f3messege").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Toast.makeText(context, "삭제완료", Toast.LENGTH_SHORT).show();
+                            StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+                            storageReference.child("fragment3/" + myUid + "/" + myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(context, "삭제완료", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -143,7 +155,6 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
 
                             String roomkey = arrayList.get(position).getUid() + myUid;
                             String roomkey1 = myUid + arrayList.get(position).getUid();
-
 
                             if (i == 0) {
                                 String userUid = arrayList.get(position).getUid();

@@ -221,6 +221,7 @@ public class ChangeProfile extends AppCompatActivity {
     private void uploadPic() {
         if (imageUri != null) { //pic 변경 및 신규등록
             final ProgressDialog pd = new ProgressDialog(ChangeProfile.this);
+            pd.setCancelable(false);
             pd.setTitle("이미지 업로드 중...");
             pd.show();
 
@@ -433,7 +434,6 @@ public class ChangeProfile extends AppCompatActivity {
 
     private void setYesBtn() {
         yesbtn.setOnClickListener(view -> {
-            hideKB();
             if (radiomale.isChecked()) {
                 sexstring = "남자";
             } else if (radiofemale.isChecked()) {
@@ -596,8 +596,4 @@ public class ChangeProfile extends AppCompatActivity {
         editor.commit();
     }
 
-    private void hideKB() {
-        InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-    }
 }

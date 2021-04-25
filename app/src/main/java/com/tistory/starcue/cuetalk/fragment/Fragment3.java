@@ -518,6 +518,9 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
     @Override
     public void onPause() {
         super.onPause();
+        f3fragdec.setChecked(false);
+        recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
         savePage();
         arrayList.clear();
     }

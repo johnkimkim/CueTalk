@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.tistory.starcue.cuetalk.DecDialog;
+import com.tistory.starcue.cuetalk.DeleteMyDialog;
 import com.tistory.starcue.cuetalk.GpsTracker;
 import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.SendMessege;
@@ -78,9 +79,11 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
 
         if (arrayList.get(position).getUid().equals(myUid)) {
             holder.sendbtn.setText("삭제");
+            holder.f2dec.setEnabled(false);
             holder.sendbtn.setTextColor(context.getResources().getColor(R.color.my_red));
         } else {
             holder.sendbtn.setText("메시지");
+            holder.f2dec.setEnabled(true);
             holder.sendbtn.setTextColor(context.getResources().getColor(R.color.black));
         }
 
@@ -110,18 +113,7 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
             public void onClick(View view) {
                 Log.d("Fragment2>>>", "sendbtn onClick");
                 if (arrayList.get(position).getUid().equals(myUid)) {
-                    firestore = FirebaseFirestore.getInstance();
-                    firestore.collection("f2messege").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(context, "삭제완료", Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(context, "네트워크 오류로 게시물 삭제에 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    DeleteMyDialog.f2deleteMyDialog(context, myUid);
                 } else {
                     reference = FirebaseDatabase.getInstance().getReference();
                     reference.getRef().child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
@@ -191,6 +183,7 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
             this.time = itemView.findViewById(R.id.f2re_time);
             this.sendbtn = itemView.findViewById(R.id.f2re_sendmsg);
             this.f2dec = itemView.findViewById(R.id.f2dec);
+            Log.d("F2Adapter>>>", "customViewHolder");
             if (Fragment2.f2fragdec.isChecked()) {
                 f2dec.setVisibility(View.VISIBLE);
             } else {

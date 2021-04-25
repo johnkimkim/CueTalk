@@ -29,8 +29,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
+import com.tistory.starcue.cuetalk.fragment.Fragment2;
 import com.tistory.starcue.cuetalk.item.ChatRoomItem;
 import com.tistory.starcue.cuetalk.item.F2Item;
+import com.tistory.starcue.cuetalk.item.F4ChatRoomItem;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -138,6 +140,7 @@ public class DecDialog {
                 String latitude = documentSnapshot.get("latitude").toString();
                 String longitude = documentSnapshot.get("longitude").toString();
                 Map<String, Object> map = new HashMap<>();
+                map.put("uid", userUid);
                 map.put("name", name);
                 map.put("sex", sex);
                 map.put("age", age);
@@ -283,6 +286,7 @@ public class DecDialog {
                 String latitude = documentSnapshot.get("latitude").toString();
                 String longitude = documentSnapshot.get("longitude").toString();
                 Map<String, Object> map = new HashMap<>();
+                map.put("uid", userUid);
                 map.put("name", name);
                 map.put("sex", sex);
                 map.put("age", age);
@@ -485,7 +489,7 @@ public class DecDialog {
 
 
 
-    public static void F4ChatRoomDecDialog(Context context) {
+    public static void F4ChatRoomDecDialog(Context context, String userUid, String myUid, String where) {
 
         LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout layout = (LinearLayout) vi.inflate(R.layout.dec_dialog, null);
@@ -513,14 +517,27 @@ public class DecDialog {
         yesbtn = layout.findViewById(R.id.dec_dialog_ok);
         nobtn = layout.findViewById(R.id.dec_dialog_no);
 
-        F4ChatRoomyesOrNo();
-    }
-
-    private static void F4ChatRoomyesOrNo() {
         yesbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                F4ChatRoomSaveDec();
+                progressBar.setVisibility(View.VISIBLE);
+                hideKB(context, decmain);
+                if (radio1.isChecked()) {
+                    category = "음란";
+                } else if (radio2.isChecked()) {
+                    category = "스팸";
+                } else if (radio3.isChecked()) {
+                    category = "폭력";
+                } else if (radio4.isChecked()) {
+                    category = "기타";
+                }
+
+                if (category.equals("")) {
+                    Toast.makeText(context, "카테고리 선택해주세요", Toast.LENGTH_SHORT).show();
+                } else if (editText.getText().toString().equals("")) {
+                    Toast.makeText(context, "이유 선택해주세요", Toast.LENGTH_SHORT).show();
+                }
+                F4ChatRoomSaveDec(context, userUid, myUid, editText.getText().toString(), category);
             }
         });
 
@@ -532,8 +549,82 @@ public class DecDialog {
         });
     }
 
-    private static void F4ChatRoomSaveDec() {
+    private static void F4ChatRoomSaveDec(Context context, String userUid, String myUid, String cuz, String category) {
+        Animation out = AnimationUtils.loadAnimation(context, R.anim.dec_fadeout);
+        Animation in = AnimationUtils.loadAnimation(context, R.anim.dec_fadein);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Map<String, Object> map = new HashMap<>();
+        map.put("userUid", userUid);
+        map.put("myUid", myUid);
+        map.put("cuz", cuz);
+        map.put("category", category);
+        reference.child("messegedec").child(myUid).updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                reference.getRef().child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            if (snapshot.getKey().contains(userUid) && snapshot.getKey().contains(myUid)) {
+                                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                    if (snapshot1.getKey().equals("msg")) {
+                                        Map<String, Object> map1 = new HashMap<>();
+                                        ArrayList<F4ChatRoomItem> count = new ArrayList<>();
+                                        for (DataSnapshot snapshot2 : snapshot1.getChildren()) {
+                                            F4ChatRoomItem f4ChatRoomItem = snapshot2.getValue(F4ChatRoomItem.class);
+                                            count.add(f4ChatRoomItem);
+                                            map1.put("messege", snapshot2.child("messege").getValue(String.class));
+                                            map1.put("name", snapshot2.child("name").getValue(String.class));
+                                            map1.put("time", snapshot2.child("time").getValue(String.class));
+                                            map1.put("uri", snapshot2.child("uri").getValue(String.class));
+                                            reference.child("messegedec").child(myUid).push().updateChildren(map1);
+                                            if (count.size() == snapshot.getChildrenCount()) {
+                                                count.clear();
+                                                dec1.startAnimation(out);
+                                                out.setAnimationListener(new Animation.AnimationListener() {
+                                                    @Override
+                                                    public void onAnimationStart(Animation animation) {
 
+                                                    }
+
+                                                    @Override
+                                                    public void onAnimationEnd(Animation animation) {
+                                                        dec1.setVisibility(View.INVISIBLE);
+                                                        dec2.startAnimation(in);
+                                                        in.setAnimationListener(new Animation.AnimationListener() {
+                                                            @Override
+                                                            public void onAnimationStart(Animation animation) {
+
+                                                            }
+
+                                                            @Override
+                                                            public void onAnimationEnd(Animation animation) {
+                                                                dec2.setVisibility(View.VISIBLE);
+                                                            }
+
+                                                            @Override
+                                                            public void onAnimationRepeat(Animation animation) {
+
+                                                            }
+                                                        });
+                                                    }
+
+                                                    @Override
+                                                    public void onAnimationRepeat(Animation animation) {
+
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                });
+            }
+        });
     }
 
 

@@ -373,31 +373,18 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
     @Override
     public void onPause() {
         super.onPause();
+        f2fragdec.setChecked(false);
+        recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
         savePage();
         arrayList.clear();
     }
 
     @Override
     public void onRefresh() {
-//        String resetPage = Integer.toString(page);
-//        Log.d("Fragment2>>>", "resetPage: " + resetPage);
-//        firestore.collection("f2messege").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//            @Override
-//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                arrayList.clear();
-//                for (DocumentSnapshot queryDocumentSnapshots1 : queryDocumentSnapshots.getDocuments()) {
-//                    F2Item f2Item = queryDocumentSnapshots1.toObject(F2Item.class);
-//                    arrayList.add(f2Item);
-//                    setListTimeSort(arrayList);
-//                }
-//                adapter.notifyDataSetChanged();
-//                swipeRefreshLayout.setRefreshing(false);
-//            }
-//        });
-        if (page == 0) {
+        Log.d("Fragment1>>>", "onRefresh page: " + page);
+        if (page == 1) {
             setListBtn1();
-        } else if (page == 1) {
-            setListBtn2();
         } else if (page == 2) {
             setListBtn2();
         } else if (page == 3) {

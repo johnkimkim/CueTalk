@@ -9,11 +9,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -198,6 +200,13 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                         setRecyclerviewList();
                     }
                 }
+            }
+        });
+
+        recyclerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hideKB();
             }
         });
     }
@@ -806,6 +815,11 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         Fragment4.stayf4chatroom = false;
+    }
+
+    private void hideKB() {
+        InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
 }

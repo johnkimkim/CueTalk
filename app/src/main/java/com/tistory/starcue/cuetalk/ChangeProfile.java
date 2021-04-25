@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -432,7 +433,7 @@ public class ChangeProfile extends AppCompatActivity {
 
     private void setYesBtn() {
         yesbtn.setOnClickListener(view -> {
-
+            hideKB();
             if (radiomale.isChecked()) {
                 sexstring = "남자";
             } else if (radiofemale.isChecked()) {
@@ -593,5 +594,10 @@ public class ChangeProfile extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("willdelete", willdelete);
         editor.commit();
+    }
+
+    private void hideKB() {
+        InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }

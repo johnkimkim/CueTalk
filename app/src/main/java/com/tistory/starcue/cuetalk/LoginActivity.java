@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -199,7 +200,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setLoginbtn() {
         loginbtn.setOnClickListener(view -> {
-
+            hideKB();
             if (radiomale.isChecked()) {
                 sexstring = "남자";
             } else if (radiofemale.isChecked()) {
@@ -315,6 +316,11 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
         Toast.makeText(LoginActivity.this, "ok", Toast.LENGTH_SHORT).show();
         finish();
+    }
+
+    private void hideKB() {
+        InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
 }

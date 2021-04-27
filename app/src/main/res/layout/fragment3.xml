@@ -53,6 +53,15 @@
 
     </LinearLayout>
 
+    <ProgressBar
+        android:id="@+id/fragment3_progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="invisible" />
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/f3_swipe"
         android:layout_width="match_parent"

@@ -86,6 +86,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
     Button b1, b2, b3, my, write;
     SwipeRefreshLayout swipeRefreshLayout;
     public static CheckBox f3fragdec;
+    private ProgressBar progressBar;
 
     private AlertDialog alertDialog;
     Spinner dialogSpinner;
@@ -133,6 +134,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         f3fragdec.setChecked(false);
         swipeRefreshLayout = v.findViewById(R.id.f3_swipe);
         swipeRefreshLayout.setOnRefreshListener(this);
+        progressBar = v.findViewById(R.id.fragment3_progress_bar);
 
         write.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -188,6 +190,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                 }
                 swipeRefreshLayout.setRefreshing(false);
                 adapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
@@ -206,6 +209,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                 }
                 swipeRefreshLayout.setRefreshing(false);
                 adapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
@@ -224,6 +228,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                 }
                 swipeRefreshLayout.setRefreshing(false);
                 adapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
@@ -242,6 +247,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                 }
                 swipeRefreshLayout.setRefreshing(false);
                 adapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
@@ -467,6 +473,8 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
+
                 page = 0;
                 getDataListAll();
             }
@@ -475,6 +483,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         b2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
                 page = 1;
                 getDataList1();
             }
@@ -483,6 +492,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         b3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
                 page = 2;
                 getDataList2();
             }
@@ -491,6 +501,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         my.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
                 page = 3;
                 getDataListMy();
             }
@@ -508,6 +519,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         super.onResume();
         Log.d("Fragment3>>>", "get page in onResume: " + page);
         getPage();
+        progressBar.setVisibility(View.VISIBLE);
         if (page == 0) {
             getDataListAll();
         } else if (page == 1) {

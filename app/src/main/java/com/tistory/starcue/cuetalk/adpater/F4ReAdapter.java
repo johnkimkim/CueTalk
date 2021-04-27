@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.tistory.starcue.cuetalk.fragment.Fragment4;
 import com.tistory.starcue.cuetalk.item.F4MessegeItem;
 import com.tistory.starcue.cuetalk.Fragment4ChatRoom;

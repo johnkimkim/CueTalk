@@ -113,11 +113,12 @@ public class PhoneNumber extends AppCompatActivity {
                 firestore.collection("blacklist").addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        List<String> count = new ArrayList<>();
                         for (DocumentSnapshot value1 : value.getDocuments()) {
                             Log.d("Fragment1>>>", "get black list: " + value1.getId());
                             Log.d("Fragment1>>>", "get black list size: " + value.size());
-                            List<String> count = new ArrayList<>();
                             count.add(value1.getId());
+                            Log.d("Fragment1>>>", "count size: " + count.size());
                             if (count.size() == value.size()) {
                                 InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                                 manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
@@ -126,14 +127,17 @@ public class PhoneNumber extends AppCompatActivity {
                                 Log.d("PHoneNumber>>>", phoneNum);
 
                                 if (phoneNum.isEmpty()) {
+                                    Log.d("Fragment1>>>", "test1");
                                     feedtext.setVisibility(View.VISIBLE);
                                     mProgressBar.setVisibility(View.GONE);
                                     feedtext.setText("전화번호를 입력해주세요");
-                                } else if (count.contains(phoneNum)) {
+                                } else if (count.contains(mPhoneNumber.getText().toString())) {
+                                    Log.d("Fragment1>>>", "test2");
                                     feedtext.setVisibility(View.VISIBLE);
                                     mProgressBar.setVisibility(View.GONE);
                                     feedtext.setText("해당 전화번호는 정책위반으로 인해 서비스 이용이 정지되었습니다.");
                                 } else {
+                                    Log.d("Fragment1>>>", "test3");
                                     feedtext.setVisibility(View.GONE);
                                     mProgressBar.setVisibility(View.VISIBLE);
                                     mButton.setEnabled(false);

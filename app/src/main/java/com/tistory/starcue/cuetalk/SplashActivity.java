@@ -12,8 +12,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,12 +32,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -122,10 +129,30 @@ public class SplashActivity extends AppCompatActivity {
                     setNewUniqueAndLoginStateFirestore();
                 } else {
                     String uniqueInFirestore = documentSnapshot.get("unique").toString();
-                    if (uniqueInFirestore.equals(getUniqueInSql())) {
+                    if (uniqueInFirestore.equals(getUniqueInSql())) {//here check black list
 //                    goToMain();
-                        checkUser();
-                        Log.d("SplashActivity>>>", "unique same");
+
+                        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+                        String myPhoneNumber = "0" + mAuth.getCurrentUser().getPhoneNumber().substring(3);
+                        Log.d("Splash>>>", "get my phone number: " + myPhoneNumber);
+                        firestore.collection("blacklist").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                            @Override
+                            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                                List<String> count = new ArrayList<>();
+                                for (DocumentSnapshot snapshot : value.getDocuments()) {
+                                    count.add(snapshot.getId());
+                                    if (count.size() == value.size()) {
+                                        if (count.contains(myPhoneNumber)) {
+                                            blacklistDialog();
+                                        } else {
+                                            checkUser();
+                                            Log.d("SplashActivity>>>", "unique same");
+                                        }
+                                    }
+                                }
+                            }
+                        });
+
                     } else {
                         mAuth.signOut();
                         logoutDialog();
@@ -241,6 +268,36 @@ public class SplashActivity extends AppCompatActivity {
             public void onClick(View view) {
                 okbtn.setEnabled(false);
                 alertDialog.dismiss();
+                goToPhoneNumber();
+            }
+        });
+    }
+
+    private void blacklistDialog() {
+        LayoutInflater vi = (LayoutInflater) SplashActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout layout = (LinearLayout) vi.inflate(R.layout.blacklist_dialog, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(SplashActivity.this);
+        builder.setView(layout);
+        alertDialog = builder.create();
+
+        alertDialog.show();
+        //set size
+        WindowManager.LayoutParams layoutParams = alertDialog.getWindow().getAttributes();
+        layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
+//            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+//            layoutParams.dimAmount = 0.7f;
+
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        alertDialog.getWindow().setAttributes(layoutParams);
+
+        TextView title = layout.findViewById(R.id.blacklist_dialog_title);
+        Button btn = layout.findViewById(R.id.blacklist_dialog_btn);
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAuth.signOut();
                 goToPhoneNumber();
             }
         });

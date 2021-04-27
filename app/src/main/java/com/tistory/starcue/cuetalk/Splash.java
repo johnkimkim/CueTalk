@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,9 +27,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -194,9 +200,28 @@ public class Splash extends AppCompatActivity {
         if (mCurrentUser == null) {
             goToPhoneNumber();
             Log.d("Splash>>>", "goToPhoneNumber");
-        } else {
-            checkDevice();
-            Log.d("Splash>>>", "checkDevice");
+        } else {//here check black list
+
+            FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+            String myPhoneNumber = mAuth.getCurrentUser().getPhoneNumber();
+            Log.d("Splash>>>", "get my phone number: " + myPhoneNumber);
+            firestore.collection("blacklist").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                    List<String> count = new ArrayList<>();
+                    for (DocumentSnapshot snapshot : value.getDocuments()) {
+                        count.add(snapshot.getId());
+                        if (count.size() == value.size()) {
+                            if (count.contains(myPhoneNumber)) {
+                                Toast.makeText(Splash.this, "정지됨", Toast.LENGTH_SHORT).show();
+                            } else {
+                                checkDevice();
+                                Log.d("Splash>>>", "checkDevice");
+                            }
+                        }
+                    }
+                }
+            });
         }
     }
 

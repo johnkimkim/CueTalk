@@ -157,6 +157,7 @@ public class SendMessege {
                 firstmsg.put("name", name);
                 firstmsg.put("time", getTime());
                 firstmsg.put("read", "1");
+                firstmsg.put("uid", myUid);
 
                 messegeMap.put("/messege/" + myUid + userUid + "/lastmsg" + myUid + userUid + "/lastmessege/", messege);
                 messegeMap.put("/messege/" + myUid + userUid + "/lastmsg" + myUid + userUid + "/lasttime/", getTime());

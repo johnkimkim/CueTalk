@@ -24,7 +24,7 @@
                 android:id="@+id/chat_room_layout_name1_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#000000"/>
+                android:textColor="#000000" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -34,7 +34,7 @@
                 <ImageView
                     android:id="@+id/chat_room_layout_messege1_img"
                     android:layout_width="50dp"
-                    android:layout_height="50dp"/>
+                    android:layout_height="50dp" />
 
                 <TextView
                     android:id="@+id/chat_room_layout_time1_img"

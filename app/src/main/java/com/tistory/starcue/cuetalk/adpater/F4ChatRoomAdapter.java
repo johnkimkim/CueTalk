@@ -34,12 +34,14 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     DatabaseHandler databaseHandler;
     private SQLiteDatabase sqLiteDatabase;
-    private DatabaseReference reference;
+    private DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth mAuth;
     String myUid;
     String yourUid;
     String yourPic;
     Intent intent;
+
+    String getroomname;
 
     private ArrayList<F4ChatRoomItem> arrayList;
     List<String> mytime = new ArrayList<>();
@@ -51,9 +53,10 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private Context context;
 
-    public F4ChatRoomAdapter(Context context, ArrayList<F4ChatRoomItem> arrayList) {
+    public F4ChatRoomAdapter(Context context, ArrayList<F4ChatRoomItem> arrayList, String getroomname) {
         this.arrayList = arrayList;
         this.context = context;
+        this.getroomname = getroomname;
     }
 
     @NonNull
@@ -101,6 +104,11 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     .override(150, 150)
                     .centerCrop()
                     .into(((F4ChatRoomAdapter.RightImageViewholder) holder).imagepic);
+            if (arrayList.get(position).getRead().equals("1")) {
+                ((F4ChatRoomAdapter.RightImageViewholder) holder).read.setText("1");
+            } else {
+                ((F4ChatRoomAdapter.RightImageViewholder) holder).read.setText("");
+            }
         } else if (holder instanceof F4ChatRoomAdapter.LeftImageViewholder) {
             ((F4ChatRoomAdapter.LeftImageViewholder) holder).name.setText(arrayList.get(position).getName());
             ((F4ChatRoomAdapter.LeftImageViewholder) holder).time.setText(arrayList.get(position).getTime());
@@ -136,6 +144,11 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         } else if (holder instanceof F4ChatRoomAdapter.RightViewholder) {
             ((F4ChatRoomAdapter.RightViewholder) holder).time1.setText(arrayList.get(position).getTime());//error
             ((F4ChatRoomAdapter.RightViewholder) holder).messege1.setText(arrayList.get(position).getMessege());
+            if (arrayList.get(position).getRead().equals("1")) {
+                ((F4ChatRoomAdapter.RightViewholder) holder).read2.setText("1");
+            } else {
+                ((F4ChatRoomAdapter.RightViewholder) holder).read2.setText("");
+            }
         }
         else if (holder instanceof F4ChatRoomAdapter.LeftViewholder) {
             ((F4ChatRoomAdapter.LeftViewholder) holder).name.setText(arrayList.get(position).getName());
@@ -164,7 +177,6 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         } else if (holder instanceof F4ChatRoomAdapter.CenterBottomViewholder) {
             ((F4ChatRoomAdapter.CenterBottomViewholder) holder).titletext.setText("상대방이 대화방을 나갔습니다.");
         }
-
 
     }
 
@@ -233,12 +245,13 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public class RightViewholder extends RecyclerView.ViewHolder {
-        TextView time1, messege1;
+        TextView time1, messege1, read2;
 
         public RightViewholder(@NonNull View itemView) {
             super(itemView);
             this.time1 = itemView.findViewById(R.id.chat_room_layout_time2);
             this.messege1 = itemView.findViewById(R.id.chat_room_layout_messege2);
+            this.read2 = itemView.findViewById(R.id.chat_room_layout_read2);
         }
     }
 
@@ -256,13 +269,14 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public class RightImageViewholder extends RecyclerView.ViewHolder {
-        TextView timepic;
+        TextView timepic, read;
         ImageView imagepic;
 
         public RightImageViewholder(@NonNull View itemView) {
             super(itemView);
             this.timepic = itemView.findViewById(R.id.chat_room_layout_time2_img);
             this.imagepic = itemView.findViewById(R.id.chat_room_layout_messege2_img);
+            this.read = itemView.findViewById(R.id.chat_room_layout_read);
         }
     }
 

@@ -136,7 +136,7 @@ public class Fragment4 extends Fragment {
 //        beforeArrayList.clear();
 //        beforeLastkeyList.clear();
 //        beforeArrayKeyList.clear();
-        adapter = new F4ReAdapter(arrayList, lastList, getActivity());
+        adapter = new F4ReAdapter(arrayList, lastList, lastKeyList, getActivity());
         recyclerView.setAdapter(adapter);
 
         reference.getRef().child("messege").addChildEventListener(new ChildEventListener() {

@@ -31,6 +31,7 @@ import com.tistory.starcue.cuetalk.item.LastListItem;
 import com.tistory.starcue.cuetalk.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHolder> {
 
@@ -39,17 +40,20 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
 
     ArrayList<F4MessegeItem> arrayList;
     ArrayList<LastListItem> lastList;
+    List<String> keyList;
     Context context;
     private DatabaseReference reference;
+    private DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
 
     FirebaseAuth mAuth;
     String myUid;
 
     GpsTracker gpsTracker;
 
-    public F4ReAdapter(ArrayList<F4MessegeItem> arrayList, ArrayList<LastListItem> lastList, Context context) {
+    public F4ReAdapter(ArrayList<F4MessegeItem> arrayList, ArrayList<LastListItem> lastList, List<String> keyList, Context context) {
         this.arrayList = arrayList;
         this.lastList = lastList;
+        this.keyList = keyList;
         this.context = context;
     }
 
@@ -103,6 +107,35 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
             int i = (int) Math.floor(ddd) / 1000;
             holder.km.setText(Integer.toString(i) + "km");
         }
+
+        reference1.getRef().child("messege").child(keyList.get(position).substring(7)).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                Log.d("F4ReAdapter>>>", "size same3");
+                Log.d("F4ReAdapter>>>", "key: " + dataSnapshot.getKey());
+                List<String> count1 = new ArrayList<>();
+                List<String> allcount = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Log.d("F4ReAdapter>>>", "key: " + snapshot.getKey());
+                    if (snapshot.getKey().equals("msg")) {
+                        Log.d("F4ReAdapter>>>", "size same2");
+                        for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                            Log.d("F4ReAdapter>>>", "size same1");
+                            allcount.add(snapshot1.child("read").getValue(String.class));
+                            if (snapshot1.child("read").getValue() != null && snapshot1.child("read").getValue(String.class).equals("1")) {
+                                count1.add(snapshot1.child("read").getValue(String.class));
+                            }
+                            if (allcount.size() == snapshot1.getChildrenCount() - 1) {
+                                Log.d("F4ReAdapter>>>", "size same");
+                                int ii = count1.size();
+                                String ss = Integer.toString(ii);
+                                holder.count.setText(ss);
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override

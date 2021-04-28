@@ -63,6 +63,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
 
     //    private RecyclerView.LayoutManager layoutManager;
     private ArrayList<F4ChatRoomItem> arrayList;
+    private List<String> keyList;
     private F4ChatRoomAdapter adapter;
 
     RecyclerView recyclerView;
@@ -88,6 +89,9 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     boolean isOpen;
     boolean outAlready;
     boolean finishedAll;
+
+    String msgUid;
+    String myState;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -148,9 +152,11 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
 
+
         myUid = mAuth.getUid();
-        getMyProfile();
+
         getUserUid();
+        getMyProfile();
         setSendmsg();
         setSendimg();
     }
@@ -188,10 +194,11 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
         arrayList = new ArrayList<>();
-        adapter = new F4ChatRoomAdapter(Fragment4ChatRoom.this, arrayList);
-        recyclerView.setAdapter(adapter);
-
-        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+        keyList = new ArrayList<>();
+//        adapter = new F4ChatRoomAdapter(Fragment4ChatRoom.this, arrayList);
+//        recyclerView.setAdapter(adapter);
+//
+//        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
 
         reference.getRef().child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
@@ -202,9 +209,15 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                     Log.d("Fragment4ChatRoom>>>", userUidmyUid);
                     if (snapshot.getKey().equals(myUiduserUid)) {
                         getroomname = myUiduserUid;
+                        adapter = new F4ChatRoomAdapter(Fragment4ChatRoom.this, arrayList, getroomname);
+                        recyclerView.setAdapter(adapter);
+                        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
                         setRecyclerviewList();
                     } else if (snapshot.getKey().equals(userUidmyUid)) {
                         getroomname = userUidmyUid;
+                        adapter = new F4ChatRoomAdapter(Fragment4ChatRoom.this, arrayList, getroomname);
+                        recyclerView.setAdapter(adapter);
+                        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
                         setRecyclerviewList();
                     }
                 }
@@ -258,10 +271,13 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     }
 
     private void setRecyclerviewList() {
+
+        userMessegeChangeReadWhenICome();
         getNewMessege();
         checkUserIsChat();
         setState();
 
+        //상대방이 나갔을때
         reference.getRef().child("messege").child(getroomname).child("msg").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -306,14 +322,80 @@ public class Fragment4ChatRoom extends AppCompatActivity {
 
             }
         });
+
     }
 
     private void getNewMessege() {
         reference.getRef().child("messege").child(getroomname).child("msg").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                msgUid = snapshot.child("uid").getValue(String.class);//새메시지의 uid
+
+//                Map<String, Object> map = new HashMap<>();
+//                map.put("read", "0");
+//
+//                Log.d("Fragment4ChatRoom>>>", "msg uid1: " + msgUid);
+//                reference.getRef().child("messege").child(getroomname).child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//                    @Override
+//                    public void onSuccess(DataSnapshot dataSnapshot) {
+//                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+//                            if (dataSnapshot1.getKey().equals("state")) {
+//                                Log.d("Fragment4ChatRoom>>>", "state: " + dataSnapshot1.getValue(String.class));
+//                                Log.d("Fragment4ChatRoom>>>", "msg uid2: " + msgUid);
+//                                if (dataSnapshot1.getValue(String.class).equals("2") && !msgUid.equals(myUid)) {
+//                                    Log.d("Fragment4ChatRoom>>>", "success");
+//                                    reference.getRef().child("messege").child(getroomname).child("msg").child(snapshot.getKey()).updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                        @Override
+//                                        public void onSuccess(Void aVoid) {
+//                                            F4ChatRoomItem chatRoomItem = snapshot.getValue(F4ChatRoomItem.class);
+//                                            arrayList.add(chatRoomItem);
+//                                            keyList.add(snapshot.getKey());
+//                                            adapter.notifyDataSetChanged();
+//
+//                                            recyclerView.postDelayed(new Runnable() {
+//                                                @Override
+//                                                public void run() {
+//                                                    recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
+//                                                }
+//                                            }, 100);
+//                                        }
+//                                    });
+//                                }
+//                                break;
+//                            }
+//                        }
+//                    }
+//                });
+
+//                if (msgUid.equals(myUid)) {
+//                    F4ChatRoomItem chatRoomItem = snapshot.getValue(F4ChatRoomItem.class);
+//                    arrayList.add(chatRoomItem);
+//                    keyList.add(snapshot.getKey());
+//                    adapter.notifyDataSetChanged();
+//                } else {
+//                    if (myState.equals("2")) {
+//                        Map<String, Object> map = new HashMap<>();
+//                        map.put("read", "0");
+//                        reference.getRef().child("messege").child(getroomname).child("msg").child(snapshot.getKey()).updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                            @Override
+//                            public void onSuccess(Void aVoid) {
+//                                F4ChatRoomItem chatRoomItem = snapshot.getValue(F4ChatRoomItem.class);
+//                                arrayList.add(chatRoomItem);
+//                                keyList.add(snapshot.getKey());
+//                                adapter.notifyDataSetChanged();
+//                            }
+//                        });
+//                    }
+//                }
+                if (msgUid.equals(userUid) && myState.equals("2")) {//이부분 동작안함
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("read", "0");
+                    reference.getRef().child("messege").child(getroomname).child("msg").child(snapshot.getKey()).updateChildren(map);
+                }
+
                 F4ChatRoomItem chatRoomItem = snapshot.getValue(F4ChatRoomItem.class);
                 arrayList.add(chatRoomItem);
+                keyList.add(snapshot.getKey());
                 adapter.notifyDataSetChanged();
 
                 recyclerView.postDelayed(new Runnable() {
@@ -328,7 +410,10 @@ public class Fragment4ChatRoom extends AppCompatActivity {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
+                F4ChatRoomItem chatRoomItem = snapshot.getValue(F4ChatRoomItem.class);
+                int index = keyList.indexOf(snapshot.getKey());
+                arrayList.set(index, chatRoomItem);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -383,6 +468,46 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         });
     }
 
+    private void userMessegeChangeReadWhenICome() {
+        reference.getRef().child("messege").child(getroomname).child(myUid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d("Fragment4ChatRoom>>>", "ondatachaged");
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    if (snapshot1.getKey().equals("state")) {
+                        if (snapshot1.getValue(String.class).equals("2")) {
+                            myState = "2";
+                            Map<String, Object> map = new HashMap<>();
+                            map.put("read", "0");
+                            reference.getRef().child("messege").child(getroomname).child("msg").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                @Override
+                                public void onSuccess(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {//messege key
+                                        for (DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()) {
+                                            if (dataSnapshot2.getKey().equals("uid")) {//uid in msg
+                                                if (dataSnapshot2.getValue(String.class).equals(userUid)) {
+                                                    reference.getRef().child("messege").child(getroomname).child("msg").child(dataSnapshot1.getKey()).updateChildren(map);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        } else {
+                            myState = "1";
+                        }
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     private void setSendmsg() {
         sendmsg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -395,6 +520,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                 sendmsg.put("name", myName);
                 sendmsg.put("time", getTime());
                 sendmsg.put("read", "1");
+                sendmsg.put("uid", myUid);
 
                 lastmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lastmessege/", messege);
                 lastmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lasttime/", getTime());
@@ -557,6 +683,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         sendmsgpic.put("pic", myPic);
         sendmsgpic.put("time", getTime());
         sendmsgpic.put("read", "1");
+        sendmsgpic.put("uid", myUid);
 
         lastmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lastmessege/", "사진이 전송되었습니다.");
         lastmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lasttime/", getTime());

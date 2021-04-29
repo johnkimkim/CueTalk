@@ -565,7 +565,12 @@ public class Fragment4 extends Fragment {
             } else {
                 s = Integer.parseInt(MainActivity.btn4count.getText().toString());
             }
-            MainActivity.btn4count.setText(Integer.toString(s + count));
+
+            if (s + count == 0) {
+                MainActivity.btn4count.setText("");
+            } else {
+                MainActivity.btn4count.setText(Integer.toString(s + count));
+            }
         }
     }
 

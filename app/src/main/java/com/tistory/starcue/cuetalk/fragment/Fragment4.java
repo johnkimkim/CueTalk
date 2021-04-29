@@ -452,7 +452,7 @@ public class Fragment4 extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("Fragment4>>>", "state: onCreate");
+        Log.d("Fragment4>>>", "state: onCreate ");
     }
 
     @Override

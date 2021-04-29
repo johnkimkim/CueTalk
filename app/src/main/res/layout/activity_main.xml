@@ -16,7 +16,8 @@
         android:id="@+id/btnlayout"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
 
 <!--        <Button-->
 <!--            android:id="@+id/testbtn"-->
@@ -50,14 +51,28 @@
             android:layout_margin="2dp"
             android:text="중고거래"/>
 
-        <Button
-            android:id="@+id/btn4"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_margin="2dp"
-            android:text="메시지"/>
+            android:layout_weight="1">
 
+            <Button
+                android:id="@+id/btn4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp"
+                android:text="메시지"/>
+            <TextView
+                android:id="@+id/btn4count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:textSize="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:translationZ="5dp"/>
+
+        </RelativeLayout>
 
 
         <Button

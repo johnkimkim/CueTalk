@@ -32,6 +32,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tistory.starcue.cuetalk.GpsTracker;
+import com.tistory.starcue.cuetalk.MainActivity;
 import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.SendMessege;
 import com.tistory.starcue.cuetalk.adpater.F4ReAdapter;
@@ -264,6 +265,7 @@ public class Fragment4 extends Fragment {
                                                 adapter.notifyDataSetChanged();
                                             }
                                         }
+                                        setMainBtn4Count(countList);
                                         //change count
 
                                     } else if (!snapshot2.getKey().equals(myUid) && !snapshot2.getKey().equals("msg") && !snapshot2.getKey().contains("lastmsg")) {
@@ -385,6 +387,7 @@ public class Fragment4 extends Fragment {
                             Log.d("Fragment4>>>", "countList size: " + countList.size());
                             setAready = true;
                             setListTimeSort();
+                            setMainBtn4Count(countList);
                         }
 
                         @Override
@@ -549,6 +552,20 @@ public class Fragment4 extends Fragment {
 //            }
 
             adapter.notifyDataSetChanged();
+        }
+    }
+
+    private void setMainBtn4Count(List<String> countList) {
+        MainActivity.btn4count.setText("");
+        int s;
+        for (int i = 0; i < countList.size(); i++) {
+            int count = Integer.parseInt(countList.get(i));
+            if (MainActivity.btn4count.getText().toString().equals("")) {
+                s = 0;
+            } else {
+                s = Integer.parseInt(MainActivity.btn4count.getText().toString());
+            }
+            MainActivity.btn4count.setText(Integer.toString(s + count));
         }
     }
 

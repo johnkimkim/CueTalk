@@ -110,7 +110,11 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
             holder.km.setText(Integer.toString(i) + "km");
         }
 
-        holder.count.setText(countList.get(position));
+        if (countList.get(position).equals("0")) {
+            holder.count.setText("");
+        } else {
+            holder.count.setText(countList.get(position));
+        }
 
 //        reference1.getRef().child("messege").child(keyList.get(position).substring(7)).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
 //            @Override

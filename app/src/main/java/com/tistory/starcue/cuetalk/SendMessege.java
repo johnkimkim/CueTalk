@@ -140,6 +140,8 @@ public class SendMessege {
 
                 fmsg.put("messege/", "dlqwkddhksfycjtaptlwl");
                 fmsg.put("time/", "dlqwkddhksfycjtaptlwl");
+                fmsg.put("uid/", "dlqwkddhksfycjtaptlwl");
+                fmsg.put("read/", "dlqwkddhksfycjtaptlwl");
 
                 messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/uid/", myUid);
                 messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/name/", name);

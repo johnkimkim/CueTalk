@@ -52,14 +52,18 @@ public class Fragment4 extends Fragment {
     private SharedPreferences sharedPreferences;
 
     private RecyclerView recyclerView;
-    private ArrayList<F4MessegeItem> arrayList;
-    private ArrayList<F4MessegeItem> beforeArrayList;
-    private ArrayList<LastListItem> lastList;
-    private ArrayList<LastListItem> beforeLastList;
-    private List<String> arrayKeyList;
-    private List<String> beforeArrayKeyList;
-    private List<String> lastKeyList;
-    private List<String> beforeLastkeyList;
+    private ArrayList<F4MessegeItem> arrayList;//회원정보list
+    private ArrayList<F4MessegeItem> beforeArrayList;//회원정보 위치변경 전 list
+    private ArrayList<LastListItem> lastList;//마지막메시지 list
+    private ArrayList<LastListItem> beforeLastList;//마지막메시지 변경 전 list
+    private List<String> arrayKeyList;//회원정보 key list
+    private List<String> beforeArrayKeyList;//회원정보 변경 전 key list
+    private List<String> lastKeyList;//마지막메시지 key list
+    private List<String> beforeLastkeyList;//마지막메시지 변경전 key list
+    private List<String> countList;
+    private List<String> beforeCountList;
+    private List<String> countKeyList;
+    private List<String> beforeCountKeyList;
     private RecyclerView.LayoutManager layoutManager;
 
     private F4ReAdapter adapter;
@@ -88,15 +92,12 @@ public class Fragment4 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment4, container, false);
 
-        Log.d("Fragment4>>>", "start onCreate");
-
         sendMessege = new SendMessege(getActivity());
         stayf4chatroom = false;
 //        setAlready = false;
 
         setFirebase();
         setinit(rootView);
-        Log.d("Fragment4>>>", "state: onCreateView");
 
         return rootView;
     }
@@ -128,26 +129,23 @@ public class Fragment4 extends Fragment {
         beforeArrayList = new ArrayList<>();
         beforeArrayKeyList = new ArrayList<>();
         beforeLastkeyList = new ArrayList<>();
-//        arrayList.clear();
-//        arrayKeyList.clear();
-//        lastList.clear();
-//        lastKeyList.clear();
-//        beforeLastList.clear();
-//        beforeArrayList.clear();
-//        beforeLastkeyList.clear();
-//        beforeArrayKeyList.clear();
-        adapter = new F4ReAdapter(arrayList, lastList, lastKeyList, getActivity());
+
+        countList = new ArrayList<>();
+        countKeyList = new ArrayList<>();
+        beforeCountList = new ArrayList<>();
+        beforeCountKeyList = new ArrayList<>();
+
+        adapter = new F4ReAdapter(arrayList, lastList, lastKeyList, countList, getActivity());
         recyclerView.setAdapter(adapter);
 
         reference.getRef().child("messege").addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {//추가됐을때만 쓰기로 수정하기. if !lastkeylist.constains(getkey)
-                Log.d("Fragment4>>>", "add");
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if (snapshot.getKey().contains(myUid)) {
+                    String roomKey = snapshot.getKey();
                     for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                         if (snapshot1.getKey().contains("lastmsg")) {
                             if (!lastKeyList.contains(snapshot1.getKey())) {
-                                Log.d("Fragment4>>>", "add: " + snapshot.getKey());
                                 reference.getRef().child("messege").child(snapshot.getKey()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                     @Override
                                     public void onSuccess(DataSnapshot dataSnapshot) {
@@ -161,15 +159,35 @@ public class Fragment4 extends Fragment {
                                                                 LastListItem lastListItem = dataSnapshot2.getValue(LastListItem.class);
                                                                 lastList.add(lastListItem);
                                                                 lastKeyList.add(key);
-                                                                Log.d("Fragment4>>>", "add last add, key: " + key);
                                                             }
+                                                        } else if (dataSnapshot2.getKey().equals("msg")) {
+
+                                                            //add count
+                                                            List<String> count = new ArrayList<>();
+                                                            List<String> allCount = new ArrayList<>();
+                                                            for (DataSnapshot dataSnapshot3 : dataSnapshot2.getChildren()) {
+                                                                allCount.add(dataSnapshot3.getKey());
+                                                                if (dataSnapshot3.child("uid").getValue(String.class).equals("dlqwkddhksfycjtaptlwl") && dataSnapshot3.child("read").getValue(String.class).equals("dlqwkddhksfycjtaptlwl")) {
+                                                                    count.add("1");
+                                                                } else if (!dataSnapshot3.child("uid").getValue(String.class).equals(myUid) && dataSnapshot3.child("read").getValue(String.class).equals("1")) {
+                                                                    count.add("1");
+                                                                    if (allCount.size() == dataSnapshot2.getChildrenCount()) {
+                                                                        countList.add(Integer.toString(count.size() - 1));
+                                                                        countKeyList.add(roomKey);
+                                                                    }
+                                                                } else if (allCount.size() == dataSnapshot2.getChildrenCount()) {
+                                                                    countList.add(Integer.toString(count.size() - 1));
+                                                                    countKeyList.add(roomKey);
+                                                                }
+                                                            }
+                                                            //add count
+
                                                         } else if (!dataSnapshot2.getKey().equals("msg") && !dataSnapshot2.getKey().equals(myUid) && !dataSnapshot2.getKey().contains("lastmsg")) {
                                                             if (!arrayKeyList.contains(dataSnapshot2.getKey())) {
                                                                 String key = dataSnapshot2.getKey();
                                                                 F4MessegeItem f4MessegeItem = dataSnapshot2.getValue(F4MessegeItem.class);
                                                                 arrayList.add(f4MessegeItem);
                                                                 arrayKeyList.add(key);
-                                                                Log.d("Fragment4>>>", "add array add, key: " + key);
                                                             }
                                                         }
                                                     }
@@ -192,23 +210,23 @@ public class Fragment4 extends Fragment {
                 //경우의수:
                 //내가 혼자 나갔을때: if ischat = 2
                 //새로운 메시지 왔을때
-                Log.d("Fragment4>>>", "onchild change: " + snapshot.getKey());//room key
                 if (snapshot.getKey().contains(myUid)) {
+                    String roomKey = snapshot.getKey();
                     for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                         if (snapshot1.getKey().equals(myUid)) {
                             String ischat = snapshot1.child("ischat").getValue(String.class);
                             if (ischat.equals("2")) {
-                                Log.d("Fragment4>>>", "change ischat; " + ischat);
                                 for (DataSnapshot snapshot2 : snapshot.getChildren()) {
                                     if (snapshot2.getKey().contains("lastmsg")) {
                                         if (lastKeyList.contains(snapshot2.getKey())) {
-                                            Log.d("Fragment4>>>", "array size: " + arrayList.size());
                                             String key = snapshot2.getKey();
                                             int index = lastKeyList.indexOf(key);
                                             lastList.remove(index);
                                             arrayList.remove(index);
                                             arrayKeyList.remove(index);
                                             lastKeyList.remove(index);
+                                            countList.remove(index);
+                                            countKeyList.remove(index);
                                             adapter.notifyDataSetChanged();
                                         }
                                     }
@@ -217,7 +235,6 @@ public class Fragment4 extends Fragment {
                                 for (DataSnapshot snapshot2 : snapshot.getChildren()) {
                                     if (snapshot2.getKey().contains("lastmsg")) {
                                         if (lastKeyList.contains(snapshot2.getKey())) {
-                                            Log.d("Fragment4>>>", "onchild change if key lasgmsg");
                                             String key = snapshot2.getKey();
                                             LastListItem lastListItem = snapshot2.getValue(LastListItem.class);
                                             if (!lastList.contains(lastListItem)) {
@@ -227,6 +244,28 @@ public class Fragment4 extends Fragment {
                                                 adapter.notifyDataSetChanged();
                                             }
                                         }
+                                    } else if (snapshot2.getKey().equals("msg")) {
+
+                                        //change count
+                                        List<String> count = new ArrayList<>();
+                                        List<String> allCount = new ArrayList<>();
+                                        for (DataSnapshot dataSnapshot3 : snapshot2.getChildren()) {
+                                            allCount.add(dataSnapshot3.getKey());
+                                            if (dataSnapshot3.child("uid").getValue(String.class).equals("dlqwkddhksfycjtaptlwl") && dataSnapshot3.child("read").getValue(String.class).equals("dlqwkddhksfycjtaptlwl")) {
+                                                count.add("1");
+                                            } else if (!dataSnapshot3.child("uid").getValue(String.class).equals(myUid) && dataSnapshot3.child("read").getValue(String.class).equals("1")) {
+                                                count.add("1");
+                                                if (allCount.size() == snapshot2.getChildrenCount()) {
+                                                    countList.set(countKeyList.indexOf(roomKey), Integer.toString(count.size() - 1));
+                                                    adapter.notifyDataSetChanged();
+                                                }
+                                            } else if (allCount.size() == snapshot2.getChildrenCount()) {
+                                                countList.set(countKeyList.indexOf(roomKey), Integer.toString(count.size() - 1));
+                                                adapter.notifyDataSetChanged();
+                                            }
+                                        }
+                                        //change count
+
                                     } else if (!snapshot2.getKey().equals(myUid) && !snapshot2.getKey().equals("msg") && !snapshot2.getKey().contains("lastmsg")) {
                                         F4MessegeItem f4MessegeItem = snapshot2.getValue(F4MessegeItem.class);
                                         String yourUid = f4MessegeItem.getUid();
@@ -247,24 +286,27 @@ public class Fragment4 extends Fragment {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                Log.d("Fragment4>>>", "onChildRemoved");
                 if (snapshot.getKey().contains(myUid)) {
                     for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                         if (snapshot1.getKey().contains("lastmsg")) {
                             String key = snapshot1.getKey();
                             int indexlast = lastKeyList.indexOf(key);
-                            Log.d("Fragment4>>>", "get lastkey: " + key);
                             if (lastKeyList.contains(key)) {
-                                Log.d("Fragment4>>>", "last key 포함");
                                 lastList.remove(indexlast);
                                 lastKeyList.remove(indexlast);
                             }
-                        } else if (!snapshot1.getKey().equals("msg") && !snapshot1.getKey().equals(myUid) && !snapshot1.getKey().contains("lastmsg")) {
+                        } else if (snapshot1.getKey().equals("msg")) {
+                            //remove count
+                            String key = snapshot.getKey();
+                            int indexcount = countKeyList.indexOf(key);
+                            if (countKeyList.contains(key)) {
+                                countList.remove(indexcount);
+                                countKeyList.remove(indexcount);
+                            }
+                        } else if (!snapshot1.getKey().equals(myUid) && !snapshot1.getKey().contains("lastmsg")) {
                             String key = snapshot1.getKey();
                             int indexarray = arrayKeyList.indexOf(key);
-                            Log.d("Fragment4>>>", "get arraykey: " + key);
                             if (arrayKeyList.contains(key)) {
-                                Log.d("Fragment4>>>", "array key 포함");
                                 arrayList.remove(indexarray);
                                 arrayKeyList.remove(indexarray);
                             }
@@ -285,7 +327,7 @@ public class Fragment4 extends Fragment {
             }
         });
 
-        reference.getRef().child("myroom").child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+        reference.getRef().child("myroom").child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {//최초실행
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
                 for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
@@ -298,16 +340,36 @@ public class Fragment4 extends Fragment {
                                 if (snapshot1.getKey().equals(myUid)) {
                                     if (snapshot1.child("ischat").getValue().equals("1")) {
                                         for (DataSnapshot snapshot2 : snapshot.getChildren()) {
-                                            if (!snapshot2.getKey().equals("msg") && !snapshot2.getKey().equals(myUid)) {
+                                            if (!snapshot2.getKey().equals(myUid)) {
                                                 if (snapshot2.getKey().contains("lastmsg")) {
                                                     String key = snapshot2.getKey();
-                                                    Log.d("Fragment4>>>", "last add key: " + key);
                                                     LastListItem lastListItem = snapshot2.getValue(LastListItem.class);
                                                     lastList.add(lastListItem);
                                                     lastKeyList.add(key);
+                                                } else if (snapshot2.getKey().equals("msg")) {
+
+                                                    //first count
+                                                    List<String> count = new ArrayList<>();
+                                                    List<String> allCount = new ArrayList<>();
+                                                    for (DataSnapshot dataSnapshot3 : snapshot2.getChildren()) {
+                                                        allCount.add(dataSnapshot3.getKey());
+                                                        if (dataSnapshot3.child("uid").getValue(String.class).equals("dlqwkddhksfycjtaptlwl") && dataSnapshot3.child("read").getValue(String.class).equals("dlqwkddhksfycjtaptlwl")) {
+                                                            count.add("1");
+                                                        } else if (!dataSnapshot3.child("uid").getValue(String.class).equals(myUid) && dataSnapshot3.child("read").getValue(String.class).equals("1")) {
+                                                            count.add("1");
+                                                            if (allCount.size() == snapshot2.getChildrenCount()) {
+                                                                countList.add(Integer.toString(count.size() - 1));
+                                                                countKeyList.add(snapshot.getKey());
+                                                            }
+                                                        } else if (allCount.size() == snapshot2.getChildrenCount()) {//msg 전체 다 반복했을때
+                                                            countList.add(Integer.toString(count.size() - 1));
+                                                            countKeyList.add(snapshot.getKey());
+                                                        }
+                                                    }
+                                                    //first count
+
                                                 } else {
                                                     String key = snapshot2.getKey();
-                                                    Log.d("Fragment4>>>", "array add key: " + key);
                                                     F4MessegeItem f4MessegeItem = snapshot2.getValue(F4MessegeItem.class);
                                                     arrayList.add(f4MessegeItem);
                                                     arrayKeyList.add(key);
@@ -320,6 +382,7 @@ public class Fragment4 extends Fragment {
                             adapter.notifyDataSetChanged();
                             progressBar.setVisibility(View.GONE);
                             Log.d("Fragment4>>>", "addListenerForSingleValueEvent finished");
+                            Log.d("Fragment4>>>", "countList size: " + countList.size());
                             setAready = true;
                             setListTimeSort();
                         }
@@ -406,16 +469,11 @@ public class Fragment4 extends Fragment {
 //        editor.putBoolean("state", stayF4);
 //        editor.commit();
 //        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
-        Log.d("Fragment4>>>", "state: onPause: " + arrayList.size());
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (!stayf4chatroom) {
-
-        }
-        Log.d("Fragment4>>>", "state: onStop " + arrayList.size());
     }
 
     private static class Descending implements Comparator<LastListItem> {
@@ -431,10 +489,14 @@ public class Fragment4 extends Fragment {
             beforeArrayList.clear();
             beforeLastkeyList.clear();
             beforeArrayKeyList.clear();
+            beforeCountList.clear();
             beforeLastList.addAll(lastList);
             beforeArrayList.addAll(arrayList);
             beforeLastkeyList.addAll(lastKeyList);
             beforeArrayKeyList.addAll(arrayKeyList);
+
+            beforeCountList.addAll(countList);
+            beforeCountKeyList.addAll(countKeyList);
             Descending descending = new Descending();
             Collections.sort(lastList, descending);
 
@@ -445,6 +507,8 @@ public class Fragment4 extends Fragment {
                 arrayList.set(i, beforeArrayList.get(beforeIndex.get(i)));
                 lastKeyList.set(i, beforeLastkeyList.get(beforeIndex.get(i)));
                 arrayKeyList.set(i, beforeArrayKeyList.get(beforeIndex.get(i)));
+                countList.set(i, beforeCountList.get(beforeIndex.get(i)));
+                countKeyList.set(i, beforeCountKeyList.get(beforeIndex.get(i)));
             }
 
 //            for (int i = 0; i < beforeIndex.size(); i++) {
@@ -458,10 +522,14 @@ public class Fragment4 extends Fragment {
             beforeArrayList.clear();
             beforeLastkeyList.clear();
             beforeArrayKeyList.clear();
+            beforeCountList.clear();
             beforeLastList.addAll(lastList);
             beforeArrayList.addAll(arrayList);
             beforeLastkeyList.addAll(lastKeyList);
             beforeArrayKeyList.addAll(arrayKeyList);
+
+            beforeCountList.addAll(countList);
+            beforeCountKeyList.addAll(countKeyList);
             Descending descending = new Descending();
             Collections.sort(lastList, descending);
 
@@ -469,11 +537,12 @@ public class Fragment4 extends Fragment {
             for (int i = 0; i < lastList.size(); i++) {
                 int index = beforeLastList.indexOf(lastList.get(i));
                 beforeIndex.add(i, index);
-                Log.d("Fragment4>>>", "get arraylist size: " + arrayList.size());
-                Log.d("Fragment4>>>", "get before array size: " + beforeArrayList.size());
+
                 arrayList.set(i, beforeArrayList.get(beforeIndex.get(i)));
                 lastKeyList.set(i, beforeLastkeyList.get(beforeIndex.get(i)));
                 arrayKeyList.set(i, beforeArrayKeyList.get(beforeIndex.get(i)));
+                countList.set(i, beforeCountList.get(beforeIndex.get(i)));
+                countKeyList.set(i, beforeCountKeyList.get(beforeIndex.get(i)));
             }
 
 //            for (int i = 0; i < beforeIndex.size(); i++) {

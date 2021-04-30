@@ -434,6 +434,7 @@ public class ChangeProfile extends AppCompatActivity {
 
     private void setYesBtn() {
         yesbtn.setOnClickListener(view -> {
+            hideKeyboard(view);
             if (radiomale.isChecked()) {
                 sexstring = "남자";
             } else if (radiofemale.isChecked()) {
@@ -594,6 +595,11 @@ public class ChangeProfile extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("willdelete", willdelete);
         editor.commit();
+    }
+
+    private void hideKeyboard(View v) {
+        InputMethodManager manager = (InputMethodManager) v.getContext().getSystemService(INPUT_METHOD_SERVICE);
+        manager.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
 }

@@ -312,6 +312,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         dialogyes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideKeyboard(view);
                 alertDialog.setCancelable(false);
                 messege = dialogEditText.getText().toString();
 
@@ -575,5 +576,10 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         Log.d("Fragment3>>>", "setListTimeSort");
         Descending descending = new Descending();
         Collections.sort(arrayList, descending);
+    }
+
+    private void hideKeyboard(View v) {
+        InputMethodManager manager = (InputMethodManager) v.getContext().getSystemService(INPUT_METHOD_SERVICE);
+        manager.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }

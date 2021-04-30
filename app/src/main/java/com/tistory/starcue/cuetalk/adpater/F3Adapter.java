@@ -142,14 +142,14 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
                             if (i == 0) {
                                 String userUid = arrayList.get(position).getUid();
                                 SendMessege sendMessege = new SendMessege(context);
-                                sendMessege.setSendMessegeDialog(context, userUid);
+                                sendMessege.setSendMessegeDialog(context, userUid, view);
                             } else {
                                 if (dataSnapshot.hasChild(roomkey) || dataSnapshot.hasChild(roomkey1)) {
                                     Toast.makeText(context, "이미 대화 중 입니다. 메시지함을 확인해주세요", Toast.LENGTH_SHORT).show();
                                 } else {
                                     String userUid = arrayList.get(position).getUid();
                                     SendMessege sendMessege = new SendMessege(context);
-                                    sendMessege.setSendMessegeDialog(context, userUid);//laskdfjkl
+                                    sendMessege.setSendMessegeDialog(context, userUid, view);//laskdfjkl
                                 }
                             }
 

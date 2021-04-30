@@ -288,13 +288,13 @@ public class ChatRoom extends AppCompatActivity {
 
                                         if (i == 0) {
                                             SendMessege sendMessege = new SendMessege(ChatRoom.this);
-                                            sendMessege.setSendMessegeDialog(ChatRoom.this, userUid);
+                                            sendMessege.setSendMessegeDialog(ChatRoom.this, userUid, view);
                                         } else {
                                             if (dataSnapshot.hasChild(roomkey) || dataSnapshot.hasChild(roomkey1)) {
                                                 Toast.makeText(ChatRoom.this, "이미 대화 중 입니다. 메시지함을 확인해주세요", Toast.LENGTH_SHORT).show();
                                             } else {
                                                 SendMessege sendMessege = new SendMessege(ChatRoom.this);
-                                                sendMessege.setSendMessegeDialog(ChatRoom.this, userUid);
+                                                sendMessege.setSendMessegeDialog(ChatRoom.this, userUid, view);
                                             }
                                         }
                                     }

@@ -54,7 +54,7 @@ public class SendMessege {
         this.context = context;
     }
 
-    public void setSendMessegeDialog(Context context, String userUid) {
+    public void setSendMessegeDialog(Context context, String userUid, View view) {
         reference = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -84,6 +84,7 @@ public class SendMessege {
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideKeyboard(view);
 //                InputMethodManager manager = (InputMethodManager) context.getSystemService(INPUT_METHOD_SERVICE);//키보드내리기
 //                manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);//키보드내리기
                 MainActivity.loading.setVisibility(View.VISIBLE);
@@ -311,6 +312,11 @@ public class SendMessege {
         SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
         String date = format.format(mDate);
         return date;
+    }
+
+    private void hideKeyboard(View v) {
+        InputMethodManager manager = (InputMethodManager) v.getContext().getSystemService(INPUT_METHOD_SERVICE);
+        manager.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.tistory.starcue.cuetalk.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -241,6 +242,7 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                     public void onClick(View view) {
                         String getMessege = dialogEditText.getText().toString();
                         if (!getMessege.equals("")) {
+                            hideKeyboard(view);
                             progressBar.setVisibility(View.VISIBLE);
                             alertDialog.setCancelable(false);
                             write();
@@ -573,6 +575,11 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
     private void setListTimeSort(ArrayList<F2Item> arrayList) {
         Descending descending = new Descending();
         Collections.sort(arrayList, descending);
+    }
+
+    private void hideKeyboard(View v) {
+        InputMethodManager manager = (InputMethodManager) v.getContext().getSystemService(INPUT_METHOD_SERVICE);
+        manager.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
 }

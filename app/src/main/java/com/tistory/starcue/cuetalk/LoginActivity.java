@@ -200,7 +200,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setLoginbtn() {
         loginbtn.setOnClickListener(view -> {
-            hideKB();
+            hideKeyboard(view);
             if (radiomale.isChecked()) {
                 sexstring = "남자";
             } else if (radiofemale.isChecked()) {
@@ -318,9 +318,9 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    private void hideKB() {
-        InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    private void hideKeyboard(View v) {
+        InputMethodManager manager = (InputMethodManager) v.getContext().getSystemService(INPUT_METHOD_SERVICE);
+        manager.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
 }

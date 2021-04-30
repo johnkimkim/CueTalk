@@ -127,24 +127,7 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
             public void onClick(View view) {
                 Log.d("Fragment2>>>", "sendbtn onClick");
                 if (arrayList.get(position).getUid().equals(myUid)) {
-                    firestore = FirebaseFirestore.getInstance();
-                    firestore.collection("f3messege").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-                            storageReference.child("fragment3/" + myUid + "/" + myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Toast.makeText(context, "삭제완료", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(context, "네트워크 오류로 게시물 삭제에 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    DeleteMyDialog.f3deleteMyDialog(context, myUid);
                 } else {
                     reference = FirebaseDatabase.getInstance().getReference();
                     reference.getRef().child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {

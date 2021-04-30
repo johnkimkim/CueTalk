@@ -242,6 +242,7 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                         String getMessege = dialogEditText.getText().toString();
                         if (!getMessege.equals("")) {
                             progressBar.setVisibility(View.VISIBLE);
+                            alertDialog.setCancelable(false);
                             write();
                         } else {
                             Toast.makeText(getActivity(), "메시지를 입력해주세요", Toast.LENGTH_SHORT).show();

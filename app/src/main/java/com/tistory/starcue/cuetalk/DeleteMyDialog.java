@@ -106,28 +106,48 @@ public class DeleteMyDialog {
                 alertDialog.setCancelable(false);
                 progressBar.setVisibility(View.VISIBLE);
                 FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+//                firestore.collection("f3messege").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+//                        storageReference.child("fragment3/" + myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+//                            @Override
+//                            public void onSuccess(Void aVoid) {
+//                                StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+//                                storageReference.child("fragment3/" + myUid).listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+//                                    @Override
+//                                    public void onSuccess(ListResult listResult) {
+//                                        for (StorageReference reference : listResult.getItems()) {
+//                                            storageReference.child("fragment3/" + myUid + "/" + reference.getName()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                                @Override
+//                                                public void onSuccess(Void aVoid) {
+//                                                    Toast.makeText(context, "삭제완료", Toast.LENGTH_SHORT).show();
+//                                                    alertDialog.dismiss();
+//                                                }
+//                                            });
+//                                        }
+//                                    }
+//                                });
+//                            }
+//                        });
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Toast.makeText(context, "네트워크 오류로 게시물 삭제에 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+
+
                 firestore.collection("f3messege").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-                        storageReference.child("fragment3/" + myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        storageReference.child("fragment3/" + myUid + "/" + myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-                                storageReference.child("fragment3/" + myUid).listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
-                                    @Override
-                                    public void onSuccess(ListResult listResult) {
-                                        for (StorageReference reference : listResult.getItems()) {
-                                            storageReference.child("fragment3/" + myUid + "/" + reference.getName()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    Toast.makeText(context, "삭제완료", Toast.LENGTH_SHORT).show();
-                                                    alertDialog.dismiss();
-                                                }
-                                            });
-                                        }
-                                    }
-                                });
+                                alertDialog.dismiss();
+                                Toast.makeText(context, "삭제완료", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }

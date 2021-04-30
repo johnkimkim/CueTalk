@@ -10,6 +10,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <RelativeLayout
+        android:id="@+id/fragment4_if_null_chat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#BABABA">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="대화가 없습니다"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+
     <ProgressBar
         android:id="@+id/fragment4_progress_bar"
         style="?android:attr/progressBarStyle"

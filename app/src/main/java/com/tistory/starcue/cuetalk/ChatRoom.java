@@ -341,6 +341,7 @@ public class ChatRoom extends AppCompatActivity {
             public void onClick(View view) {
                 isClickBtn = true;
                 okbtn.setEnabled(false);
+                alertDialog.setCancelable(false);
                 progressbar.setVisibility(View.VISIBLE);
                 deleteMydb();
 //                arrayList.clear();//error

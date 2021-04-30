@@ -25,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.tistory.starcue.cuetalk.DecDialog;
 import com.tistory.starcue.cuetalk.DeleteMyDialog;
 import com.tistory.starcue.cuetalk.GpsTracker;
+import com.tistory.starcue.cuetalk.MainActivity;
 import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.SendMessege;
 import com.tistory.starcue.cuetalk.fragment.Fragment2;
@@ -111,8 +112,10 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
         holder.sendbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                MainActivity.loading.setVisibility(View.VISIBLE);
                 Log.d("Fragment2>>>", "sendbtn onClick");
                 if (arrayList.get(position).getUid().equals(myUid)) {
+                    MainActivity.loading.setVisibility(View.GONE);
                     DeleteMyDialog.f2deleteMyDialog(context, myUid);
                 } else {
                     reference = FirebaseDatabase.getInstance().getReference();
@@ -127,13 +130,16 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
 
 
                             if (i == 0) {
+                                MainActivity.loading.setVisibility(View.GONE);
                                 String userUid = arrayList.get(position).getUid();
                                 SendMessege sendMessege = new SendMessege(context);
                                 sendMessege.setSendMessegeDialog(context, userUid, view);
                             } else {
                                 if (dataSnapshot.hasChild(roomkey) || dataSnapshot.hasChild(roomkey1)) {
+                                    MainActivity.loading.setVisibility(View.GONE);
                                     Toast.makeText(context, "이미 대화 중 입니다. 메시지함을 확인해주세요", Toast.LENGTH_SHORT).show();
                                 } else {
+                                    MainActivity.loading.setVisibility(View.GONE);
                                     String userUid = arrayList.get(position).getUid();
                                     SendMessege sendMessege = new SendMessege(context);
                                     sendMessege.setSendMessegeDialog(context, userUid, view);//laskdfjkl

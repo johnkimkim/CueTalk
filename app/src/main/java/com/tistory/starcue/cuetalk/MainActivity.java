@@ -1,17 +1,22 @@
 package com.tistory.starcue.cuetalk;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MotionEventCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -113,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
         sectionsPagerAdapter.addItem(fragment4);
         Fragment5 fragment5 = new Fragment5();
         sectionsPagerAdapter.addItem(fragment5);
+
         viewPager = findViewById(R.id.viewpager);
         viewPager.setOffscreenPageLimit(5);
         viewPager.setAdapter(sectionsPagerAdapter);
@@ -171,6 +177,36 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             return items.size();
+        }
+    }
+
+    public static class CustomViewPager extends ViewPager {
+
+        private boolean isEnabled;
+
+        public CustomViewPager(@NonNull Context context, @Nullable AttributeSet attrs) {
+            super(context, attrs);
+            this.isEnabled = false;
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent ev) {
+            if (this.isEnabled) {
+                return super.onTouchEvent(ev);
+            }
+            return false;
+        }
+
+        @Override
+        public boolean onInterceptHoverEvent(MotionEvent event) {
+            if (this.isEnabled) {
+                return super.onInterceptHoverEvent(event);
+            }
+            return false;
+        }
+
+        public void setPagingEnabled(boolean isEnabled) {//control view pager swipe. if true can, if false can't
+            this.isEnabled = isEnabled;
         }
     }
 

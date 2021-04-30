@@ -168,10 +168,28 @@ public class Fragment4 extends Fragment {
                                                         } else if (dataSnapshot2.getKey().equals("msg")) {
 
                                                             //add count
-                                                            if (!countKeyList.contains(roomKey)) {
-                                                                countList.add("1");
-                                                                countKeyList.add(roomKey);
+                                                            int nowcount;
+                                                            if (MainActivity.btn4count.getText().toString().equals("")) {
+                                                                nowcount = 0;
+                                                            } else {
+                                                                nowcount = Integer.parseInt(MainActivity.btn4count.getText().toString());
                                                             }
+                                                            for (DataSnapshot dataSnapshot3 : dataSnapshot2.getChildren()) {
+                                                                if (!dataSnapshot3.child("uid").getValue(String.class).equals(myUid)
+                                                                        && dataSnapshot3.child("read").getValue(String.class).equals("1")) {
+                                                                    countList.add(Integer.toString(nowcount += 1));
+                                                                    countKeyList.add(roomKey);
+                                                                } else if (dataSnapshot3.child("uid").getValue(String.class).equals(myUid)
+                                                                        && dataSnapshot3.child("read").getValue(String.class).equals("1")) {
+                                                                    countList.add(Integer.toString(nowcount));
+                                                                    countKeyList.add(roomKey);
+                                                                }
+                                                            }
+
+//                                                            if (!countKeyList.contains(roomKey)) {
+//                                                                countList.add("0");
+//                                                                countKeyList.add(roomKey);
+//                                                            }
                                                             setMainBtn4Count(countList);
                                                             //add count
 
@@ -513,7 +531,11 @@ public class Fragment4 extends Fragment {
             allcount += Integer.parseInt(countList.get(i));
             Log.d("Fragment4>>>", "get countList.size() " + countList.size());
             if (ls.size() == countList.size()) {
-                MainActivity.btn4count.setText(Integer.toString(allcount));
+                if (Integer.toString(allcount).equals("0")) {
+                    MainActivity.btn4count.setText("");
+                } else {
+                    MainActivity.btn4count.setText(Integer.toString(allcount));
+                }
             }
         }
     }

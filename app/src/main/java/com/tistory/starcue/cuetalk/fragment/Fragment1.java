@@ -22,8 +22,12 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -36,16 +40,22 @@ import com.tistory.starcue.cuetalk.AdressRoom;
 import com.tistory.starcue.cuetalk.DatabaseHandler;
 import com.tistory.starcue.cuetalk.R;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Fragment1 extends Fragment {
 
     public static Spinner spinner;
-    String[] items = {"지역 선택", "서울", "경기", "인천"};
+    ArrayAdapter<String> adapter;
+    String[] items = {"지역 선택", "서울1", "서울2", "서울3", "경기1", "인천1"};
+    List<String> finalAdressList = new ArrayList<>();
+    List<String> adressList = new ArrayList<>();
 
     DatabaseHandler databaseHandler;
     private SQLiteDatabase sqLiteDatabase;
+    private DatabaseReference reference;
 
     public Fragment1() {
         // Required empty public constructor
@@ -88,39 +98,58 @@ public class Fragment1 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment1, container, false);
 
+        reference = FirebaseDatabase.getInstance().getReference();
         Log.d("Fragment1>>>", "start onCreate");
+        setAdressList();
 
         spinner = rootView.findViewById(R.id.f1spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_item, items);
+        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_item, adressList);
         adapter.setDropDownViewResource(android.R.layout.select_dialog_item);
         spinner.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i == 0) {
-
-                } else if (i == 1) {
-//                    Toast.makeText(getActivity(), "서울", Toast.LENGTH_LONG).show();
-                    String s = "seoul";
-                    setdb(s);
-                    Intent intent = new Intent(getActivity(), AdressRoom.class);
-                    startActivity(intent);
-                } else if (i == 2) {
-//                    Toast.makeText(getActivity(), "경기", Toast.LENGTH_LONG).show();
-                    String s = "gyungi";
-                    setdb(s);
-                    Intent intent = new Intent(getActivity(), AdressRoom.class);
-                    startActivity(intent);
-                } else if (i == 3) {
-                    String s = "incheon";
-                    setdb(s);
-//                    Toast.makeText(getActivity(), "인천", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(getActivity(), AdressRoom.class);
-                    startActivity(intent);
+                String s = finalAdressList.get(i);
+                if (!s.equals("지역을 선택하세요")) {
+                    reference.getRef().child("adressRoom").child(s).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                        @Override
+                        public void onSuccess(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.getChildrenCount() < 1) {
+                                setdb(s);
+                                Intent intent = new Intent(getActivity(), AdressRoom.class);
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(getActivity(), "대화방 인원수가 꽉 찼습니다", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
-
                 spinner.setSelection(0);
+
+//                if (i == 0) {
+//
+//                } else if (i == 1) {
+////                    Toast.makeText(getActivity(), "서울", Toast.LENGTH_LONG).show();
+//                    String s = "서울1";
+//                    setdb(s);
+//                    Intent intent = new Intent(getActivity(), AdressRoom.class);
+//                    startActivity(intent);
+//                } else if (i == 2) {
+////                    Toast.makeText(getActivity(), "경기", Toast.LENGTH_LONG).show();
+//                    String s = "서울2";
+//                    setdb(s);
+//                    Intent intent = new Intent(getActivity(), AdressRoom.class);
+//                    startActivity(intent);
+//                } else if (i == 3) {
+//                    String s = "서울3";
+//                    setdb(s);
+////                    Toast.makeText(getActivity(), "인천", Toast.LENGTH_LONG).show();
+//                    Intent intent = new Intent(getActivity(), AdressRoom.class);
+//                    startActivity(intent);
+//                }
+
             }
 
             @Override
@@ -132,6 +161,45 @@ public class Fragment1 extends Fragment {
         testclass(rootView);
 
         return rootView;
+    }
+
+    private void setAdressList() {
+        finalAdressList.add("지역을 선택하세요");
+        finalAdressList.add("서울1");
+        finalAdressList.add("서울2");
+        finalAdressList.add("서울3");
+        finalAdressList.add("경기1");
+        finalAdressList.add("경기2");
+        finalAdressList.add("인천1");
+        finalAdressList.add("인천2");
+        adressList.add("지역을 선택하세요");
+        adressList.add("서울1");
+        adressList.add("서울2");
+        adressList.add("서울3");
+        adressList.add("경기1");
+        adressList.add("경기2");
+        adressList.add("인천1");
+        adressList.add("인천2");
+
+        reference.getRef().child("adressRoom").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (int i = 0; i < adressList.size(); i++) {
+                    if (i > 0) {
+                        Log.d("Fragment1>>>", "check key: " + snapshot.child(adressList.get(i)).getKey() + " / " + snapshot.child(adressList.get(i)).getChildrenCount());
+                        int count = (int) snapshot.child(finalAdressList.get(i)).getChildrenCount();
+                        adressList.set(finalAdressList.indexOf(finalAdressList.get(i)), finalAdressList.get(i) + " (" + count + "/30)");
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     private void setdb(String adress) {

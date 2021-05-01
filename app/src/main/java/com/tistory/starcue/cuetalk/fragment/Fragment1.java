@@ -70,26 +70,15 @@ public class Fragment1 extends Fragment {
         testbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-//                firestore.collection("blacklist").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                        for (DocumentSnapshot queryDocumentSnapshots1 : queryDocumentSnapshots.getDocuments()) {
-//                            Log.d("PhoneNumber>>>", "get black list: " + queryDocumentSnapshots1.getId());
-//                        }
-//                    }
-//                });
-                firestore.collection("blacklist").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                Map<String, Object> map = new HashMap<>();
+                map.put("uid", myUid);
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                db.collection("deleteUser").document(myUid).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                        for (DocumentSnapshot value1 : value.getDocuments()) {
-                            Log.d("Fragment1>>>", "get black list: " + value1.getId());
-                            Log.d("Fragment1>>>", "get black list size: " + value.size());
-
-                        }
+                    public void onSuccess(Void aVoid) {
+//                        lastDeleteUser();
                     }
                 });
-
             }
         });
     }
@@ -116,7 +105,7 @@ public class Fragment1 extends Fragment {
                     reference.getRef().child("adressRoom").child(s).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                         @Override
                         public void onSuccess(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.getChildrenCount() < 1) {
+                            if (dataSnapshot.getChildrenCount() < 30) {
                                 setdb(s);
                                 Intent intent = new Intent(getActivity(), AdressRoom.class);
                                 startActivity(intent);

@@ -85,39 +85,42 @@ public class SendMessege {
             @Override
             public void onClick(View view) {
                 hideKeyboard(view);
-//                InputMethodManager manager = (InputMethodManager) context.getSystemService(INPUT_METHOD_SERVICE);//키보드내리기
-//                manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);//키보드내리기
-                MainActivity.loading.setVisibility(View.VISIBLE);
-                DocumentReference documentReference = db.collection("users").document(myUid);
-                documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (editText.getText().toString().equals("")) {
+                    Toast.makeText(context, "메시지를 입력하세요", Toast.LENGTH_SHORT).show();
+                } else {
+                    MainActivity.loading.setVisibility(View.VISIBLE);
+                    DocumentReference documentReference = db.collection("users").document(myUid);
+                    documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                        String edit = editText.getText().toString();
+                            String edit = editText.getText().toString();
 
-                        gpsTracker = new GpsTracker(context);
-                        Double latitude = gpsTracker.getLatitude();//위도
-                        Double longitude = gpsTracker.getLongitude();//경도
-                        String latitudeS = String.valueOf(latitude);
-                        String longitudeS = String.valueOf(longitude);
+                            gpsTracker = new GpsTracker(context);
+                            Double latitude = gpsTracker.getLatitude();//위도
+                            Double longitude = gpsTracker.getLongitude();//경도
+                            String latitudeS = String.valueOf(latitude);
+                            String longitudeS = String.valueOf(longitude);
 
-                        String myPic, myName, mySex, myAge;
-                        myPic = documentSnapshot.getString("pic");
-                        myName = documentSnapshot.getString("name");
-                        mySex = documentSnapshot.getString("sex");
-                        Log.d("SendMessege>>>", "get my Sex: " + mySex);
-                        myAge = documentSnapshot.getString("age");
-                        firstSendMessege(edit, myUid, userUid, myPic, myName, mySex, myAge, latitudeS, longitudeS);
+                            String myPic, myName, mySex, myAge;
+                            myPic = documentSnapshot.getString("pic");
+                            myName = documentSnapshot.getString("name");
+                            mySex = documentSnapshot.getString("sex");
+                            Log.d("SendMessege>>>", "get my Sex: " + mySex);
+                            myAge = documentSnapshot.getString("age");
+                            firstSendMessege(edit, myUid, userUid, myPic, myName, mySex, myAge, latitudeS, longitudeS);
 
-                        alertDialog.dismiss();
-                        Toast.makeText(context, "메시지 전송 성공", Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(context, "네트워크 오류로 인해 메시지 전송에 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                            alertDialog.dismiss();
+                            Toast.makeText(context, "메시지 전송 성공", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(context, "네트워크 오류로 인해 메시지 전송에 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
             }
         });
 

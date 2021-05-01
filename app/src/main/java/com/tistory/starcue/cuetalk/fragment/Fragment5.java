@@ -1,20 +1,26 @@
 package com.tistory.starcue.cuetalk.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -24,9 +30,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.tistory.starcue.cuetalk.ChangeProfile;
 import com.tistory.starcue.cuetalk.DatabaseHandler;
@@ -35,7 +45,9 @@ import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.SeePicDialog;
 import com.tistory.starcue.cuetalk.SplashActivity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Fragment5 extends Fragment {
@@ -54,6 +66,12 @@ public class Fragment5 extends Fragment {
     String myUid;
 
     String myUri;
+
+    private AlertDialog alertDialog;
+
+    Button logoutDialogOkBtn, logoutDialogNoBtn;
+    Button deleteUserDialogOkBtn, deleteUserDialogNoBtn;
+    private ProgressBar progressBar;
 
     String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
@@ -155,9 +173,42 @@ public class Fragment5 extends Fragment {
 
     private void logoutBtn() {
         logout.setOnClickListener(view -> {
-            databaseHandler.deleteName();
-            mAuth.signOut();
-            startActivity(new Intent(getActivity(), PhoneNumber.class));
+            LayoutInflater vi = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LinearLayout layout = (LinearLayout) vi.inflate(R.layout.f2wirte_dialog, null);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setView(layout);
+            alertDialog = builder.create();
+
+            alertDialog.show();
+            //set size
+            WindowManager.LayoutParams layoutParams = alertDialog.getWindow().getAttributes();
+            layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
+//            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+//            layoutParams.dimAmount = 0.7f;
+
+            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            alertDialog.getWindow().setAttributes(layoutParams);
+
+            logoutDialogOkBtn = layout.findViewById(R.id.logout_dialog_okbtn);
+            logoutDialogNoBtn = layout.findViewById(R.id.logout_dialog_cancelbtn);
+            progressBar = layout.findViewById(R.id.logout_dialog_progress_bar);
+
+            logoutDialogNoBtn.setOnClickListener(view1 -> alertDialog.dismiss());
+
+            logoutDialogOkBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    alertDialog.setCancelable(false);
+                    progressBar.setVisibility(View.VISIBLE);
+                    logout.setEnabled(false);
+                    logoutDialogOkBtn.setEnabled(false);
+                    logoutDialogNoBtn.setEnabled(false);
+                    databaseHandler.deleteName();
+                    mAuth.signOut();
+                    startActivity(new Intent(getActivity(), PhoneNumber.class));
+                }
+            });
         });
     }
 
@@ -165,8 +216,47 @@ public class Fragment5 extends Fragment {
         deleteUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                deleteUser.setEnabled(false);
-                deleteDocument();
+                LayoutInflater vi = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                LinearLayout layout = (LinearLayout) vi.inflate(R.layout.delete_user_dialog, null);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setView(layout);
+                alertDialog = builder.create();
+
+                alertDialog.show();
+                //set size
+                WindowManager.LayoutParams layoutParams = alertDialog.getWindow().getAttributes();
+                layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
+//            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+//            layoutParams.dimAmount = 0.7f;
+
+                layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+                layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                alertDialog.getWindow().setAttributes(layoutParams);
+
+                deleteUserDialogOkBtn = layout.findViewById(R.id.logout_dialog_okbtn);
+                deleteUserDialogNoBtn = layout.findViewById(R.id.logout_dialog_cancelbtn);
+                progressBar = layout.findViewById(R.id.logout_dialog_progress_bar);
+
+                deleteUserDialogNoBtn.setOnClickListener(view1 -> alertDialog.dismiss());
+
+                deleteUserDialogOkBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        alertDialog.setCancelable(false);
+                        progressBar.setVisibility(View.VISIBLE);
+                        deleteUser.setEnabled(false);
+                        deleteUserDialogOkBtn.setEnabled(false);
+                        deleteUserDialogNoBtn.setEnabled(false);
+                        deleteDocument();
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                saveDeleteUserUid();
+                            }
+                        },5000);
+                    }
+                });
             }
         });
     }
@@ -184,65 +274,23 @@ public class Fragment5 extends Fragment {
             }
         });
 
-//        StorageReference storageRef = storage.getReference().child("images/" + myUid);
-//        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//            @Override
-//            public void onSuccess(Uri uri) {
-//                myUri = uri.toString();
-//                Glide.with(getActivity())
-//                        .load(uri.toString())
-//                        .override(600, 600)
-//                        .placeholder(R.drawable.ic_launcher_background)
-//                        .error(R.drawable.ic_launcher_foreground)
-//                        .circleCrop()
-//                        .into(pic);
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-////                db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-////                    @Override
-////                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-////                        if (documentSnapshot.get("sex").toString().equals("남자")) {
-////                            Glide.with(getActivity())
-////                                    .load(nullPic)
-////                                    .override(600, 600)
-////                                    .placeholder(R.drawable.ic_launcher_background)
-////                                    .error(R.drawable.ic_launcher_foreground)
-////                                    .circleCrop()
-////                                    .into(pic);
-////                            pic.setEnabled(false);
-////                        } else {
-////                            Glide.with(getActivity())
-////                                    .load(nullPicF)
-////                                    .override(600, 600)
-////                                    .placeholder(R.drawable.ic_launcher_background)
-////                                    .error(R.drawable.ic_launcher_foreground)
-////                                    .circleCrop()
-////                                    .into(pic);
-////                            pic.setEnabled(false);
-////                        }
-////                    }
-////                }).addOnFailureListener(new OnFailureListener() {
-////                    @Override
-////                    public void onFailure(@NonNull Exception e) {
-////
-////                    }
-////                });
-//            }
-//        });
     }
 
     private void deleteDocument() {
         db.collection("users").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                deleteImage();
-                databaseHandler.deleteName();
-                mAuth.signOut();
-                mCurrentUser.delete();
-                databaseHandler.uniquedelete();
-                startActivity(new Intent(getActivity(), SplashActivity.class));
+                db.collection("f2messege").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        db.collection("f3messege").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                deleteRealTime();
+                            }
+                        });
+                    }
+                });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -252,13 +300,23 @@ public class Fragment5 extends Fragment {
         });
     }
 
-    private void deleteImage() {
-        String uid = mAuth.getUid();
-        StorageReference storageRef = storage.getReference().child("images/" + myUid + "/" + uid);
-        storageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+    private void deleteRealTime() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        reference.getRef().child("myroom").child(myUid).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-
+                reference.getRef().child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        List<String> count = new ArrayList<>();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            count.add("1");
+                            if (snapshot.getKey().contains(myUid)) {
+                                reference.getRef().child("messege").child(snapshot.getKey()).removeValue();
+                            }
+                        }
+                    }
+                });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -266,6 +324,25 @@ public class Fragment5 extends Fragment {
 
             }
         });
+    }
+
+    private void saveDeleteUserUid() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("uid", myUid);
+        db.collection("deleteUser").document(myUid).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                lastDeleteUser();
+            }
+        });
+    }
+
+    private void lastDeleteUser() {
+        databaseHandler.deleteName();
+        mAuth.signOut();
+        mCurrentUser.delete();
+        databaseHandler.uniquedelete();
+        startActivity(new Intent(getActivity(), SplashActivity.class));
     }
 
 }

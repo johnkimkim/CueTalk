@@ -540,13 +540,18 @@ public class Fragment4 extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        setNullChat();
+    }
+
     private void setNullChat() {
-//        if (arrayList.size() == 0) {
-//            nullchat.setVisibility(View.VISIBLE);
-//        } else {
-//            nullchat.setVisibility(View.GONE);
-//        }
-        nullchat.setVisibility(View.GONE);
+        if (arrayList.size() == 0) {
+            nullchat.setVisibility(View.VISIBLE);
+        } else {
+            nullchat.setVisibility(View.GONE);
+        }
     }
 
 }

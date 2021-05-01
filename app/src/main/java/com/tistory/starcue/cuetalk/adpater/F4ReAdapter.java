@@ -23,6 +23,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.tistory.starcue.cuetalk.MainActivity;
 import com.tistory.starcue.cuetalk.fragment.Fragment4;
 import com.tistory.starcue.cuetalk.item.F4MessegeItem;
 import com.tistory.starcue.cuetalk.Fragment4ChatRoom;
@@ -148,6 +149,7 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                MainActivity.loading.setVisibility(View.VISIBLE);
                 reference = FirebaseDatabase.getInstance().getReference();
                 reference.getRef().child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                     @Override
@@ -162,6 +164,7 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
                                         intent.putExtra("child", arrayList.get(position).getUid());
                                         intent.putExtra("yourPic", yourPic);
                                         Fragment4.stayf4chatroom = true;
+                                        MainActivity.loading.setVisibility(View.GONE);
                                         context.startActivity(intent);
                                     }
                                 }

@@ -13,14 +13,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -56,6 +59,7 @@ public class Fragment5 extends Fragment {
     TextView name, age, sex;
     Button reset, logout, deleteUser;
     DatabaseHandler databaseHandler;
+    SwitchCompat switchCompat;
     private SQLiteDatabase sqLiteDatabase;
 
     private FirebaseAuth mAuth;
@@ -94,10 +98,12 @@ public class Fragment5 extends Fragment {
         pic = rootView.findViewById(R.id.fragment5image);
         setOnClickPic();
         deleteUser = rootView.findViewById(R.id.fragment5_delete_user);
+        switchCompat = rootView.findViewById(R.id.f5switch);
 
         setFirebse();
         setPic();
         setdb();
+        setSwitch();
         setView();
         reset_profile();
         logoutBtn();
@@ -143,6 +149,34 @@ public class Fragment5 extends Fragment {
 //        }
 
 
+    }
+
+    private void setSwitch() {
+        db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                String s = documentSnapshot.get("notify").toString();
+                if (s.equals("on")) {
+                    switchCompat.setChecked(true);
+                } else {
+                    switchCompat.setChecked(false);
+                }
+            }
+        });
+
+        switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Map<String, Object> map = new HashMap<>();
+                if (b) {
+                    map.put("notify", "on");
+                    db.collection("users").document(myUid).update(map);
+                } else {
+                    map.put("notify", "off");
+                    db.collection("users").document(myUid).update(map);
+                }
+            }
+        });
     }
 
     private void setView() {
@@ -233,11 +267,16 @@ public class Fragment5 extends Fragment {
                 layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
                 alertDialog.getWindow().setAttributes(layoutParams);
 
-                deleteUserDialogOkBtn = layout.findViewById(R.id.logout_dialog_okbtn);
-                deleteUserDialogNoBtn = layout.findViewById(R.id.logout_dialog_cancelbtn);
-                progressBar = layout.findViewById(R.id.logout_dialog_progress_bar);
+                deleteUserDialogOkBtn = layout.findViewById(R.id.delete_user_dialog_okbtn);
+                deleteUserDialogNoBtn = layout.findViewById(R.id.delete_user_dialog_cancelbtn);
+                progressBar = layout.findViewById(R.id.delete_user_dialog_progress_bar);
 
-                deleteUserDialogNoBtn.setOnClickListener(view1 -> alertDialog.dismiss());
+                deleteUserDialogNoBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        alertDialog.dismiss();
+                    }
+                });
 
                 deleteUserDialogOkBtn.setOnClickListener(new View.OnClickListener() {
                     @Override

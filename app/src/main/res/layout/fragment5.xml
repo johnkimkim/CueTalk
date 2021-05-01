@@ -46,6 +46,11 @@
             android:layout_height="wrap_content"
             android:text="프로필수정"/>
 
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/f5switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
         <Button
             android:id="@+id/logout_btn"
             android:layout_width="wrap_content"

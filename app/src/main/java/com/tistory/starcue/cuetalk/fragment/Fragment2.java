@@ -45,6 +45,7 @@ import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.adpater.AdressRoomAdapter;
 import com.tistory.starcue.cuetalk.adpater.F2Adapter;
 import com.tistory.starcue.cuetalk.item.F2Item;
+import com.tistory.starcue.cuetalk.item.F4ChatRoomItem;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -242,6 +243,7 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                     public void onClick(View view) {
                         String getMessege = dialogEditText.getText().toString();
                         if (!getMessege.equals("")) {
+                            dialogLoading();
                             hideKeyboard(view);
                             progressBar.setVisibility(View.VISIBLE);
                             alertDialog.setCancelable(false);
@@ -302,7 +304,6 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                 firestore.collection("f2messege").document(myUid).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        closeKeyBoard();
                         Toast.makeText(getActivity(), "성공", Toast.LENGTH_SHORT).show();
                         alertDialog.dismiss();
                         if (page == 1) {
@@ -320,7 +321,7 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        closeKeyBoard();
+                        dialogFinishLoading();
                         Toast.makeText(getActivity(), "실패, 다시시도", Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.GONE);
                     }
@@ -331,7 +332,7 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                closeKeyBoard();
+                dialogFinishLoading();
                 Toast.makeText(getActivity(), "실패, 다시시도", Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
             }
@@ -344,12 +345,6 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM_dd HH:mm:ss");
         String date = format.format(mDate);
         return date;
-    }
-
-    private void closeKeyBoard() {
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(dialogEditText.getWindowToken(), 0);
-//                            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     @Override
@@ -580,6 +575,18 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
     private void hideKeyboard(View v) {
         InputMethodManager manager = (InputMethodManager) v.getContext().getSystemService(INPUT_METHOD_SERVICE);
         manager.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    private void dialogLoading() {
+        dialogEditText.setEnabled(false);
+        dialogyes.setEnabled(false);
+        dialogno.setEnabled(false);
+    }
+
+    private void dialogFinishLoading() {
+        dialogEditText.setEnabled(true);
+        dialogyes.setEnabled(true);
+        dialogno.setEnabled(true);
     }
 
 }

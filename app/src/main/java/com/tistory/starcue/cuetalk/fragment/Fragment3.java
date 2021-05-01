@@ -324,6 +324,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                     Toast.makeText(getActivity(), "메시지를 선택해주세요", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.d("Fragment3>>>", "get pic uri: " + picUri);
+                    dialogLoading();
                     firstUploadPicInStorage();
                 }
             }
@@ -440,7 +441,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                 firestore.collection("f3messege").document(myUid).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        closeKeyBoard();
+                        dialogFinishLoading();
                         Toast.makeText(getActivity(), "중고장터 글쓰기 성공", Toast.LENGTH_SHORT).show();
                         alertDialog.dismiss();
 
@@ -455,7 +456,8 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-
+                        dialogFinishLoading();
+                        Toast.makeText(getActivity(), "중고장터 글쓰기 실패", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -509,11 +511,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         });
     }
 
-    private void closeKeyBoard() {
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(dialogEditText.getWindowToken(), 0);
-//                            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-    }
+
 
     @Override
     public void onResume() {
@@ -581,5 +579,23 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
     private void hideKeyboard(View v) {
         InputMethodManager manager = (InputMethodManager) v.getContext().getSystemService(INPUT_METHOD_SERVICE);
         manager.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    private void dialogLoading() {
+        dialogImageView.setEnabled(false);
+        dialogSpinner.setEnabled(false);
+        dialogBtn.setEnabled(false);
+        dialogyes.setEnabled(false);
+        dialogno.setEnabled(false);
+        dialogEditText.setEnabled(false);
+    }
+
+    private void dialogFinishLoading() {
+        dialogImageView.setEnabled(true);
+        dialogSpinner.setEnabled(true);
+        dialogBtn.setEnabled(true);
+        dialogyes.setEnabled(true);
+        dialogno.setEnabled(true);
+        dialogEditText.setEnabled(true);
     }
 }

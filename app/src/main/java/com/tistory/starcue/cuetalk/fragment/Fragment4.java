@@ -279,7 +279,7 @@ public class Fragment4 extends Fragment {
                                                 }
                                             }
                                         }
-
+                                        setNullChat();
                                         setMainBtn4Count(countList);
                                         adapter.notifyDataSetChanged();
                                         //change count
@@ -331,9 +331,9 @@ public class Fragment4 extends Fragment {
                             }
                         }
                     }
+                    setNullChat();
                     setMainBtn4Count(countList);
                     adapter.notifyDataSetChanged();
-                    setNullChat();
                 }
             }
 
@@ -399,13 +399,13 @@ public class Fragment4 extends Fragment {
                                     }
                                 }
                             }
-
+                            setNullChat();
+                            setListTimeSort();
                             adapter.notifyDataSetChanged();
                             progressBar.setVisibility(View.GONE);
                             Log.d("Fragment4>>>", "addListenerForSingleValueEvent finished");
                             Log.d("Fragment4>>>", "countList size: " + countList.size());
                             setAready = true;
-                            setListTimeSort();
                             setMainBtn4Count(countList);
                         }
 
@@ -415,7 +415,6 @@ public class Fragment4 extends Fragment {
                         }
                     });
                 }
-                setNullChat();
                 progressBar.setVisibility(View.GONE);
             }
         });
@@ -543,7 +542,6 @@ public class Fragment4 extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        setNullChat();
     }
 
     private void setNullChat() {

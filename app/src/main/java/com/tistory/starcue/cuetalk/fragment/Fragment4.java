@@ -348,6 +348,17 @@ public class Fragment4 extends Fragment {
             }
         });
 
+        firstSetList();
+
+    }
+
+    private void firstSetList() {
+        arrayList.clear();
+        arrayKeyList.clear();
+        lastList.clear();
+        lastKeyList.clear();
+        countList.clear();
+        countKeyList.clear();
         reference.getRef().child("myroom").child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {//최초실행
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
@@ -418,7 +429,6 @@ public class Fragment4 extends Fragment {
                 progressBar.setVisibility(View.GONE);
             }
         });
-
     }
 
     @Override

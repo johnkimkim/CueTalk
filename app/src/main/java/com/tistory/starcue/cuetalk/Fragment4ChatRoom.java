@@ -1007,15 +1007,16 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                                 public void run() {
                                     try {
                                         JSONObject root = new JSONObject();
-                                        JSONObject notification = new JSONObject();
+//                                        JSONObject notification = new JSONObject();
                                         JSONObject data = new JSONObject();
-                                        notification.put("body", messege);
-                                        notification.put("title", getString(R.string.app_name));
+//                                        notification.put("body", messege);
+//                                        notification.put("title", getString(R.string.app_name));
+                                        data.put("messege", messege);
                                         data.put("name", myName);
                                         data.put("pic", myPic);
                                         data.put("uid", myUid);
                                         Log.d("Fragment4ChatRoom>>>", myName);
-                                        root.put("notification", notification);
+//                                        root.put("notification", notification);
                                         root.put("data", data);
                                         root.put("to", userToken);
 
@@ -1061,15 +1062,16 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                                 public void run() {
                                     try {
                                         JSONObject root = new JSONObject();
-                                        JSONObject notification = new JSONObject();
+//                                        JSONObject notification = new JSONObject();
                                         JSONObject data = new JSONObject();
-                                        notification.put("body", "사진이 전송되었습니다.");
-                                        notification.put("title", getString(R.string.app_name));
+//                                        notification.put("body", "사진이 전송되었습니다.");
+//                                        notification.put("title", getString(R.string.app_name));
+                                        data.put("messege", "사진이 전송되었습니다.");
                                         data.put("name", myName);
                                         data.put("pic", myPic);
                                         data.put("uid", myUid);
                                         Log.d("Fragment4ChatRoom>>>", myName);
-                                        root.put("notification", notification);
+//                                        root.put("notification", notification);
                                         root.put("data", data);
                                         root.put("to", userToken);
 

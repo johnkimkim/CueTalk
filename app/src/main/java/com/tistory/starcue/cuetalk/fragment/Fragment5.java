@@ -208,7 +208,7 @@ public class Fragment5 extends Fragment {
     private void logoutBtn() {
         logout.setOnClickListener(view -> {
             LayoutInflater vi = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            LinearLayout layout = (LinearLayout) vi.inflate(R.layout.f2wirte_dialog, null);
+            LinearLayout layout = (LinearLayout) vi.inflate(R.layout.logout_dialog, null);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setView(layout);
             alertDialog = builder.create();

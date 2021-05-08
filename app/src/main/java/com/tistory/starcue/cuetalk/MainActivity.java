@@ -16,6 +16,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -23,18 +24,23 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.tistory.starcue.cuetalk.fragment.Fragment1;
 import com.tistory.starcue.cuetalk.fragment.Fragment2;
 import com.tistory.starcue.cuetalk.fragment.Fragment3;
 import com.tistory.starcue.cuetalk.fragment.Fragment4;
 import com.tistory.starcue.cuetalk.fragment.Fragment5;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -71,6 +77,14 @@ public class MainActivity extends AppCompatActivity {
         setinit();
 
         updateGps();
+
+//        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+//            @Override
+//            public void onComplete(@NonNull @NotNull Task<String> task) {
+//                String token = task.getResult();
+//                Log.d("MainActivity>>>", "my token: " + token);
+//            }
+//        });
     }
 
     //init
@@ -212,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateGps() {
         gpsTracker = new GpsTracker(MainActivity.this);
-        gpsTracker.updateFirestoreGps(db, reference, myUid);
+        gpsTracker.updateFirestoreGps(db, myUid);
     }
 
     @Override

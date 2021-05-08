@@ -155,7 +155,8 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
                     @Override
                     public void onSuccess(DataSnapshot dataSnapshot) {
                         for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                            if (dataSnapshot1.getKey().contains(myUid) || dataSnapshot1.getKey().contains(arrayList.get(position).getUid())) {
+                            if (dataSnapshot1.getKey().contains(myUid) && dataSnapshot1.getKey().contains(arrayList.get(position).getUid())) {
+                                Log.d("F4ReAdapter>>>", "key: " + dataSnapshot1.getKey());
                                 for (DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()) {
                                     if (dataSnapshot2.getKey().equals(arrayList.get(position).getUid())) {
                                         String yourPic = dataSnapshot2.child("pic").getValue(String.class);
@@ -168,8 +169,8 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
                                         context.startActivity(intent);
                                     }
                                 }
+                                break;
                             }
-                            break;
                         }
                     }
                 });

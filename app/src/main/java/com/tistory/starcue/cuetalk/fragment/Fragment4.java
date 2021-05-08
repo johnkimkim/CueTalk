@@ -146,6 +146,7 @@ public class Fragment4 extends Fragment {
         reference.getRef().child("messege").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Log.d("Fragment4>>>", "state: added");
                 if (snapshot.getKey().contains(myUid)) {
                     String roomKey = snapshot.getKey();
                     for (DataSnapshot snapshot1 : snapshot.getChildren()) {
@@ -169,7 +170,8 @@ public class Fragment4 extends Fragment {
 
                                                             //add count
                                                             int nowcount;
-                                                            if (MainActivity.btn4count.getText().toString().equals("")) {
+                                                            if (MainActivity.btn4count.getText().toString().equals("")
+                                                                    || MainActivity.btn4count.getText() == null) {
                                                                 nowcount = 0;
                                                             } else {
                                                                 nowcount = Integer.parseInt(MainActivity.btn4count.getText().toString());
@@ -222,6 +224,7 @@ public class Fragment4 extends Fragment {
                 //경우의수:
                 //내가 혼자 나갔을때: if ischat = 2
                 //새로운 메시지 왔을때
+                Log.d("Fragment4>>>", "state: changed");
                 if (snapshot.getKey().contains(myUid)) {
                     String roomKey = snapshot.getKey();
                     for (DataSnapshot snapshot1 : snapshot.getChildren()) {
@@ -367,6 +370,7 @@ public class Fragment4 extends Fragment {
                     reference.getRef().child("messege").child(dataSnapshot1.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            Log.d("Fragment4>>>", "state: first");
                             String roomKey = snapshot.getKey();
                             for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                                 if (snapshot1.getKey().equals(myUid)) {

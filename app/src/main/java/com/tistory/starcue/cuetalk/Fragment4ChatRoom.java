@@ -1,5 +1,6 @@
 package com.tistory.starcue.cuetalk;
 
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -127,6 +128,12 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         userUid = intent.getStringExtra("child");
         myUiduserUid = myUid + userUid;
         userUidmyUid = userUid + myUid;
+        cancelNotify(userUid);
+    }
+
+    private void cancelNotify(String userUid) {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(Integer.parseInt(userUid.replaceAll("[^0-9]", "")));
     }
 
     private void setinit() {

@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.tistory.starcue.cuetalk.item.ChatRoomItem;
 import com.tistory.starcue.cuetalk.Code;
@@ -41,9 +42,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private Context context;
 
-    public ChatRoomAdapter(Context context, ArrayList<ChatRoomItem> arrayList) {
+    private RequestManager requestManager;
+
+    public ChatRoomAdapter(Context context, ArrayList<ChatRoomItem> arrayList, RequestManager requestManager) {
         this.arrayList = arrayList;
         this.context = context;
+        this.requestManager = requestManager;
     }
 
     @NonNull
@@ -81,7 +85,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         if (holder instanceof RightImageViewholder) {
             ((RightImageViewholder) holder).timepic.setText(arrayList.get(position).getTime());
-            Glide.with(((RightImageViewholder) holder).imagepic)
+            requestManager
                     .load(arrayList.get(position).getUri())
                     .override(150, 150)
                     .centerCrop()
@@ -89,12 +93,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (holder instanceof LeftImageViewholder) {
             ((LeftImageViewholder) holder).name.setText(arrayList.get(position).getName());
             ((LeftImageViewholder) holder).time.setText(arrayList.get(position).getTime());
-            Glide.with(((LeftImageViewholder) holder).picli)
+            requestManager
                     .load(arrayList.get(position).getPic())
                     .override(150, 150)
                     .circleCrop()
                     .into(((LeftImageViewholder) holder).picli);
-            Glide.with(((LeftImageViewholder) holder).image)
+            requestManager
                     .load(arrayList.get(position).getUri())
                     .override(150, 150)
                     .centerCrop()
@@ -124,7 +128,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((LeftViewholder) holder).name.setText(arrayList.get(position).getName());
             ((LeftViewholder) holder).messege.setText(arrayList.get(position).getMessege());
             ((LeftViewholder) holder).time.setText(arrayList.get(position).getTime());
-            Glide.with(((LeftViewholder) holder).picl)
+            requestManager
                     .load(arrayList.get(position).getPic())
                     .override(150, 150)
                     .circleCrop()

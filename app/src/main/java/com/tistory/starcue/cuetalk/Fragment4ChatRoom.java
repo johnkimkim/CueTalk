@@ -224,13 +224,13 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                     Log.d("Fragment4ChatRoom>>>", userUidmyUid);
                     if (snapshot.getKey().equals(myUiduserUid)) {
                         getroomname = myUiduserUid;
-                        adapter = new F4ChatRoomAdapter(Fragment4ChatRoom.this, arrayList, getroomname);
+                        adapter = new F4ChatRoomAdapter(Fragment4ChatRoom.this, arrayList, getroomname, Glide.with(Fragment4ChatRoom.this));
                         recyclerView.setAdapter(adapter);
                         recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
                         setRecyclerviewList();
                     } else if (snapshot.getKey().equals(userUidmyUid)) {
                         getroomname = userUidmyUid;
-                        adapter = new F4ChatRoomAdapter(Fragment4ChatRoom.this, arrayList, getroomname);
+                        adapter = new F4ChatRoomAdapter(Fragment4ChatRoom.this, arrayList, getroomname, Glide.with(Fragment4ChatRoom.this));
                         recyclerView.setAdapter(adapter);
                         recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
                         setRecyclerviewList();

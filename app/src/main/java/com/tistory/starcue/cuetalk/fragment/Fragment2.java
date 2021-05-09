@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -202,7 +203,7 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         recyclerView.setLayoutManager(layoutManager);
         arrayList = new ArrayList<>();
 
-        adapter = new F2Adapter(arrayList, getActivity());
+        adapter = new F2Adapter(arrayList, getActivity(), Glide.with(Fragment2.this));
         recyclerView.setAdapter(adapter);
 
 //        Query query = firestore.collection("f2messege").orderBy("time", Query.Direction.ASCENDING);

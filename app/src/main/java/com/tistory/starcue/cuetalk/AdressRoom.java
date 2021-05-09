@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -145,7 +146,7 @@ public class AdressRoom extends AppCompatActivity {
         recyclerViewBottom.setLayoutManager(layoutManager);
         bottomList = new ArrayList<>();
         Intent intent = getIntent();
-        bottomAdapter = new BottomSheetAdapter(bottomList, AdressRoom.this);
+        bottomAdapter = new BottomSheetAdapter(bottomList, AdressRoom.this, Glide.with(AdressRoom.this));
         recyclerViewBottom.setAdapter(bottomAdapter);
 
         database = FirebaseDatabase.getInstance();
@@ -241,7 +242,7 @@ public class AdressRoom extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         arrayList = new ArrayList<>();
 
-        adapter = new AdressRoomAdapter(arrayList, AdressRoom.this);
+        adapter = new AdressRoomAdapter(arrayList, AdressRoom.this, Glide.with(AdressRoom.this));
         recyclerView.setAdapter(adapter);
 
         database = FirebaseDatabase.getInstance();

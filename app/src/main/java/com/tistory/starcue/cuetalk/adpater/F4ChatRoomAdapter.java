@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -50,13 +51,15 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
 
+    private RequestManager requestManager;
 
     private Context context;
 
-    public F4ChatRoomAdapter(Context context, ArrayList<F4ChatRoomItem> arrayList, String getroomname) {
+    public F4ChatRoomAdapter(Context context, ArrayList<F4ChatRoomItem> arrayList, String getroomname, RequestManager requestManager) {
         this.arrayList = arrayList;
         this.context = context;
         this.getroomname = getroomname;
+        this.requestManager = requestManager;
     }
 
     @NonNull
@@ -99,7 +102,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         if (holder instanceof F4ChatRoomAdapter.RightImageViewholder) {
             ((F4ChatRoomAdapter.RightImageViewholder) holder).timepic.setText(arrayList.get(position).getTime());
-            Glide.with(((F4ChatRoomAdapter.RightImageViewholder) holder).imagepic)
+            requestManager
                     .load(arrayList.get(position).getUri())
                     .override(150, 150)
                     .centerCrop()
@@ -112,12 +115,12 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         } else if (holder instanceof F4ChatRoomAdapter.LeftImageViewholder) {
             ((F4ChatRoomAdapter.LeftImageViewholder) holder).name.setText(arrayList.get(position).getName());
             ((F4ChatRoomAdapter.LeftImageViewholder) holder).time.setText(arrayList.get(position).getTime());
-            Glide.with(((F4ChatRoomAdapter.LeftImageViewholder) holder).picli)
+            requestManager
                     .load(yourPic)
                     .override(150, 150)
                     .circleCrop()
                     .into(((F4ChatRoomAdapter.LeftImageViewholder) holder).picli);
-            Glide.with(((F4ChatRoomAdapter.LeftImageViewholder) holder).image)
+            requestManager
                     .load(arrayList.get(position).getUri())
                     .override(150, 150)
                     .centerCrop()
@@ -155,7 +158,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             ((F4ChatRoomAdapter.LeftViewholder) holder).messege.setText(arrayList.get(position).getMessege());
             ((F4ChatRoomAdapter.LeftViewholder) holder).time.setText(arrayList.get(position).getTime());
             Log.d("F4ChatRoomAdapter>>>", "array get pic: " + yourPic);
-            Glide.with(((F4ChatRoomAdapter.LeftViewholder) holder).picl)
+            requestManager//error. requast manager?사용해서 this받기
                     .load(yourPic)
                     .override(150, 150)
                     .circleCrop()

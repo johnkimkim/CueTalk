@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -56,9 +57,12 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
 
     String myUid;
 
-    public BottomSheetAdapter(ArrayList<AdressRoomItem> bottomList, Context context) {
+    private RequestManager requestManager;
+
+    public BottomSheetAdapter(ArrayList<AdressRoomItem> bottomList, Context context, RequestManager requestManager) {
         this.bottomList = bottomList;
         this.context = context;
+        this.requestManager = requestManager;
     }
 
     @NonNull
@@ -101,7 +105,7 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
 //                    .into(holder.imageView);
 //            holder.imageView.setEnabled(true);
 //        }
-        Glide.with(holder.imageView).load(bottomList.get(position).getPic()).override(150,150).circleCrop().into(holder.imageView);
+        requestManager.load(bottomList.get(position).getPic()).override(150,150).circleCrop().into(holder.imageView);
         if (bottomList.get(position).getPic().equals(nullPic) && bottomList.get(position).getPic().equals(nullPicF)) {
             holder.imageView.setEnabled(false);
         } else {

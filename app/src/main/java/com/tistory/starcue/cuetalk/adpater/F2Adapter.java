@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,9 +47,12 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
     private DatabaseReference reference;
     private FirebaseFirestore firestore;
 
-    public F2Adapter(ArrayList<F2Item> arrayList, Context context) {
+    private RequestManager requestManager;
+
+    public F2Adapter(ArrayList<F2Item> arrayList, Context context, RequestManager requestManager) {
         this.arrayList = arrayList;
         this.context = context;
+        this.requestManager = requestManager;
     }
 
     @NonNull
@@ -66,7 +70,7 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull F2Adapter.CustomViewHolder holder, int position) {
 
-        Glide.with(holder.imageView).load(arrayList.get(position).getPic())
+        requestManager.load(arrayList.get(position).getPic())
                 .override(150, 150).circleCrop().into(holder.imageView);
         holder.name.setText(arrayList.get(position).getName());
         holder.sex.setText(arrayList.get(position).getSex());

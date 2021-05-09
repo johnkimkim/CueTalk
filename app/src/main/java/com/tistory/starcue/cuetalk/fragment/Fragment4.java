@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -86,6 +87,8 @@ public class Fragment4 extends Fragment {
     boolean setAready;
     public static boolean stayf4chatroom;
 
+    String userUid;
+
     //    private boolean setAlready;
     public Fragment4() {
         // Required empty public constructor
@@ -140,7 +143,7 @@ public class Fragment4 extends Fragment {
         beforeCountList = new ArrayList<>();
         beforeCountKeyList = new ArrayList<>();
 
-        adapter = new F4ReAdapter(arrayList, lastList, lastKeyList, countList, getActivity());
+        adapter = new F4ReAdapter(arrayList, lastList, lastKeyList, countList, getActivity(), Glide.with(Fragment4.this));
         recyclerView.setAdapter(adapter);
 
         reference.getRef().child("messege").addChildEventListener(new ChildEventListener() {
@@ -156,6 +159,9 @@ public class Fragment4 extends Fragment {
                                     @Override
                                     public void onSuccess(DataSnapshot dataSnapshot) {
                                         for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                                            if (!dataSnapshot1.getKey().equals(myUid) && !dataSnapshot1.getKey().contains("msg") && !dataSnapshot1.getKey().contains("lastmsg")) {
+                                                userUid = dataSnapshot1.getKey();
+                                            }
                                             Log.d("Fragment4>>>", "testtest" + dataSnapshot1.child(myUid).child("ischat").getValue(String.class));
                                             if (dataSnapshot1.getKey().equals(myUid)) {
                                                 for (DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()) {
@@ -183,6 +189,7 @@ public class Fragment4 extends Fragment {
                                                                                     nowcount = Integer.parseInt(MainActivity.btn4count.getText().toString());
                                                                                 }
                                                                                 for (DataSnapshot dataSnapshot5 : dataSnapshot4.getChildren()) {
+                                                                                    Log.d("Fragment4>>>", "get userUid: " + userUid);
                                                                                     if (!dataSnapshot5.child("uid").getValue(String.class).equals(myUid)
                                                                                             && dataSnapshot5.child("read").getValue(String.class).equals("1")) {
                                                                                         countList.add(Integer.toString(nowcount += 1));

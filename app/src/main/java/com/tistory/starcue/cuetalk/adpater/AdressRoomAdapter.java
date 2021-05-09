@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -63,9 +64,12 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
     String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
 
-    public AdressRoomAdapter(ArrayList<AdressRoomItem> arrayList, Context context) {
+    private RequestManager requestManager;
+
+    public AdressRoomAdapter(ArrayList<AdressRoomItem> arrayList, Context context, RequestManager requestManager) {
         this.arrayList = arrayList;
         this.context = context;
+        this.requestManager = requestManager;
 
         mAuth = FirebaseAuth.getInstance();
         myUid = mAuth.getUid();
@@ -111,7 +115,7 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
 //                    .into(holder.imageView);
 //            holder.imageView.setEnabled(true);
 //        }
-        Glide.with(holder.imageView).load(arrayList.get(position).getPic()).override(150,150).circleCrop().into(holder.imageView);
+        requestManager.load(arrayList.get(position).getPic()).override(150,150).circleCrop().into(holder.imageView);
         if (arrayList.get(position).getPic().equals(nullPic) && arrayList.get(position).getPic().equals(nullPicF)) {
             holder.imageView.setEnabled(false);
         } else {

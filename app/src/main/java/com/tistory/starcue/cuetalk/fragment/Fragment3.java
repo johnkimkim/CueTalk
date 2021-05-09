@@ -32,6 +32,7 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
@@ -169,7 +170,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         recyclerView.setLayoutManager(layoutManager);
         arrayList = new ArrayList<>();
 
-        adapter = new F3Adapter(arrayList, getActivity());
+        adapter = new F3Adapter(arrayList, getActivity(), Glide.with(Fragment3.this));
         recyclerView.setAdapter(adapter);
 
     }

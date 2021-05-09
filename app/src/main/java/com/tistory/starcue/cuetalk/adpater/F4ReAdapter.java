@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.signature.ObjectKey;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -52,12 +53,17 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
 
     GpsTracker gpsTracker;
 
-    public F4ReAdapter(ArrayList<F4MessegeItem> arrayList, ArrayList<LastListItem> lastList, List<String> keyList, List<String> countList, Context context) {
+    private RequestManager requestManager;
+
+    public F4ReAdapter(ArrayList<F4MessegeItem> arrayList, ArrayList<LastListItem> lastList,
+                       List<String> keyList, List<String> countList,
+                       Context context, RequestManager requestManager) {
         this.arrayList = arrayList;
         this.lastList = lastList;
         this.keyList = keyList;
         this.countList = countList;
         this.context = context;
+        this.requestManager = requestManager;
     }
 
     @NonNull
@@ -75,7 +81,7 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
         mAuth = FirebaseAuth.getInstance();
         myUid = mAuth.getUid();
 
-        Glide.with(holder.pic).load(arrayList.get(position).getPic())
+        requestManager.load(arrayList.get(position).getPic())
                 .override(150, 150).circleCrop().into(holder.pic);
 
         holder.name.setText(arrayList.get(position).getName());

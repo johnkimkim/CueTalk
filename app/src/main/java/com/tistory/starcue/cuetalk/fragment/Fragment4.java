@@ -156,60 +156,71 @@ public class Fragment4 extends Fragment {
                                     @Override
                                     public void onSuccess(DataSnapshot dataSnapshot) {
                                         for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                                            if (dataSnapshot1.getKey().contains("lastmsg")) {
-                                                if (!lastKeyList.contains(snapshot1.getKey())) {
-                                                    for (DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()) {
-                                                        if (dataSnapshot2.getKey().contains("lastmsg")) {
-                                                            if (!lastKeyList.contains(dataSnapshot2.getKey())) {
-                                                                String key = dataSnapshot2.getKey();
-                                                                LastListItem lastListItem = dataSnapshot2.getValue(LastListItem.class);
-                                                                lastList.add(lastListItem);
-                                                                lastKeyList.add(key);
-                                                            }
-                                                        } else if (dataSnapshot2.getKey().equals("msg")) {
+                                            Log.d("Fragment4>>>", "testtest" + dataSnapshot1.child(myUid).child("ischat").getValue(String.class));
+                                            if (dataSnapshot1.getKey().equals(myUid)) {
+                                                for (DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()) {
+                                                    if (dataSnapshot2.getKey().equals("ischat")) {
+                                                        if (dataSnapshot2.getValue(String.class).equals("1")) {
+                                                            for (DataSnapshot dataSnapshot3 : dataSnapshot.getChildren()) {
+                                                                if (dataSnapshot3.getKey().contains("lastmsg")) {
+                                                                    if (!lastKeyList.contains(snapshot1.getKey())) {
+                                                                        for (DataSnapshot dataSnapshot4 : dataSnapshot.getChildren()) {
+                                                                            if (dataSnapshot4.getKey().contains("lastmsg")) {
+                                                                                if (!lastKeyList.contains(dataSnapshot4.getKey())) {
+                                                                                    String key = dataSnapshot4.getKey();
+                                                                                    LastListItem lastListItem = dataSnapshot4.getValue(LastListItem.class);
+                                                                                    lastList.add(lastListItem);
+                                                                                    lastKeyList.add(key);
+                                                                                }
+                                                                            } else if (dataSnapshot4.getKey().equals("msg")) {
 
-                                                            //add count
-                                                            int nowcount;
-                                                            if (MainActivity.btn4count.getText().toString().equals("")
-                                                                    || MainActivity.btn4count.getText() == null) {
-                                                                nowcount = 0;
-                                                            } else {
-                                                                nowcount = Integer.parseInt(MainActivity.btn4count.getText().toString());
-                                                            }
-                                                            for (DataSnapshot dataSnapshot3 : dataSnapshot2.getChildren()) {
-                                                                if (!dataSnapshot3.child("uid").getValue(String.class).equals(myUid)
-                                                                        && dataSnapshot3.child("read").getValue(String.class).equals("1")) {
-                                                                    countList.add(Integer.toString(nowcount += 1));
-                                                                    countKeyList.add(roomKey);
-                                                                } else if (dataSnapshot3.child("uid").getValue(String.class).equals(myUid)
-                                                                        && dataSnapshot3.child("read").getValue(String.class).equals("1")) {
-                                                                    countList.add(Integer.toString(nowcount));
-                                                                    countKeyList.add(roomKey);
+                                                                                //add count
+                                                                                int nowcount;
+                                                                                if (MainActivity.btn4count.getText().toString().equals("")
+                                                                                        || MainActivity.btn4count.getText() == null) {
+                                                                                    nowcount = 0;
+                                                                                } else {
+                                                                                    nowcount = Integer.parseInt(MainActivity.btn4count.getText().toString());
+                                                                                }
+                                                                                for (DataSnapshot dataSnapshot5 : dataSnapshot4.getChildren()) {
+                                                                                    if (!dataSnapshot5.child("uid").getValue(String.class).equals(myUid)
+                                                                                            && dataSnapshot5.child("read").getValue(String.class).equals("1")) {
+                                                                                        countList.add(Integer.toString(nowcount += 1));
+                                                                                        countKeyList.add(roomKey);
+                                                                                    } else if (dataSnapshot5.child("uid").getValue(String.class).equals(myUid)
+                                                                                            && dataSnapshot5.child("read").getValue(String.class).equals("1")) {
+                                                                                        countList.add(Integer.toString(nowcount));
+                                                                                        countKeyList.add(roomKey);
+                                                                                    }
+                                                                                }
+
+                                                                                setMainBtn4Count(countList);
+                                                                                //add count
+
+                                                                            } else if (!dataSnapshot4.getKey().equals("msg")
+                                                                                    && !dataSnapshot4.getKey().equals(myUid)
+                                                                                    && !dataSnapshot4.getKey().contains("lastmsg")) {
+                                                                                if (!arrayKeyList.contains(dataSnapshot4.getKey())) {
+                                                                                    String key = dataSnapshot4.getKey();
+                                                                                    F4MessegeItem f4MessegeItem = dataSnapshot4.getValue(F4MessegeItem.class);
+                                                                                    arrayList.add(f4MessegeItem);
+                                                                                    arrayKeyList.add(key);
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        setAddListSort();
+                                                                        adapter.notifyDataSetChanged();
+                                                                        progressBar.setVisibility(View.GONE);
+                                                                        setNullChat();
+                                                                    }
                                                                 }
                                                             }
 
-//                                                            if (!countKeyList.contains(roomKey)) {
-//                                                                countList.add("0");
-//                                                                countKeyList.add(roomKey);
-//                                                            }
-                                                            setMainBtn4Count(countList);
-                                                            //add count
-
-                                                        } else if (!dataSnapshot2.getKey().equals("msg") && !dataSnapshot2.getKey().equals(myUid) && !dataSnapshot2.getKey().contains("lastmsg")) {
-                                                            if (!arrayKeyList.contains(dataSnapshot2.getKey())) {
-                                                                String key = dataSnapshot2.getKey();
-                                                                F4MessegeItem f4MessegeItem = dataSnapshot2.getValue(F4MessegeItem.class);
-                                                                arrayList.add(f4MessegeItem);
-                                                                arrayKeyList.add(key);
-                                                            }
                                                         }
                                                     }
-                                                    setAddListSort();
-                                                    adapter.notifyDataSetChanged();
-                                                    progressBar.setVisibility(View.GONE);
-                                                    setNullChat();
                                                 }
                                             }
+
                                         }
                                     }
                                 });
@@ -439,6 +450,13 @@ public class Fragment4 extends Fragment {
     public void onStart() {
         super.onStart();
 
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        //layout 설정 후 view 변경 가능한 단계
+        setNullChat();
     }
 
     @Override

@@ -87,8 +87,6 @@ public class Fragment4 extends Fragment {
     boolean setAready;
     public static boolean stayf4chatroom;
 
-    String userUid;
-
     //    private boolean setAlready;
     public Fragment4() {
         // Required empty public constructor
@@ -158,10 +156,8 @@ public class Fragment4 extends Fragment {
                                 reference.getRef().child("messege").child(snapshot.getKey()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                     @Override
                                     public void onSuccess(DataSnapshot dataSnapshot) {
+                                        String userUid = snapshot.getKey().replace(myUid, "");
                                         for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                                            if (!dataSnapshot1.getKey().equals(myUid) && !dataSnapshot1.getKey().contains("msg") && !dataSnapshot1.getKey().contains("lastmsg")) {
-                                                userUid = dataSnapshot1.getKey();
-                                            }
                                             Log.d("Fragment4>>>", "testtest" + dataSnapshot1.child(myUid).child("ischat").getValue(String.class));
                                             if (dataSnapshot1.getKey().equals(myUid)) {
                                                 for (DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()) {
@@ -181,26 +177,23 @@ public class Fragment4 extends Fragment {
                                                                             } else if (dataSnapshot4.getKey().equals("msg")) {
 
                                                                                 //add count
-                                                                                int nowcount;
-                                                                                if (MainActivity.btn4count.getText().toString().equals("")
-                                                                                        || MainActivity.btn4count.getText() == null) {
-                                                                                    nowcount = 0;
-                                                                                } else {
-                                                                                    nowcount = Integer.parseInt(MainActivity.btn4count.getText().toString());
-                                                                                }
+                                                                                int i = 0;
+                                                                                int alli = 0;
                                                                                 for (DataSnapshot dataSnapshot5 : dataSnapshot4.getChildren()) {
+                                                                                    alli += 1;
                                                                                     Log.d("Fragment4>>>", "get userUid: " + userUid);
-                                                                                    if (!dataSnapshot5.child("uid").getValue(String.class).equals(myUid)
+                                                                                    if (dataSnapshot5.child("uid").getValue(String.class).equals(userUid)
                                                                                             && dataSnapshot5.child("read").getValue(String.class).equals("1")) {
-                                                                                        countList.add(Integer.toString(nowcount += 1));
-                                                                                        countKeyList.add(roomKey);
-                                                                                    } else if (dataSnapshot5.child("uid").getValue(String.class).equals(myUid)
-                                                                                            && dataSnapshot5.child("read").getValue(String.class).equals("1")) {
-                                                                                        countList.add(Integer.toString(nowcount));
-                                                                                        countKeyList.add(roomKey);
+                                                                                        i += 1;
+                                                                                    }
+
+                                                                                    if (alli == dataSnapshot4.getChildrenCount()) {
+                                                                                        if (!countKeyList.contains(roomKey)) {
+                                                                                            countList.add(Integer.toString(i));
+                                                                                            countKeyList.add(roomKey);
+                                                                                        }
                                                                                     }
                                                                                 }
-
                                                                                 setMainBtn4Count(countList);
                                                                                 //add count
 
@@ -279,24 +272,33 @@ public class Fragment4 extends Fragment {
                                             }
                                         }
                                     } else if (snapshot2.getKey().equals("msg")) {
-
+                                        String userUid = snapshot.getKey().replace(myUid, "");
                                         //change count
-                                        List<String> count = new ArrayList<>();
-                                        List<String> allCount = new ArrayList<>();
+//                                        List<String> count = new ArrayList<>();
+//                                        List<String> allCount = new ArrayList<>();
+                                        int i = 0;
+                                        int alli = 0;
                                         for (DataSnapshot dataSnapshot3 : snapshot2.getChildren()) {
-                                            allCount.add(dataSnapshot3.getKey());
-                                            if (dataSnapshot3.child("uid").getValue(String.class).equals("dlqwkddhksfycjtaptlwl")
-                                                    && dataSnapshot3.child("read").getValue(String.class).equals("dlqwkddhksfycjtaptlwl")
-                                                    && dataSnapshot3.child("time").getValue(String.class).equals("dlqwkddhksfycjtaptlwl")
-                                                    && dataSnapshot3.child("messege").getValue(String.class).equals("dlqwkddhksfycjtaptlwl")) {
-                                                count.add("1");
-                                            } else if (!dataSnapshot3.child("uid").getValue(String.class).equals(myUid) && dataSnapshot3.child("read").getValue(String.class).equals("1")) {
-                                                count.add("1");
+                                            alli += 1;
+//                                            allCount.add(dataSnapshot3.getKey());
+//                                            if (dataSnapshot3.child("uid").getValue(String.class).equals("dlqwkddhksfycjtaptlwl")
+//                                                    && dataSnapshot3.child("read").getValue(String.class).equals("dlqwkddhksfycjtaptlwl")
+//                                                    && dataSnapshot3.child("time").getValue(String.class).equals("dlqwkddhksfycjtaptlwl")
+//                                                    && dataSnapshot3.child("messege").getValue(String.class).equals("dlqwkddhksfycjtaptlwl")) {
+//                                                count.add("1");
+//                                            } else if (!dataSnapshot3.child("uid").getValue(String.class).equals(myUid)
+//                                                    && dataSnapshot3.child("read").getValue(String.class).equals("1")) {
+//                                                count.add("1");
+//                                            }
+
+                                            if (dataSnapshot3.child("uid").getValue(String.class).equals(userUid)
+                                                    && dataSnapshot3.child("read").getValue(String.class).equals("1")) {
+                                                i += 1;
                                             }
 
-                                            if (allCount.size() == snapshot2.getChildrenCount()) {
+                                            if (alli == snapshot2.getChildrenCount()) {
                                                 if (countKeyList.contains(roomKey)) {
-                                                    countList.set(countKeyList.indexOf(roomKey), Integer.toString(count.size() - 1));
+                                                    countList.set(countKeyList.indexOf(roomKey), Integer.toString(i));
                                                 }
                                             }
                                         }
@@ -390,6 +392,7 @@ public class Fragment4 extends Fragment {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             Log.d("Fragment4>>>", "state: first");
                             String roomKey = snapshot.getKey();
+                            String userUid = snapshot.getKey().replace(myUid, "");
                             for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                                 if (snapshot1.getKey().equals(myUid)) {
                                     if (snapshot1.child("ischat").getValue().equals("1")) {
@@ -397,35 +400,51 @@ public class Fragment4 extends Fragment {
                                             if (!snapshot2.getKey().equals(myUid)) {
                                                 if (snapshot2.getKey().contains("lastmsg")) {
                                                     String key = snapshot2.getKey();
-                                                    LastListItem lastListItem = snapshot2.getValue(LastListItem.class);
-                                                    lastList.add(lastListItem);
-                                                    lastKeyList.add(key);
+                                                    if (!lastKeyList.contains(key)) {
+                                                        LastListItem lastListItem = snapshot2.getValue(LastListItem.class);
+                                                        lastList.add(lastListItem);
+                                                        lastKeyList.add(key);
+                                                    }
                                                 } else if (snapshot2.getKey().equals("msg")) {
 
                                                     //first count
-                                                    List<String> count = new ArrayList<>();
-                                                    List<String> allCount = new ArrayList<>();
+//                                                    List<String> count = new ArrayList<>();
+//                                                    List<String> allCount = new ArrayList<>();
+                                                    int alli = 0;
+                                                    int i = 0;
                                                     for (DataSnapshot dataSnapshot3 : snapshot2.getChildren()) {
-                                                        allCount.add(dataSnapshot3.getKey());
-                                                        if (dataSnapshot3.child("uid").getValue(String.class).equals("dlqwkddhksfycjtaptlwl") && dataSnapshot3.child("read").getValue(String.class).equals("dlqwkddhksfycjtaptlwl")) {
-                                                            count.add("1");
-                                                            Log.d("Fragment4>>>", "add test1");
-                                                        } else if (!dataSnapshot3.child("uid").getValue(String.class).equals(myUid) && dataSnapshot3.child("read").getValue(String.class).equals("1")) {
-                                                            count.add("1");
+                                                        alli += 1;
+//                                                        allCount.add(dataSnapshot3.getKey());
+//                                                        if (dataSnapshot3.child("uid").getValue(String.class).equals("dlqwkddhksfycjtaptlwl")
+//                                                                && dataSnapshot3.child("read").getValue(String.class).equals("dlqwkddhksfycjtaptlwl")) {
+//                                                            count.add("1");
+//                                                            Log.d("Fragment4>>>", "add test1");
+//                                                        } else if (!dataSnapshot3.child("uid").getValue(String.class).equals(myUid)
+//                                                                && dataSnapshot3.child("read").getValue(String.class).equals("1")) {
+//                                                            count.add("1");
+//                                                        }
+
+                                                        if (dataSnapshot3.child("uid").getValue(String.class).equals(userUid)
+                                                                && dataSnapshot3.child("read").getValue(String.class).equals("1")) {
+                                                            i += 1;
                                                         }
 
-                                                        if (allCount.size() == snapshot2.getChildrenCount()) {
-                                                            countList.add(Integer.toString(count.size() - 1));
-                                                            countKeyList.add(roomKey);
+                                                        if (alli == snapshot2.getChildrenCount()) {
+                                                            if (!countKeyList.contains(roomKey)) {
+                                                                countList.add(Integer.toString(i));
+                                                                countKeyList.add(roomKey);
+                                                            }
                                                         }
                                                     }
                                                     //first count
 
                                                 } else {
                                                     String key = snapshot2.getKey();
-                                                    F4MessegeItem f4MessegeItem = snapshot2.getValue(F4MessegeItem.class);
-                                                    arrayList.add(f4MessegeItem);
-                                                    arrayKeyList.add(key);
+                                                    if (!arrayKeyList.contains(key)) {
+                                                        F4MessegeItem f4MessegeItem = snapshot2.getValue(F4MessegeItem.class);
+                                                        arrayList.add(f4MessegeItem);
+                                                        arrayKeyList.add(key);
+                                                    }
                                                 }
                                             }
                                         }

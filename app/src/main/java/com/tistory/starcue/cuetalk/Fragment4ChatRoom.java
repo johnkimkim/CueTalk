@@ -741,6 +741,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     }
 
     private void goOutDialog() {//내가 나갈때
+        ProgressBar progressBar1;
         LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout layout = (LinearLayout) vi.inflate(R.layout.go_out_chat_room_dialog, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(Fragment4ChatRoom.this);
@@ -762,12 +763,16 @@ public class Fragment4ChatRoom extends AppCompatActivity {
 
         Button okbtn = layout.findViewById(R.id.go_out_chat_room_dialog_okbtn);
         Button cancel = layout.findViewById(R.id.go_out_chat_room_dialog_cancelbtn);
+        progressBar1 = layout.findViewById(R.id.go_out_chat_room_dialog_progress_bar);
 
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d("Fragment4ChatRoom>>>", "first out onclick");
                 alertDialogD.setCancelable(false);
+                okbtn.setEnabled(false);
+                cancel.setEnabled(false);
+                progressBar1.setVisibility(View.VISIBLE);
                 goOutSetIsChat();
             }
         });
@@ -781,6 +786,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     }
 
     private void userGoOutDialog() {
+        ProgressBar progressBar1;
         LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout layout = (LinearLayout) vi.inflate(R.layout.go_out_user_chat_room_dialog, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(Fragment4ChatRoom.this);
@@ -803,11 +809,14 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         alertDialogD.setCancelable(false);
 
         Button okbtn = layout.findViewById(R.id.fragment4_chat_room_dialog_user_out_okbtn);
+        progressBar1 = layout.findViewById(R.id.fragment4_chat_room_dialog_user_out_progress_bar);
 
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d("Fragment4ChatRoom>>>", "okbtn onclick");
+                okbtn.setEnabled(false);
+                progressBar1.setVisibility(View.VISIBLE);
                 deleteImageISendB();
             }
         });

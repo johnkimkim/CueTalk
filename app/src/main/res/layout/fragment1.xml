@@ -5,22 +5,48 @@
     android:layout_height="match_parent"
     tools:context=".fragment.Fragment1">
 
+    <RelativeLayout
+        android:id="@+id/viewpagerlayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginRight="50dp">
+
+        <Button
+            android:id="@+id/viewpagerbtn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="10dp"/>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/f1viewpager"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
+
     <Button
         android:id="@+id/testbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:layout_margin="30dp"/>
+        android:layout_centerHorizontal="true"
+        android:layout_margin="30dp" />
 
     <Spinner
         android:id="@+id/f1spinner"
         android:layout_width="250dp"
         android:layout_height="60dp"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/viewpagerlayout"
         android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="10dp"
         android:dropDownWidth="140dp"
-        android:spinnerMode="dialog"
-        />
+        android:spinnerMode="dialog" />
 
 </RelativeLayout>

@@ -83,6 +83,7 @@ public class Fragment5 extends Fragment {
 
     private TextView appversion;
     private RelativeLayout updatelayout;
+    private Button updatebtn;
 
     String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
@@ -105,6 +106,7 @@ public class Fragment5 extends Fragment {
         pic = rootView.findViewById(R.id.fragment5image);
         appversion = rootView.findViewById(R.id.nowversiontextview);
         updatelayout = rootView.findViewById(R.id.f5updatelayout);
+        updatebtn = rootView.findViewById(R.id.updatebtn);
         setOnClickPic();
         deleteUser = rootView.findViewById(R.id.fragment5_delete_user);
         switchCompat = rootView.findViewById(R.id.f5switch);
@@ -143,10 +145,13 @@ public class Fragment5 extends Fragment {
     }
 
     private void setOnClickUpdateLayout() {
-        updatelayout.setOnClickListener(new View.OnClickListener() {
+        updatebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.tistory.starcue.bgnoise"));
+                intent.setPackage("com.android.vending");
+                startActivity(intent);
             }
         });
     }

@@ -611,6 +611,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
             final ProgressDialog pd = new ProgressDialog(Fragment4ChatRoom.this);
             pd.setTitle("이미지 전송 중...");
             pd.show();
+            pd.setCancelable(false);
 
             StorageReference riverRef = storageReference.child(myUid + "/" + getroomname + "/" + fileName);
             riverRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {

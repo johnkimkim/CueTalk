@@ -69,6 +69,7 @@ public class ChangeProfile extends AppCompatActivity {
     DatabaseReference reference;
     String myUid;
     String mySex;
+    String picUri;
 
     DatabaseHandler databaseHandler;
     private SQLiteDatabase sqLiteDatabase;
@@ -164,7 +165,7 @@ public class ChangeProfile extends AppCompatActivity {
                 int ageint = Integer.parseInt(age);
                 agespin.setSelection(ageint - 19);
                 String sex = documentSnapshot.get("sex").toString();
-                String picUri = documentSnapshot.get("pic").toString();
+                picUri = documentSnapshot.get("pic").toString();
                 if (sex.equals("남자")) {
                     radioGroup.check(R.id.change_profile_sexmale);
                 } else if (sex.equals("여자")) {
@@ -180,6 +181,7 @@ public class ChangeProfile extends AppCompatActivity {
 
             }
         });
+
     }
 
     private void setDeletePic() {

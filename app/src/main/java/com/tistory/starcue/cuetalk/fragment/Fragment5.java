@@ -112,7 +112,6 @@ public class Fragment5 extends Fragment {
         switchCompat = rootView.findViewById(R.id.f5switch);
 
         setFirebse();
-        setPic();
         setdb();
         setSwitch();
         setView();
@@ -232,6 +231,11 @@ public class Fragment5 extends Fragment {
                 name.setText(documentSnapshot.get("name").toString());
                 sex.setText(documentSnapshot.get("sex").toString());
                 age.setText(documentSnapshot.get("age").toString());
+
+                myUri = documentSnapshot.get("pic").toString();
+                Glide.with(getActivity()).load(myUri).override(300, 300).placeholder(R.drawable.ic_launcher_background)
+                        .error(R.drawable.ic_launcher_foreground)
+                        .circleCrop().into(pic);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -346,20 +350,20 @@ public class Fragment5 extends Fragment {
         });
     }
 
-    private void setPic() {
-//        Glide.with(getActivity()).load("gs://cuetalk-c4d03.appspot.com/images/03aUD74hz4MjcbcZcpSMc2KfZWs2").into(pic);
-
-        db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                String picUri = documentSnapshot.get("pic").toString();
-                Glide.with(getActivity()).load(picUri).override(300, 300).placeholder(R.drawable.ic_launcher_background)
-                        .error(R.drawable.ic_launcher_foreground)
-                        .circleCrop().into(pic);
-            }
-        });
-
-    }
+//    private void setPic() {
+////        Glide.with(getActivity()).load("gs://cuetalk-c4d03.appspot.com/images/03aUD74hz4MjcbcZcpSMc2KfZWs2").into(pic);
+//
+//        db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//            @Override
+//            public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                String picUri = documentSnapshot.get("pic").toString();
+//                Glide.with(getActivity()).load(picUri).override(300, 300).placeholder(R.drawable.ic_launcher_background)
+//                        .error(R.drawable.ic_launcher_foreground)
+//                        .circleCrop().into(pic);
+//            }
+//        });
+//
+//    }
 
     private void deleteDocument() {
         db.collection("users").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {

@@ -32,6 +32,7 @@ import com.tistory.starcue.cuetalk.DeleteMyDialog;
 import com.tistory.starcue.cuetalk.GpsTracker;
 import com.tistory.starcue.cuetalk.MainActivity;
 import com.tistory.starcue.cuetalk.R;
+import com.tistory.starcue.cuetalk.SeePicDialog;
 import com.tistory.starcue.cuetalk.SendMessege;
 import com.tistory.starcue.cuetalk.fragment.Fragment3;
 import com.tistory.starcue.cuetalk.item.F3Item;
@@ -173,6 +174,14 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
             @Override
             public void onClick(View view) {
                 Log.d("F3Adapter>>>", "get pic uri: " + arrayList.get(position).getPic());
+                SeePicDialog.seePicDialog(context, arrayList.get(position).getPic());
+            }
+        });
+
+        holder.ppic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SeePicDialog.seePicDialog(context, arrayList.get(position).getPpic());
             }
         });
 

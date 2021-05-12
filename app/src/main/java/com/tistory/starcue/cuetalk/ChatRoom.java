@@ -630,6 +630,7 @@ public class ChatRoom extends AppCompatActivity {
             final ProgressDialog pd = new ProgressDialog(ChatRoom.this);
             pd.setTitle("이미지 전송 중...");
             pd.show();
+            pd.setCancelable(false);
 
             StorageReference riverRef = storageReference.child(myUid + "/" + fileName);
             riverRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {

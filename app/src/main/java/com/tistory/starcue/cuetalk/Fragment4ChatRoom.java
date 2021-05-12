@@ -136,6 +136,12 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         notificationManager.cancel(Integer.parseInt(userUid.replaceAll("[^0-9]", "")));
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        cancelNotify(userUid);
+    }
+
     private void setinit() {
         recyclerView = findViewById(R.id.fragment4_chat_room_recyclerview);
         sendimg = findViewById(R.id.fragment4_chat_room_sendimage);

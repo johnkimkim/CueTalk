@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button btn1, btn2, btn3, btn4, btn5;
     public static TextView btn4count;
+    public static TextView btn5count;
     public static RelativeLayout loading;
     public static ProgressBar mainProgressBar;
 
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         btn4count = findViewById(R.id.btn4count);
 //        btn4count.bringToFront();
         btn5 = findViewById(R.id.btn5);
+        btn5count = findViewById(R.id.btn5count);
         loading = findViewById(R.id.loading);
         mainProgressBar = findViewById(R.id.mainpro);
         loading.setVisibility(View.GONE);

@@ -589,8 +589,10 @@ public class Fragment4 extends Fragment {
             Log.d("Fragment4>>>", "get countList.size() " + countList.size());
             if (ls.size() == countList.size()) {
                 if (Integer.toString(allcount).equals("0")) {
+                    MainActivity.btn4count.setVisibility(View.INVISIBLE);
                     MainActivity.btn4count.setText("");
                 } else {
+                    MainActivity.btn4count.setVisibility(View.VISIBLE);
                     MainActivity.btn4count.setText(Integer.toString(allcount));
                 }
             }

@@ -2,6 +2,8 @@ package com.tistory.starcue.cuetalk.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -43,6 +45,7 @@ import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.tistory.starcue.cuetalk.ChangeProfile;
 import com.tistory.starcue.cuetalk.DatabaseHandler;
+import com.tistory.starcue.cuetalk.MainActivity;
 import com.tistory.starcue.cuetalk.PhoneNumber;
 import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.SeePicDialog;
@@ -112,6 +115,23 @@ public class Fragment5 extends Fragment {
         return rootView;
     }
 
+    private void checkAppVersion() {
+        String nowVersion = getAppVersion();
+        db.collection("version").document("version").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Log.d("Fragment5>>>", "nowVersion: " + nowVersion);
+                Log.d("Fragment5>>>", "serverVersion: " + documentSnapshot.get("version").toString());
+                if (!documentSnapshot.get("version").toString().equals(nowVersion)) {
+                    MainActivity.btn5count.setVisibility(View.VISIBLE);
+                    MainActivity.btn5count.setText("1");
+                } else {
+                    MainActivity.btn5count.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+    }
+
     private void setOnClickPic() {
         pic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,6 +149,8 @@ public class Fragment5 extends Fragment {
         storageReference = storage.getReference();
 
         myUid = mAuth.getUid();
+
+        checkAppVersion();
     }
 
     private void setdb() {
@@ -382,6 +404,22 @@ public class Fragment5 extends Fragment {
         mCurrentUser.delete();
         databaseHandler.uniquedelete();
         startActivity(new Intent(getActivity(), SplashActivity.class));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        checkAppVersion();
+    }
+
+    public String getAppVersion() {
+        PackageInfo packageInfo = null;
+        try {
+            packageInfo = getActivity().getPackageManager().getPackageInfo(Fragment5.this.getActivity().getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return packageInfo.versionName;
     }
 
 }

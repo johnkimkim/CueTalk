@@ -1117,5 +1117,4 @@ public class Fragment4ChatRoom extends AppCompatActivity {
             }
         });
     }
-
 }

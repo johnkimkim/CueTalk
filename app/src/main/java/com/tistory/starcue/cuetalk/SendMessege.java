@@ -175,12 +175,9 @@ public class SendMessege {
 
 
                 updateUserInRoom(messegeMap, userUid, myUid + userUid, fmsg, firstmsg);
-//                reference.updateChildren(messegeMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        updateUserInRoom(messegeMap, userUid, myUid+userUid, fmsg, firstmsg);
-//                    }
-//                });//last
+
+                String roomkey = myUid + userUid;
+                sendNotify(userUid, messege, name, roomkey, pic);
 
             }
         }).addOnFailureListener(new OnFailureListener() {

@@ -385,38 +385,38 @@ public class ChatRoom extends AppCompatActivity {
         });
     }
 
-    private void dialogImage(String picUri) {
-        LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LinearLayout layout = (LinearLayout) vi.inflate(R.layout.send_iamge_dialog, null);
-        AlertDialog.Builder builder = new AlertDialog.Builder(ChatRoom.this);
-        builder.setView(layout);
-        alertDialogC = builder.create();
-
-        if (!ChatRoom.this.isFinishing()) {
-            alertDialogC.show();
-            //set size
-            WindowManager.LayoutParams layoutParams = alertDialogC.getWindow().getAttributes();
-            layoutParams.copyFrom(alertDialogC.getWindow().getAttributes());
-//            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-//            layoutParams.dimAmount = 0.7f;
-
-            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-            alertDialogC.getWindow().setAttributes(layoutParams);
-        }
-
-        ImageView imageView = layout.findViewById(R.id.dialog_img_set);
-        Button okbtn = layout.findViewById(R.id.send_image_okbtn);
-
-        Glide.with(ChatRoom.this).load(picUri).override(100, 100).centerCrop().into(imageView);
-        okbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialogC.dismiss();
-                sendMessegePic(picUri);
-            }
-        });
-    }
+//    private void dialogImage(String picUri) {
+//        LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        LinearLayout layout = (LinearLayout) vi.inflate(R.layout.send_iamge_dialog, null);
+//        AlertDialog.Builder builder = new AlertDialog.Builder(ChatRoom.this);
+//        builder.setView(layout);
+//        alertDialogC = builder.create();
+//
+//        if (!ChatRoom.this.isFinishing()) {
+//            alertDialogC.show();
+//            //set size
+//            WindowManager.LayoutParams layoutParams = alertDialogC.getWindow().getAttributes();
+//            layoutParams.copyFrom(alertDialogC.getWindow().getAttributes());
+////            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+////            layoutParams.dimAmount = 0.7f;
+//
+//            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+//            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+//            alertDialogC.getWindow().setAttributes(layoutParams);
+//        }
+//
+//        ImageView imageView = layout.findViewById(R.id.dialog_img_set);
+//        Button okbtn = layout.findViewById(R.id.send_image_okbtn);
+//
+//        Glide.with(ChatRoom.this).load(picUri).override(100, 100).centerCrop().into(imageView);
+//        okbtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                alertDialogC.dismiss();
+//                sendMessegePic(picUri);
+//            }
+//        });
+//    }
 
     private void checkDbChange() {
         reference.getRef().child("inchat").child(where).addChildEventListener(new ChildEventListener() {
@@ -646,7 +646,7 @@ public class ChatRoom extends AppCompatActivity {
                                 public void onSuccess(Uri uri) {
                                     picUri = uri.toString();
                                     Log.d("ChatRoom>>>", "onSuccess: " + uri.toString());
-                                    dialogImage(picUri);
+                                    sendMessegePic(picUri);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override

@@ -626,7 +626,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                                 public void onSuccess(Uri uri) {
                                     picUri = uri.toString();
                                     Log.d("Fragment4ChatRoom>>>", "onSuccess: " + uri.toString());
-                                    dialogImage(picUri);
+                                    sendMessegePic(picUri);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -655,40 +655,40 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         }
     }
 
-    private void dialogImage(String picUri) {
-        LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LinearLayout layout = (LinearLayout) vi.inflate(R.layout.send_iamge_dialog, null);
-        AlertDialog.Builder builder = new AlertDialog.Builder(Fragment4ChatRoom.this);
-        builder.setView(layout);
-        alertDialogC = builder.create();
-        Log.d("Fragment4ChatRoom>>>", "dialogImage");
-
-        if (!Fragment4ChatRoom.this.isFinishing()) {
-            Log.d("Fragment4ChatRoom>>>", "dialogImage2");
-            alertDialogC.show();
-            //set size
-            WindowManager.LayoutParams layoutParams = alertDialogC.getWindow().getAttributes();
-            layoutParams.copyFrom(alertDialogC.getWindow().getAttributes());
-//            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-//            layoutParams.dimAmount = 0.7f;
-
-            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-            alertDialogC.getWindow().setAttributes(layoutParams);
-        }
-
-        ImageView imageView = layout.findViewById(R.id.dialog_img_set);
-        Button okbtn = layout.findViewById(R.id.send_image_okbtn);
-
-        Glide.with(Fragment4ChatRoom.this).load(picUri).override(100, 100).centerCrop().into(imageView);
-        okbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialogC.dismiss();
-                sendMessegePic(picUri);
-            }
-        });
-    }
+//    private void dialogImage(String picUri) {
+//        LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        LinearLayout layout = (LinearLayout) vi.inflate(R.layout.send_iamge_dialog, null);
+//        AlertDialog.Builder builder = new AlertDialog.Builder(Fragment4ChatRoom.this);
+//        builder.setView(layout);
+//        alertDialogC = builder.create();
+//        Log.d("Fragment4ChatRoom>>>", "dialogImage");
+//
+//        if (!Fragment4ChatRoom.this.isFinishing()) {
+//            Log.d("Fragment4ChatRoom>>>", "dialogImage2");
+//            alertDialogC.show();
+//            //set size
+//            WindowManager.LayoutParams layoutParams = alertDialogC.getWindow().getAttributes();
+//            layoutParams.copyFrom(alertDialogC.getWindow().getAttributes());
+////            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+////            layoutParams.dimAmount = 0.7f;
+//
+//            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+//            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+//            alertDialogC.getWindow().setAttributes(layoutParams);
+//        }
+//
+//        ImageView imageView = layout.findViewById(R.id.dialog_img_set);
+//        Button okbtn = layout.findViewById(R.id.send_image_okbtn);
+//
+//        Glide.with(Fragment4ChatRoom.this).load(picUri).override(100, 100).centerCrop().into(imageView);
+//        okbtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                alertDialogC.dismiss();
+//                sendMessegePic(picUri);
+//            }
+//        });
+//    }
 
     private void sendMessegePic(String uri) {
         Log.d("Fragment4ChatRoom>>>", "time: " + getTime());

@@ -215,6 +215,8 @@ public class LoginActivity extends AppCompatActivity {
 
             if (name.equals("")) {
                 Toast.makeText(LoginActivity.this, "name", Toast.LENGTH_SHORT).show();
+            } else if (name.matches(".*[ㄱ-ㅎ ㅏ-ㅣ]+.*")) {
+                Toast.makeText(LoginActivity.this, "올바른 닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
             } else if (i == 0) {
                 Toast.makeText(LoginActivity.this, "age", Toast.LENGTH_SHORT).show();
             } else if (sexstring.equals("")) {

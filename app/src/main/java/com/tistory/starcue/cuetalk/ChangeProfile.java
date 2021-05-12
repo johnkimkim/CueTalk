@@ -76,8 +76,6 @@ public class ChangeProfile extends AppCompatActivity {
 
     private EditText editid;
     private Button yesbtn, nobtn;
-    private String[] age;
-    NumberPicker picker;
     RadioButton radiomale, radiofemale;
     String myName;
     String agestring;
@@ -166,6 +164,7 @@ public class ChangeProfile extends AppCompatActivity {
                 agespin.setSelection(ageint - 19);
                 String sex = documentSnapshot.get("sex").toString();
                 picUri = documentSnapshot.get("pic").toString();
+                mySex = documentSnapshot.get("sex").toString();
                 if (sex.equals("남자")) {
                     radioGroup.check(R.id.change_profile_sexmale);
                 } else if (sex.equals("여자")) {
@@ -235,6 +234,7 @@ public class ChangeProfile extends AppCompatActivity {
                         uploadPic2(myUid + "count1", pd);
                     } else {
                         for (StorageReference listResult1 : listResult.getItems()) {
+                            Log.d("ChangeProfile>>>", "check3");
                             if (listResult1.getName().equals(myUid + "count1")) {
                                 uploadPic2(myUid + "count2", pd);
                                 storageReference.child("images/" + myUid + "/" + myUid + "count1").delete();
@@ -254,6 +254,7 @@ public class ChangeProfile extends AppCompatActivity {
 
         } else {
             if (willdelete) {//사진 삭제변경할때
+                Log.d("ChangeProfile>>>", "testtest1");
                 Map<String, Object> map = new HashMap<>();
                 if (mySex.equals("남자")) {
                     map.put("pic", nullPic);
@@ -263,17 +264,24 @@ public class ChangeProfile extends AppCompatActivity {
                 db.collection("users").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {//store변경
                     @Override
                     public void onSuccess(Void aVoid) {
-
+                        Log.d("ChangeProfile>>>", "testtest2");
                         StorageReference storageReference1 = storageReference.child("images/" + myUid);
                         storageReference1.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
                             @Override
                             public void onSuccess(ListResult listResult) {
+                                Log.d("ChangeProfile>>>", "testtest3");
                                 for (StorageReference listResult1 : listResult.getItems()) {
+                                    Log.d("ChangeProfile>>>", "check4");
                                     if (listResult1.getName().equals(myUid + "count1")) {
                                         updatePic2(myUid + "count1");
                                     } else if (listResult1.getName().equals(myUid + "count2")) {
                                         updatePic2(myUid + "count2");
                                     }
+                                }
+
+                                if (listResult.getItems().size() == 0) {
+                                    Log.d("ChangeProfile>>>", "testtest4");
+                                    f2changepic();
                                 }
                             }
                         }).addOnFailureListener(new OnFailureListener() {
@@ -284,15 +292,12 @@ public class ChangeProfile extends AppCompatActivity {
                         });
 
 
-
 //                        Log.d("ChangeProfile>>>", "db.updqte success");
 
                     }
                 });
             }
         }
-
-
     }
 
     private void uploadPic2(String fileName, ProgressDialog pd) {
@@ -305,6 +310,7 @@ public class ChangeProfile extends AppCompatActivity {
                 storageReference.child("images/" + myUid + "/" + fileName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
+                        Log.d("ChangeProfile>>>", "check5");
                         String picUri = uri.toString();
                         uploadPicInStore(picUri);
                     }
@@ -450,16 +456,19 @@ public class ChangeProfile extends AppCompatActivity {
             int i = Integer.parseInt(agestring);
 
             if (name.equals("")) {
-                Toast.makeText(ChangeProfile.this, "name", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChangeProfile.this, "닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
+            } else if (name.matches(".*[ㄱ-ㅎ ㅏ-ㅣ]+.*")) {
+                Toast.makeText(ChangeProfile.this, "올바른 닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
             } else if (i == 0) {
-                Toast.makeText(ChangeProfile.this, "age", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChangeProfile.this, "나이를 선택해주세요", Toast.LENGTH_SHORT).show();
             } else if (sexstring.equals("")) {
-                Toast.makeText(ChangeProfile.this, "sex", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChangeProfile.this, "성별을 선택해주세요", Toast.LENGTH_SHORT).show();
             } else {
                 relativeLayout.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.VISIBLE);
 
                 updateUser(name, sexstring, agestring);
+                Log.d("ChangeProfile>>>", "check1");
             }
 
         });
@@ -507,6 +516,7 @@ public class ChangeProfile extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         uploadPic();
+                        Log.d("ChangeProfile>>>", "check2");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -531,6 +541,7 @@ public class ChangeProfile extends AppCompatActivity {
                         db.collection("f2messege").document(myUid).update(userPic).addOnSuccessListener(new OnSuccessListener<Void>() {//f2messege update pic
                             @Override
                             public void onSuccess(Void aVoid) {
+                                Log.d("ChangeProfile>>>", "check6");
                                 f3changePic2(uri);
                             }
                         });

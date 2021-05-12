@@ -25,8 +25,7 @@
                     android:id="@+id/chat_room_layout_read2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#FF9800"
-                    android:text="T"/>
+                    android:textColor="#FF9800"/>
 
                 <TextView
                     android:id="@+id/chat_room_layout_time2"

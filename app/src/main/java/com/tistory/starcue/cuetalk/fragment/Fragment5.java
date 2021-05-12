@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,6 +81,9 @@ public class Fragment5 extends Fragment {
     Button deleteUserDialogOkBtn, deleteUserDialogNoBtn;
     private ProgressBar progressBar;
 
+    private TextView appversion;
+    private RelativeLayout updatelayout;
+
     String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
 
@@ -99,6 +103,8 @@ public class Fragment5 extends Fragment {
         reset = rootView.findViewById(R.id.resetprofile);
         logout = rootView.findViewById(R.id.logout_btn);
         pic = rootView.findViewById(R.id.fragment5image);
+        appversion = rootView.findViewById(R.id.nowversiontextview);
+        updatelayout = rootView.findViewById(R.id.f5updatelayout);
         setOnClickPic();
         deleteUser = rootView.findViewById(R.id.fragment5_delete_user);
         switchCompat = rootView.findViewById(R.id.f5switch);
@@ -111,12 +117,14 @@ public class Fragment5 extends Fragment {
         reset_profile();
         logoutBtn();
         deleteUser();
+        setOnClickUpdateLayout();
 
         return rootView;
     }
 
     private void checkAppVersion() {
         String nowVersion = getAppVersion();
+        appversion.setText(nowVersion);
         db.collection("version").document("version").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -125,9 +133,20 @@ public class Fragment5 extends Fragment {
                 if (!documentSnapshot.get("version").toString().equals(nowVersion)) {
                     MainActivity.btn5count.setVisibility(View.VISIBLE);
                     MainActivity.btn5count.setText("1");
+                    updatelayout.setVisibility(View.VISIBLE);
                 } else {
                     MainActivity.btn5count.setVisibility(View.INVISIBLE);
+                    updatelayout.setVisibility(View.GONE);
                 }
+            }
+        });
+    }
+
+    private void setOnClickUpdateLayout() {
+        updatelayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
     }

@@ -19,7 +19,9 @@ import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -168,11 +170,11 @@ public class Fragment1 extends Fragment {
         F1F3 f1f3 = new F1F3();
         f1SectionsPagerAdapter.addItem(f1f3);
 
-        DisplayMetrics metrics = new DisplayMetrics();
-        WindowManager windowManager = (WindowManager) getActivity().getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
-        windowManager.getDefaultDisplay().getMetrics(metrics);
-        ViewGroup.LayoutParams params = viewpagerlayout.getLayoutParams();
-        params.height = metrics.heightPixels / 3;
+//        DisplayMetrics metrics = new DisplayMetrics();
+//        WindowManager windowManager = (WindowManager) getActivity().getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+//        windowManager.getDefaultDisplay().getMetrics(metrics);
+//        ViewGroup.LayoutParams params = viewpagerlayout.getLayoutParams();
+//        params.height = metrics.heightPixels / 3;
 
         viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(f1SectionsPagerAdapter);
@@ -181,20 +183,6 @@ public class Fragment1 extends Fragment {
     }
 
     private void setViewPagerTimer() {
-//        Timer timer = new Timer();
-//        TimerTask timerTask = new TimerTask() {
-//            @Override
-//            public void run() {
-//                if (viewPager.getCurrentItem() == 0) {
-//                    viewPager.setCurrentItem(1);
-//                } else if (viewPager.getCurrentItem() == 1) {
-//                    viewPager.setCurrentItem(2);
-//                } else if (viewPager.getCurrentItem() == 2) {
-//                    viewPager.setCurrentItem(0);
-//                }
-//            }
-//        };
-//        timer.schedule(timerTask, 3000, 3000);
 
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -238,6 +226,31 @@ public class Fragment1 extends Fragment {
                 }
             }
         });
+
+        viewPager.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                int action = motionEvent.getAction();
+                if (action == MotionEvent.ACTION_DOWN) {
+                    isRunning = false;
+                    countDownTimer.cancel();
+                    handler.removeCallbacksAndMessages(null);
+                    viewpagerbtn.setBackgroundResource(R.drawable.play);
+                }
+                return false;
+            }
+        });
+
+//        viewPager.setOnDragListener(new View.OnDragListener() {
+//            @Override
+//            public boolean onDrag(View view, DragEvent dragEvent) {
+//                switch (dragEvent.getAction()) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        Log.d("Fragment1>>>", "test");
+//                }
+//                return false;
+//            }
+//        });
     }
 
 

@@ -25,6 +25,11 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.json.JSONObject;
+
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,8 +40,8 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class SendMessege {
 
-    String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
-    String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
+    private static final String serverKey = " AAAAqHwsNuA:APA91bEhOL4uoOR3d0Ys1qbFflQelzTPwaxBFLRI5Prx7tCor-KoivdXAKpLjz_PDlFctKT1iVPhwgXcPq8ioYh_TvaqSHPPjhCc98M5z7g9i3reg8Cqjbn-J0LbXXi0pSeMJa8KuYRk";
+    private static final String FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send";
 
     AlertDialog alertDialog;
     EditText editText;
@@ -320,6 +325,61 @@ public class SendMessege {
     private void hideKeyboard(View v) {
         InputMethodManager manager = (InputMethodManager) v.getContext().getSystemService(INPUT_METHOD_SERVICE);
         manager.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    private void sendNotify(String userUid, String messege, String myName, String roomname, String myPic) {
+        db.collection("users").document(userUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                reference.getRef().child("messege").child(roomname).child(userUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        String state = dataSnapshot.child("state").getValue(String.class);
+                        if (state.equals("1")) {
+                            String userToken = documentSnapshot.get("token").toString();
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        JSONObject root = new JSONObject();
+//                                        JSONObject notification = new JSONObject();
+                                        JSONObject data = new JSONObject();
+//                                        notification.put("body", messege);
+//                                        notification.put("title", getString(R.string.app_name));
+                                        data.put("messege", messege);
+                                        data.put("name", myName);
+                                        data.put("pic", myPic);
+                                        data.put("uid", myUid);
+                                        Log.d("Fragment4ChatRoom>>>", myName);
+//                                        root.put("notification", notification);
+                                        root.put("data", data);
+                                        root.put("to", userToken);
+
+                                        URL Url = new URL(FCM_MESSAGE_URL);
+                                        HttpURLConnection connection = (HttpURLConnection) Url.openConnection();
+                                        connection.setRequestMethod("POST");
+                                        connection.setDoOutput(true);
+                                        connection.setDoInput(true);
+                                        connection.addRequestProperty("Authorization", "key=" + serverKey);
+                                        connection.setRequestProperty("Accept", "application/json");
+                                        connection.setRequestProperty("Content-type", "application/json");
+                                        OutputStream os = connection.getOutputStream();
+                                        os.write(root.toString().getBytes("utf-8"));
+                                        os.flush();
+                                        connection.getResponseCode();
+
+                                        Log.d("Fragment4ChatRoom>>>", "send notify");
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }).start();
+                        }
+                    }
+                });
+
+            }
+        });
     }
 
 }

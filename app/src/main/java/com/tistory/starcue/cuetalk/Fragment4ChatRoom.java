@@ -140,6 +140,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         cancelNotify(userUid);
+        setState();
     }
 
     private void setinit() {

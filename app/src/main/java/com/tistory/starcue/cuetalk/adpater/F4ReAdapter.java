@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.tistory.starcue.cuetalk.MainActivity;
 import com.tistory.starcue.cuetalk.fragment.Fragment4;
@@ -46,7 +47,7 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
     List<String> countList;
     Context context;
     private DatabaseReference reference;
-    private DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
+    private FirebaseFirestore db;
 
     FirebaseAuth mAuth;
     String myUid;
@@ -81,41 +82,41 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
         mAuth = FirebaseAuth.getInstance();
         myUid = mAuth.getUid();
 
-        requestManager.load(arrayList.get(position).getPic())
-                .override(150, 150).circleCrop().into(holder.pic);
-
-        holder.name.setText(arrayList.get(position).getName());
-        holder.sex.setText(arrayList.get(position).getSex());
-        holder.age.setText(arrayList.get(position).getAge());
+//        requestManager.load(arrayList.get(position).getPic())
+//                .override(150, 150).circleCrop().into(holder.pic);
+//
+//        holder.name.setText(arrayList.get(position).getName());
+//        holder.sex.setText(arrayList.get(position).getSex());
+//        holder.age.setText(arrayList.get(position).getAge());
 
         String time = lastList.get(position).getLasttime();
         String time1 = time.substring(11);
-        String time2 = time1.substring(0, time1.length()-3);
+        String time2 = time1.substring(0, time1.length() - 3);
         holder.time.setText(time2);
 
         holder.messege.setText(lastList.get(position).getLastmessege());
 
-        String latitudeS = arrayList.get(position).getLatitude();//set km
-        String longitudeS = arrayList.get(position).getLongitude();
-        double latitude = Double.parseDouble(latitudeS);
-        double longitude = Double.parseDouble(longitudeS);
-        gpsTracker = new GpsTracker(context);
-        double myLatitude = gpsTracker.getLatitude();
-        double myLongitude = gpsTracker.getLongitude();
-
-
-        double ddd = getDistance(myLatitude, myLongitude, latitude, longitude);
-        if (arrayList.get(position).getUid().equals(myUid)) {
-            holder.km.setText("0m");
-        } else if (!arrayList.get(position).getUid().equals(myUid) && ddd < 50) {
-            holder.km.setText("-50m");
-        } else if (!arrayList.get(position).getUid().equals(myUid) && ddd < 1000) {
-            int i = (int) Math.floor(ddd);
-            holder.km.setText(Integer.toString(i) + "m");
-        } else if (!arrayList.get(position).getUid().equals(myUid) && ddd >= 1000) {
-            int i = (int) Math.floor(ddd) / 1000;
-            holder.km.setText(Integer.toString(i) + "km");
-        }
+//        String latitudeS = arrayList.get(position).getLatitude();//set km
+//        String longitudeS = arrayList.get(position).getLongitude();
+//        double latitude = Double.parseDouble(latitudeS);
+//        double longitude = Double.parseDouble(longitudeS);
+//        gpsTracker = new GpsTracker(context);
+//        double myLatitude = gpsTracker.getLatitude();
+//        double myLongitude = gpsTracker.getLongitude();
+//
+//
+//        double ddd = getDistance(myLatitude, myLongitude, latitude, longitude);
+//        if (arrayList.get(position).getUid().equals(myUid)) {
+//            holder.km.setText("0m");
+//        } else if (!arrayList.get(position).getUid().equals(myUid) && ddd < 50) {
+//            holder.km.setText("-50m");
+//        } else if (!arrayList.get(position).getUid().equals(myUid) && ddd < 1000) {
+//            int i = (int) Math.floor(ddd);
+//            holder.km.setText(Integer.toString(i) + "m");
+//        } else if (!arrayList.get(position).getUid().equals(myUid) && ddd >= 1000) {
+//            int i = (int) Math.floor(ddd) / 1000;
+//            holder.km.setText(Integer.toString(i) + "km");
+//        }
 
         if (countList.get(position).equals("0")) {
             holder.count.setText("");
@@ -123,34 +124,44 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
             holder.count.setText(countList.get(position));
         }
 
-//        reference1.getRef().child("messege").child(keyList.get(position).substring(7)).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-//            @Override
-//            public void onSuccess(DataSnapshot dataSnapshot) {
-//                Log.d("F4ReAdapter>>>", "size same3");
-//                Log.d("F4ReAdapter>>>", "key: " + dataSnapshot.getKey());
-//                List<String> count1 = new ArrayList<>();
-//                List<String> allcount = new ArrayList<>();
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    Log.d("F4ReAdapter>>>", "key: " + snapshot.getKey());
-//                    if (snapshot.getKey().equals("msg")) {
-//                        Log.d("F4ReAdapter>>>", "size same2");
-//                        for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-//                            Log.d("F4ReAdapter>>>", "size same1");
-//                            allcount.add(snapshot1.child("read").getValue(String.class));
-//                            if (snapshot1.child("read").getValue() != null && snapshot1.child("read").getValue(String.class).equals("1")) {
-//                                count1.add(snapshot1.child("read").getValue(String.class));
-//                            }
-//                            if (allcount.size() == snapshot1.getChildrenCount() - 1) {
-//                                Log.d("F4ReAdapter>>>", "size same");
-//                                int ii = count1.size();
-//                                String ss = Integer.toString(ii);
-//                                holder.count.setText(ss);
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        });
+        db = FirebaseFirestore.getInstance();
+        db.collection("users").document(arrayList.get(position).getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                String userName = documentSnapshot.get("name").toString();
+                String userSex = documentSnapshot.get("sex").toString();
+                String userAge = documentSnapshot.get("age").toString();
+                String userPic = documentSnapshot.get("pic").toString();
+                String latitudeS = documentSnapshot.get("latitude").toString();
+                String longitudeS = documentSnapshot.get("longitude").toString();
+                //위에 6가지는 realtime messege에 추가할 필요없음. 지우기.(f4chatroom도 마찬가지.)
+                holder.name.setText(userName);
+                holder.sex.setText(userSex);
+                holder.age.setText(userAge);
+                requestManager.load(userPic)
+                        .override(150, 150).circleCrop().into(holder.pic);
+
+                double latitude = Double.parseDouble(latitudeS);
+                double longitude = Double.parseDouble(longitudeS);
+
+                gpsTracker = new GpsTracker(context);
+                double myLatitude = gpsTracker.getLatitude();
+                double myLongitude = gpsTracker.getLongitude();
+
+                double ddd = getDistance(myLatitude, myLongitude, latitude, longitude);
+                if (arrayList.get(position).getUid().equals(myUid)) {
+                    holder.km.setText("0m");
+                } else if (!arrayList.get(position).getUid().equals(myUid) && ddd < 50) {
+                    holder.km.setText("-50m");
+                } else if (!arrayList.get(position).getUid().equals(myUid) && ddd < 1000) {
+                    int i = (int) Math.floor(ddd);
+                    holder.km.setText(Integer.toString(i) + "m");
+                } else if (!arrayList.get(position).getUid().equals(myUid) && ddd >= 1000) {
+                    int i = (int) Math.floor(ddd) / 1000;
+                    holder.km.setText(Integer.toString(i) + "km");
+                }
+            }
+        });
 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override

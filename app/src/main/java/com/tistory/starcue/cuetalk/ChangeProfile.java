@@ -78,8 +78,11 @@ public class ChangeProfile extends AppCompatActivity {
     private Button yesbtn, nobtn;
     RadioButton radiomale, radiofemale;
     String myName;
+    String myAge;
     String agestring;
-    String sexstring;
+    String newSex;
+    String newName;
+    String newAge;
     RadioGroup radioGroup;
     Spinner agespin;
     RelativeLayout relativeLayout;
@@ -159,8 +162,8 @@ public class ChangeProfile extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 myName = documentSnapshot.get("name").toString();
                 editid.setText(documentSnapshot.get("name").toString());
-                String age = documentSnapshot.get("age").toString();
-                int ageint = Integer.parseInt(age);
+                myAge = documentSnapshot.get("age").toString();
+                int ageint = Integer.parseInt(myAge);
                 agespin.setSelection(ageint - 19);
                 String sex = documentSnapshot.get("sex").toString();
                 picUri = documentSnapshot.get("pic").toString();
@@ -387,8 +390,14 @@ public class ChangeProfile extends AppCompatActivity {
         Map<String, Object> map2 = new HashMap<>();
         if (mySex.equals("남자")) {
             map2.put("pic", nullPic);
+            map2.put("sex", newSex);
+            map2.put("age", newAge);
+            map2.put("name", newName);
         } else {
             map2.put("pic", nullPicF);
+            map2.put("sex", newSex);
+            map2.put("age", newAge);
+            map2.put("name", newName);
         }
 
         db.collection("f2messege").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -417,8 +426,14 @@ public class ChangeProfile extends AppCompatActivity {
         Map<String, Object> map2 = new HashMap<>();
         if (mySex.equals("남자")) {
             map2.put("pic", nullPic);
+            map2.put("sex", newSex);
+            map2.put("age", newAge);
+            map2.put("name", newName);
         } else {
             map2.put("pic", nullPicF);
+            map2.put("sex", newSex);
+            map2.put("age", newAge);
+            map2.put("name", newName);
         }
         db.collection("f3messege").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -440,34 +455,55 @@ public class ChangeProfile extends AppCompatActivity {
         });
     }
 
+//    private void f4change() {
+//        reference.getRef().child("myroom").child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//            @Override
+//            public void onSuccess(DataSnapshot dataSnapshot) {
+//                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+//                    reference.getRef().child("messege").child(dataSnapshot1.getKey()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//                        @Override
+//                        public void onSuccess(DataSnapshot dataSnapshot) {
+//                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                                if (snapshot.getKey().equals(myUid)) {
+//                                    Map<String, Object> map = new HashMap<>();
+//                                    map.put("age")
+//                                }
+//                            }
+//                        }
+//                    });
+//                }
+//            }
+//        });
+//    }
+
     private void setYesBtn() {
         yesbtn.setOnClickListener(view -> {
             hideKeyboard(view);
             if (radiomale.isChecked()) {
-                sexstring = "남자";
+                newSex = "남자";
             } else if (radiofemale.isChecked()) {
-                sexstring = "여자";
+                newSex = "여자";
             } else {
-                sexstring = "";
+                newSex = "";
             }
 
-            String name = editid.getText().toString();
+            newName = editid.getText().toString();
 
             int i = Integer.parseInt(agestring);
 
-            if (name.equals("")) {
+            if (newName.equals("")) {
                 Toast.makeText(ChangeProfile.this, "닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
-            } else if (name.matches(".*[ㄱ-ㅎ ㅏ-ㅣ]+.*")) {
+            } else if (newName.matches(".*[ㄱ-ㅎ ㅏ-ㅣ]+.*")) {
                 Toast.makeText(ChangeProfile.this, "올바른 닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
             } else if (i == 0) {
                 Toast.makeText(ChangeProfile.this, "나이를 선택해주세요", Toast.LENGTH_SHORT).show();
-            } else if (sexstring.equals("")) {
+            } else if (newSex.equals("")) {
                 Toast.makeText(ChangeProfile.this, "성별을 선택해주세요", Toast.LENGTH_SHORT).show();
             } else {
                 relativeLayout.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.VISIBLE);
 
-                updateUser(name, sexstring, agestring);
+                updateUser(newName, newSex, agestring);
                 Log.d("ChangeProfile>>>", "check1");
             }
 

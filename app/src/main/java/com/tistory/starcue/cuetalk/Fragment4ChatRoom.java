@@ -176,6 +176,8 @@ public class Fragment4ChatRoom extends AppCompatActivity {
 
         setOutroombtn();
 
+        setGobackbtn();
+
         decbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -553,46 +555,23 @@ public class Fragment4ChatRoom extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String messege = editText.getText().toString();
+                if (!messege.equals("")) {
+                    Map<String, Object> sendmsg = new HashMap<>();
+                    Map<String, Object> lastmsg = new HashMap<>();
+                    sendmsg.put("messege", messege);
+                    sendmsg.put("time", getTime());
+                    sendmsg.put("read", "1");
+                    sendmsg.put("uid", myUid);
 
-                Map<String, Object> sendmsg = new HashMap<>();
-                Map<String, Object> lastmsg = new HashMap<>();
-                sendmsg.put("messege", messege);
-                sendmsg.put("time", getTime());
-                sendmsg.put("read", "1");
-                sendmsg.put("uid", myUid);
+                    lastmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lastmessege/", messege);
+                    lastmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lasttime/", getTime());
+                    reference.child("messege").child(getroomname).child("msg").push().updateChildren(sendmsg);
+                    reference.updateChildren(lastmsg);
 
-                lastmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lastmessege/", messege);
-                lastmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lasttime/", getTime());
-                reference.child("messege").child(getroomname).child("msg").push().updateChildren(sendmsg);
-                reference.updateChildren(lastmsg);
+                    sendNotify(userUid, messege, myName);
 
-                sendNotify(userUid, messege, myName);
-
-                editText.setText("");
-//                reference.getRef().child("messege").child(getroomname).child("msg").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-//                    @Override
-//                    public void onSuccess(DataSnapshot dataSnapshot) {
-//                        int i = (int) dataSnapshot.getChildrenCount() + 1;
-//                        Map<String, Object> sendmsg = new HashMap<>();
-//                        sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/messege/", messege);
-//                        sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/name/", myName);
-//                        sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/pic/", myPic);
-//                        sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/time/", getTime());
-//                        sendmsg.put("/messege/" + getroomname + "/msg/" + i + "/read/", "1");
-//
-//                        sendmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lastmessege/", messege);
-//                        sendmsg.put("/messege/" + getroomname + "/lastmsg" + getroomname + "/lasttime/", getTime());
-//
-//                        reference.updateChildren(sendmsg);
-//
-//                        editText.setText("");
-//                    }
-//                }).addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Toast.makeText(Fragment4ChatRoom.this, "인터넷 연결이 불안정해 메시지 전송에 실패했습니다.", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
+                    editText.setText("");
+                }
             }
         });
     }
@@ -1141,6 +1120,15 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                     }
                 });
 
+            }
+        });
+    }
+
+    private void setGobackbtn() {
+        gobackbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
             }
         });
     }

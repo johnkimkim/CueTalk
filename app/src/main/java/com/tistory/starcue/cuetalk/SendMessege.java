@@ -153,16 +153,16 @@ public class SendMessege {
                 fmsg.put("read/", "dlqwkddhksfycjtaptlwl");
 
                 messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/uid/", myUid);
-                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/name/", name);
-                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/sex/", sex);
-                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/age/", age);
-                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/latitude/", latitude);
-                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/longitude/", longitude);
+//                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/name/", name);
+//                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/sex/", sex);
+//                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/age/", age);
+//                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/latitude/", latitude);
+//                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/longitude/", longitude);
                 messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/ischat/", "1");
                 messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/state/", "1");
                 messegeMap.put("/myroom/" + myUid + "/" + myUid + userUid, myUid + userUid);
 
-                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/pic/", pic);
+//                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/pic/", pic);
 
                 firstmsg.put("messege", messege);
                 firstmsg.put("name", name);
@@ -207,16 +207,16 @@ public class SendMessege {
 
                 Map<String, Object> userUpdate = new HashMap<>();
                 messegeMap.put("/messege/" + key + "/" + userUid + "/uid/", userUid);
-                messegeMap.put("/messege/" + key + "/" + userUid + "/name/", userName);
-                messegeMap.put("/messege/" + key + "/" + userUid + "/sex/", userSex);
-                messegeMap.put("/messege/" + key + "/" + userUid + "/age/", userAge);
+//                messegeMap.put("/messege/" + key + "/" + userUid + "/name/", userName);
+//                messegeMap.put("/messege/" + key + "/" + userUid + "/sex/", userSex);
+//                messegeMap.put("/messege/" + key + "/" + userUid + "/age/", userAge);
                 messegeMap.put("/messege/" + key + "/" + userUid + "/ischat/", "1");
                 messegeMap.put("/messege/" + key + "/" + userUid + "/state/", "1");
                 messegeMap.put("/myroom/" + userUid + "/" + key + "/", key);
-                messegeMap.put("/messege/" + key + "/" + userUid + "/pic/", userPic);
+//                messegeMap.put("/messege/" + key + "/" + userUid + "/pic/", userPic);
 
-                messegeMap.put("/messege/" + key + "/" + userUid + "/latitude/", latitudeS);
-                messegeMap.put("/messege/" + key + "/" + userUid + "/longitude/", longitudeS);
+//                messegeMap.put("/messege/" + key + "/" + userUid + "/latitude/", latitudeS);
+//                messegeMap.put("/messege/" + key + "/" + userUid + "/longitude/", longitudeS);
                 reference.updateChildren(messegeMap);
                 reference.child("messege").child(myUid + userUid).child("msg").push().updateChildren(fmsg);
                 reference.child("messege").child(myUid + userUid).child("msg").push().updateChildren(firstmsg).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -270,14 +270,14 @@ public class SendMessege {
         Map<String, Object> messegeMap = new HashMap<>();
 
         messegeMap.put("/messege/" + key + "/" + myUid + "/uid/", myUid);
-        messegeMap.put("/messege/" + key + "/" + myUid + "/name/", name);
-        messegeMap.put("/messege/" + key + "/" + myUid + "/sex/", sex);
-        messegeMap.put("/messege/" + key + "/" + myUid + "/age/", age);
-        messegeMap.put("/messege/" + key + "/" + myUid + "/latitude/", latitude);
-        messegeMap.put("/messege/" + key + "/" + myUid + "/longitude/", longitude);
-        if (pic != null) {
-            messegeMap.put("/messege/" + key + "/" + myUid + "/pic/", pic);
-        }
+//        messegeMap.put("/messege/" + key + "/" + myUid + "/name/", name);
+//        messegeMap.put("/messege/" + key + "/" + myUid + "/sex/", sex);
+//        messegeMap.put("/messege/" + key + "/" + myUid + "/age/", age);
+//        messegeMap.put("/messege/" + key + "/" + myUid + "/latitude/", latitude);
+//        messegeMap.put("/messege/" + key + "/" + myUid + "/longitude/", longitude);
+//        if (pic != null) {
+//            messegeMap.put("/messege/" + key + "/" + myUid + "/pic/", pic);
+//        }
         reference.updateChildren(messegeMap);
 //        reference.getRef().child("messege").child(key).child("msg").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
 //            @Override

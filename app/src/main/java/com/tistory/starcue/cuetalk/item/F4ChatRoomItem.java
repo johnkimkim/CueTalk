@@ -1,7 +1,7 @@
 package com.tistory.starcue.cuetalk.item;
 
 public class F4ChatRoomItem {
-    String name, messege, time, uri, read, uid;
+    String messege, time, uri, read, uid;
 
     public String getUri() {
         return uri;
@@ -9,14 +9,6 @@ public class F4ChatRoomItem {
 
     public void setUri(String uri) {
         this.uri = uri;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getMessege() {

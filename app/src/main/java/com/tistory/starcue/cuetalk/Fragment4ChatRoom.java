@@ -85,7 +85,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     private FirebaseFirestore db;
     private StorageReference storageReference;
 
-    String myUid, userUid, myUiduserUid, userUidmyUid;
+    String myUid, userUid, myUiduserUid, userUidmyUid, userPic, userName, userSex, userAge, userLatitude, userLongitude;
     String getroomname;
     String myName, myPic, myTime;
 
@@ -110,6 +110,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         isOpen = false;
         outAlready = false;
         setinit();
+        Log.d("Fragment4ChatRoom>>>", "set state onCreate");
     }
 
     private void getMyProfile() {
@@ -125,7 +126,13 @@ public class Fragment4ChatRoom extends AppCompatActivity {
 
     private void getUserUid() {
         Intent intent = getIntent();
-        userUid = intent.getStringExtra("child");
+        userUid = intent.getStringExtra("userUid");
+        userName = intent.getStringExtra("userName");
+        userSex = intent.getStringExtra("userSex");
+        userAge = intent.getStringExtra("userAge");
+        userPic = intent.getStringExtra("userPic");
+        userLatitude = intent.getStringExtra("userLatitude");
+        userLongitude = intent.getStringExtra("userLongitude");
         myUiduserUid = myUid + userUid;
         userUidmyUid = userUid + myUid;
         cancelNotify(userUid);
@@ -140,7 +147,8 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         cancelNotify(userUid);
-        setState();
+//        setState();
+        Log.d("Fragment4ChatRoom>>>", "set state onResume roomkey: " + getroomname);
     }
 
     private void setinit() {
@@ -187,6 +195,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         Map<String, Object> setState = new HashMap<>();
         setState.put("/messege/" + getroomname + "/" + myUid + "/state/", "2");//채팅중
         reference.updateChildren(setState);
+        Log.d("Fragment4ChatRoom>>>", "set state 2");
     }
 
     private void setOutState() {
@@ -198,6 +207,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                     Map<String, Object> setState = new HashMap<>();
                     setState.put("/messege/" + getroomname + "/" + myUid + "/state/", "1");//채팅방 나감
                     reference.updateChildren(setState);
+                    Log.d("Fragment4ChatRoom>>>", "set state 1 getroomname: " + getroomname);
                 } else {
                     Log.d("Fragment4ChatRoom>>>", "getroomname null");
                 }
@@ -539,7 +549,6 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                 Map<String, Object> sendmsg = new HashMap<>();
                 Map<String, Object> lastmsg = new HashMap<>();
                 sendmsg.put("messege", messege);
-                sendmsg.put("name", myName);
                 sendmsg.put("time", getTime());
                 sendmsg.put("read", "1");
                 sendmsg.put("uid", myUid);
@@ -703,7 +712,6 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         Map<String, Object> sendmsgpic = new HashMap<>();
         Map<String, Object> lastmsg = new HashMap<>();
         sendmsgpic.put("uri", uri);
-        sendmsgpic.put("name", myName);
         sendmsgpic.put("pic", myPic);
         sendmsgpic.put("time", getTime());
         sendmsgpic.put("read", "1");
@@ -994,6 +1002,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
 //            setOutState();
 //        }
         setOutState();
+
 
     }
 

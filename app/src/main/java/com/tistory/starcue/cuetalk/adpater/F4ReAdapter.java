@@ -167,31 +167,54 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
             @Override
             public void onClick(View view) {
                 MainActivity.loading.setVisibility(View.VISIBLE);
-                reference = FirebaseDatabase.getInstance().getReference();
-                reference.getRef().child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//                reference = FirebaseDatabase.getInstance().getReference();
+//                reference.getRef().child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//                    @Override
+//                    public void onSuccess(DataSnapshot dataSnapshot) {
+//                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+//                            if (dataSnapshot1.getKey().contains(myUid) && dataSnapshot1.getKey().contains(arrayList.get(position).getUid())) {
+//                                Log.d("F4ReAdapter>>>", "key: " + dataSnapshot1.getKey());
+//                                for (DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()) {
+//                                    if (dataSnapshot2.getKey().equals(arrayList.get(position).getUid())) {
+//                                        String yourPic = dataSnapshot2.child("pic").getValue(String.class);
+//                                        Toast.makeText(context, arrayList.get(position).getUid(), Toast.LENGTH_SHORT).show();
+//                                        Intent intent = new Intent(context, Fragment4ChatRoom.class);
+//                                        intent.putExtra("child", arrayList.get(position).getUid());
+//                                        intent.putExtra("yourPic", yourPic);
+//                                        Fragment4.stayf4chatroom = true;
+//                                        MainActivity.loading.setVisibility(View.GONE);
+//                                        context.startActivity(intent);
+//                                    }
+//                                }
+//                                break;
+//                            }
+//                        }
+//                    }
+//                });
+
+                db.collection("users").document(arrayList.get(position).getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
-                    public void onSuccess(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                            if (dataSnapshot1.getKey().contains(myUid) && dataSnapshot1.getKey().contains(arrayList.get(position).getUid())) {
-                                Log.d("F4ReAdapter>>>", "key: " + dataSnapshot1.getKey());
-                                for (DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()) {
-                                    if (dataSnapshot2.getKey().equals(arrayList.get(position).getUid())) {
-                                        String yourPic = dataSnapshot2.child("pic").getValue(String.class);
-                                        Toast.makeText(context, arrayList.get(position).getUid(), Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(context, Fragment4ChatRoom.class);
-                                        intent.putExtra("child", arrayList.get(position).getUid());
-                                        intent.putExtra("yourPic", yourPic);
-                                        Fragment4.stayf4chatroom = true;
-                                        MainActivity.loading.setVisibility(View.GONE);
-                                        context.startActivity(intent);
-                                    }
-                                }
-                                break;
-                            }
-                        }
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        String userPic = documentSnapshot.get("pic").toString();
+                        String userName = documentSnapshot.get("name").toString();
+                        String userSex = documentSnapshot.get("sex").toString();
+                        String userAge = documentSnapshot.get("age").toString();
+                        String latitude = documentSnapshot.get("latitude").toString();
+                        String longitude = documentSnapshot.get("longitude").toString();
+                        Intent intent = new Intent(context, Fragment4ChatRoom.class);
+                        intent.putExtra("userUid", arrayList.get(position).getUid());
+                        intent.putExtra("userPic", userPic);
+                        intent.putExtra("userName", userName);
+                        Log.d("getUserName>>>1", userName);
+                        intent.putExtra("userSex", userSex);
+                        intent.putExtra("userAge", userAge);
+                        intent.putExtra("latitude", latitude);
+                        intent.putExtra("longitude", longitude);
+                        Fragment4.stayf4chatroom = true;
+                        MainActivity.loading.setVisibility(View.GONE);
+                        context.startActivity(intent);
                     }
                 });
-
             }
         });
 

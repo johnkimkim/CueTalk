@@ -33,8 +33,10 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -83,6 +85,8 @@ public class Fragment1 extends Fragment {
     private SQLiteDatabase sqLiteDatabase;
     private DatabaseReference reference;
 
+    String isnull;
+
     public Fragment1() {
         // Required empty public constructor
     }
@@ -99,10 +103,17 @@ public class Fragment1 extends Fragment {
                 Map<String, Object> map = new HashMap<>();
                 map.put("uid", myUid);
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
-                db.collection("deleteUser").document(myUid).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                db.collection("f2messege").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-//                        lastDeleteUser();
+                    public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            if (documentSnapshot.exists()) {
+                                Log.d("testtest>>>", "f2 have: " + isnull);
+                            } else {
+                                Log.d("testtest>>>", "f2 null" + isnull);
+                            }
+                        }
                     }
                 });
             }

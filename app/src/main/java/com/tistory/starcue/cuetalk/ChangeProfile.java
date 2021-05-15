@@ -51,6 +51,8 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.HashMap;
@@ -69,20 +71,20 @@ public class ChangeProfile extends AppCompatActivity {
     DatabaseReference reference;
     String myUid;
     String mySex;
-    String picUri;
+    String myName;
+    String myAge;
+    String myPicUri;
 
     DatabaseHandler databaseHandler;
     private SQLiteDatabase sqLiteDatabase;
 
-    private EditText editid;
+    private EditText editText;
     private Button yesbtn, nobtn;
     RadioButton radiomale, radiofemale;
-    String myName;
-    String myAge;
-    String agestring;
     String newSex;
     String newName;
     String newAge;
+    String newPicUri;
     RadioGroup radioGroup;
     Spinner agespin;
     RelativeLayout relativeLayout;
@@ -102,8 +104,8 @@ public class ChangeProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.change_profile);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("willdelete", MODE_PRIVATE);
-        willdelete = sharedPreferences.getBoolean("willdelete", false);
+//        SharedPreferences sharedPreferences = getSharedPreferences("willdelete", MODE_PRIVATE);
+//        willdelete = sharedPreferences.getBoolean("willdelete", false);
 
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
@@ -125,7 +127,7 @@ public class ChangeProfile extends AppCompatActivity {
     }
 
     private void setinit() {
-        editid = findViewById(R.id.change_profile_editid);
+        editText = findViewById(R.id.change_profile_editid);
         yesbtn = findViewById(R.id.change_profile_yesbtn);
         nobtn = findViewById(R.id.change_profile_nobtn);
         radiomale = findViewById(R.id.change_profile_sexmale);
@@ -150,7 +152,7 @@ public class ChangeProfile extends AppCompatActivity {
         deletePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setDeletePic();
+                setDeletePicButton();
             }
         });
 
@@ -161,20 +163,18 @@ public class ChangeProfile extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 myName = documentSnapshot.get("name").toString();
-                editid.setText(documentSnapshot.get("name").toString());
+                editText.setText(documentSnapshot.get("name").toString());
                 myAge = documentSnapshot.get("age").toString();
                 int ageint = Integer.parseInt(myAge);
                 agespin.setSelection(ageint - 19);
-                String sex = documentSnapshot.get("sex").toString();
-                picUri = documentSnapshot.get("pic").toString();
+                myPicUri = documentSnapshot.get("pic").toString();
                 mySex = documentSnapshot.get("sex").toString();
-                if (sex.equals("남자")) {
+                if (mySex.equals("남자")) {
                     radioGroup.check(R.id.change_profile_sexmale);
-                } else if (sex.equals("여자")) {
+                } else if (mySex.equals("여자")) {
                     radioGroup.check(R.id.change_profile_sexfemale);
                 }
-                Log.d("ChangeProfile>>>", "get pic uri: " + picUri);
-                Glide.with(ChangeProfile.this).load(picUri).override(300, 300).circleCrop().into(imageView);
+                Glide.with(ChangeProfile.this).load(myPicUri).override(300, 300).circleCrop().into(imageView);
                 relativeLayout.setVisibility(View.GONE);
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -186,7 +186,171 @@ public class ChangeProfile extends AppCompatActivity {
 
     }
 
-    private void setDeletePic() {
+    private void setYesBtn() {
+        yesbtn.setOnClickListener(view -> {
+            hideKeyboard(view);
+            if (radiomale.isChecked()) {
+                newSex = "남자";
+            } else if (radiofemale.isChecked()) {
+                newSex = "여자";
+            } else {
+                newSex = "";
+            }
+
+            newName = editText.getText().toString();
+
+            int i = Integer.parseInt(newAge);
+
+            if (newName.equals("")) {
+                Toast.makeText(ChangeProfile.this, "닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
+            } else if (newName.matches(".*[ㄱ-ㅎ ㅏ-ㅣ]+.*")) {
+                Toast.makeText(ChangeProfile.this, "올바른 닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
+            } else if (i == 0) {
+                Toast.makeText(ChangeProfile.this, "나이를 선택해주세요", Toast.LENGTH_SHORT).show();
+            } else if (newSex.equals("")) {
+                Toast.makeText(ChangeProfile.this, "성별을 선택해주세요", Toast.LENGTH_SHORT).show();
+            } else {
+                relativeLayout.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
+
+                updateUser(newName, newSex, newAge);
+            }
+
+        });
+    }
+
+    private void updateUser(String name, String sex, String age) {
+
+        Map<String, Object> user = new HashMap<>();
+        user.put("name", name);
+        user.put("sex", sex);
+        user.put("age", age);
+        databaseHandler.changeName(name);
+
+        db.collection("users").document(myUid)
+                .update(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        if (imageUri != null) {
+                            uploadPic();
+                        } else {
+                            ifNoAddPic();
+                        }
+                        Log.d("ChangeProfile>>>", "check2");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        relativeLayout.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(ChangeProfile.this, "네트워크문제로 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void uploadPic() {//pic 변경 및 신규등록
+        final ProgressDialog pd = new ProgressDialog(ChangeProfile.this);
+        pd.setCancelable(false);
+        pd.setTitle("이미지 업로드 중...");
+        pd.show();
+
+        StorageReference storageReference1 = storageReference.child("images/" + myUid);
+        storageReference1.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) { //storage에 image file 여부 확인
+                if (listResult.getItems().size() == 0) {
+                    uploadPic2(myUid + "count1", pd);
+                } else {
+                    for (StorageReference listResult1 : listResult.getItems()) {
+                        Log.d("ChangeProfile>>>", "check3");
+                        if (listResult1.getName().equals(myUid + "count1")) {
+                            uploadPic2(myUid + "count2", pd);
+                            storageReference.child("images/" + myUid + "/" + myUid + "count1").delete();
+                        } else if (listResult1.getName().equals(myUid + "count2")) {
+                            uploadPic2(myUid + "count1", pd);
+                            storageReference.child("images/" + myUid + "/" + myUid + "count2").delete();
+                        }
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("ChangeProfile>>>", "onFailure");
+            }
+        });
+    }
+
+    private void ifNoAddPic() {
+        if (willdelete) {//사진 삭제할때
+            Log.d("ChangeProfile>>>", "testtest1");
+            Map<String, Object> map = new HashMap<>();
+            if (newSex.equals("남자")) {
+                map.put("pic", nullPic);
+            } else {
+                map.put("pic", nullPicF);
+            }
+            db.collection("users").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {//store변경
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("ChangeProfile>>>", "testtest2");
+                    StorageReference storageReference1 = storageReference.child("images/" + myUid);
+                    storageReference1.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                        @Override
+                        public void onSuccess(ListResult listResult) {
+                            for (StorageReference listResult1 : listResult.getItems()) {
+                                if (listResult1.getName().equals(myUid + "count1")) {
+                                    deleteFileInStorage(myUid + "count1");
+                                } else if (listResult1.getName().equals(myUid + "count2")) {
+                                    deleteFileInStorage(myUid + "count2");
+                                }
+                            }
+
+                            if (listResult.getItems().size() == 0) {
+                                Log.d("ChangeProfile>>>", "testtest4");
+                                f2change();
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("ChangeProfile>>>", "onFailure");
+                        }
+                    });
+                }
+            });
+        } else {//원래 pic 없는 상태로 나머지만 변경할때
+            Map<String, Object> map = new HashMap<>();
+            if (newSex.equals("남자")) {
+                map.put("pic", nullPic);
+            } else {
+                map.put("pic", nullPicF);
+            }
+            db.collection("users").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    f2change();
+                }
+            });
+        }
+    }
+
+    private void deleteFileInStorage(String filename) {//storage에 파일 삭제
+        storageReference.child("images/" + myUid + "/" + filename).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                f2change();
+            }
+        });
+    }
+
+    private void setNoBtn() {
+        nobtn.setOnClickListener(view -> onBackPressed());
+    }
+
+    private void setDeletePicButton() {
         db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -222,89 +386,7 @@ public class ChangeProfile extends AppCompatActivity {
         }
     }
 
-    private void uploadPic() {
-        if (imageUri != null) { //pic 변경 및 신규등록
-            final ProgressDialog pd = new ProgressDialog(ChangeProfile.this);
-            pd.setCancelable(false);
-            pd.setTitle("이미지 업로드 중...");
-            pd.show();
-
-            StorageReference storageReference1 = storageReference.child("images/" + myUid);
-            storageReference1.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
-                @Override
-                public void onSuccess(ListResult listResult) {
-                    if (listResult.getItems().size() == 0) {
-                        uploadPic2(myUid + "count1", pd);
-                    } else {
-                        for (StorageReference listResult1 : listResult.getItems()) {
-                            Log.d("ChangeProfile>>>", "check3");
-                            if (listResult1.getName().equals(myUid + "count1")) {
-                                uploadPic2(myUid + "count2", pd);
-                                storageReference.child("images/" + myUid + "/" + myUid + "count1").delete();
-                            } else if (listResult1.getName().equals(myUid + "count2")) {
-                                uploadPic2(myUid + "count1", pd);
-                                storageReference.child("images/" + myUid + "/" + myUid + "count2").delete();
-                            }
-                        }
-                    }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d("ChangeProfile>>>", "onFailure");
-                }
-            });
-
-        } else {
-            if (willdelete) {//사진 삭제변경할때
-                Log.d("ChangeProfile>>>", "testtest1");
-                Map<String, Object> map = new HashMap<>();
-                if (mySex.equals("남자")) {
-                    map.put("pic", nullPic);
-                } else {
-                    map.put("pic", nullPicF);
-                }
-                db.collection("users").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {//store변경
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("ChangeProfile>>>", "testtest2");
-                        StorageReference storageReference1 = storageReference.child("images/" + myUid);
-                        storageReference1.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
-                            @Override
-                            public void onSuccess(ListResult listResult) {
-                                Log.d("ChangeProfile>>>", "testtest3");
-                                for (StorageReference listResult1 : listResult.getItems()) {
-                                    Log.d("ChangeProfile>>>", "check4");
-                                    if (listResult1.getName().equals(myUid + "count1")) {
-                                        updatePic2(myUid + "count1");
-                                    } else if (listResult1.getName().equals(myUid + "count2")) {
-                                        updatePic2(myUid + "count2");
-                                    }
-                                }
-
-                                if (listResult.getItems().size() == 0) {
-                                    Log.d("ChangeProfile>>>", "testtest4");
-                                    f2changepic();
-                                }
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d("ChangeProfile>>>", "onFailure");
-                            }
-                        });
-
-
-//                        Log.d("ChangeProfile>>>", "db.updqte success");
-
-                    }
-                });
-            }
-        }
-    }
-
-    private void uploadPic2(String fileName, ProgressDialog pd) {
-        String uid = mAuth.getUid();
+    private void uploadPic2(String fileName, ProgressDialog pd) {//storage에 image file 업로드하기
         StorageReference riversRef = storageReference.child("images/" + myUid + "/" + fileName);
         riversRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -313,9 +395,8 @@ public class ChangeProfile extends AppCompatActivity {
                 storageReference.child("images/" + myUid + "/" + fileName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Log.d("ChangeProfile>>>", "check5");
-                        String picUri = uri.toString();
-                        uploadPicInStore(picUri);
+                        newPicUri = uri.toString();
+                        updateFirestoreUser(newPicUri);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -344,116 +425,76 @@ public class ChangeProfile extends AppCompatActivity {
         });
     }
 
-    private void updatePic2(String filename) {
-        storageReference.child("images/" + myUid + "/" + filename).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                reference.getRef().child("myroom").child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                    @Override
-                    public void onSuccess(DataSnapshot dataSnapshot) {
-                        int i = (int) dataSnapshot.getChildrenCount();
-                        if (i > 0) {
-                            Map<String, Object> map1 = new HashMap<>();//실시간 채팅 pic 변경
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                if (mySex.equals("남자")) {
-                                    map1.put("/messege/" + snapshot.getKey() + "/" + myUid + "/" + "pic/", nullPic);
-                                } else {
-                                    map1.put("/messege/" + snapshot.getKey() + "/" + myUid + "/" + "pic/", nullPicF);
-                                }
-                                reference.updateChildren(map1).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-
-
-                                        //f2 change pic
-                                        f2changepic();
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                    }
-                                });
-                            }
-                        } else {
-                            //f2 change pic
-                            f2changepic();
-                        }
-                    }
-                });
-            }
-        });
-    }
-
-    private void f2changepic() {
-        //if delete pic
-        //f2 change pic
-        Map<String, Object> map2 = new HashMap<>();
-        if (mySex.equals("남자")) {
-            map2.put("pic", nullPic);
-            map2.put("sex", newSex);
-            map2.put("age", newAge);
-            map2.put("name", newName);
-        } else {
-            map2.put("pic", nullPicF);
-            map2.put("sex", newSex);
-            map2.put("age", newAge);
-            map2.put("name", newName);
-        }
-
-        db.collection("f2messege").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot snapshot = task.getResult();
-                    if (snapshot != null && snapshot.exists()) {
-                        db.collection("f2messege").document(myUid).update(map2).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {//storage mypic delete
-                                f3changePic();
-                            }
-                        });
-                    } else {
-                        goToMain();
-                    }
-                } else {
-                    Log.d("ChangeProfile>>>", "onFailed2");
-                }
-            }
-        });
-    }
-
-    private void f3changePic() {
-        Map<String, Object> map2 = new HashMap<>();
-        if (mySex.equals("남자")) {
-            map2.put("pic", nullPic);
-            map2.put("sex", newSex);
-            map2.put("age", newAge);
-            map2.put("name", newName);
-        } else {
-            map2.put("pic", nullPicF);
-            map2.put("sex", newSex);
-            map2.put("age", newAge);
-            map2.put("name", newName);
-        }
-        db.collection("f3messege").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot snapshot = task.getResult();
-                    if (snapshot != null && snapshot.exists()) {
-                        db.collection("f3messege").document(myUid).update(map2).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {//storage mypic delete
-                                goToMain();
-                            }
-                        });
-                    } else {
-                        goToMain();
-                    }
-                }
-            }
-        });
-    }
+//    private void f2changepic() {
+//        //if delete pic
+//        //f2 change pic
+//        Map<String, Object> map2 = new HashMap<>();
+//        if (mySex.equals("남자")) {
+//            map2.put("pic", nullPic);
+//            map2.put("sex", newSex);
+//            map2.put("age", newAge);
+//            map2.put("name", newName);
+//        } else {
+//            map2.put("pic", nullPicF);
+//            map2.put("sex", newSex);
+//            map2.put("age", newAge);
+//            map2.put("name", newName);
+//        }
+//
+//        db.collection("f2messege").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot snapshot = task.getResult();
+//                    if (snapshot != null && snapshot.exists()) {
+//                        db.collection("f2messege").document(myUid).update(map2).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                            @Override
+//                            public void onSuccess(Void aVoid) {//storage mypic delete
+//                                f3changePic();
+//                            }
+//                        });
+//                    } else {
+//                        goToMain();
+//                    }
+//                } else {
+//                    Log.d("ChangeProfile>>>", "onFailed2");
+//                }
+//            }
+//        });
+//    }
+//
+//    private void f3changePic() {
+//        Map<String, Object> map2 = new HashMap<>();
+//        if (mySex.equals("남자")) {
+//            map2.put("pic", nullPic);
+//            map2.put("sex", newSex);
+//            map2.put("age", newAge);
+//            map2.put("name", newName);
+//        } else {
+//            map2.put("pic", nullPicF);
+//            map2.put("sex", newSex);
+//            map2.put("age", newAge);
+//            map2.put("name", newName);
+//        }
+//        db.collection("f3messege").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot snapshot = task.getResult();
+//                    if (snapshot != null && snapshot.exists()) {
+//                        db.collection("f3messege").document(myUid).update(map2).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                            @Override
+//                            public void onSuccess(Void aVoid) {//storage mypic delete
+//                                goToMain();
+//                            }
+//                        });
+//                    } else {
+//                        goToMain();
+//                    }
+//                }
+//            }
+//        });
+//    }
 
 //    private void f4change() {
 //        reference.getRef().child("myroom").child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
@@ -476,44 +517,6 @@ public class ChangeProfile extends AppCompatActivity {
 //        });
 //    }
 
-    private void setYesBtn() {
-        yesbtn.setOnClickListener(view -> {
-            hideKeyboard(view);
-            if (radiomale.isChecked()) {
-                newSex = "남자";
-            } else if (radiofemale.isChecked()) {
-                newSex = "여자";
-            } else {
-                newSex = "";
-            }
-
-            newName = editid.getText().toString();
-
-            int i = Integer.parseInt(agestring);
-
-            if (newName.equals("")) {
-                Toast.makeText(ChangeProfile.this, "닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
-            } else if (newName.matches(".*[ㄱ-ㅎ ㅏ-ㅣ]+.*")) {
-                Toast.makeText(ChangeProfile.this, "올바른 닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
-            } else if (i == 0) {
-                Toast.makeText(ChangeProfile.this, "나이를 선택해주세요", Toast.LENGTH_SHORT).show();
-            } else if (newSex.equals("")) {
-                Toast.makeText(ChangeProfile.this, "성별을 선택해주세요", Toast.LENGTH_SHORT).show();
-            } else {
-                relativeLayout.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.VISIBLE);
-
-                updateUser(newName, newSex, agestring);
-                Log.d("ChangeProfile>>>", "check1");
-            }
-
-        });
-    }
-
-    private void setNoBtn() {
-        nobtn.setOnClickListener(view -> onBackPressed());
-    }
-
     private void setagespin() {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(ChangeProfile.this, android.R.layout.select_dialog_item, items);
         arrayAdapter.setDropDownViewResource(android.R.layout.select_dialog_item);
@@ -523,9 +526,9 @@ public class ChangeProfile extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (i == 0) {
-                    agestring = "0";
+                    newAge = "0";
                 } else {
-                    agestring = Integer.toString(i + 19);
+                    newAge = Integer.toString(i + 19);
                 }
             }
 
@@ -536,89 +539,91 @@ public class ChangeProfile extends AppCompatActivity {
         });
     }
 
-    private void updateUser(String name, String sex, String age) {
-
-        String user_uid = mAuth.getUid();
-
-        Map<String, Object> user = new HashMap<>();
-        user.put("name", name);
-        user.put("sex", sex);
-        user.put("age", age);
-        databaseHandler.changeName(name);
-
-        db.collection("users").document(user_uid)
-                .update(user)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        uploadPic();
-                        Log.d("ChangeProfile>>>", "check2");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        relativeLayout.setVisibility(View.GONE);
-                        progressBar.setVisibility(View.GONE);
-                        Toast.makeText(ChangeProfile.this, "네트워크문제로 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private void uploadPicInStore(String uri) {
-        String user_iod = mAuth.getUid();
+    private void updateFirestoreUser(String uri) {
         Map<String, Object> userPic = new HashMap<>();
         userPic.put("pic", uri);
-        db.collection("users").document(user_iod)
+        db.collection("users").document(myUid)
                 .update(userPic)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {//my profile update in storage
                     @Override
                     public void onSuccess(Void aVoid) {
-                        db.collection("f2messege").document(myUid).update(userPic).addOnSuccessListener(new OnSuccessListener<Void>() {//f2messege update pic
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d("ChangeProfile>>>", "check6");
-                                f3changePic2(uri);
-                            }
-                        });
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
+                        f2change();
                     }
                 });
     }
 
-    private void f3changePic2(String uri) {
-        Map<String, Object> userPic = new HashMap<>();
-        userPic.put("pic", uri);
-        db.collection("f3messege").document(myUid).update(userPic).addOnSuccessListener(new OnSuccessListener<Void>() {
+    private void f2change() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", newName);
+        map.put("sex", newSex);
+        map.put("age", newAge);
+        if (newPicUri != null) {
+            map.put("pic", newPicUri);
+            Log.d("ChangeProfile>>>", "newPicUri have f2");
+        } else {
+            Log.d("ChangeProfile>>>", "newPicUri null f2");
+            if (newSex.equals("남자")) {
+                map.put("pic", nullPic);
+            } else {
+                map.put("pic", nullPicF);
+            }
+        }
+        db.collection("f2messege").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(Void aVoid) {
-                reference.getRef().child("myroom").child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                    @Override
-                    public void onSuccess(DataSnapshot dataSnapshot) {
-                        //realtime messege update pic
-                        int i = (int) dataSnapshot.getChildrenCount();
-                        Map<String, Object> map = new HashMap<>();
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            map.put("/messege/" + snapshot.getKey() + "/" + myUid + "/pic/", uri);
-                            if (map.size() == i) {
-                                reference.updateChildren(map);
-                                Log.d("ChangeProfile>>>", "add map finished");
+            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot snapshot = task.getResult();
+                    if (snapshot.exists()) {
+                        //f2에 내 글 있을때
+                        db.collection("f2messege").document().update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                f3change();
+                            }
+                        });
+                    } else {
+                        //f2에 내 글 없을때
+                        f3change();
+                    }
+                }
+            }
+        });
+    }
+
+    private void f3change() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", newName);
+        map.put("sex", newSex);
+        map.put("age", newAge);
+        if (newPicUri != null) {
+            map.put("pic", newPicUri);
+            Log.d("ChangeProfile>>>", "newPicUri have f3");
+        } else {
+            Log.d("ChangeProfile>>>", "newPicUri null f3");
+            if (newSex.equals("남자")) {
+                map.put("pic", nullPic);
+            } else {
+                map.put("pic", nullPicF);
+            }
+        }
+        db.collection("f3messege").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot snapshot = task.getResult();
+                    if (snapshot.exists()) {
+                        //f3에 내 글 있을때
+                        db.collection("f3messege").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
                                 goToMain();
                             }
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("ChangeProfile>>>", "change realtime fail");
+                        });
+                    } else {
+                        //f3에 내 글 없을때
                         goToMain();
                     }
-                });
+                }
             }
         });
     }
@@ -640,10 +645,10 @@ public class ChangeProfile extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        SharedPreferences sharedPreferences = getSharedPreferences("willdelete", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("willdelete", willdelete);
-        editor.commit();
+//        SharedPreferences sharedPreferences = getSharedPreferences("willdelete", MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putBoolean("willdelete", willdelete);
+//        editor.commit();
     }
 
     private void hideKeyboard(View v) {

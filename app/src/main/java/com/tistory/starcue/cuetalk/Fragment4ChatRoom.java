@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -63,6 +64,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Fragment4ChatRoom extends AppCompatActivity {
+
+    private SharedPreferences sharedPreferences;
 
     private static final String serverKey = " AAAAqHwsNuA:APA91bEhOL4uoOR3d0Ys1qbFflQelzTPwaxBFLRI5Prx7tCor-KoivdXAKpLjz_PDlFctKT1iVPhwgXcPq8ioYh_TvaqSHPPjhCc98M5z7g9i3reg8Cqjbn-J0LbXXi0pSeMJa8KuYRk";
     private static final String FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send";
@@ -147,7 +150,12 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         cancelNotify(userUid);
-//        setState();
+
+        sharedPreferences = getSharedPreferences("saveroomkey", MODE_PRIVATE);
+        if (getroomname == null) {
+            getroomname = sharedPreferences.getString("getroomkey", "");
+        }
+        setState();
         Log.d("Fragment4ChatRoom>>>", "set state onResume roomkey: " + getroomname);
     }
 
@@ -1002,8 +1010,10 @@ public class Fragment4ChatRoom extends AppCompatActivity {
 //            setOutState();
 //        }
         setOutState();
-
-
+        sharedPreferences = getSharedPreferences("saveroomkey", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("getroomname", getroomname);
+        editor.apply();
     }
 
     private String getTime() {

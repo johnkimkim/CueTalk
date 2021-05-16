@@ -101,6 +101,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     boolean isOpen;
     boolean outAlready;
     boolean finishedAll;
+    boolean pressBack;
 
     String msgUid;
     String myState;
@@ -114,6 +115,18 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         outAlready = false;
         setinit();
         Log.d("Fragment4ChatRoom>>>", "set state onCreate");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("Fragment4ChatRoom>>>", "set state onStart");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d("Fragment4ChatRoom>>>", "set state onReStart");
     }
 
     private void getMyProfile() {
@@ -152,11 +165,36 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         cancelNotify(userUid);
 
         sharedPreferences = getSharedPreferences("saveroomkey", MODE_PRIVATE);
-        if (getroomname == null) {
-            getroomname = sharedPreferences.getString("getroomkey", "");
+        if (sharedPreferences != null) {
+            getroomname = sharedPreferences.getString("getroomname", "");
+            if (!getroomname.equals("")) {
+                setState();
+            }
         }
-        setState();
-        Log.d("Fragment4ChatRoom>>>", "set state onResume roomkey: " + getroomname);
+
+//        Log.d("Fragment4ChatRoom>>>", "set state onResume roomkey: " + getroomname);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+//        if (!outAlready) {
+//            setOutState();
+//        }
+
+        setOutState();
+
+        if (!pressBack) {//back버튼 누르지 않았을때만 getroomname 저장
+            sharedPreferences = getSharedPreferences("saveroomkey", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("getroomname", getroomname);
+            editor.apply();
+        } else {//back버튼 눌렀을때는 sharedPreferences 삭제
+            sharedPreferences = getSharedPreferences("saveroomkey", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove("getroomname").apply();
+        }
     }
 
     private void setinit() {
@@ -205,7 +243,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         Map<String, Object> setState = new HashMap<>();
         setState.put("/messege/" + getroomname + "/" + myUid + "/state/", "2");//채팅중
         reference.updateChildren(setState);
-        Log.d("Fragment4ChatRoom>>>", "set state 2");
+        Log.d("Fragment4ChatRoom>>>", "set state 2: " + getroomname);
     }
 
     private void setOutState() {
@@ -249,19 +287,26 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                     Log.d("Fragment4ChatRoom>>>", snapshot.getKey());
                     Log.d("Fragment4ChatRoom>>>", myUiduserUid);
                     Log.d("Fragment4ChatRoom>>>", userUidmyUid);
-                    if (snapshot.getKey().equals(myUiduserUid)) {
-                        getroomname = myUiduserUid;
-                        adapter = new F4ChatRoomAdapter(Fragment4ChatRoom.this, arrayList, getroomname, Glide.with(Fragment4ChatRoom.this));
-                        recyclerView.setAdapter(adapter);
-                        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
-                        setRecyclerviewList();
-                    } else if (snapshot.getKey().equals(userUidmyUid)) {
-                        getroomname = userUidmyUid;
+                    if (snapshot.getKey().contains(myUid) && snapshot.getKey().contains(userUid)) {
+                        getroomname = snapshot.getKey();
                         adapter = new F4ChatRoomAdapter(Fragment4ChatRoom.this, arrayList, getroomname, Glide.with(Fragment4ChatRoom.this));
                         recyclerView.setAdapter(adapter);
                         recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
                         setRecyclerviewList();
                     }
+//                    if (snapshot.getKey().equals(myUiduserUid)) {
+//                        getroomname = myUiduserUid;
+//                        adapter = new F4ChatRoomAdapter(Fragment4ChatRoom.this, arrayList, getroomname, Glide.with(Fragment4ChatRoom.this));
+//                        recyclerView.setAdapter(adapter);
+//                        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+//                        setRecyclerviewList();
+//                    } else if (snapshot.getKey().equals(userUidmyUid)) {
+//                        getroomname = userUidmyUid;
+//                        adapter = new F4ChatRoomAdapter(Fragment4ChatRoom.this, arrayList, getroomname, Glide.with(Fragment4ChatRoom.this));
+//                        recyclerView.setAdapter(adapter);
+//                        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+//                        setRecyclerviewList();
+//                    }
                 }
             }
         });
@@ -982,17 +1027,9 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-
-//        if (!outAlready) {
-//            setOutState();
-//        }
-        setOutState();
-        sharedPreferences = getSharedPreferences("saveroomkey", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("getroomname", getroomname);
-        editor.apply();
+    public void onBackPressed() {
+        super.onBackPressed();
+        pressBack = true;
     }
 
     private String getTime() {

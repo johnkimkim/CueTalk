@@ -274,7 +274,6 @@ public class LoginActivity extends AppCompatActivity {
         user.put("sex", sex);
         user.put("age", age);
         user.put("notify", "on");
-        databaseHandler.insertName(name);
 
         db.collection("users").document(user_uid)
                 .update(user)

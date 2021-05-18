@@ -85,6 +85,7 @@ public class Fragment1 extends Fragment {
     private SQLiteDatabase sqLiteDatabase;
     private DatabaseReference reference;
 
+    String myUid;
     String isnull;
 
     public Fragment1() {
@@ -103,15 +104,14 @@ public class Fragment1 extends Fragment {
                 Map<String, Object> map = new HashMap<>();
                 map.put("uid", myUid);
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
-                db.collection("f2messege").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                db.collection("users").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
                             DocumentSnapshot documentSnapshot = task.getResult();
                             if (documentSnapshot.exists()) {
-                                Log.d("testtest>>>", "f2 have: " + isnull);
-                            } else {
-                                Log.d("testtest>>>", "f2 null" + isnull);
+                                Log.d("testtest>>>", "f2 have1: " + documentSnapshot.get("name").toString());
+                                Log.d("testtest>>>", "f2 have2: " + documentSnapshot.getData().get("name").toString());
                             }
                         }
                     }
@@ -140,20 +140,23 @@ public class Fragment1 extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String s = finalAdressList.get(i);
                 if (!s.equals("지역을 선택하세요")) {
+                    MainActivity.loading.setVisibility(View.VISIBLE);
                     reference.getRef().child("adressRoom").child(s).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                         @Override
                         public void onSuccess(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.getChildrenCount() < 30) {
-                                setdb(s);
+                                setDbAdress(s);
                                 Intent intent = new Intent(getActivity(), AdressRoom.class);
+//                                intent.putExtra("adress", s);
                                 startActivity(intent);
+                                spinner.setSelection(0);
+                                MainActivity.loading.setVisibility(View.GONE);
                             } else {
                                 Toast.makeText(getActivity(), "대화방 인원수가 꽉 찼습니다", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
                 }
-                spinner.setSelection(0);
 
             }
 
@@ -327,11 +330,23 @@ public class Fragment1 extends Fragment {
 
     }
 
-    private void setdb(String adress) {
+    private void setDbAdress(String adress) {
         databaseHandler.setDB(getActivity());
         databaseHandler = new DatabaseHandler(getActivity());
         sqLiteDatabase = databaseHandler.getWritableDatabase();
         databaseHandler.adressinsert(adress);
     }
 
+    private void setDeleteAdress() {
+        databaseHandler.setDB(getActivity());
+        databaseHandler = new DatabaseHandler(getActivity());
+        sqLiteDatabase = databaseHandler.getWritableDatabase();
+        databaseHandler.adressdelete();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setDeleteAdress();
+    }
 }

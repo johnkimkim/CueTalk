@@ -288,7 +288,6 @@ public class Fragment5 extends Fragment {
                     logout.setEnabled(false);
                     logoutDialogOkBtn.setEnabled(false);
                     logoutDialogNoBtn.setEnabled(false);
-                    databaseHandler.deleteName();
                     mAuth.signOut();
                     startActivity(new Intent(getActivity(), PhoneNumber.class));
                 }
@@ -427,7 +426,6 @@ public class Fragment5 extends Fragment {
     }
 
     private void lastDeleteUser() {
-        databaseHandler.deleteName();
         mAuth.signOut();
         mCurrentUser.delete();
         databaseHandler.uniquedelete();

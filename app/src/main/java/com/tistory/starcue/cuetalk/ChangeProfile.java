@@ -225,7 +225,6 @@ public class ChangeProfile extends AppCompatActivity {
         user.put("name", name);
         user.put("sex", sex);
         user.put("age", age);
-        databaseHandler.changeName(name);
 
         db.collection("users").document(myUid)
                 .update(user)

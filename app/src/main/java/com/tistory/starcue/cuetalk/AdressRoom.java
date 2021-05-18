@@ -74,6 +74,7 @@ public class AdressRoom extends AppCompatActivity {
 
     String name, sex, age, pic;
     String uid;
+    String adress;
 
     private GpsTracker gpsTracker;
 
@@ -109,8 +110,12 @@ public class AdressRoom extends AppCompatActivity {
         databaseHandler.setDB(AdressRoom.this);
         databaseHandler = new DatabaseHandler(AdressRoom.this);
         sqLiteDatabase = databaseHandler.getWritableDatabase();
-        databaseHandler.deleteWhere();
+//        databaseHandler.deleteWhere();
 
+        adress = getAdress();
+
+//        adress = getIntent().getStringExtra("adress");
+//        Log.d("AdressRoom>>>", "get intent adress: " + adress);
 //        getGps();
 
         setBottomSheet();
@@ -150,7 +155,7 @@ public class AdressRoom extends AppCompatActivity {
         recyclerViewBottom.setAdapter(bottomAdapter);
 
         database = FirebaseDatabase.getInstance();
-        whoRef = database.getReference("chatting").child(uid);
+        whoRef = database.getReference("대화신청").child(uid);
 
         whoRef.addChildEventListener(new ChildEventListener() {
             @Override
@@ -235,7 +240,6 @@ public class AdressRoom extends AppCompatActivity {
     private void setRecyclerView() {
 
 //        String adress = getIntent().getStringExtra("adress");
-        String adress = getAdress();
 
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(AdressRoom.this);
@@ -317,6 +321,7 @@ public class AdressRoom extends AppCompatActivity {
                 Log.e("AdressRoom>>>", String.valueOf(error.toException()));
             }
         });
+
         reference.getRef().child("adressRoom").child(adress).child(uid).addValueEventListener(new ValueEventListener() {//db변경시
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -329,8 +334,6 @@ public class AdressRoom extends AppCompatActivity {
                             @Override
                             public void onSuccess(DataSnapshot dataSnapshot) {
                                 String where = dataSnapshot.child("where").getValue(String.class);//error?
-
-                                databaseHandler.insertWhere(where);//don't need
 
                                 deleteBottomList();
 
@@ -371,7 +374,7 @@ public class AdressRoom extends AppCompatActivity {
                 gpsTracker = new GpsTracker(AdressRoom.this);
                 latitude = gpsTracker.getLatitude();//위도
                 longitude = gpsTracker.getLongitude();//경도
-                String latitudeS = String.valueOf(latitude);
+                String latitudeS = String.valueOf(latitude);//AdressRoom Activity 입장할때 실시간 위치
                 String longitudeS = String.valueOf(longitude);
 
                 pic = documentSnapshot.getString("pic");
@@ -392,7 +395,6 @@ public class AdressRoom extends AppCompatActivity {
     }
 
     private void updateAdressRoom(String picUri, String uid, String name, String sex, String age, String latitude, String longitude, int ischat) {
-        String adress = getAdress();
         reference = FirebaseDatabase.getInstance().getReference();
         Map<String, Object> updateUser = new HashMap<>();
         updateUser.put("/adressRoom/" + adress + "/" + uid + "/" + "/uid/", uid);
@@ -413,17 +415,11 @@ public class AdressRoom extends AppCompatActivity {
 
     private void goToMain() {
         Log.d("AdressRoom>>>", "goToMain");
-        String s = getAdress();
         deleteBottomList();
         reference = FirebaseDatabase.getInstance().getReference();
-        reference.getRef().child("adressRoom").child(s).child(uid).removeValue();
-        reference.getRef().child("chatting").child(uid).removeValue();
+        reference.getRef().child("adressRoom").child(adress).child(uid).removeValue();
+        reference.getRef().child("대화신청").child(uid).removeValue();
         databaseHandler.adressdelete();
-        databaseHandler.deleteWhere();
-//        userList.clear();
-//        keyList.clear();
-//        arrayList.clear();
-//        bottomKeyList.clear();
     }
 
     @Override
@@ -437,11 +433,16 @@ public class AdressRoom extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
     private void deleteBottomList() {
         whoRef = FirebaseDatabase.getInstance().getReference();
         for (int i = 0; i < userList.size(); i++) {
             String s = userList.get(i);
-            whoRef.getRef().child("chatting").child(s).child(uid).removeValue();
+            whoRef.getRef().child("대화신청").child(s).child(uid).removeValue();
         }
     }
 

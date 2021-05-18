@@ -248,22 +248,20 @@ public class MainActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         reference = FirebaseDatabase.getInstance().getReference();
         myUid = mAuth.getUid();
-
-        setNameSql();
-        databaseHandler.adressdelete();
+//        databaseHandler.adressdelete();
     }
 
-    private void setNameSql() {
-        Cursor cursor = sqLiteDatabase.rawQuery("select * from nameTable", null);
-        int count = cursor.getCount();
-        if (count == 0) {
-            db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    String name = documentSnapshot.get("name").toString();
-                    databaseHandler.insertName(name);
-                }
-            });
-        }
-    }
+//    private void setNameSql() {
+//        Cursor cursor = sqLiteDatabase.rawQuery("select * from nameTable", null);
+//        int count = cursor.getCount();
+//        if (count == 0) {
+//            db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                @Override
+//                public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                    String name = documentSnapshot.get("name").toString();
+//                    databaseHandler.insertName(name);
+//                }
+//            });
+//        }
+//    }
 }

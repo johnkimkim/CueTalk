@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,9 +77,6 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
     @Override
     public void onBindViewHolder(@NonNull BottomSheetAdapter.CustomViewHolder holder, int position) {
 
-        databaseHandler.setDB(context);
-        databaseHandler = new DatabaseHandler(context);
-        sqLiteDatabase = databaseHandler.getWritableDatabase();
         mAuth = FirebaseAuth.getInstance();
         myUid = mAuth.getUid();
 
@@ -170,6 +168,7 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
                         creatChatting(myUid, myUid, userUid, userPic, userName, userSex, userAge, userLatitude, userLongitude);
                     }
                 });
+                Log.d("BotttomSheetAdapter>>>", "get adress: " + getAdress());
 
             }
         });
@@ -182,7 +181,7 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
                 String userUid = bottomList.get(position).getUid();
 
                 reference = FirebaseDatabase.getInstance().getReference();
-                reference.getRef().child("chatting").child(myUid).child(userUid).removeValue();
+                reference.getRef().child("대화신청").child(myUid).child(userUid).removeValue();
             }
         });
 
@@ -218,6 +217,7 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
                 String age = documentSnapshot.getString("age");
 
                 Map<String, Object> updateUser = new HashMap<>();
+                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/uid/", myUid);
                 updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/pic/", pic);
                 updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/name/", name);
                 updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/sex/", sex);
@@ -225,6 +225,7 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
                 updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/latitude/", latitudeS);
                 updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/longitude/", longitudeS);
 
+                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/uid/", userUid);
                 updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/pic/", userPic);
                 updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/name/", userName);
                 updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/sex/", userSex);
@@ -290,9 +291,13 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
     }
 
     private String getAdress() {
+        databaseHandler.setDB(context);
+        databaseHandler = new DatabaseHandler(context);
+        sqLiteDatabase = databaseHandler.getWritableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery("select * from adress where _rowid_ = 1", null);
         cursor.moveToFirst();
         String adress = cursor.getString(0);
+        cursor.close();
         return adress;
     }
 

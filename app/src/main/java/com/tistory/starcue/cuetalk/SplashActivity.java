@@ -69,7 +69,6 @@ public class SplashActivity extends AppCompatActivity {
 
         setdb();
         checkPermission();
-        databaseHandler.deleteWhere();
 
     }
 

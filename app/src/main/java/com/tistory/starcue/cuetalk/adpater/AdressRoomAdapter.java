@@ -252,14 +252,14 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
     private void updateAdressRoom(String useruid, String picUri, String uid, String name, String sex, String age, String latitude, String longitude, int ischat) {
         reference = FirebaseDatabase.getInstance().getReference();
         Map<String, Object> updateUser = new HashMap<>();
-        updateUser.put("/chatting/" + useruid + "/" + uid + "/" + "/uid/", uid);
-        updateUser.put("/chatting/" + useruid + "/" + uid + "/" + "/pic/", picUri);
-        updateUser.put("/chatting/" + useruid + "/" + uid + "/" + "/name/", name);
-        updateUser.put("/chatting/" + useruid + "/" + uid + "/" + "/sex", sex);
-        updateUser.put("/chatting/" + useruid + "/" + uid + "/" + "/age/", age);
-        updateUser.put("/chatting/" + useruid + "/" + uid + "/" + "/latitude/", latitude);
-        updateUser.put("/chatting/" + useruid + "/" + uid + "/" + "/longitude/", longitude);
-        updateUser.put("/chatting/" + useruid + "/" + uid + "/" + "/ischat/", ischat);
+        updateUser.put("/대화신청/" + useruid + "/" + uid + "/" + "/uid/", uid);
+        updateUser.put("/대화신청/" + useruid + "/" + uid + "/" + "/pic/", picUri);
+        updateUser.put("/대화신청/" + useruid + "/" + uid + "/" + "/name/", name);
+        updateUser.put("/대화신청/" + useruid + "/" + uid + "/" + "/sex", sex);
+        updateUser.put("/대화신청/" + useruid + "/" + uid + "/" + "/age/", age);
+        updateUser.put("/대화신청/" + useruid + "/" + uid + "/" + "/latitude/", latitude);
+        updateUser.put("/대화신청/" + useruid + "/" + uid + "/" + "/longitude/", longitude);
+        updateUser.put("/대화신청/" + useruid + "/" + uid + "/" + "/ischat/", ischat);
         reference.updateChildren(updateUser);
     }
 

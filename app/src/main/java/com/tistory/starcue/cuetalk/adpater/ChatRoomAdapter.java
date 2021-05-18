@@ -159,6 +159,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         mAuth = FirebaseAuth.getInstance();
         myUid = mAuth.getUid();
 
+        Log.d("chatroomadapter>>>", "arrayList.get Name: " + arrayList.get(position).getName());
+
         if (arrayList.get(position).getName() == null
                 && arrayList.get(position).getPic() == null
                 && arrayList.get(position).getUri() == null
@@ -173,16 +175,16 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 && arrayList.get(position).getMessege().equals("tkdeoqkddlskrkskrk")) {
             Log.d("ChatRoomAdapter>>>", "viewType: CENTER_BOTTOM_CONTENT");
             return Code.ViewType.CENTER_BOTTOM_CONTENT;
-        } else if (arrayList.get(position).getName().equals(getMyName()) && arrayList.get(position).getUri() != null) {
+        } else if (arrayList.get(position).getUid().equals(myUid) && arrayList.get(position).getUri() != null) {
             Log.d("ChatRoomAdapter>>>", "viewType: RIGHT_IMAGE");
             return Code.ViewType.RIGHT_IMAGE;
-        } else if (arrayList.get(position).getName().equals(getMyName()) && arrayList.get(position).getUri() == null) {
+        } else if (arrayList.get(position).getUid().equals(myUid) && arrayList.get(position).getUri() == null) {
             Log.d("ChatRoomAdapter>>>", "viewType: RIGHT_CONTENT");
             return Code.ViewType.RIGHT_CONTENT;
-        } else if (!arrayList.get(position).getName().equals(getMyName()) && arrayList.get(position).getUri() != null) {
+        } else if (!arrayList.get(position).getUid().equals(myUid) && arrayList.get(position).getUri() != null) {
             Log.d("ChatRoomAdapter>>>", "viewType: LEFT_IMAGE");
             return Code.ViewType.LEFT_IMAGE;
-        } else if (!arrayList.get(position).getName().equals(getMyName()) && arrayList.get(position).getUri() == null) {
+        } else if (!arrayList.get(position).getUid().equals(myUid) && arrayList.get(position).getUri() == null) {
             Log.d("ChatRoomAdapter>>>", "viewType: LEFT_CONTENT");
             return Code.ViewType.LEFT_CONTENT;
         } else {
@@ -260,12 +262,4 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-
-
-    public String getMyName() {
-        Cursor cursor = sqLiteDatabase.rawQuery("select nameField from nameTable where _rowid_ = 1", null);
-        cursor.moveToFirst();
-        String name = cursor.getString(0);
-        return name;
-    }
 }

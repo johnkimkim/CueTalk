@@ -2,7 +2,15 @@ package com.tistory.starcue.cuetalk.item;
 
 public class ChatRoomItem {
 
-    String pic, name, messege, time, uri;
+    String uid, pic, name, messege, time, uri;
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 
     public String getUri() {
         return uri;

@@ -185,7 +185,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
 
         setOutState();
 
-        if (!pressBack) {//back버튼 누르지 않았을때만 getroomname 저장
+        if (!pressBack) {//back버튼 누르지 않고 밖으로 나갔을때 getroomname 저장
             sharedPreferences = getSharedPreferences("saveroomkey", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("getroomname", getroomname);

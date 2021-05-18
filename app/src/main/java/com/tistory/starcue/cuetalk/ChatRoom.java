@@ -305,7 +305,7 @@ public class ChatRoom extends AppCompatActivity {
 //        dialog();
     }
 
-    private void dialog() {
+    private void dialog() {//내가 대화방 나갈때 dialog
         LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout layout = (LinearLayout) vi.inflate(R.layout.inchat_dialog_if_i_out, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(ChatRoom.this);
@@ -347,7 +347,7 @@ public class ChatRoom extends AppCompatActivity {
         });
     }
 
-    private void dialogA() {
+    private void dialogA() {//상대방이 대화방 나갔을때 dialog
         LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout layout = (LinearLayout) vi.inflate(R.layout.inchat_dialog_if_user_out, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(ChatRoom.this);
@@ -423,57 +423,69 @@ public class ChatRoom extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-                reference.getRef().child("inchat").child(where).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        progressbar.setVisibility(View.VISIBLE);
-                        int test = (int) snapshot.child("messege").getChildrenCount();
-                        if (test == 0) {
-                            int i = (int) snapshot.getChildrenCount();
-                            String s = Integer.toString(i);
-                            Log.d("ChatRoom>>>", "count " + s);
-                            if (i == 1) {
-                                reference.getRef().child("adressRoom").child(where).child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                                    @Override
-                                    public void onSuccess(DataSnapshot dataSnapshot) {
-                                        Long l = dataSnapshot.child("ischat").getValue(Long.class);
-                                        if (l != null) {
-                                            int i = l.intValue();
-                                            if (i == 2) {
-                                                dialogA();
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        } else {
-                            int i = (int) snapshot.getChildrenCount();
-                            String s = Integer.toString(i);
-                            Log.d("ChatRoom>>>", "count " + s);
-                            if (i == 2) {
-                                reference.getRef().child("adressRoom").child(where).child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                                    @Override
-                                    public void onSuccess(DataSnapshot dataSnapshot) {
-                                        Long l = dataSnapshot.child("ischat").getValue(Long.class);
-                                        if (l != null) {
-                                            int i = l.intValue();
-                                            if (i == 2) {
-                                                dialogA();
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                if (!snapshot.getKey().equals(myUid)) {
+                    dialogA();
+                }
+//                Log.d("ChatRoom>>>", "go out test1: " + snapshot.getKey());//inchat > where > 에서 지워진 child key name
+//
+//                reference.getRef().child("inchat").child(where).addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                        Log.d("ChatRoom>>>", "go out test2: " + snapshot.getKey());
+//                        progressbar.setVisibility(View.VISIBLE);
+//                        int test = (int) snapshot.child("messege").getChildrenCount();
+//                        Log.d("ChatRoom>>>", "go out test3 messege count: " + test);
+//                        if (test == 0) {
+//                            Log.d("ChatRoom>>>", "go out test4");
+//                            int i = (int) snapshot.getChildrenCount();
+//                            Log.d("ChatRoom>>>", "go out test5 messege count: " + i);
+//                            String s = Integer.toString(i);
+//                            if (i == 1) {
+//                                Log.d("ChatRoom>>>", "go out test6");
+//                                reference.getRef().child("adressRoom").child(where).child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//                                    @Override
+//                                    public void onSuccess(DataSnapshot dataSnapshot) {
+//                                        Log.d("ChatRoom>>>", "go out test7");
+//                                        Long l = dataSnapshot.child("ischat").getValue(Long.class);
+//                                        if (l != null) {
+//                                            int i = l.intValue();
+//                                            if (i == 2) {
+//                                                dialogA();
+//                                            }
+//                                        }
+//                                    }
+//                                });
+//                            }
+//                        } else {
+//                            Log.d("ChatRoom>>>", "go out test8");
+//                            int i = (int) snapshot.getChildrenCount();
+//                            Log.d("ChatRoom>>>", "go out test9: " + i);
+//                            String s = Integer.toString(i);
+//                            Log.d("ChatRoom>>>", "count " + s);
+//                            if (i == 2) {
+//                                Log.d("ChatRoom>>>", "go out test10: " + i);
+//                                reference.getRef().child("adressRoom").child(where).child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//                                    @Override
+//                                    public void onSuccess(DataSnapshot dataSnapshot) {
+//                                        Long l = dataSnapshot.child("ischat").getValue(Long.class);
+//                                        if (l != null) {
+//                                            int i = l.intValue();
+//                                            if (i == 2) {
+//                                                dialogA();
+//                                            }
+//                                        }
+//                                    }
+//                                });
+//                            }
+//                        }
+//
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError error) {
+//
+//                    }
+//                });
             }
 
             @Override
@@ -488,9 +500,10 @@ public class ChatRoom extends AppCompatActivity {
         });
     }
 
-    private void deleteMydb() {//방장 삭제
+    private void deleteMydb() {//내가 먼저 대화방 나갔을때
         Map<String, Object> updateUser = new HashMap<>();
-        updateUser.put("/adressRoom/" + where + "/" + myUid + "/" + "/ischat/", 1);
+        updateUser.put("/adressRoom/" + getAdress() + "/" + myUid + "/" + "/ischat/", 1);
+        Log.d("ChatRoom>>>", "go out get where: " + where);
         reference.updateChildren(updateUser);
 
         deleteMyStoragePic();
@@ -512,9 +525,9 @@ public class ChatRoom extends AppCompatActivity {
 
     }
 
-    private void deleteMydbA() {
+    private void deleteMydbA() {//상대방이 대화방 나갔을때
         Map<String, Object> updateUser = new HashMap<>();
-        updateUser.put("/adressRoom/" + where + "/" + myUid + "/" + "/ischat/", 1);
+        updateUser.put("/adressRoom/" + getAdress() + "/" + myUid + "/" + "/ischat/", 1);
         reference.updateChildren(updateUser);
 
         deleteMyStoragePic();

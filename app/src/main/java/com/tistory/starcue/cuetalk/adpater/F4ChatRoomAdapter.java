@@ -96,8 +96,12 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
+        String time = arrayList.get(position).getTime();
+        String time1 = time.substring(11);
+        String time2 = time1.substring(0, time1.length() - 3);
+
         if (holder instanceof F4ChatRoomAdapter.RightImageViewholder) {
-            ((F4ChatRoomAdapter.RightImageViewholder) holder).timepic.setText(arrayList.get(position).getTime());
+            ((F4ChatRoomAdapter.RightImageViewholder) holder).timepic.setText(time2);
             requestManager
                     .load(arrayList.get(position).getUri())
                     .override(150, 150)
@@ -110,7 +114,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
         } else if (holder instanceof F4ChatRoomAdapter.LeftImageViewholder) {
             ((F4ChatRoomAdapter.LeftImageViewholder) holder).name.setText(userName);
-            ((F4ChatRoomAdapter.LeftImageViewholder) holder).time.setText(arrayList.get(position).getTime());
+            ((F4ChatRoomAdapter.LeftImageViewholder) holder).time.setText(time2);
             requestManager
                     .load(userPic)
                     .override(150, 150)
@@ -141,7 +145,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 ((F4ChatRoomAdapter.LeftImageViewholder) holder).picli.setEnabled(true);
             }
         } else if (holder instanceof F4ChatRoomAdapter.RightViewholder) {
-            ((F4ChatRoomAdapter.RightViewholder) holder).time1.setText(arrayList.get(position).getTime());//error
+            ((F4ChatRoomAdapter.RightViewholder) holder).time1.setText(time2);
             ((F4ChatRoomAdapter.RightViewholder) holder).messege1.setText(arrayList.get(position).getMessege());
             if (arrayList.get(position).getRead().equals("1")) {
                 ((F4ChatRoomAdapter.RightViewholder) holder).read2.setText("1");
@@ -152,8 +156,8 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         else if (holder instanceof F4ChatRoomAdapter.LeftViewholder) {
             ((F4ChatRoomAdapter.LeftViewholder) holder).name.setText(userName);
             ((F4ChatRoomAdapter.LeftViewholder) holder).messege.setText(arrayList.get(position).getMessege());
-            ((F4ChatRoomAdapter.LeftViewholder) holder).time.setText(arrayList.get(position).getTime());
-            Log.d("F4ChatRoomAdapter>>>", "array get pic: " + userPic);
+            ((F4ChatRoomAdapter.LeftViewholder) holder).time.setText(time2);
+            Log.d("F4chatRoomAdapter>>>", "get time in arrayList: " + arrayList.get(position).getTime() + " / " + time2);
             requestManager//error. requast manager?사용해서 this받기
                     .load(userPic)
                     .override(150, 150)
@@ -296,12 +300,4 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-
-
-    public String getMyName() {
-        Cursor cursor = sqLiteDatabase.rawQuery("select nameField from nameTable where _rowid_ = 1", null);
-        cursor.moveToFirst();
-        String name = cursor.getString(0);
-        return name;
-    }
 }

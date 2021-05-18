@@ -83,8 +83,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
+        String time = arrayList.get(position).getTime();
+        String time1 = time.substring(11);
+        String time2 = time1.substring(0, time1.length() - 3);
+
         if (holder instanceof RightImageViewholder) {
-            ((RightImageViewholder) holder).timepic.setText(arrayList.get(position).getTime());
+            ((RightImageViewholder) holder).timepic.setText(time2);
             requestManager
                     .load(arrayList.get(position).getUri())
                     .override(150, 150)
@@ -92,7 +96,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     .into(((RightImageViewholder) holder).imagepic);
         } else if (holder instanceof LeftImageViewholder) {
             ((LeftImageViewholder) holder).name.setText(arrayList.get(position).getName());
-            ((LeftImageViewholder) holder).time.setText(arrayList.get(position).getTime());
+            ((LeftImageViewholder) holder).time.setText(time2);
             requestManager
                     .load(arrayList.get(position).getPic())
                     .override(150, 150)
@@ -121,13 +125,13 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ((LeftImageViewholder) holder).picli.setEnabled(false);
             }
         } else if (holder instanceof RightViewholder) {
-            ((RightViewholder) holder).time1.setText(arrayList.get(position).getTime());//error
+            ((RightViewholder) holder).time1.setText(time2);//error
             ((RightViewholder) holder).messege1.setText(arrayList.get(position).getMessege());
         }
         else if (holder instanceof LeftViewholder) {
             ((LeftViewholder) holder).name.setText(arrayList.get(position).getName());
             ((LeftViewholder) holder).messege.setText(arrayList.get(position).getMessege());
-            ((LeftViewholder) holder).time.setText(arrayList.get(position).getTime());
+            ((LeftViewholder) holder).time.setText(time2);
             requestManager
                     .load(arrayList.get(position).getPic())
                     .override(150, 150)

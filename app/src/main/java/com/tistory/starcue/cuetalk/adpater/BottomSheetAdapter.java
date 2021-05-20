@@ -224,6 +224,7 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
                 updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/age/", age);
                 updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/latitude/", latitudeS);
                 updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/longitude/", longitudeS);
+                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/ischat/", "1");
 
                 updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/uid/", userUid);
                 updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/pic/", userPic);
@@ -232,6 +233,7 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
                 updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/age/", userAge);
                 updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/latitude/", userLatitude);
                 updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/longitude/", userLongitude);
+                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/ischat/", "1");
 
                 Map<String, Object> firstmsg = new HashMap<>();
                 firstmsg.put("time", "dlqwkddhksfycjtaptlwl");

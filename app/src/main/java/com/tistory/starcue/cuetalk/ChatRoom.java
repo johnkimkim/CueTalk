@@ -418,14 +418,19 @@ public class ChatRoom extends AppCompatActivity {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
+                if (!snapshot.getKey().equals("messege") && !snapshot.getKey().equals(myUid)) {
+                    if (snapshot.child("ischat").getValue(String.class).equals("2")) {
+                        dialogA();
+                    }
+                }
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                if (!snapshot.getKey().equals(myUid)) {
-                    dialogA();
-                }
+//                if (!snapshot.getKey().equals(myUid)) {
+//                    dialogA();
+//                }
+
 //                Log.d("ChatRoom>>>", "go out test1: " + snapshot.getKey());//inchat > where > 에서 지워진 child key name
 //
 //                reference.getRef().child("inchat").child(where).addValueEventListener(new ValueEventListener() {
@@ -503,14 +508,14 @@ public class ChatRoom extends AppCompatActivity {
     private void deleteMydb() {//내가 먼저 대화방 나갔을때
         Map<String, Object> updateUser = new HashMap<>();
         updateUser.put("/adressRoom/" + getAdress() + "/" + myUid + "/" + "/ischat/", 1);
+        updateUser.put("/inchat/" + where + "/" + myUid + "/ischat/", "2");
         Log.d("ChatRoom>>>", "go out get where: " + where);
-        reference.updateChildren(updateUser);
 
         deleteMyStoragePic();
 
-        reference.getRef().child("inchat").child(where).child(myUid).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+        reference.updateChildren(updateUser).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onSuccess(Void aVoid) {
+            public void onSuccess(Void unused) {
                 isClickBtn = true;
 
                 Map<String, Object> updateUser1 = new HashMap<>();
@@ -522,6 +527,22 @@ public class ChatRoom extends AppCompatActivity {
                 progressbar.setVisibility(View.GONE);
             }
         });
+
+
+//        reference.getRef().child("inchat").child(where).child(myUid).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void aVoid) {
+//                isClickBtn = true;
+//
+//                Map<String, Object> updateUser1 = new HashMap<>();
+//                updateUser1.put("/adressRoom/" + where + "/" + myUid + "/" + "/where/", null);
+//                reference.updateChildren(updateUser1);
+//                alertDialog.dismiss();
+//                goToAdressRoom();
+//
+//                progressbar.setVisibility(View.GONE);
+//            }
+//        });
 
     }
 

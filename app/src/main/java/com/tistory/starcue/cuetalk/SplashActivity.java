@@ -4,9 +4,11 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,6 +40,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.tistory.starcue.cuetalk.fragment.Fragment5;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -69,6 +72,7 @@ public class SplashActivity extends AppCompatActivity {
 
         setdb();
         checkPermission();
+        Log.d("SplashActivity>>>", "app version: " + getAppVersion());
 
     }
 
@@ -110,10 +114,64 @@ public class SplashActivity extends AppCompatActivity {
         if (i == 0) {
             String unique = UUID.randomUUID().toString();
             databaseHandler.insertUnique(unique);
-            checkCurrentUser();
+            checkAppVersion();
         } else {
-            checkCurrentUser();
+            checkAppVersion();
         }
+    }
+
+    private void checkAppVersion() {
+        db.collection("version").document("version").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                String must = documentSnapshot.get("must").toString();
+                String version = documentSnapshot.get("version").toString();
+                String messege = documentSnapshot.get("splashmessege").toString();
+                String url = documentSnapshot.get("url").toString();
+                String nowVersion = getAppVersion();
+                if (must.equals("yes")) {//업데이트 후 넘어가기
+                    if (!nowVersion.equals(version)) {//새버전 있을때
+                        updateDialog(messege, url);
+                    } else {//현제 최신버전일때
+                        checkCurrentUser();
+                    }
+                } else {//그냥 넘어가기
+                    checkCurrentUser();
+                }
+            }
+        });
+    }
+
+    private void updateDialog(String messege, String url) {
+        LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout layout = (LinearLayout) vi.inflate(R.layout.update_dialog, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(SplashActivity.this);
+        builder.setView(layout);
+        builder.setCancelable(false);
+        alertDialog = builder.create();
+
+        if (!SplashActivity.this.isFinishing()) {
+            if (alertDialog != null) {
+                alertDialog.dismiss();
+            }
+            alertDialog.show();
+        }
+
+        /*Unable to add window -- token android.os.BinderProxy@7c9958a is not valid; is your activity running?*/
+
+        TextView textView = layout.findViewById(R.id.update_dialog_title);
+        textView.setText(messege);
+        Button okbtn = layout.findViewById(R.id.update_dialog_okbtn);
+        okbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(url));
+                intent.setPackage("com.android.vending");
+                startActivity(intent);
+            }
+        });
+
     }
 
     private void goToPhoneNumber() {
@@ -303,5 +361,15 @@ public class SplashActivity extends AppCompatActivity {
                 goToPhoneNumber();
             }
         });
+    }
+
+    public String getAppVersion() {
+        PackageInfo packageInfo = null;
+        try {
+            packageInfo = getPackageManager().getPackageInfo(SplashActivity.this.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return packageInfo.versionName;
     }
 }

@@ -118,7 +118,7 @@ public class Fragment5 extends Fragment {
         reset_profile();
         logoutBtn();
         deleteUser();
-        setOnClickUpdateLayout();
+
 
         return rootView;
     }
@@ -129,8 +129,8 @@ public class Fragment5 extends Fragment {
         db.collection("version").document("version").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Log.d("Fragment5>>>", "nowVersion: " + nowVersion);
-                Log.d("Fragment5>>>", "serverVersion: " + documentSnapshot.get("version").toString());
+                String messege = documentSnapshot.get("f5messege").toString();
+                String url = documentSnapshot.get("url").toString();
                 if (!documentSnapshot.get("version").toString().equals(nowVersion)) {
                     MainActivity.btn5count.setVisibility(View.VISIBLE);
                     MainActivity.btn5count.setText("1");
@@ -139,16 +139,18 @@ public class Fragment5 extends Fragment {
                     MainActivity.btn5count.setVisibility(View.INVISIBLE);
                     updatelayout.setVisibility(View.GONE);
                 }
+                setOnClickUpdateLayout(messege, url);
             }
         });
     }
 
-    private void setOnClickUpdateLayout() {
+    private void setOnClickUpdateLayout(String messege, String url) {
+        updatebtn.setText(messege);
         updatebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.tistory.starcue.bgnoise"));
+                intent.setData(Uri.parse(url));
                 intent.setPackage("com.android.vending");
                 startActivity(intent);
             }

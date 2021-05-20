@@ -1,4 +1,4 @@
-package com.tistory.starcue.cuetalk.fragment;
+package com.tistory.starcue.cuetalk.f1viewpager;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,12 +23,12 @@ import com.tistory.starcue.cuetalk.R;
 
 import org.jetbrains.annotations.NotNull;
 
-public class F1F3 extends Fragment {
+public class F1F6 extends Fragment {
 
     private ImageView imageView;
     private FirebaseFirestore db;
 
-    public F1F3() {
+    public F1F6() {
         // Required empty public constructor
     }
 
@@ -36,21 +36,21 @@ public class F1F3 extends Fragment {
     @org.jetbrains.annotations.Nullable
     @Override
     public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
-        final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.f1f3, container, false);
+        final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.f1f6, container, false);
 
         db = FirebaseFirestore.getInstance();
 
-        imageView = rootView.findViewById(R.id.f1f3img);
+        imageView = rootView.findViewById(R.id.f1f6img);
 
-        db.collection("f1viewpager").document("f1f3").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        db.collection("f1viewpager").document("page").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                String url = documentSnapshot.get("url").toString();
+                String url = documentSnapshot.get("f1f6").toString();
                 Log.d("F1F1>>>", url);
                 Uri uri = Uri.parse(url);
                 RequestOptions requestOptions = new RequestOptions();
                 requestOptions = requestOptions.transform(new CenterCrop(), new RoundedCorners(23));
-                Glide.with(F1F3.this).load(uri).override(300, 250).fitCenter().apply(requestOptions).into(imageView);
+                Glide.with(F1F6.this).load(uri).override(300, 250).fitCenter().apply(requestOptions).into(imageView);
             }
         });
 

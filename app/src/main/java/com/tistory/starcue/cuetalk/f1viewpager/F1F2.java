@@ -1,4 +1,4 @@
-package com.tistory.starcue.cuetalk.fragment;
+package com.tistory.starcue.cuetalk.f1viewpager;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -42,10 +42,10 @@ public class F1F2 extends Fragment {
 
         imageView = rootView.findViewById(R.id.f1f2img);
 
-        db.collection("f1viewpager").document("f1f2").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        db.collection("f1viewpager").document("page").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                String url = documentSnapshot.get("url").toString();
+                String url = documentSnapshot.get("f1f2").toString();
                 Log.d("F1F1>>>", url);
                 Uri uri = Uri.parse(url);
                 RequestOptions requestOptions = new RequestOptions();

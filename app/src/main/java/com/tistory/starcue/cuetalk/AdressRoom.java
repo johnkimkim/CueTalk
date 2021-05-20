@@ -61,6 +61,7 @@ public class AdressRoom extends AppCompatActivity {
     public static List<String> userList = new ArrayList<String>();
 
     public static ProgressBar progressBar;
+    private TextView appBarTitle;
 
     private FirebaseAuth mAuth;
     private DatabaseReference reference;
@@ -365,6 +366,8 @@ public class AdressRoom extends AppCompatActivity {
         recyclerView = findViewById(R.id.adress_room_recycelrview);
         progressBar = findViewById(R.id.adress_room_progress_bar);
         progressBar.setVisibility(View.VISIBLE);
+        appBarTitle = findViewById(R.id.adress_room_title);
+        appBarTitle.setText(adress);
     }
 
     private void getUser() {//get my data

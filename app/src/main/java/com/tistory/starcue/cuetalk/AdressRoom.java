@@ -95,6 +95,7 @@ public class AdressRoom extends AppCompatActivity {
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
 
     boolean isSetList;
+    public static boolean goChatRoom;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -102,6 +103,7 @@ public class AdressRoom extends AppCompatActivity {
         setContentView(R.layout.adress_room);
 
         isSetList = false;
+        goChatRoom = false;
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
@@ -333,6 +335,7 @@ public class AdressRoom extends AppCompatActivity {
                         reference.getRef().child("adressRoom").child(adress).child(uid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                             @Override
                             public void onSuccess(DataSnapshot dataSnapshot) {
+                                goChatRoom = true;
                                 String where = dataSnapshot.child("where").getValue(String.class);//error?
 
                                 deleteBottomList();
@@ -420,6 +423,7 @@ public class AdressRoom extends AppCompatActivity {
         reference.getRef().child("adressRoom").child(adress).child(uid).removeValue();
         reference.getRef().child("대화신청").child(uid).removeValue();
         databaseHandler.adressdelete();
+        finish();
     }
 
     @Override
@@ -429,13 +433,15 @@ public class AdressRoom extends AppCompatActivity {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         } else if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
             super.onBackPressed();
-            goToMain();
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        if (!goChatRoom) {
+            goToMain();
+        }
     }
 
     private void deleteBottomList() {

@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -49,6 +50,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 public class Fragment4 extends Fragment {
 
@@ -602,6 +604,8 @@ public class Fragment4 extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        gpsTracker = new GpsTracker(getActivity());
+        gpsTracker.updateFirestoreGps(db, myUid);
     }
 
     private void setNullChat() {

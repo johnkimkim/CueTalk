@@ -85,7 +85,6 @@ public class ChatRoom extends AppCompatActivity {
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
 
     private boolean isClickBtn = false;
-    boolean willSendImg;
 
     Uri imageUri;
     String picUri;
@@ -115,6 +114,12 @@ public class ChatRoom extends AppCompatActivity {
             }
         };
         getOnBackPressedDispatcher().addCallback(this, callback);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AdressRoom.goChatRoom = false;
     }
 
     private void setRecyclerView() {
@@ -178,31 +183,6 @@ public class ChatRoom extends AppCompatActivity {
                 } else {
                     edit.setText("");
                     sendMessegeMap(myUid, messege, myName, myPic);
-//                    reference.getRef().child("adressRoom").child(where).child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-//                        @Override
-//                        public void onSuccess(DataSnapshot dataSnapshot) {
-//                            String myName = dataSnapshot.child("name").getValue(String.class);
-//                            String myPic = dataSnapshot.child("pic").getValue(String.class);
-//                            sendMessegeMap(messege, myName, myPic);
-////                            if (dataSnapshot.child("pic").getValue(String.class) != null) {
-////                                Log.d("ChatRoom>>>", "pic have");
-////                                String myPic = dataSnapshot.child("pic").getValue(String.class);
-////                                sendMessegeMap(messege, myName, myPic);
-////                            } else {
-////                                Log.d("ChatRoom>>>", "pic null");
-////                                if (dataSnapshot.child("sex").getValue(String.class).equals("남자")) {
-////                                    sendMessegeMap(messege, myName, nullPic);
-////                                } else {
-////                                    sendMessegeMap(messege, myName, nullPicF);
-////                                }
-////                            }
-//                        }
-//                    }).addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//
-//                        }
-//                    });
                 }
             }
         });
@@ -376,39 +356,6 @@ public class ChatRoom extends AppCompatActivity {
         });
     }
 
-//    private void dialogImage(String picUri) {
-//        LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        LinearLayout layout = (LinearLayout) vi.inflate(R.layout.send_iamge_dialog, null);
-//        AlertDialog.Builder builder = new AlertDialog.Builder(ChatRoom.this);
-//        builder.setView(layout);
-//        alertDialogC = builder.create();
-//
-//        if (!ChatRoom.this.isFinishing()) {
-//            alertDialogC.show();
-//            //set size
-//            WindowManager.LayoutParams layoutParams = alertDialogC.getWindow().getAttributes();
-//            layoutParams.copyFrom(alertDialogC.getWindow().getAttributes());
-////            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-////            layoutParams.dimAmount = 0.7f;
-//
-//            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-//            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-//            alertDialogC.getWindow().setAttributes(layoutParams);
-//        }
-//
-//        ImageView imageView = layout.findViewById(R.id.dialog_img_set);
-//        Button okbtn = layout.findViewById(R.id.send_image_okbtn);
-//
-//        Glide.with(ChatRoom.this).load(picUri).override(100, 100).centerCrop().into(imageView);
-//        okbtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                alertDialogC.dismiss();
-//                sendMessegePic(picUri);
-//            }
-//        });
-//    }
-
     private void checkDbChange() {
         reference.getRef().child("inchat").child(where).addChildEventListener(new ChildEventListener() {
             @Override
@@ -427,70 +374,7 @@ public class ChatRoom extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-//                if (!snapshot.getKey().equals(myUid)) {
-//                    dialogA();
-//                }
 
-//                Log.d("ChatRoom>>>", "go out test1: " + snapshot.getKey());//inchat > where > 에서 지워진 child key name
-//
-//                reference.getRef().child("inchat").child(where).addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                        Log.d("ChatRoom>>>", "go out test2: " + snapshot.getKey());
-//                        progressbar.setVisibility(View.VISIBLE);
-//                        int test = (int) snapshot.child("messege").getChildrenCount();
-//                        Log.d("ChatRoom>>>", "go out test3 messege count: " + test);
-//                        if (test == 0) {
-//                            Log.d("ChatRoom>>>", "go out test4");
-//                            int i = (int) snapshot.getChildrenCount();
-//                            Log.d("ChatRoom>>>", "go out test5 messege count: " + i);
-//                            String s = Integer.toString(i);
-//                            if (i == 1) {
-//                                Log.d("ChatRoom>>>", "go out test6");
-//                                reference.getRef().child("adressRoom").child(where).child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-//                                    @Override
-//                                    public void onSuccess(DataSnapshot dataSnapshot) {
-//                                        Log.d("ChatRoom>>>", "go out test7");
-//                                        Long l = dataSnapshot.child("ischat").getValue(Long.class);
-//                                        if (l != null) {
-//                                            int i = l.intValue();
-//                                            if (i == 2) {
-//                                                dialogA();
-//                                            }
-//                                        }
-//                                    }
-//                                });
-//                            }
-//                        } else {
-//                            Log.d("ChatRoom>>>", "go out test8");
-//                            int i = (int) snapshot.getChildrenCount();
-//                            Log.d("ChatRoom>>>", "go out test9: " + i);
-//                            String s = Integer.toString(i);
-//                            Log.d("ChatRoom>>>", "count " + s);
-//                            if (i == 2) {
-//                                Log.d("ChatRoom>>>", "go out test10: " + i);
-//                                reference.getRef().child("adressRoom").child(where).child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-//                                    @Override
-//                                    public void onSuccess(DataSnapshot dataSnapshot) {
-//                                        Long l = dataSnapshot.child("ischat").getValue(Long.class);
-//                                        if (l != null) {
-//                                            int i = l.intValue();
-//                                            if (i == 2) {
-//                                                dialogA();
-//                                            }
-//                                        }
-//                                    }
-//                                });
-//                            }
-//                        }
-//
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError error) {
-//
-//                    }
-//                });
             }
 
             @Override
@@ -527,22 +411,6 @@ public class ChatRoom extends AppCompatActivity {
                 progressbar.setVisibility(View.GONE);
             }
         });
-
-
-//        reference.getRef().child("inchat").child(where).child(myUid).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-//            @Override
-//            public void onSuccess(Void aVoid) {
-//                isClickBtn = true;
-//
-//                Map<String, Object> updateUser1 = new HashMap<>();
-//                updateUser1.put("/adressRoom/" + where + "/" + myUid + "/" + "/where/", null);
-//                reference.updateChildren(updateUser1);
-//                alertDialog.dismiss();
-//                goToAdressRoom();
-//
-//                progressbar.setVisibility(View.GONE);
-//            }
-//        });
 
     }
 
@@ -633,7 +501,6 @@ public class ChatRoom extends AppCompatActivity {
         addbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                willSendImg = true;
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -723,7 +590,7 @@ public class ChatRoom extends AppCompatActivity {
         reference.child("inchat").child(where).child("messege").push().updateChildren(sendimgmap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                willSendImg = false;
+
             }
         });
     }
@@ -756,45 +623,6 @@ public class ChatRoom extends AppCompatActivity {
                 Log.d("ChatRoom>>>", e.toString());
             }
         });
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-//        goToMain();
-    }
-
-    private void goToMain() {
-        if (!willSendImg) {
-            Map<String, Object> updateUser = new HashMap<>();
-            updateUser.put("/adressRoom/" + where + "/" + myUid + "/" + "/ischat/", 1);
-            reference.updateChildren(updateUser);
-
-            deleteMyStoragePic();
-
-            reference.getRef().child("inchat").child(where).child(myUid).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    isClickBtn = true;
-
-                    Map<String, Object> updateUser1 = new HashMap<>();
-                    updateUser1.put("/adressRoom/" + where + "/" + myUid + "/" + "/where/", null);
-                    reference.updateChildren(updateUser1);
-                    alertDialog.dismiss();
-                    goToMainActivity();
-
-                    progressbar.setVisibility(View.GONE);
-                }
-            });
-        }
-    }
-
-    private void goToMainActivity() {
-        Intent intent = new Intent(ChatRoom.this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
     }
 
     private void goToAdressRoom() {

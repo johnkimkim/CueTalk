@@ -35,8 +35,8 @@ public class GpsTracker extends Service implements LocationListener {
     double latitude;
     double longitude;
 
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;//간격이 10m마다 update
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 10 * 1;//if 1000 : 1초마다 update
     protected LocationManager locationManager;
 
     public GpsTracker(Context context) {
@@ -68,6 +68,7 @@ public class GpsTracker extends Service implements LocationListener {
 
                 if (isNetworkEnabled) {
                     locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                    Log.d("GpsTracker>>>", "min time bw updates: " + MIN_TIME_BW_UPDATES);
                     if (locationManager != null)
                     {
                         location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);

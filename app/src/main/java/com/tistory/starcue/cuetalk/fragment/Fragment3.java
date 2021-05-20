@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -95,6 +98,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
     Button dialogBtn, dialogyes, dialogno;
     EditText dialogEditText;
     ProgressBar dialogProgressBar;
+    TextView dialogcount;
 
     Uri imageUri;
     String picUri, messege, category;
@@ -278,6 +282,25 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         dialogyes = layout.findViewById(R.id.f3write_ok);
         dialogno = layout.findViewById(R.id.f3write_no);
         dialogProgressBar = layout.findViewById(R.id.fragment3_dialog_progress_bar);
+        dialogcount = layout.findViewById(R.id.f3write_text_count);
+
+        dialogEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String input = dialogEditText.getText().toString();
+                dialogcount.setText(input.length() + " / 20");
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_item, items);
         adapter.setDropDownViewResource(android.R.layout.select_dialog_item);
@@ -328,6 +351,14 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                     dialogLoading();
                     firstUploadPicInStorage();
                 }
+            }
+        });
+
+        dialogno.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogEditText.setText("");
+                alertDialog.dismiss();
             }
         });
     }

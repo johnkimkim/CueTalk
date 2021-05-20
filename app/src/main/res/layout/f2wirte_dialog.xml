@@ -21,12 +21,22 @@
             android:layout_width="300dp"
             android:layout_height="150dp"
             android:layout_below="@+id/f2write_tiele"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:maxLength="20" />
+
+        <TextView
+            android:id="@+id/f2write_text_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/f2write_edit"
+            android:layout_alignRight="@+id/f2write_edit"
+            android:gravity="end"
+            android:text="0 / 20"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/f2write_edit"
+            android:layout_below="@+id/f2write_text_count"
             android:orientation="horizontal">
 
             <Button

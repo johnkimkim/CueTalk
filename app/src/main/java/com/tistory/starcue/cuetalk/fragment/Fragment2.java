@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +27,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -80,6 +83,7 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
 
     EditText dialogEditText;
     Button dialogyes, dialogno;
+    TextView dialogcount;
     SwipeRefreshLayout swipeRefreshLayout;
 
     private GpsTracker gpsTracker;
@@ -238,6 +242,25 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                 dialogyes = layout.findViewById(R.id.f2write_ok);
                 dialogno = layout.findViewById(R.id.f2write_no);
                 progressBar = layout.findViewById(R.id.fragment2_dialog_progress_bar);
+                dialogcount = layout.findViewById(R.id.f2write_text_count);
+
+                dialogEditText.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        String input = dialogEditText.getText().toString();
+                        dialogcount.setText(input.length() + " / 20");
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
+                    }
+                });
 
                 dialogyes.setOnClickListener(new View.OnClickListener() {
                     @Override

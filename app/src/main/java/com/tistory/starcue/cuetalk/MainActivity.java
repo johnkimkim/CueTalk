@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
 
         public CustomViewPager(@NonNull Context context, @Nullable AttributeSet attrs) {
             super(context, attrs);
-            this.isEnabled = false;
+            this.isEnabled = false;//viewpage 스크롤 여부
         }
 
         @Override
@@ -223,6 +223,14 @@ public class MainActivity extends AppCompatActivity {
 
         public void setPagingEnabled(boolean isEnabled) {//control view pager swipe. if true can, if false can't
             this.isEnabled = isEnabled;
+        }
+
+        @Override
+        protected boolean canScroll(View v, boolean checkV, int dx, int x, int y) {//f1 viewpager scroll lock
+            if (v != this && v instanceof ViewPager) {
+                return true;
+            }
+            return super.canScroll(v, checkV, dx, x, y);
         }
     }
 

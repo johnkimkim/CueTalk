@@ -1,5 +1,6 @@
 package com.tistory.starcue.cuetalk.fragment;
 
+import android.annotation.SuppressLint;//viewpager onTouch
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -217,6 +218,7 @@ public class Fragment1 extends Fragment {
         });
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setViewPagerTimer() {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -262,8 +264,22 @@ public class Fragment1 extends Fragment {
         viewPager.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                int action = motionEvent.getAction();
+//                int action = motionEvent.getAction();
+                int action = motionEvent.getActionMasked();
+//                switch (motionEvent.getActionMasked()) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        Log.d("Fragment1>>>", "onTouch: " + action);
+//                        break;
+//                    case MotionEvent.ACTION_MOVE:
+//                        Log.d("Fragment1>>>", "onTouch1: " + action);
+//                        break;
+//                    case MotionEvent.ACTION_UP:
+//                        Log.d("Fragment1>>>", "onTouch2: " + action);
+//                        break;
+//                }
+                Log.d("Fragment1>>>", "onTouch: " + action);
                 if (action == MotionEvent.ACTION_DOWN) {
+                    Log.d("Fragment1>>>", "onTouch");
                     isRunning = false;
                     countDownTimer.cancel();
                     handler.removeCallbacksAndMessages(null);
@@ -272,17 +288,6 @@ public class Fragment1 extends Fragment {
                 return false;
             }
         });
-
-//        viewPager.setOnDragListener(new View.OnDragListener() {
-//            @Override
-//            public boolean onDrag(View view, DragEvent dragEvent) {
-//                switch (dragEvent.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        Log.d("Fragment1>>>", "test");
-//                }
-//                return false;
-//            }
-//        });
     }
 
 
@@ -332,7 +337,6 @@ public class Fragment1 extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (int i = 0; i < adressList.size(); i++) {
                     if (i > 0) {
-                        Log.d("Fragment1>>>", "check key: " + snapshot.child(adressList.get(i)).getKey() + " / " + snapshot.child(adressList.get(i)).getChildrenCount());
                         int count = (int) snapshot.child(finalAdressList.get(i)).getChildrenCount();
                         adressList.set(finalAdressList.indexOf(finalAdressList.get(i)), finalAdressList.get(i) + " (" + count + "/30)");
                     }

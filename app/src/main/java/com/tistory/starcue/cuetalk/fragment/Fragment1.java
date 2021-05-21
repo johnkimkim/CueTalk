@@ -191,15 +191,15 @@ public class Fragment1 extends Fragment {
         viewPager = view.findViewById(R.id.f1viewpager);
         f1SectionsPagerAdapter = new F1SectionsPagerAdapter(Objects.requireNonNull(getActivity()).getSupportFragmentManager());
 
-        viewPager.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("Fragment1>>>", "viewpager onClick");
-                int position = viewPager.getCurrentItem() + 1;
-                String field = "f1f" + Integer.toString(position);
-                F1ViewpagerIntent.f1viewpagerintent(getActivity(), field);
-            }
-        });
+//        viewPager.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.d("Fragment1>>>", "viewpager onClick");
+//                int position = viewPager.getCurrentItem() + 1;
+//                String field = "f1f" + Integer.toString(position);
+//                F1ViewpagerIntent.f1viewpagerintent(getActivity(), field);
+//            }
+//        });
 
         db.collection("f1viewpager").document("page").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -248,6 +248,7 @@ public class Fragment1 extends Fragment {
 
     @SuppressLint("ClickableViewAccessibility")
     private void setViewPagerTimer() {
+        detector = new GestureDetector(getActivity(), new SingleTapGestureListener());
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -295,7 +296,7 @@ public class Fragment1 extends Fragment {
 //                int action = motionEvent.getAction();
                 int action = motionEvent.getActionMasked();
                 Log.d("Fragment1>>>", "action: " + action);
-
+                detector.onTouchEvent(motionEvent);
                 if (action == MotionEvent.ACTION_DOWN) {
                     isRunning = false;
 //                    countDownTimer.cancel();
@@ -308,6 +309,33 @@ public class Fragment1 extends Fragment {
             }
         });
     }
+
+    private final class SingleTapGestureListener extends GestureDetector.SimpleOnGestureListener {
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            try {
+                if (velocityX < 0) {
+                    //오른쪽으로 이동 완료
+                    Log.d("Fragment1>>>", "viewpager go right");
+                } else {
+                    //왼쪽으로 이동 완료
+                }
+            } catch (Exception e) {
+                Log.d("Fragment1>>>", "onFling Error: " + e);
+            }
+            return true;
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {//viewpager onClick
+            int position = viewPager.getCurrentItem() + 1;
+            String field = "f1f" + Integer.toString(position);
+            F1ViewpagerIntent.f1viewpagerintent(getActivity(), field);
+            return super.onSingleTapUp(e);
+        }
+    }
+
 
     public static class F1SectionsPagerAdapter extends FragmentStatePagerAdapter {
         ArrayList<Fragment> items = new ArrayList<>();

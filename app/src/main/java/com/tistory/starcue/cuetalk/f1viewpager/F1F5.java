@@ -54,28 +54,28 @@ public class F1F5 extends Fragment {
             }
         });
 
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                db.collection("f1viewpager").document("f1f5").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        String where = documentSnapshot.get("where").toString();
-                        String url = documentSnapshot.get("url").toString();
-                        if (where.equals("internet")) {
-                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                            intent.setPackage("com.android.chrome");//크롬으로 띄우기, 없으면 브라우저 선택
-                            startActivity(intent);
-                        } else if (where.equals("playstore")) {
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.tistory.starcue.bgnoise"));
-                            intent.setPackage("com.android.vending");
-                            startActivity(intent);
-                        }
-                    }
-                });
-            }
-        });
+//        imageView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                db.collection("f1viewpager").document("f1f5").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                        String where = documentSnapshot.get("where").toString();
+//                        String url = documentSnapshot.get("url").toString();
+//                        if (where.equals("internet")) {
+//                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//                            intent.setPackage("com.android.chrome");//크롬으로 띄우기, 없으면 브라우저 선택
+//                            startActivity(intent);
+//                        } else if (where.equals("playstore")) {
+//                            Intent intent = new Intent(Intent.ACTION_VIEW);
+//                            intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.tistory.starcue.bgnoise"));
+//                            intent.setPackage("com.android.vending");
+//                            startActivity(intent);
+//                        }
+//                    }
+//                });
+//            }
+//        });
 
         return rootView;
     }

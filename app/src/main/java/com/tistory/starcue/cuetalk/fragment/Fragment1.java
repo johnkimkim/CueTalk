@@ -1,19 +1,24 @@
 package com.tistory.starcue.cuetalk.fragment;
 
 import android.annotation.SuppressLint;//viewpager onTouch
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.MotionEventCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -55,6 +60,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Fragment1 extends Fragment {
 
@@ -82,6 +88,8 @@ public class Fragment1 extends Fragment {
 
     int pageInt;
 
+    private GestureDetector detector;
+
     public Fragment1() {
         // Required empty public constructor
     }
@@ -92,6 +100,14 @@ public class Fragment1 extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         myUid = mAuth.getUid();
         Button testbtn = viewGroup.findViewById(R.id.testbtn);
+        testbtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                int action = motionEvent.getActionMasked();
+                Log.d("Fragment1>>>", "testbtn action: " + action);
+                return false;
+            }
+        });
         testbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -172,7 +188,18 @@ public class Fragment1 extends Fragment {
         viewpagerbtn = view.findViewById(R.id.viewpagerbtn);
         viewpagerbtn.setBackgroundResource(R.drawable.pause);
         viewPager = view.findViewById(R.id.f1viewpager);
-        f1SectionsPagerAdapter = new F1SectionsPagerAdapter(getActivity().getSupportFragmentManager());
+        f1SectionsPagerAdapter = new F1SectionsPagerAdapter(Objects.requireNonNull(getActivity()).getSupportFragmentManager());
+
+//        pageInt = 3;
+//        F1F1 f1f1 = new F1F1();
+//        f1SectionsPagerAdapter.addItem(f1f1);
+//        F1F2 f1f2 = new F1F2();
+//        f1SectionsPagerAdapter.addItem(f1f2);
+//        F1F3 f1f3 = new F1F3();
+//        f1SectionsPagerAdapter.addItem(f1f3);
+//        viewPager.setOffscreenPageLimit(2);
+//        viewPager.setAdapter(f1SectionsPagerAdapter);
+//        setViewPagerTimer();
 
         db.collection("f1viewpager").document("page").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -212,6 +239,7 @@ public class Fragment1 extends Fragment {
                         viewPager.setOffscreenPageLimit(2);
                         viewPager.setAdapter(f1SectionsPagerAdapter);
                         setViewPagerTimer();
+                        break;
                     }
                 }
             }
@@ -261,37 +289,72 @@ public class Fragment1 extends Fragment {
             }
         });
 
+        detector = new GestureDetector(getActivity(), new GestureDetector.OnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent motionEvent) {
+                Log.d("Fragment1>>>", "action down");
+                return true;
+            }
+
+            @Override
+            public void onShowPress(MotionEvent motionEvent) {
+
+            }
+
+            @Override
+            public boolean onSingleTapUp(MotionEvent motionEvent) {
+                return false;
+            }
+
+            @Override
+            public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+                return false;
+            }
+
+            @Override
+            public void onLongPress(MotionEvent motionEvent) {
+
+            }
+
+            @Override
+            public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+                return false;
+            }
+        });
+
         viewPager.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
 //                int action = motionEvent.getAction();
                 int action = motionEvent.getActionMasked();
-//                switch (motionEvent.getActionMasked()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        Log.d("Fragment1>>>", "onTouch: " + action);
-//                        break;
-//                    case MotionEvent.ACTION_MOVE:
-//                        Log.d("Fragment1>>>", "onTouch1: " + action);
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//                        Log.d("Fragment1>>>", "onTouch2: " + action);
-//                        break;
-//                }
-                Log.d("Fragment1>>>", "onTouch: " + action);
-                if (action == MotionEvent.ACTION_DOWN) {
-                    Log.d("Fragment1>>>", "onTouch");
-                    isRunning = false;
-                    countDownTimer.cancel();
-                    handler.removeCallbacksAndMessages(null);
-                    viewpagerbtn.setBackgroundResource(R.drawable.play);
+                Log.d("Fragment1>>>", "action: " + action);
+
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        Log.d("Fragment1>>>", "action0: " + action);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        Log.d("Fragment1>>>", "action1: " + action);
+                        break;
                 }
+
+
+//                Log.d("Fragment1>>>", "onTouch: " + action);
+//                if (action == MotionEvent.ACTION_DOWN) {
+//                    Log.d("Fragment1>>>", "onTouch");
+//                    isRunning = false;
+//                    countDownTimer.cancel();
+//                    handler.removeCallbacksAndMessages(null);
+//                    viewpagerbtn.setBackgroundResource(R.drawable.play);
+//                }
+//                detector.onTouchEvent(motionEvent);
                 return false;
             }
         });
     }
 
 
-    public static class F1SectionsPagerAdapter extends FragmentPagerAdapter {
+    public static class F1SectionsPagerAdapter extends FragmentStatePagerAdapter {
         ArrayList<Fragment> items = new ArrayList<>();
 
         public F1SectionsPagerAdapter(@NonNull @NotNull FragmentManager fm) {
@@ -312,6 +375,39 @@ public class Fragment1 extends Fragment {
             return items.size();
         }
     }
+
+//    public class ViewPagerAdapter extends PagerAdapter {
+//        private Context context;
+//        private ArrayList<Fragment> items = new ArrayList<>();
+//
+//        public ViewPagerAdapter(Context context, ArrayList<Fragment> items) {
+//            this.context = context;
+//            this.items = items;
+//        }
+//
+//        @NonNull
+//        @NotNull
+//        @Override
+//        public Object instantiateItem(@NonNull @NotNull ViewGroup container, int position) {
+//            View view = null;
+//            if (context != null) {
+//                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//                view = inflater.inflate(R.layout.fragment1, container, false);
+//            }
+//            return super.instantiateItem(container, position);
+//        }
+//
+//        @Override
+//        public int getCount() {
+//            return items.size();
+//        }
+//
+//        @Override
+//        public boolean isViewFromObject(@NonNull @NotNull View view, @NonNull @NotNull Object object) {
+//            return (view == (View)object);
+//        }
+//    }
+
 
 
     private void setAdressList() {

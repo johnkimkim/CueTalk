@@ -52,6 +52,8 @@ import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.SeePicDialog;
 import com.tistory.starcue.cuetalk.SplashActivity;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -214,13 +216,36 @@ public class Fragment5 extends Fragment {
         switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                MainActivity.loading.setVisibility(View.VISIBLE);
                 Map<String, Object> map = new HashMap<>();
                 if (b) {
                     map.put("notify", "on");
-                    db.collection("users").document(myUid).update(map);
+                    db.collection("users").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            MainActivity.loading.setVisibility(View.GONE);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull @NotNull Exception e) {
+                            Toast.makeText(getActivity(), "네트워크 오류로 실패있습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show();
+                            switchCompat.setChecked(false);
+                        }
+                    });
                 } else {
                     map.put("notify", "off");
-                    db.collection("users").document(myUid).update(map);
+                    db.collection("users").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            MainActivity.loading.setVisibility(View.GONE);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull @NotNull Exception e) {
+                            Toast.makeText(getActivity(), "네트워크 오류로 실패있습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show();
+                            switchCompat.setChecked(true);
+                        }
+                    });
                 }
             }
         });

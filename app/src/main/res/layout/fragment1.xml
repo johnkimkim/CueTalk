@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.Fragment1">
 
     <RelativeLayout
@@ -27,6 +28,20 @@
             android:layout_height="250dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true" />
+
+        <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
+            android:id="@+id/f1dot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:dotsColor="@color/dot_color_1"
+            app:dotsStrokeColor="@color/dot_color_2"
+            app:dotsCornerRadius="8dp"
+            app:dotsSize="11dp"
+            app:dotsSpacing="3dp"
+            app:dotsStrokeWidth="2dp"
+            android:layout_below="@id/f1viewpager"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="4dp"/>
 
     </RelativeLayout>
 

@@ -41,6 +41,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator;
+import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 import com.tistory.starcue.cuetalk.AdressRoom;
 import com.tistory.starcue.cuetalk.DatabaseHandler;
 import com.tistory.starcue.cuetalk.MainActivity;
@@ -90,6 +92,8 @@ public class Fragment1 extends Fragment {
     int pageInt;
 
     private GestureDetector detector;
+
+    private WormDotsIndicator wormDotsIndicator;
 
     public Fragment1() {
         // Required empty public constructor
@@ -189,6 +193,7 @@ public class Fragment1 extends Fragment {
         viewpagerbtn = view.findViewById(R.id.viewpagerbtn);
         viewpagerbtn.setBackgroundResource(R.drawable.pause);
         viewPager = view.findViewById(R.id.f1viewpager);
+        wormDotsIndicator = view.findViewById(R.id.f1dot);
         f1SectionsPagerAdapter = new F1SectionsPagerAdapter(Objects.requireNonNull(getActivity()).getSupportFragmentManager());
 
 //        viewPager.setOnClickListener(new View.OnClickListener() {
@@ -238,6 +243,7 @@ public class Fragment1 extends Fragment {
                     if (count == pageInt) {
                         viewPager.setOffscreenPageLimit(2);
                         viewPager.setAdapter(f1SectionsPagerAdapter);
+                        wormDotsIndicator.setViewPager(viewPager);
                         setViewPagerTimer();
                         break;
                     }

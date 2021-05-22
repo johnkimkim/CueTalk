@@ -61,6 +61,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
@@ -499,7 +500,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
     private String getTime() {
         long now = System.currentTimeMillis();
         Date mDate = new Date(now);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM_dd HH:mm:ss");//hh = 12, HH = 24
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM_dd HH:mm:ss", Locale.KOREA);//hh = 12, HH = 24
         String date = format.format(mDate);
         return date;
     }

@@ -33,6 +33,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -306,15 +307,7 @@ public class SendMessege {
     private String getTime() {
         long now = System.currentTimeMillis();
         Date mDate = new Date(now);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM_dd HH:mm:ss");
-        String date = format.format(mDate);
-        return date;
-    }
-
-    private String getSecond() {
-        long now = System.currentTimeMillis();
-        Date mDate = new Date(now);
-        SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM_dd HH:mm:ss", Locale.KOREA);
         String date = format.format(mDate);
         return date;
     }

@@ -38,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
@@ -640,7 +641,7 @@ public class DecDialog {
     private static String getTime() {
         long now = System.currentTimeMillis();
         Date mDate = new Date(now);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM_dd HH:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM_dd HH:mm:ss", Locale.KOREA);
         String date = format.format(mDate);
         return date;
     }

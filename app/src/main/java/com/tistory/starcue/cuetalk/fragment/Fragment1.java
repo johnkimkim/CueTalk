@@ -104,56 +104,29 @@ public class Fragment1 extends Fragment {
     }
 
     private void testclass(ViewGroup viewGroup) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        String myUid = mAuth.getUid();
+
         Button testbtn = viewGroup.findViewById(R.id.testbtn);
         testbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String nowTime = getTime();
-                String now1Time = "2021-05_22 00:00:00";
-                String now2Time = "2021-06_12 00:05:55";
-                try {
-                    Log.d("Fragment1>>>", "test diff: " + getTimeFormat(now2Time, now1Time));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                db.collection("users").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            if (documentSnapshot.get("name1") != null) {
+                                Log.d("Fragment1>>>", "test have");
+                            } else {
+                                Log.d("Fragment1>>>", "test null");
+                            }
+                        }
+                    }
+                });
             }
         });
-    }
-
-    private String getTimeFormat(String time1, String time2) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM_dd HH:mm:ss", Locale.KOREA);
-        Date dtime1 = dateFormat.parse(time1);
-        Date dtime2 = dateFormat.parse(time2);
-        long diff = dtime1.getTime() - dtime2.getTime();
-        long sec = diff / 1000;
-        if (sec < 60) {//초
-            return sec + "초 전";
-        } else if (sec < 3600) {//분, 3600초 = 1시간
-            long newResult = sec / 60;
-            return newResult + "분 전";
-        } else if (sec < 86400) {//시간, 86400초 = 1일
-            long newResult = sec / 3600;
-            return newResult + "시간 전";
-        } else if (sec < 604800) {
-            long newResult = sec / 86400;
-            return newResult + "일 전";
-        } else if (sec < 2419200) {
-            long newResult = sec / 604800;
-            return newResult + "주 전";
-        } else if (sec < 14515200) {
-            long newResult = sec / 2419200;
-            return newResult + "개월 전";
-        } else {
-            return "6개월 전";
-        }
-    }
-
-    private String getTime() {
-        long now = System.currentTimeMillis();
-        Date mDate = new Date(now);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM_dd HH:mm:ss", Locale.KOREA);
-        String date = format.format(mDate);
-        return date;
     }
 
     @Override

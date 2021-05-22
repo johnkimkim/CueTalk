@@ -39,6 +39,7 @@
         <activity android:name=".ChangeProfile" android:screenOrientation="portrait"/>
         <activity android:name=".AdressRoom" android:screenOrientation="portrait"/>
         <activity android:name=".Access" android:screenOrientation="portrait"/>
+        <activity android:name=".Access2" android:screenOrientation="portrait"/>
         <activity android:name=".ChatRoom" android:screenOrientation="portrait"/>
         <activity android:name=".Fragment4ChatRoom" android:screenOrientation="portrait"/>
         <service android:name=".service.MyFirebaseMessageService"

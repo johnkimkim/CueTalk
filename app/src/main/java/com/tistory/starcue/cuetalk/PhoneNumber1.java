@@ -10,13 +10,16 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -50,7 +53,13 @@ public class PhoneNumber1 extends AppCompatActivity {
     private EditText phone1edit;
     private TextView feedtext;
     private Button okbtn;
-    private ProgressBar progressBar;
+
+    private CheckBox cba, cb1, cb2, cb3;
+    private Button btn;
+    private RelativeLayout load;
+    private TextView view1, view2, view3;
+
+    private AlertDialog alertDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,7 +90,18 @@ public class PhoneNumber1 extends AppCompatActivity {
         feedtext = findViewById(R.id.phone1feedback);
         okbtn = findViewById(R.id.okbtn1);
         okbtn.setEnabled(false);
-        progressBar = findViewById(R.id.otp_progress_bar);
+
+        load = findViewById(R.id.access2_loading);
+        load.setVisibility(View.GONE);
+        load.bringToFront();
+        cba = findViewById(R.id.access2_checkbox);
+        cb1 = findViewById(R.id.access2_checkbox1);
+        cb2 = findViewById(R.id.access2_checkbox2);
+        cb3 = findViewById(R.id.access2_checkbox3);
+        btn = findViewById(R.id.access2_btn);
+        view1 = findViewById(R.id.access2_view1);
+        view2 = findViewById(R.id.access2_view2);
+        view3 = findViewById(R.id.access2_view3);
 
         phone1edit.addTextChangedListener(new TextWatcher() {
             @Override
@@ -120,7 +140,6 @@ public class PhoneNumber1 extends AppCompatActivity {
                     feedtext.setText("인증코드를 입력해주세요");//필요없음
                     feedtext.setVisibility(View.VISIBLE);
                 } else {
-                    progressBar.setVisibility(View.VISIBLE);
                     okbtn.setEnabled(false);
 
                     PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mAuthVerificationId, otp);
@@ -165,7 +184,6 @@ public class PhoneNumber1 extends AppCompatActivity {
     }
 
     private void goBackSplashActivity() {
-        progressBar.setVisibility(View.INVISIBLE);
         okbtn.setEnabled(false);
         Intent intent = new Intent(PhoneNumber1.this, SplashActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

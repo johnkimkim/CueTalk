@@ -37,7 +37,11 @@ import com.tistory.starcue.cuetalk.SendMessege;
 import com.tistory.starcue.cuetalk.fragment.Fragment3;
 import com.tistory.starcue.cuetalk.item.F3Item;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> {
 
@@ -93,9 +97,13 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
         holder.messege.setText(arrayList.get(position).getMessege());
 
         String time = arrayList.get(position).getTime();
-        String time2 = time.substring(11);
-        String time3 = time2.substring(0, time2.length()-3);
-        holder.time.setText(time3);
+//        String time2 = time.substring(11);
+//        String time3 = time2.substring(0, time2.length()-3);
+        try {
+            holder.time.setText(getTimeFormat(getTime(), time));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         if (arrayList.get(position).getUid().equals(myUid)) {
             holder.sendbtn.setText("삭제");
@@ -237,5 +245,41 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
         distance = locationA.distanceTo(locationB);
 
         return distance;
+    }
+
+    private String getTime() {
+        long now = System.currentTimeMillis();
+        Date mDate = new Date(now);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM_dd HH:mm:ss");
+        String date = format.format(mDate);
+        return date;
+    }
+
+    private String getTimeFormat(String time1, String time2) throws ParseException {//my time(after), usertime(before)
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM_dd HH:mm:ss", Locale.KOREA);
+        Date dtime1 = dateFormat.parse(time1);
+        Date dtime2 = dateFormat.parse(time2);
+        long diff = dtime1.getTime() - dtime2.getTime();
+        long sec = diff / 1000;
+        if (sec < 60) {//초
+            return sec + "초전";
+        } else if (sec < 3600) {//분, 3600초 = 1시간
+            long newResult = sec / 60;
+            return newResult + "분전";
+        } else if (sec < 86400) {//시간, 86400초 = 1일
+            long newResult = sec / 3600;
+            return newResult + "시간전";
+        } else if (sec < 604800) {
+            long newResult = sec / 86400;
+            return newResult + "일전";
+        } else if (sec < 2419200) {
+            long newResult = sec / 604800;
+            return newResult + "주전";
+        } else if (sec < 14515200) {
+            long newResult = sec / 2419200;
+            return newResult + "개월전";
+        } else {
+            return "6개월전";
+        }
     }
 }

@@ -59,9 +59,13 @@ import com.tistory.starcue.cuetalk.f1viewpager.F1ViewpagerIntent;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -100,39 +104,56 @@ public class Fragment1 extends Fragment {
     }
 
     private void testclass(ViewGroup viewGroup) {
-        String myUid;
-        FirebaseAuth mAuth;
-        mAuth = FirebaseAuth.getInstance();
-        myUid = mAuth.getUid();
         Button testbtn = viewGroup.findViewById(R.id.testbtn);
-        testbtn.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                int action = motionEvent.getActionMasked();
-                Log.d("Fragment1>>>", "testbtn action: " + action);
-                return false;
-            }
-        });
         testbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Map<String, Object> map = new HashMap<>();
-                map.put("uid", myUid);
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                db.collection("users").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot documentSnapshot = task.getResult();
-                            if (documentSnapshot.exists()) {
-                                Log.d("testtest>>>", "f2 have1: " + documentSnapshot.get("name").toString());
-                                Log.d("testtest>>>", "f2 have2: " + documentSnapshot.getData().get("name").toString());
-                            }
-                        }
-                    }
-                });
+                String nowTime = getTime();
+                String now1Time = "2021-05_22 00:00:00";
+                String now2Time = "2021-06_12 00:05:55";
+                try {
+                    Log.d("Fragment1>>>", "test diff: " + getTimeFormat(now2Time, now1Time));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
         });
+    }
+
+    private String getTimeFormat(String time1, String time2) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM_dd HH:mm:ss", Locale.KOREA);
+        Date dtime1 = dateFormat.parse(time1);
+        Date dtime2 = dateFormat.parse(time2);
+        long diff = dtime1.getTime() - dtime2.getTime();
+        long sec = diff / 1000;
+        if (sec < 60) {//초
+            return sec + "초 전";
+        } else if (sec < 3600) {//분, 3600초 = 1시간
+            long newResult = sec / 60;
+            return newResult + "분 전";
+        } else if (sec < 86400) {//시간, 86400초 = 1일
+            long newResult = sec / 3600;
+            return newResult + "시간 전";
+        } else if (sec < 604800) {
+            long newResult = sec / 86400;
+            return newResult + "일 전";
+        } else if (sec < 2419200) {
+            long newResult = sec / 604800;
+            return newResult + "주 전";
+        } else if (sec < 14515200) {
+            long newResult = sec / 2419200;
+            return newResult + "개월 전";
+        } else {
+            return "6개월 전";
+        }
+    }
+
+    private String getTime() {
+        long now = System.currentTimeMillis();
+        Date mDate = new Date(now);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM_dd HH:mm:ss", Locale.KOREA);
+        String date = format.format(mDate);
+        return date;
     }
 
     @Override

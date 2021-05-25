@@ -1,4 +1,4 @@
-//package com.tistory.starcue.cuetalk;
+package com.tistory.starcue.cuetalk;//package com.tistory.starcue.cuetalk;
 //
 //import android.app.ProgressDialog;
 //import android.content.Intent;

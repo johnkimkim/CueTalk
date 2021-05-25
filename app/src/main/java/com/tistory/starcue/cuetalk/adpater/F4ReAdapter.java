@@ -69,15 +69,15 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
 
     @NonNull
     @Override
-    public F4ReAdapter.CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment4_recyclerview_layout, parent, false);
-        F4ReAdapter.CustomViewHolder holder = new F4ReAdapter.CustomViewHolder(view);
+        CustomViewHolder holder = new CustomViewHolder(view);
 
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull F4ReAdapter.CustomViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
 
         mAuth = FirebaseAuth.getInstance();
         myUid = mAuth.getUid();

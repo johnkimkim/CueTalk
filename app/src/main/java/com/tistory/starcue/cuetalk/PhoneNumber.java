@@ -1,22 +1,26 @@
 package com.tistory.starcue.cuetalk;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.ProgressBar;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -38,7 +42,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class PhoneNumber extends AppCompatActivity {
@@ -51,10 +54,18 @@ public class PhoneNumber extends AppCompatActivity {
 
     private TextView mPhoneNumber;
     private Button mButton;
-    private ProgressBar mProgressBar;
     private TextView feedtext;
 
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallback;
+
+    private CheckBox cba, cb1, cb2, cb3;
+    private RelativeLayout load;
+    private TextView view1, view2, view3;
+
+    private AlertDialog alertDialog;
+
+    private FirebaseFirestore db;
+    private String myUid;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,9 +86,21 @@ public class PhoneNumber extends AppCompatActivity {
     private void setunit() {
         mPhoneNumber = findViewById(R.id.edittext);
         mButton = findViewById(R.id.okbtn);
-        mProgressBar = findViewById(R.id.login_progress_bar);
         feedtext = findViewById(R.id.login_feedback);
         feedtext.setVisibility(View.GONE);
+
+        load = findViewById(R.id.access2_loading);
+        load.setVisibility(View.GONE);
+        load.bringToFront();
+        cba = findViewById(R.id.access2_checkbox);
+        cb1 = findViewById(R.id.access2_checkbox1);
+        cb2 = findViewById(R.id.access2_checkbox2);
+        cb3 = findViewById(R.id.access2_checkbox3);
+        view1 = findViewById(R.id.access2_view1);
+        view2 = findViewById(R.id.access2_view2);
+        view3 = findViewById(R.id.access2_view3);
+        checkAll();
+        setOnClickViewer();
 
         mButton.setEnabled(false);
         mPhoneNumber.addTextChangedListener(new TextWatcher() {
@@ -104,11 +127,81 @@ public class PhoneNumber extends AppCompatActivity {
         });
     }
 
+    private void checkAll() {
+        cba.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {//checked
+                    cb1.setChecked(true);
+                    cb2.setChecked(true);
+                    cb3.setChecked(true);
+                } else {//no checked
+                    cb1.setChecked(false);
+                    cb2.setChecked(false);
+                    cb3.setChecked(false);
+                }
+            }
+        });
+    }
+
+    private void setOnClickViewer() {
+        view1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("Access2>>>", "view1 onClick");
+                db.collection("version").document("access2").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        String link = documentSnapshot.get("위치기반서비스이용약관").toString();
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(link));
+                        intent.setPackage("com.android.vending");
+                        startActivity(intent);
+                    }
+                });
+            }
+        });
+
+        view2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("Access2>>>", "view2 onClick");
+                db.collection("version").document("access2").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        String link = documentSnapshot.get("개인정보처리방침").toString();
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(link));
+                        intent.setPackage("com.android.vending");
+                        startActivity(intent);
+                    }
+                });
+            }
+        });
+
+        view3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("Access2>>>", "view3 onClick");
+                db.collection("version").document("access2").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        String link = documentSnapshot.get("개인정보수집및이용동의").toString();
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(link));
+                        intent.setPackage("com.android.vending");
+                        startActivity(intent);
+                    }
+                });
+            }
+        });
+    }
+
     private void setOnClickBtn() {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mProgressBar.setVisibility(View.VISIBLE);
+                load.setVisibility(View.VISIBLE);
                 FirebaseFirestore firestore = FirebaseFirestore.getInstance();
                 firestore.collection("blacklist").addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
@@ -126,20 +219,18 @@ public class PhoneNumber extends AppCompatActivity {
                                 String phoneNum = "+82" + mPhoneNumber.getText().toString().substring(1);
                                 Log.d("PHoneNumber>>>", phoneNum);
 
-                                if (phoneNum.isEmpty()) {
-                                    Log.d("Fragment1>>>", "test1");
-                                    feedtext.setVisibility(View.VISIBLE);
-                                    mProgressBar.setVisibility(View.GONE);
-                                    feedtext.setText("전화번호를 입력해주세요");
-                                } else if (count.contains(mPhoneNumber.getText().toString())) {
+                                if (!cb1.isChecked() || !cb2.isChecked() || !cb3.isChecked()) {
+                                    dialog();
+                                }
+                                if (count.contains(mPhoneNumber.getText().toString())) {
                                     Log.d("Fragment1>>>", "test2");
                                     feedtext.setVisibility(View.VISIBLE);
-                                    mProgressBar.setVisibility(View.GONE);
+                                    load.setVisibility(View.GONE);
                                     feedtext.setText("해당 전화번호는 정책위반으로 인해 서비스 이용이 정지되었습니다.");
                                 } else {
                                     Log.d("Fragment1>>>", "test3");
                                     feedtext.setVisibility(View.GONE);
-                                    mProgressBar.setVisibility(View.VISIBLE);
+                                    load.setVisibility(View.VISIBLE);
                                     mButton.setEnabled(false);
 
 //                    PhoneAuthProvider.getInstance().verifyPhoneNumber(
@@ -177,7 +268,7 @@ public class PhoneNumber extends AppCompatActivity {
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 feedtext.setText("실패!");
                 feedtext.setVisibility(View.VISIBLE);
-                mProgressBar.setVisibility(View.INVISIBLE);
+                load.setVisibility(View.INVISIBLE);
                 mButton.setEnabled(true);
             }
 
@@ -190,6 +281,33 @@ public class PhoneNumber extends AppCompatActivity {
                 finish();
             }
         };
+    }
+
+    private void dialog() {
+        LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout layout = (LinearLayout) vi.inflate(R.layout.if_not_access_2, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(PhoneNumber.this);
+        builder.setView(layout);
+        builder.setCancelable(false);
+        alertDialog = builder.create();
+
+        if (!PhoneNumber.this.isFinishing()) {
+            if (alertDialog != null) {
+                alertDialog.dismiss();
+            }
+            alertDialog.show();
+        }
+
+        /*Unable to add window -- token android.os.BinderProxy@7c9958a is not valid; is your activity running?*/
+
+        Button okbtn = layout.findViewById(R.id.access2_dialog_okbtn);
+        okbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                load.setVisibility(View.GONE);
+                alertDialog.dismiss();
+            }
+        });
     }
 
     @Override
@@ -221,7 +339,7 @@ public class PhoneNumber extends AppCompatActivity {
                                 feedtext.setVisibility(View.VISIBLE);
                             }
                         }
-                        mProgressBar.setVisibility(View.INVISIBLE);
+                        load.setVisibility(View.INVISIBLE);
                         mButton.setEnabled(true);
                     }
                 });

@@ -23,7 +23,7 @@ public class F1ViewpagerIntent {
                     context.startActivity(intent);
                 } else if (where.equals("playstore")) {
                     Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.tistory.starcue.bgnoise"));
+                    intent.setData(Uri.parse(url));
                     intent.setPackage("com.android.vending");
                     context.startActivity(intent);
                 }

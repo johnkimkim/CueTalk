@@ -10,16 +10,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,7 +31,10 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class PhoneNumber1 extends AppCompatActivity {
@@ -53,13 +52,7 @@ public class PhoneNumber1 extends AppCompatActivity {
     private EditText phone1edit;
     private TextView feedtext;
     private Button okbtn;
-
-    private CheckBox cba, cb1, cb2, cb3;
-    private Button btn;
-    private RelativeLayout load;
-    private TextView view1, view2, view3;
-
-    private AlertDialog alertDialog;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,18 +83,7 @@ public class PhoneNumber1 extends AppCompatActivity {
         feedtext = findViewById(R.id.phone1feedback);
         okbtn = findViewById(R.id.okbtn1);
         okbtn.setEnabled(false);
-
-        load = findViewById(R.id.access2_loading);
-        load.setVisibility(View.GONE);
-        load.bringToFront();
-        cba = findViewById(R.id.access2_checkbox);
-        cb1 = findViewById(R.id.access2_checkbox1);
-        cb2 = findViewById(R.id.access2_checkbox2);
-        cb3 = findViewById(R.id.access2_checkbox3);
-        btn = findViewById(R.id.access2_btn);
-        view1 = findViewById(R.id.access2_view1);
-        view2 = findViewById(R.id.access2_view2);
-        view3 = findViewById(R.id.access2_view3);
+        progressBar = findViewById(R.id.otp_progress_bar);
 
         phone1edit.addTextChangedListener(new TextWatcher() {
             @Override
@@ -140,6 +122,7 @@ public class PhoneNumber1 extends AppCompatActivity {
                     feedtext.setText("인증코드를 입력해주세요");//필요없음
                     feedtext.setVisibility(View.VISIBLE);
                 } else {
+                    progressBar.setVisibility(View.VISIBLE);
                     okbtn.setEnabled(false);
 
                     PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mAuthVerificationId, otp);
@@ -184,6 +167,7 @@ public class PhoneNumber1 extends AppCompatActivity {
     }
 
     private void goBackSplashActivity() {
+        progressBar.setVisibility(View.INVISIBLE);
         okbtn.setEnabled(false);
         Intent intent = new Intent(PhoneNumber1.this, SplashActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -204,8 +188,17 @@ public class PhoneNumber1 extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.get("unique") == null) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("개인정보처리방침", getTime());
+                    map.put("위치기반서비스이용약관", getTime());
+                    map.put("개인정보수집및이용동의", getTime());
+                    db.collection("users").document(myUid).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            goBackSplashActivity();
+                        }
+                    });
                     Log.d("SplashActivity>>>", "unique == null");
-                    goBackSplashActivity();
                 } else {
                     String uniqueInFirestore = documentSnapshot.get("unique").toString();
                     if (uniqueInFirestore.equals(getUniqueInSql())) {
@@ -272,5 +265,12 @@ public class PhoneNumber1 extends AppCompatActivity {
         String uniqueInSql = cursor.getString(0);
         Log.d("SplashActivity>>>", "my unique: " + uniqueInSql);
         return uniqueInSql;
+    }
+    private String getTime() {
+        long now = System.currentTimeMillis();
+        Date mDate = new Date(now);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM_dd HH:mm:ss", Locale.KOREA);
+        String date = format.format(mDate);
+        return date;
     }
 }

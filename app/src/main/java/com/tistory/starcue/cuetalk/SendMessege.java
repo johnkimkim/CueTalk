@@ -1,6 +1,5 @@
 package com.tistory.starcue.cuetalk;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,7 +34,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 

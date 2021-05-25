@@ -16,7 +16,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -28,11 +27,11 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.tistory.starcue.cuetalk.AdressRoom;
-import com.tistory.starcue.cuetalk.item.AdressRoomItem;
 import com.tistory.starcue.cuetalk.DatabaseHandler;
 import com.tistory.starcue.cuetalk.GpsTracker;
 import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.SeePicDialog;
+import com.tistory.starcue.cuetalk.item.AdressRoomItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,14 +67,14 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
 
     @NonNull
     @Override
-    public BottomSheetAdapter.CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.bottom_list_layout, parent, false);
-        BottomSheetAdapter.CustomViewHolder holder = new BottomSheetAdapter.CustomViewHolder(view);
+        CustomViewHolder holder = new CustomViewHolder(view);
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull BottomSheetAdapter.CustomViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
 
         mAuth = FirebaseAuth.getInstance();
         myUid = mAuth.getUid();

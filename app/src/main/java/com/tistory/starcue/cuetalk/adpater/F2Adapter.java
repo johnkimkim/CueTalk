@@ -14,9 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -61,10 +59,10 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
 
     @NonNull
     @Override
-    public F2Adapter.CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.f2_list_layout, parent, false);
-        F2Adapter.CustomViewHolder holder = new F2Adapter.CustomViewHolder(view);
+        CustomViewHolder holder = new CustomViewHolder(view);
         mAuth = FirebaseAuth.getInstance();
         myUid = mAuth.getUid();
 
@@ -72,7 +70,7 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull F2Adapter.CustomViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
 
         requestManager.load(arrayList.get(position).getPic())
                 .override(150, 150).circleCrop().into(holder.imageView);

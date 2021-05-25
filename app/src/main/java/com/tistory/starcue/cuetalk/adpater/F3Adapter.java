@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,18 +14,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.ListResult;
-import com.google.firebase.storage.StorageReference;
 import com.tistory.starcue.cuetalk.DecDialog;
 import com.tistory.starcue.cuetalk.DeleteMyDialog;
 import com.tistory.starcue.cuetalk.GpsTracker;
@@ -66,10 +60,10 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
 
     @NonNull
     @Override
-    public F3Adapter.CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.f3_list_layout, parent, false);
-        F3Adapter.CustomViewHolder holder = new F3Adapter.CustomViewHolder(view);
+        CustomViewHolder holder = new CustomViewHolder(view);
         mAuth = FirebaseAuth.getInstance();
         myUid = mAuth.getUid();
 
@@ -77,7 +71,7 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull F3Adapter.CustomViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
 //        Glide.with(holder.imageView).load(arrayList.get(position).getPic())
 //                .signature(new ObjectKey(System.currentTimeMillis()))
 //                .override(150, 150).circleCrop().into(holder.imageView);

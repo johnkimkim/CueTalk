@@ -1,18 +1,7 @@
 package com.tistory.starcue.cuetalk.fragment;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,37 +9,35 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.tistory.starcue.cuetalk.GpsTracker;
 import com.tistory.starcue.cuetalk.MainActivity;
 import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.SendMessege;
 import com.tistory.starcue.cuetalk.adpater.F4ReAdapter;
-import com.tistory.starcue.cuetalk.item.F2Item;
 import com.tistory.starcue.cuetalk.item.F4MessegeItem;
 import com.tistory.starcue.cuetalk.item.LastListItem;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 public class Fragment4 extends Fragment {
 
@@ -74,6 +61,7 @@ public class Fragment4 extends Fragment {
     private F4ReAdapter adapter;
 
     private FirebaseAuth mAuth;
+    private FirebaseUser firebaseUser;
     private DatabaseReference reference;
     FirebaseFirestore db;
     String myUid;
@@ -102,8 +90,7 @@ public class Fragment4 extends Fragment {
         stayf4chatroom = false;
 //        setAlready = false;
 
-        setFirebase();
-        setinit(rootView);
+        setFirebase(rootView);
 
         return rootView;
     }
@@ -118,11 +105,16 @@ public class Fragment4 extends Fragment {
         setRecyclerView();
     }
 
-    private void setFirebase() {
+    private void setFirebase(ViewGroup v) {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+        firebaseUser = mAuth.getCurrentUser();
         reference = FirebaseDatabase.getInstance().getReference();
         myUid = mAuth.getUid();
+
+        if (firebaseUser != null) {
+            setinit(v);
+        }
     }
 
     private void setRecyclerView() {
@@ -609,7 +601,7 @@ public class Fragment4 extends Fragment {
     }
 
     private void setNullChat() {
-        if (arrayList.size() == 0) {
+        if (arrayList == null || arrayList.size() == 0) {
             nullchat.setVisibility(View.VISIBLE);
         } else {
             nullchat.setVisibility(View.GONE);

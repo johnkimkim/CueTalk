@@ -1,20 +1,9 @@
 package com.tistory.starcue.cuetalk.fragment;
 
-import android.annotation.SuppressLint;//viewpager onTouch
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.core.view.MotionEventCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
@@ -30,10 +19,13 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,7 +33,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 import com.tistory.starcue.cuetalk.AdressRoom;
 import com.tistory.starcue.cuetalk.DatabaseHandler;
@@ -63,10 +54,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 
 public class Fragment1 extends Fragment {
@@ -104,29 +93,56 @@ public class Fragment1 extends Fragment {
     }
 
     private void testclass(ViewGroup viewGroup) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        String myUid = mAuth.getUid();
-
         Button testbtn = viewGroup.findViewById(R.id.testbtn);
         testbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                db.collection("users").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot documentSnapshot = task.getResult();
-                            if (documentSnapshot.get("name1") != null) {
-                                Log.d("Fragment1>>>", "test have");
-                            } else {
-                                Log.d("Fragment1>>>", "test null");
-                            }
-                        }
-                    }
-                });
+                String nowTime = getTime();
+                String now1Time = "2021-05_22 00:00:00";
+                String now2Time = "2021-06_12 00:05:55";
+                try {
+                    Log.d("Fragment1>>>", "test diff: " + getTimeFormat(now2Time, now1Time));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
         });
+    }
+
+    private String getTimeFormat(String time1, String time2) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM_dd HH:mm:ss", Locale.KOREA);
+        Date dtime1 = dateFormat.parse(time1);
+        Date dtime2 = dateFormat.parse(time2);
+        long diff = dtime1.getTime() - dtime2.getTime();
+        long sec = diff / 1000;
+        if (sec < 60) {//초
+            return sec + "초 전";
+        } else if (sec < 3600) {//분, 3600초 = 1시간
+            long newResult = sec / 60;
+            return newResult + "분 전";
+        } else if (sec < 86400) {//시간, 86400초 = 1일
+            long newResult = sec / 3600;
+            return newResult + "시간 전";
+        } else if (sec < 604800) {
+            long newResult = sec / 86400;
+            return newResult + "일 전";
+        } else if (sec < 2419200) {
+            long newResult = sec / 604800;
+            return newResult + "주 전";
+        } else if (sec < 14515200) {
+            long newResult = sec / 2419200;
+            return newResult + "개월 전";
+        } else {
+            return "6개월 전";
+        }
+    }
+
+    private String getTime() {
+        long now = System.currentTimeMillis();
+        Date mDate = new Date(now);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM_dd HH:mm:ss", Locale.KOREA);
+        String date = format.format(mDate);
+        return date;
     }
 
     @Override

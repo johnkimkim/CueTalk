@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
         btn5count = findViewById(R.id.btn5count);
         loading = findViewById(R.id.loading);
         mainProgressBar = findViewById(R.id.mainpro);
+        loading.setVisibility(View.GONE);
         loading.bringToFront();
 
         btn1.setOnClickListener((View v) -> {
@@ -179,20 +180,16 @@ public class MainActivity extends AppCompatActivity {
 
     public static class SectionsPagerAdapter extends FragmentPagerAdapter {
         ArrayList<Fragment> items = new ArrayList<Fragment>();
-
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         }
-
         public void addItem(Fragment item) {
             items.add(item);
         }
-
         @Override
         public Fragment getItem(int i) {
             return items.get(i);
         }
-
         @Override
         public int getCount() {
             return items.size();
@@ -260,28 +257,6 @@ public class MainActivity extends AppCompatActivity {
         reference = FirebaseDatabase.getInstance().getReference();
         myUid = mAuth.getUid();
 //        databaseHandler.adressdelete();
-
-        checkAccess();
-    }
-
-    private void checkAccess() {
-        db.collection("users").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot documentSnapshot = task.getResult();
-                    if (documentSnapshot.get("개인정보처리방침") == null
-                            || documentSnapshot.get("위치기반서비스이용약관") == null
-                            || documentSnapshot.get("개인정보수집및이용동의") == null) {
-                        Intent intent = new Intent(MainActivity.this, Access2.class);
-                        startActivity(intent);
-                        loading.setVisibility(View.GONE);
-                    } else {
-                        loading.setVisibility(View.GONE);
-                    }
-                }
-            }
-        });
     }
 
 //    private void setNameSql() {

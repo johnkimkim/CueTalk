@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,13 +27,12 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -48,9 +46,7 @@ import com.tistory.starcue.cuetalk.SplashActivity;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Fragment5 extends Fragment {
@@ -356,101 +352,79 @@ public class Fragment5 extends Fragment {
                         deleteUser.setEnabled(false);
                         deleteUserDialogOkBtn.setEnabled(false);
                         deleteUserDialogNoBtn.setEnabled(false);
-                        deleteDocument();
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                saveDeleteUserUid();
-                            }
-                        },5000);
+//                        deleteDocument();
+                        saveOneMonthUser();
                     }
                 });
             }
         });
     }
 
-//    private void setPic() {
-////        Glide.with(getActivity()).load("gs://cuetalk-c4d03.appspot.com/images/03aUD74hz4MjcbcZcpSMc2KfZWs2").into(pic);
-//
-//        db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//            @Override
-//            public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                String picUri = documentSnapshot.get("pic").toString();
-//                Glide.with(getActivity()).load(picUri).override(300, 300).placeholder(R.drawable.ic_launcher_background)
-//                        .error(R.drawable.ic_launcher_foreground)
-//                        .circleCrop().into(pic);
-//            }
-//        });
-//
-//    }
-
-    private void deleteDocument() {
-        db.collection("users").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                db.collection("f2messege").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        db.collection("f3messege").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                deleteRealTime();
-                            }
-                        });
-                    }
-                });
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getActivity(), "document삭제 실패", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void deleteRealTime() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        reference.getRef().child("myroom").child(myUid).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                reference.getRef().child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                    @Override
-                    public void onSuccess(DataSnapshot dataSnapshot) {
-                        List<String> count = new ArrayList<>();
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            count.add("1");
-                            if (snapshot.getKey().contains(myUid)) {
-                                reference.getRef().child("messege").child(snapshot.getKey()).removeValue();
-                            }
-                        }
-                    }
-                });
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });
-    }
-
-    private void saveDeleteUserUid() {
+    private void saveOneMonthUser() {
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        String myPhoneNumber = firebaseUser.getPhoneNumber();
         Map<String, Object> map = new HashMap<>();
+        map.put("phonenumber", myPhoneNumber);
         map.put("uid", myUid);
         db.collection("deleteUser").document(myUid).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onSuccess(Void aVoid) {
+            public void onSuccess(Void unused) {
+                deletef2();
+            }
+        });
+    }
+
+    private void deletef2() {
+        //delete f2
+        db.collection("f2messege").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot snapshot = task.getResult();
+                    if (snapshot.get("uid") != null) {
+                        db.collection("f2messege").document(myUid).delete();
+                    }
+                    deletef3();
+                }
+            }
+        });
+
+    }
+
+    private void deletef3() {
+        db.collection("f3messege").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot snapshot = task.getResult();
+                    if (snapshot.get("uid") != null) {
+                        db.collection("f3messege").document(myUid).delete();
+                    }
+                    deleteUsersInFirestore();
+                }
+            }
+        });
+    }
+
+    private void deleteUsersInFirestore() {
+        db.collection("users").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
                 lastDeleteUser();
             }
         });
     }
 
     private void lastDeleteUser() {
-        mAuth.signOut();
-        mCurrentUser.delete();
-        databaseHandler.uniquedelete();
-        startActivity(new Intent(getActivity(), SplashActivity.class));
+        mCurrentUser.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                databaseHandler.uniquedelete();
+                alertDialog.dismiss();
+                startActivity(new Intent(getActivity(), SplashActivity.class));
+            }
+        });
+//        mAuth.signOut();
     }
 
     @Override

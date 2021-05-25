@@ -1,20 +1,9 @@
 package com.tistory.starcue.cuetalk.fragment;
 
-import android.annotation.SuppressLint;//viewpager onTouch
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.core.view.MotionEventCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
@@ -30,6 +19,12 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -41,7 +36,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 import com.tistory.starcue.cuetalk.AdressRoom;
 import com.tistory.starcue.cuetalk.DatabaseHandler;
@@ -59,14 +53,8 @@ import com.tistory.starcue.cuetalk.f1viewpager.F1ViewpagerIntent;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 
 public class Fragment1 extends Fragment {
@@ -112,19 +100,32 @@ public class Fragment1 extends Fragment {
         testbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                db.collection("users").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                db.collection("f2messege").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
                             DocumentSnapshot documentSnapshot = task.getResult();
-                            if (documentSnapshot.get("name1") != null) {
-                                Log.d("Fragment1>>>", "test have");
+                            if (documentSnapshot.get("uid") == null) {
+                                Log.d("Fragment1>>>", "testtest null");
                             } else {
-                                Log.d("Fragment1>>>", "test null");
+                                Log.d("Fragment1>>>", "testtest has");
                             }
                         }
                     }
                 });
+//                db.collection("users").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            DocumentSnapshot documentSnapshot = task.getResult();
+//                            if (documentSnapshot.get("name1") != null) {
+//                                Log.d("Fragment1>>>", "test have");
+//                            } else {
+//                                Log.d("Fragment1>>>", "test null");
+//                            }
+//                        }
+//                    }
+//                });
             }
         });
     }

@@ -407,12 +407,20 @@ public class Fragment5 extends Fragment {
     }
 
     private void deleteUsersInFirestore() {
-        db.collection("users").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("delete", "yes");
+        db.collection("users").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 lastDeleteUser();
             }
         });
+//        db.collection("users").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void unused) {
+//                lastDeleteUser();
+//            }
+//        });
     }
 
     private void lastDeleteUser() {

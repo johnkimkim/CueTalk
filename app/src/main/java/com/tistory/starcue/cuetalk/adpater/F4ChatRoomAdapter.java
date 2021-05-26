@@ -15,14 +15,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.tistory.starcue.cuetalk.Code;
 import com.tistory.starcue.cuetalk.DatabaseHandler;
 import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.SeePicDialog;
 import com.tistory.starcue.cuetalk.item.F4ChatRoomItem;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +39,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private SQLiteDatabase sqLiteDatabase;
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
     String myUid;
     String userUid;
     String userName, userSex, userAge, userPic, userLatitude, userLongitude;
@@ -46,6 +53,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
+    String nullUser = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullUser.png?alt=media&token=4c9daa69-6d03-4b19-a793-873f5739f3a1";
 
     private RequestManager requestManager;
 
@@ -92,90 +100,163 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
+        mAuth = FirebaseAuth.getInstance();
+        myUid = mAuth.getUid();
+        db = FirebaseFirestore.getInstance();
+
         String time = arrayList.get(position).getTime();
         String time1 = time.substring(11);
         String time2 = time1.substring(0, time1.length() - 3);
 
-        if (holder instanceof RightImageViewholder) {
-            ((RightImageViewholder) holder).timepic.setText(time2);
-            requestManager
-                    .load(arrayList.get(position).getUri())
-                    .override(150, 150)
-                    .centerCrop()
-                    .into(((RightImageViewholder) holder).imagepic);
-            if (arrayList.get(position).getRead().equals("1")) {
-                ((RightImageViewholder) holder).read.setText("1");
-            } else {
-                ((RightImageViewholder) holder).read.setText("");
-            }
-        } else if (holder instanceof LeftImageViewholder) {
-            ((LeftImageViewholder) holder).name.setText(userName);
-            ((LeftImageViewholder) holder).time.setText(time2);
-            requestManager
-                    .load(userPic)
-                    .override(150, 150)
-                    .circleCrop()
-                    .into(((LeftImageViewholder) holder).picli);
-            requestManager
-                    .load(arrayList.get(position).getUri())
-                    .override(150, 150)
-                    .centerCrop()
-                    .into(((LeftImageViewholder) holder).image);
-            ((LeftImageViewholder) holder).picli.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String uri = userPic;
-                    SeePicDialog.seePicDialog(context, uri);
+        db.collection("users").document(arrayList.get(position).getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot snapshot = task.getResult();
+                    if (snapshot.get("delete") == null) {
+                        if (holder instanceof RightImageViewholder) {
+                            ((RightImageViewholder) holder).timepic.setText(time2);
+                            requestManager
+                                    .load(arrayList.get(position).getUri())
+                                    .override(150, 150)
+                                    .centerCrop()
+                                    .into(((RightImageViewholder) holder).imagepic);
+                            if (arrayList.get(position).getRead().equals("1")) {
+                                ((RightImageViewholder) holder).read.setText("1");
+                            } else {
+                                ((RightImageViewholder) holder).read.setText("");
+                            }
+                        } else if (holder instanceof LeftImageViewholder) {
+                            ((LeftImageViewholder) holder).name.setText(userName);
+                            ((LeftImageViewholder) holder).time.setText(time2);
+                            requestManager
+                                    .load(userPic)
+                                    .override(150, 150)
+                                    .circleCrop()
+                                    .into(((LeftImageViewholder) holder).picli);
+                            requestManager
+                                    .load(arrayList.get(position).getUri())
+                                    .override(150, 150)
+                                    .centerCrop()
+                                    .into(((LeftImageViewholder) holder).image);
+                            ((LeftImageViewholder) holder).picli.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    String uri = userPic;
+                                    SeePicDialog.seePicDialog(context, uri);
+                                }
+                            });
+                            ((LeftImageViewholder) holder).image.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    String uri = arrayList.get(position).getUri();
+                                    SeePicDialog.seePicDialog(context, uri);
+                                }
+                            });
+                            if (userPic.equals(nullPic) || userPic.equals(nullPicF)) {
+                                ((LeftImageViewholder) holder).picli.setEnabled(false);
+                            } else {
+                                ((LeftImageViewholder) holder).picli.setEnabled(true);
+                            }
+                        } else if (holder instanceof RightViewholder) {
+                            ((RightViewholder) holder).time1.setText(time2);
+                            ((RightViewholder) holder).messege1.setText(arrayList.get(position).getMessege());
+                            if (arrayList.get(position).getRead().equals("1")) {
+                                ((RightViewholder) holder).read2.setText("1");
+                            } else {
+                                ((RightViewholder) holder).read2.setText("");
+                            }
+                        }
+                        else if (holder instanceof LeftViewholder) {
+                            ((LeftViewholder) holder).name.setText(userName);
+                            ((LeftViewholder) holder).messege.setText(arrayList.get(position).getMessege());
+                            ((LeftViewholder) holder).time.setText(time2);
+                            Log.d("F4chatRoomAdapter>>>", "get time in arrayList: " + arrayList.get(position).getTime() + " / " + time2);
+                            requestManager//error. requast manager?사용해서 this받기
+                                    .load(userPic)
+                                    .override(150, 150)
+                                    .circleCrop()
+                                    .into(((LeftViewholder) holder).picl);
+                            ((LeftViewholder) holder).picl.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    String uri = userPic;
+                                    SeePicDialog.seePicDialog(context, uri);
+                                }
+                            });
+                            if (userPic.equals(nullPic) || userPic.equals(nullPicF)) {
+                                ((LeftViewholder) holder).picl.setEnabled(false);
+                            } else {
+                                ((LeftViewholder) holder).picl.setEnabled(true);
+                            }
+                        } else if (holder instanceof CenterViewholder) {
+                            ((CenterViewholder) holder).textView.setText("입장완료");
+                        } else if (holder instanceof CenterBottomViewholder) {
+                            ((CenterBottomViewholder) holder).titletext.setText("상대방이 대화방을 나갔습니다.");
+                        }
+                    } else {
+                        if (holder instanceof RightImageViewholder) {
+                            ((RightImageViewholder) holder).timepic.setText(time2);
+                            requestManager
+                                    .load(arrayList.get(position).getUri())
+                                    .override(150, 150)
+                                    .centerCrop()
+                                    .into(((RightImageViewholder) holder).imagepic);
+                            if (arrayList.get(position).getRead().equals("1")) {
+                                ((RightImageViewholder) holder).read.setText("1");
+                            } else {
+                                ((RightImageViewholder) holder).read.setText("");
+                            }
+                        } else if (holder instanceof LeftImageViewholder) {
+                            ((LeftImageViewholder) holder).name.setText("(알수없음)");
+                            ((LeftImageViewholder) holder).time.setText(time2);
+                            requestManager
+                                    .load(nullUser)
+                                    .override(150, 150)
+                                    .circleCrop()
+                                    .into(((LeftImageViewholder) holder).picli);
+                            requestManager
+                                    .load(arrayList.get(position).getUri())
+                                    .override(150, 150)
+                                    .centerCrop()
+                                    .into(((LeftImageViewholder) holder).image);
+                            ((LeftImageViewholder) holder).image.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    String uri = arrayList.get(position).getUri();
+                                    SeePicDialog.seePicDialog(context, uri);
+                                }
+                            });
+                            ((LeftImageViewholder) holder).picli.setEnabled(false);
+                        } else if (holder instanceof RightViewholder) {
+                            ((RightViewholder) holder).time1.setText(time2);
+                            ((RightViewholder) holder).messege1.setText(arrayList.get(position).getMessege());
+                            if (arrayList.get(position).getRead().equals("1")) {
+                                ((RightViewholder) holder).read2.setText("1");
+                            } else {
+                                ((RightViewholder) holder).read2.setText("");
+                            }
+                        }
+                        else if (holder instanceof LeftViewholder) {
+                            ((LeftViewholder) holder).name.setText("(알수없음)");
+                            ((LeftViewholder) holder).messege.setText(arrayList.get(position).getMessege());
+                            ((LeftViewholder) holder).time.setText(time2);
+                            Log.d("F4chatRoomAdapter>>>", "get time in arrayList: " + arrayList.get(position).getTime() + " / " + time2);
+                            requestManager//error. requast manager?사용해서 this받기
+                                    .load(nullUser)
+                                    .override(150, 150)
+                                    .circleCrop()
+                                    .into(((LeftViewholder) holder).picl);
+                            ((LeftViewholder) holder).picl.setEnabled(false);
+                        } else if (holder instanceof CenterViewholder) {
+                            ((CenterViewholder) holder).textView.setText("입장완료");
+                        } else if (holder instanceof CenterBottomViewholder) {
+                            ((CenterBottomViewholder) holder).titletext.setText("상대방이 대화방을 나갔습니다.");
+                        }
+                    }
                 }
-            });
-            ((LeftImageViewholder) holder).image.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String uri = arrayList.get(position).getUri();
-                    SeePicDialog.seePicDialog(context, uri);
-                }
-            });
-            if (userPic.equals(nullPic) || userPic.equals(nullPicF)) {
-                ((LeftImageViewholder) holder).picli.setEnabled(false);
-            } else {
-                ((LeftImageViewholder) holder).picli.setEnabled(true);
             }
-        } else if (holder instanceof RightViewholder) {
-            ((RightViewholder) holder).time1.setText(time2);
-            ((RightViewholder) holder).messege1.setText(arrayList.get(position).getMessege());
-            if (arrayList.get(position).getRead().equals("1")) {
-                ((RightViewholder) holder).read2.setText("1");
-            } else {
-                ((RightViewholder) holder).read2.setText("");
-            }
-        }
-        else if (holder instanceof LeftViewholder) {
-            ((LeftViewholder) holder).name.setText(userName);
-            ((LeftViewholder) holder).messege.setText(arrayList.get(position).getMessege());
-            ((LeftViewholder) holder).time.setText(time2);
-            Log.d("F4chatRoomAdapter>>>", "get time in arrayList: " + arrayList.get(position).getTime() + " / " + time2);
-            requestManager//error. requast manager?사용해서 this받기
-                    .load(userPic)
-                    .override(150, 150)
-                    .circleCrop()
-                    .into(((LeftViewholder) holder).picl);
-            ((LeftViewholder) holder).picl.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String uri = userPic;
-                    SeePicDialog.seePicDialog(context, uri);
-                }
-            });
-            if (userPic.equals(nullPic) || userPic.equals(nullPicF)) {
-                ((LeftViewholder) holder).picl.setEnabled(false);
-            } else {
-                ((LeftViewholder) holder).picl.setEnabled(true);
-            }
-        } else if (holder instanceof CenterViewholder) {
-            ((CenterViewholder) holder).textView.setText("입장완료");
-        } else if (holder instanceof CenterBottomViewholder) {
-            ((CenterBottomViewholder) holder).titletext.setText("상대방이 대화방을 나갔습니다.");
-        }
+        });
 
     }
 

@@ -100,15 +100,15 @@ public class Fragment1 extends Fragment {
         testbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                db.collection("f2messege").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                db.collection("users").document("users").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
-                            DocumentSnapshot documentSnapshot = task.getResult();
-                            if (documentSnapshot.get("uid") == null) {
-                                Log.d("Fragment1>>>", "testtest null");
+                            DocumentSnapshot snapshot = task.getResult();
+                            if (snapshot.exists()) {
+                                Log.d("Fragment1>>>", "testtest: not null");
                             } else {
-                                Log.d("Fragment1>>>", "testtest has");
+                                Log.d("Fragment1>>>", "testtest: null");
                             }
                         }
                     }

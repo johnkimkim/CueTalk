@@ -10,28 +10,27 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.signature.ObjectKey;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.tistory.starcue.cuetalk.MainActivity;
-import com.tistory.starcue.cuetalk.fragment.Fragment4;
-import com.tistory.starcue.cuetalk.item.F4MessegeItem;
 import com.tistory.starcue.cuetalk.Fragment4ChatRoom;
 import com.tistory.starcue.cuetalk.GpsTracker;
-import com.tistory.starcue.cuetalk.item.LastListItem;
+import com.tistory.starcue.cuetalk.MainActivity;
 import com.tistory.starcue.cuetalk.R;
+import com.tistory.starcue.cuetalk.fragment.Fragment4;
+import com.tistory.starcue.cuetalk.item.F4MessegeItem;
+import com.tistory.starcue.cuetalk.item.LastListItem;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +39,7 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
 
     String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
+    String nullUser = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullUser.png?alt=media&token=4c9daa69-6d03-4b19-a793-873f5739f3a1";
 
     ArrayList<F4MessegeItem> arrayList;
     ArrayList<LastListItem> lastList;
@@ -81,13 +81,58 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
 
         mAuth = FirebaseAuth.getInstance();
         myUid = mAuth.getUid();
+        db = FirebaseFirestore.getInstance();
 
-//        requestManager.load(arrayList.get(position).getPic())
-//                .override(150, 150).circleCrop().into(holder.pic);
-//
-//        holder.name.setText(arrayList.get(position).getName());
-//        holder.sex.setText(arrayList.get(position).getSex());
-//        holder.age.setText(arrayList.get(position).getAge());
+        db.collection("users").document(arrayList.get(position).getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot snapshot = task.getResult();
+                    if (snapshot.get("delete") == null) {
+                        String userName = snapshot.get("name").toString();
+                        String userSex = snapshot.get("sex").toString();
+                        String userAge = snapshot.get("age").toString();
+                        String userPic = snapshot.get("pic").toString();
+                        String latitudeS = snapshot.get("latitude").toString();
+                        String longitudeS = snapshot.get("longitude").toString();
+
+                        holder.name.setText(userName);
+                        holder.sex.setText(userSex);
+                        holder.age.setText(userAge);
+                        requestManager.load(userPic)
+                                .override(150, 150).circleCrop().into(holder.pic);
+
+                        double latitude = Double.parseDouble(latitudeS);
+                        double longitude = Double.parseDouble(longitudeS);
+
+                        gpsTracker = new GpsTracker(context);
+                        double myLatitude = gpsTracker.getLatitude();
+                        double myLongitude = gpsTracker.getLongitude();
+
+                        double ddd = getDistance(myLatitude, myLongitude, latitude, longitude);
+                        if (arrayList.get(position).getUid().equals(myUid)) {
+                            holder.km.setText("0m");
+                        } else if (!arrayList.get(position).getUid().equals(myUid) && ddd < 50) {
+                            holder.km.setText("-50m");
+                        } else if (!arrayList.get(position).getUid().equals(myUid) && ddd < 1000) {
+                            int i = (int) Math.floor(ddd);
+                            holder.km.setText(Integer.toString(i) + "m");
+                        } else if (!arrayList.get(position).getUid().equals(myUid) && ddd >= 1000) {
+                            int i = (int) Math.floor(ddd) / 1000;
+                            holder.km.setText(Integer.toString(i) + "km");
+                        }
+                    } else {
+                        holder.name.setText("(알수없음)");
+                        holder.sex.setText("");
+                        holder.age.setText("");
+                        requestManager.load(nullUser)
+                                .override(150, 150).circleCrop().into(holder.pic);
+
+                        holder.km.setText("");
+                    }
+                }
+            }
+        });
 
         String time = lastList.get(position).getLasttime();
         String time1 = time.substring(11);
@@ -96,101 +141,54 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
 
         holder.messege.setText(lastList.get(position).getLastmessege());
 
-//        String latitudeS = arrayList.get(position).getLatitude();//set km
-//        String longitudeS = arrayList.get(position).getLongitude();
-//        double latitude = Double.parseDouble(latitudeS);
-//        double longitude = Double.parseDouble(longitudeS);
-//        gpsTracker = new GpsTracker(context);
-//        double myLatitude = gpsTracker.getLatitude();
-//        double myLongitude = gpsTracker.getLongitude();
-//
-//
-//        double ddd = getDistance(myLatitude, myLongitude, latitude, longitude);
-//        if (arrayList.get(position).getUid().equals(myUid)) {
-//            holder.km.setText("0m");
-//        } else if (!arrayList.get(position).getUid().equals(myUid) && ddd < 50) {
-//            holder.km.setText("-50m");
-//        } else if (!arrayList.get(position).getUid().equals(myUid) && ddd < 1000) {
-//            int i = (int) Math.floor(ddd);
-//            holder.km.setText(Integer.toString(i) + "m");
-//        } else if (!arrayList.get(position).getUid().equals(myUid) && ddd >= 1000) {
-//            int i = (int) Math.floor(ddd) / 1000;
-//            holder.km.setText(Integer.toString(i) + "km");
-//        }
-
         if (countList.get(position).equals("0")) {
             holder.count.setText("");
         } else {
             holder.count.setText(countList.get(position));
         }
 
-        db = FirebaseFirestore.getInstance();
-        db.collection("users").document(arrayList.get(position).getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                String userName = documentSnapshot.get("name").toString();
-                String userSex = documentSnapshot.get("sex").toString();
-                String userAge = documentSnapshot.get("age").toString();
-                String userPic = documentSnapshot.get("pic").toString();
-                String latitudeS = documentSnapshot.get("latitude").toString();
-                String longitudeS = documentSnapshot.get("longitude").toString();
-                //위에 6가지는 realtime messege에 추가할 필요없음. 지우기.(f4chatroom도 마찬가지.)
-                holder.name.setText(userName);
-                holder.sex.setText(userSex);
-                holder.age.setText(userAge);
-                requestManager.load(userPic)
-                        .override(150, 150).circleCrop().into(holder.pic);
-
-                double latitude = Double.parseDouble(latitudeS);
-                double longitude = Double.parseDouble(longitudeS);
-
-                gpsTracker = new GpsTracker(context);
-                double myLatitude = gpsTracker.getLatitude();
-                double myLongitude = gpsTracker.getLongitude();
-
-                double ddd = getDistance(myLatitude, myLongitude, latitude, longitude);
-                if (arrayList.get(position).getUid().equals(myUid)) {
-                    holder.km.setText("0m");
-                } else if (!arrayList.get(position).getUid().equals(myUid) && ddd < 50) {
-                    holder.km.setText("-50m");
-                } else if (!arrayList.get(position).getUid().equals(myUid) && ddd < 1000) {
-                    int i = (int) Math.floor(ddd);
-                    holder.km.setText(Integer.toString(i) + "m");
-                } else if (!arrayList.get(position).getUid().equals(myUid) && ddd >= 1000) {
-                    int i = (int) Math.floor(ddd) / 1000;
-                    holder.km.setText(Integer.toString(i) + "km");
-                }
-            }
-        });
+//        db.collection("users").document(arrayList.get(position).getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//            @Override
+//            public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                String userName = documentSnapshot.get("name").toString();
+//                String userSex = documentSnapshot.get("sex").toString();
+//                String userAge = documentSnapshot.get("age").toString();
+//                String userPic = documentSnapshot.get("pic").toString();
+//                String latitudeS = documentSnapshot.get("latitude").toString();
+//                String longitudeS = documentSnapshot.get("longitude").toString();
+//                //위에 6가지는 realtime messege에 추가할 필요없음. 지우기.(f4chatroom도 마찬가지.)
+//                holder.name.setText(userName);
+//                holder.sex.setText(userSex);
+//                holder.age.setText(userAge);
+//                requestManager.load(userPic)
+//                        .override(150, 150).circleCrop().into(holder.pic);
+//
+//                double latitude = Double.parseDouble(latitudeS);
+//                double longitude = Double.parseDouble(longitudeS);
+//
+//                gpsTracker = new GpsTracker(context);
+//                double myLatitude = gpsTracker.getLatitude();
+//                double myLongitude = gpsTracker.getLongitude();
+//
+//                double ddd = getDistance(myLatitude, myLongitude, latitude, longitude);
+//                if (arrayList.get(position).getUid().equals(myUid)) {
+//                    holder.km.setText("0m");
+//                } else if (!arrayList.get(position).getUid().equals(myUid) && ddd < 50) {
+//                    holder.km.setText("-50m");
+//                } else if (!arrayList.get(position).getUid().equals(myUid) && ddd < 1000) {
+//                    int i = (int) Math.floor(ddd);
+//                    holder.km.setText(Integer.toString(i) + "m");
+//                } else if (!arrayList.get(position).getUid().equals(myUid) && ddd >= 1000) {
+//                    int i = (int) Math.floor(ddd) / 1000;
+//                    holder.km.setText(Integer.toString(i) + "km");
+//                }
+//            }
+//        });
 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 MainActivity.loading.setVisibility(View.VISIBLE);
-//                reference = FirebaseDatabase.getInstance().getReference();
-//                reference.getRef().child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-//                    @Override
-//                    public void onSuccess(DataSnapshot dataSnapshot) {
-//                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-//                            if (dataSnapshot1.getKey().contains(myUid) && dataSnapshot1.getKey().contains(arrayList.get(position).getUid())) {
-//                                Log.d("F4ReAdapter>>>", "key: " + dataSnapshot1.getKey());
-//                                for (DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()) {
-//                                    if (dataSnapshot2.getKey().equals(arrayList.get(position).getUid())) {
-//                                        String yourPic = dataSnapshot2.child("pic").getValue(String.class);
-//                                        Toast.makeText(context, arrayList.get(position).getUid(), Toast.LENGTH_SHORT).show();
-//                                        Intent intent = new Intent(context, Fragment4ChatRoom.class);
-//                                        intent.putExtra("child", arrayList.get(position).getUid());
-//                                        intent.putExtra("yourPic", yourPic);
-//                                        Fragment4.stayf4chatroom = true;
-//                                        MainActivity.loading.setVisibility(View.GONE);
-//                                        context.startActivity(intent);
-//                                    }
-//                                }
-//                                break;
-//                            }
-//                        }
-//                    }
-//                });
 
                 db.collection("users").document(arrayList.get(position).getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override

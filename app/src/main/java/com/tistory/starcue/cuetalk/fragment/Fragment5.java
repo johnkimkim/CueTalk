@@ -33,6 +33,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -410,6 +412,16 @@ public class Fragment5 extends Fragment {
         Map<String, Object> map = new HashMap<>();
         map.put("delete", "yes");
         db.collection("users").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                deleteRealtimeMyroom();
+            }
+        });
+    }
+
+    private void deleteRealtimeMyroom() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        reference.getRef().child("myroom").child(myUid).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 lastDeleteUser();

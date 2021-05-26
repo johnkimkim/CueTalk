@@ -14,10 +14,8 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,8 +26,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -46,11 +46,11 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.tistory.starcue.cuetalk.adpater.F4ChatRoomAdapter;
-import com.tistory.starcue.cuetalk.adpater.F4ReAdapter;
 import com.tistory.starcue.cuetalk.fragment.Fragment4;
 import com.tistory.starcue.cuetalk.item.F4ChatRoomItem;
 import com.tistory.starcue.cuetalk.item.F4MessegeItem;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.io.OutputStream;
@@ -893,29 +893,74 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     }
 
     private void goOutSetIsChat() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("messege/", "tkdeoqkddlskrkskrk");
-        map.put("time/", "tkdeoqkddlskrkskrk");
-        map.put("uid/", "tkdeoqkddlskrkskrk");
-        map.put("read/", "tkdeoqkddlskrkskrk");
-        reference.child("messege").child(getroomname).child("msg").push().updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+        db.collection("users").document(userUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(Void aVoid) {
-                Map<String, Object> outmap = new HashMap<>();
-                outmap.put("/messege/" + getroomname + "/" + myUid + "/ischat/", "2");
-                reference.updateChildren(outmap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        reference.getRef().child("myroom").child(myUid).child(getroomname).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot snapshot = task.getResult();
+                    if (snapshot.get("delete") == null) {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("messege/", "tkdeoqkddlskrkskrk");
+                        map.put("time/", "tkdeoqkddlskrkskrk");
+                        map.put("uid/", "tkdeoqkddlskrkskrk");
+                        map.put("read/", "tkdeoqkddlskrkskrk");
+                        reference.child("messege").child(getroomname).child("msg").push().updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                deleteImageISend();
+                                Map<String, Object> outmap = new HashMap<>();
+                                outmap.put("/messege/" + getroomname + "/" + myUid + "/ischat/", "2");
+                                reference.updateChildren(outmap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        reference.getRef().child("myroom").child(myUid).child(getroomname).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                deleteImageISend();
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        reference.getRef().child("messege").child(getroomname).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                reference.getRef().child("myroom").child(myUid).child(getroomname).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        deleteImageISend();
+                                    }
+                                });
                             }
                         });
                     }
-                });
+                }
             }
         });
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("messege/", "tkdeoqkddlskrkskrk");
+//        map.put("time/", "tkdeoqkddlskrkskrk");
+//        map.put("uid/", "tkdeoqkddlskrkskrk");
+//        map.put("read/", "tkdeoqkddlskrkskrk");
+//        reference.child("messege").child(getroomname).child("msg").push().updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void aVoid) {
+//                Map<String, Object> outmap = new HashMap<>();
+//                outmap.put("/messege/" + getroomname + "/" + myUid + "/ischat/", "2");
+//                reference.updateChildren(outmap).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        reference.getRef().child("myroom").child(myUid).child(getroomname).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+//                            @Override
+//                            public void onSuccess(Void aVoid) {
+//                                deleteImageISend();
+//                            }
+//                        });
+//                    }
+//                });
+//            }
+//        });
 
 //        reference.getRef().child("messege").child(getroomname).child("msg").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
 //            @Override

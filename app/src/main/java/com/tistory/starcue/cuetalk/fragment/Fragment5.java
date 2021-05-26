@@ -415,12 +415,6 @@ public class Fragment5 extends Fragment {
                 lastDeleteUser();
             }
         });
-//        db.collection("users").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-//            @Override
-//            public void onSuccess(Void unused) {
-//                lastDeleteUser();
-//            }
-//        });
     }
 
     private void lastDeleteUser() {

@@ -48,7 +48,10 @@ import com.tistory.starcue.cuetalk.SplashActivity;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class Fragment5 extends Fragment {
@@ -368,7 +371,7 @@ public class Fragment5 extends Fragment {
         Map<String, Object> map = new HashMap<>();
         map.put("phonenumber", myPhoneNumber);
         map.put("uid", myUid);
-        db.collection("deleteUser").document(myUid).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+        db.collection("deleteUser").document(getTime()).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 deletef2();
@@ -455,6 +458,14 @@ public class Fragment5 extends Fragment {
             e.printStackTrace();
         }
         return packageInfo.versionName;
+    }
+
+    private String getTime() {
+        long now = System.currentTimeMillis();
+        Date mDate = new Date(now);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM_dd HH:mm:ss", Locale.KOREA);
+        String date = format.format(mDate);
+        return date;
     }
 
 }

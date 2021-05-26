@@ -25,10 +25,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -53,8 +52,13 @@ import com.tistory.starcue.cuetalk.f1viewpager.F1ViewpagerIntent;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 public class Fragment1 extends Fragment {
@@ -100,19 +104,12 @@ public class Fragment1 extends Fragment {
         testbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                db.collection("users").document("users").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot snapshot = task.getResult();
-                            if (snapshot.exists()) {
-                                Log.d("Fragment1>>>", "testtest: not null");
-                            } else {
-                                Log.d("Fragment1>>>", "testtest: null");
-                            }
-                        }
-                    }
-                });
+                FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                String myPhoneNumber = firebaseUser.getPhoneNumber();
+                Map<String, Object> map = new HashMap<>();
+                map.put("phonenumber", myPhoneNumber);
+                map.put("uid", myUid);
+                db.collection("deleteUser").document(getTime()).set(map);
 //                db.collection("users").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 //                    @Override
 //                    public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
@@ -128,6 +125,14 @@ public class Fragment1 extends Fragment {
 //                });
             }
         });
+    }
+
+    private String getTime() {
+        long now = System.currentTimeMillis();
+        Date mDate = new Date(now);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM_dd HH:mm:ss", Locale.KOREA);
+        String date = format.format(mDate);
+        return date;
     }
 
     @Override

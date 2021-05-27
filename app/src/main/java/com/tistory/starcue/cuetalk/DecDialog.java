@@ -26,12 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.ListResult;
-import com.google.firebase.storage.StorageReference;
-import com.tistory.starcue.cuetalk.fragment.Fragment2;
 import com.tistory.starcue.cuetalk.item.ChatRoomItem;
-import com.tistory.starcue.cuetalk.item.F2Item;
 import com.tistory.starcue.cuetalk.item.F4ChatRoomItem;
 
 import java.text.SimpleDateFormat;
@@ -200,8 +195,6 @@ public class DecDialog {
         });
     }
 
-
-
     public static void F3DecDialog(Context context, String userUid, String myUid) {
 
         LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -350,8 +343,6 @@ public class DecDialog {
         });
     }
 
-
-
     public static void ChatRoomDecDialog(Context context, String userUid, String myUid, String where) {
 
         LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -428,7 +419,7 @@ public class DecDialog {
         map.put("myUid", myUid);
         map.put("cuz", cuz);
         map.put("category", category);
-        reference.child("chatroomdec").child(myUid).updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+        reference.child("chatroomdec").child(where).child(myUid).updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 reference.getRef().child("inchat").child(where).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
@@ -572,7 +563,7 @@ public class DecDialog {
         map.put("myUid", myUid);
         map.put("cuz", cuz);
         map.put("category", category);
-        reference.child("messegedec").child(myUid).updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+        reference.child("messegedec").child(getroomname).child(myUid).updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 reference.getRef().child("messege").child(getroomname).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
@@ -590,7 +581,9 @@ public class DecDialog {
                                     map1.put("time", snapshot2.child("time").getValue(String.class));
                                     map1.put("uri", snapshot2.child("uri").getValue(String.class));
                                     reference.child("messegedec").child(getroomname).push().updateChildren(map1);
-                                    if (count.size() == snapshot2.getChildrenCount()) {
+                                    Log.d("DecDialog>>>", "count size: " + count.size() + " and snapshot size: " + snapshot1.getChildrenCount());
+                                    if (count.size() == snapshot1.getChildrenCount()) {
+                                        Log.d("DecDialog>>>", "onSuccess");
                                         count.clear();
                                         dec1.startAnimation(out);
                                         out.setAnimationListener(new Animation.AnimationListener() {

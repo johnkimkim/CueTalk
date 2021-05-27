@@ -90,6 +90,7 @@ public class ChangeProfile extends AppCompatActivity {
     ImageView imageView;
     Button deletePic;
     Button addImageBtn;
+    Button changePhoneNumber;
     Uri imageUri;
 
     boolean willdelete;
@@ -135,6 +136,8 @@ public class ChangeProfile extends AppCompatActivity {
         addImageBtn = findViewById(R.id.add_image);
         deletePic = findViewById(R.id.change_profile_delete_pic);
         picprogress = findViewById(R.id.change_profile_pic_progress);
+        changePhoneNumber = findViewById(R.id.change_progile_change_phone_number);
+        setOnClickChangePhoneNumber();
 
         setView();
 
@@ -152,6 +155,16 @@ public class ChangeProfile extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void setOnClickChangePhoneNumber() {
+        changePhoneNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ChangeProfile.this, ChangePhoneNumber.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void setView() {

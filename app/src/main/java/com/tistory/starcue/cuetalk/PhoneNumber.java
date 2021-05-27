@@ -329,7 +329,7 @@ public class PhoneNumber extends AppCompatActivity {
 //
 //                            FirebaseUser user = task.getResult().getUser();
 //                            // ...
-                            sendUserToHome();
+//                            sendUserToHome();
                         } else {
                             // Sign in failed, display a message and update the UI
                             Log.w(">>>", "signInWithCredential:failure", task.getException());

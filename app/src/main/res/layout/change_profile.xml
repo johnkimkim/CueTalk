@@ -118,6 +118,12 @@
                 android:layout_weight="1"
                 android:text="취소" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/change_progile_change_phone_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="핸드폰번호 변경"/>
     </LinearLayout>
 
     <RelativeLayout

@@ -41,6 +41,8 @@
         <activity android:name=".Access" android:screenOrientation="portrait"/>
         <activity android:name=".ChatRoom" android:screenOrientation="portrait"/>
         <activity android:name=".Fragment4ChatRoom" android:screenOrientation="portrait"/>
+        <activity android:name=".ChangePhoneNumber" android:screenOrientation="portrait"/>
+        <activity android:name=".ChangePhoneNumber1" android:screenOrientation="portrait"/>
         <service android:name=".service.MyFirebaseMessageService"
             android:exported="false">
             <intent-filter>

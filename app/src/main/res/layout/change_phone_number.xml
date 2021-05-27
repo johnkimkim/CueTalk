@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/change_phone_number_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="핸드폰 번호 변경하기"
+        android:textSize="20dp"
+        android:layout_centerHorizontal="true"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/change_phone_number_title">
+
+        <TextView
+            android:id="@+id/change_phone_number_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="전화번호인증"
+            android:textSize="20dp" />
+
+        <EditText
+            android:id="@+id/change_phone_number_edittext"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/change_phone_number_text"
+            android:layout_margin="10dp"
+            android:inputType="number"
+            android:digits="0123456789"
+            android:maxLength="11"/>
+
+        <Button
+            android:id="@+id/change_phone_number_okbtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/change_phone_number_text"
+            android:layout_margin="10dp"
+            android:layout_toRightOf="@+id/change_phone_number_edittext"
+            android:text="인증요청" />
+
+
+        <TextView
+            android:id="@+id/change_phone_number_feedback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/change_phone_number_okbtn"
+            android:text="ㅇㅋㅇㅋ"
+            android:textColor="#FF0000" />
+    </RelativeLayout>
+
+</RelativeLayout>

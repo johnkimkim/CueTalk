@@ -65,7 +65,7 @@ public class Fragment5 extends Fragment {
     ImageView pic;
     ProgressBar glideprogress;
     TextView name, age, sex;
-    Button reset, logout, deleteUser;
+    Button reset, logout, deleteUser, ask;
     DatabaseHandler databaseHandler;
     SwitchCompat switchCompat;
     private SQLiteDatabase sqLiteDatabase;
@@ -113,11 +113,13 @@ public class Fragment5 extends Fragment {
         updatebtn = rootView.findViewById(R.id.updatebtn);
         setOnClickPic();
         deleteUser = rootView.findViewById(R.id.fragment5_delete_user);
+        ask = rootView.findViewById(R.id.f5ask);
         switchCompat = rootView.findViewById(R.id.f5switch);
         glideprogress = rootView.findViewById(R.id.fragment5progress);
 
         setFirebse();
         setdb();
+        setOnClickAsk();
         setSwitch();
 //        setView();
         reset_profile();
@@ -470,6 +472,23 @@ public class Fragment5 extends Fragment {
             }
         });
 //        mAuth.signOut();
+    }
+
+    private void setOnClickAsk() {
+        ask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                String[] to = {"kmj654649@gmail.com"};
+                String subject = "문의하기";
+                String messege = "궁굼한 점이나 요청 사항을 적어주세요";
+                intent.putExtra(Intent.EXTRA_EMAIL, to);
+                intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                intent.putExtra(Intent.EXTRA_TEXT, messege);
+                intent.setType("messege/rfc822");
+                startActivity(Intent.createChooser(intent, "Gmail을 선택해주세요"));
+            }
+        });
     }
 
     @Override

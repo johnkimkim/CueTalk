@@ -2,14 +2,9 @@ package com.tistory.starcue.cuetalk;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -18,7 +13,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -39,12 +33,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.OnProgressListener;
@@ -53,8 +45,6 @@ import com.google.firebase.storage.UploadTask;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -299,15 +289,15 @@ public class ChangeProfile extends AppCompatActivity {
                     storageReference1.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
                         @Override
                         public void onSuccess(ListResult listResult) {
-                            for (StorageReference listResult1 : listResult.getItems()) {
-                                if (listResult1.getName().equals(myUid + "count1")) {
-                                    deleteFileInStorage(myUid + "count1");
-                                } else if (listResult1.getName().equals(myUid + "count2")) {
-                                    deleteFileInStorage(myUid + "count2");
+                            if (listResult.getItems().size() != 0) {
+                                for (StorageReference listResult1 : listResult.getItems()) {
+                                    if (listResult1.getName().equals(myUid + "count1")) {
+                                        deleteFileInStorage(myUid + "count1");
+                                    } else if (listResult1.getName().equals(myUid + "count2")) {
+                                        deleteFileInStorage(myUid + "count2");
+                                    }
                                 }
-                            }
-
-                            if (listResult.getItems().size() == 0) {
+                            } else {
                                 Log.d("ChangeProfile>>>", "testtest4");
                                 f2change();
                             }
@@ -394,6 +384,7 @@ public class ChangeProfile extends AppCompatActivity {
                 storageReference.child("images/" + myUid + "/" + fileName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
+                        Log.d("ChangeProfile>>>", "test upload onSuccess");
                         newPicUri = uri.toString();
                         updateFirestoreUser(newPicUri);
                     }
@@ -406,7 +397,7 @@ public class ChangeProfile extends AppCompatActivity {
                 pd.dismiss();
                 relativeLayout.setVisibility(View.GONE);
                 Snackbar.make(findViewById(android.R.id.content), "이미지 업로드 성공", Snackbar.LENGTH_LONG).show();
-                goToMain();
+//                goToMain();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -541,11 +532,13 @@ public class ChangeProfile extends AppCompatActivity {
     private void updateFirestoreUser(String uri) {
         Map<String, Object> userPic = new HashMap<>();
         userPic.put("pic", uri);
+        Log.d("ChangeProfile>>>", "test updateFirestoreUser");
         db.collection("users").document(myUid)
                 .update(userPic)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {//my profile update in storage
                     @Override
                     public void onSuccess(Void aVoid) {
+                        Log.d("ChangeProfile>>>", "test updateFirestoreUser onSuccess");
                         f2change();
                     }
                 });
@@ -558,9 +551,9 @@ public class ChangeProfile extends AppCompatActivity {
         map.put("age", newAge);
         if (newPicUri != null) {
             map.put("pic", newPicUri);
-            Log.d("ChangeProfile>>>", "newPicUri have f2");
+            Log.d("ChangeProfile>>>", "test newPicUri have f2");
         } else {
-            Log.d("ChangeProfile>>>", "newPicUri null f2");
+            Log.d("ChangeProfile>>>", "test newPicUri null f2");
             if (newSex.equals("남자")) {
                 map.put("pic", nullPic);
             } else {
@@ -574,7 +567,8 @@ public class ChangeProfile extends AppCompatActivity {
                     DocumentSnapshot snapshot = task.getResult();
                     if (snapshot.exists()) {
                         //f2에 내 글 있을때
-                        db.collection("f2messege").document().update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        Log.d("ChangeProfile>>>", "test change f2 success");
+                        db.collection("f2messege").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
                                 f3change();
@@ -582,6 +576,7 @@ public class ChangeProfile extends AppCompatActivity {
                         });
                     } else {
                         //f2에 내 글 없을때
+                        Log.d("ChangeProfile>>>", "test f2 null");
                         f3change();
                     }
                 }

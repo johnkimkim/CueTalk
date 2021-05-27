@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,11 +23,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -57,6 +63,7 @@ import java.util.Map;
 public class Fragment5 extends Fragment {
 
     ImageView pic;
+    ProgressBar glideprogress;
     TextView name, age, sex;
     Button reset, logout, deleteUser;
     DatabaseHandler databaseHandler;
@@ -107,11 +114,12 @@ public class Fragment5 extends Fragment {
         setOnClickPic();
         deleteUser = rootView.findViewById(R.id.fragment5_delete_user);
         switchCompat = rootView.findViewById(R.id.f5switch);
+        glideprogress = rootView.findViewById(R.id.fragment5progress);
 
         setFirebse();
         setdb();
         setSwitch();
-        setView();
+//        setView();
         reset_profile();
         logoutBtn();
         deleteUser();
@@ -255,7 +263,27 @@ public class Fragment5 extends Fragment {
                 age.setText(documentSnapshot.get("age").toString());
 
                 myUri = documentSnapshot.get("pic").toString();
-                Glide.with(getActivity()).load(myUri).override(300, 300).placeholder(R.drawable.ic_launcher_background)
+//                Glide.with(getActivity())
+//                        .load(myUri).override(300, 300)
+//                        .placeholder(R.drawable.ic_launcher_background)
+//                        .error(R.drawable.ic_launcher_foreground)
+//                        .circleCrop().into(pic);
+
+                Glide.with(getActivity())
+                        .load(myUri).override(300, 300)
+                        .listener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                glideprogress.setVisibility(View.GONE);
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                glideprogress.setVisibility(View.GONE);
+                                return false;
+                            }
+                        })
                         .error(R.drawable.ic_launcher_foreground)
                         .circleCrop().into(pic);
             }
@@ -405,13 +433,13 @@ public class Fragment5 extends Fragment {
                     if (snapshot.get("uid") != null) {
                         db.collection("f3messege").document(myUid).delete();
                     }
-                    deleteUsersInFirestore();
+                    addDeleteUserYes();
                 }
             }
         });
     }
 
-    private void deleteUsersInFirestore() {
+    private void addDeleteUserYes() {
         Map<String, Object> map = new HashMap<>();
         map.put("delete", "yes");
         db.collection("users").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -447,6 +475,7 @@ public class Fragment5 extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        setView();
         checkAppVersion();
     }
 

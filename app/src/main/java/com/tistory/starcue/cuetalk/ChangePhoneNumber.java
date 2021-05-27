@@ -15,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
@@ -38,6 +40,7 @@ public class ChangePhoneNumber extends AppCompatActivity {
     EditText editText;
     Button okbtn;
     FirebaseAuth mAuth;
+    FirebaseFirestore db;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallback;
 
     @Override
@@ -46,6 +49,7 @@ public class ChangePhoneNumber extends AppCompatActivity {
         setContentView(R.layout.change_phone_number);
 
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         setInit();
 
@@ -107,15 +111,33 @@ public class ChangePhoneNumber extends AppCompatActivity {
                                     feed.setVisibility(View.VISIBLE);
                                     feed.setText("해당 전화번호는 정책위반으로 인해 서비스 이용이 정지되었습니다");
                                 } else {
-                                    feed.setVisibility(View.GONE);
-                                    okbtn.setEnabled(false);
-                                    PhoneAuthOptions options = PhoneAuthOptions.newBuilder(mAuth)
-                                            .setPhoneNumber(phoneNum)
-                                            .setTimeout(60L, TimeUnit.SECONDS)
-                                            .setActivity(ChangePhoneNumber.this)
-                                            .setCallbacks(mCallback)
-                                            .build();
-                                    PhoneAuthProvider.verifyPhoneNumber(options);
+                                    db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
+                                            List<String> phonelist = new ArrayList<>();
+                                            if (task.isSuccessful()) {
+                                                for (DocumentSnapshot document : task.getResult()) {
+                                                    phonelist.add(document.get("phonenumber").toString());
+                                                    if (phonelist.size() == task.getResult().size()) {
+                                                        if (phonelist.contains(editText.getText().toString())) {
+                                                            feed.setVisibility(View.VISIBLE);
+                                                            feed.setText("해당 번호는 이미 존제하는 번호입니다.");
+                                                        } else {
+                                                            feed.setVisibility(View.GONE);
+                                                            okbtn.setEnabled(false);
+                                                            PhoneAuthOptions options = PhoneAuthOptions.newBuilder(mAuth)
+                                                                    .setPhoneNumber(phoneNum)
+                                                                    .setTimeout(60L, TimeUnit.SECONDS)
+                                                                    .setActivity(ChangePhoneNumber.this)
+                                                                    .setCallbacks(mCallback)
+                                                                    .build();
+                                                            PhoneAuthProvider.verifyPhoneNumber(options);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    });
                                 }
                             }
                         }

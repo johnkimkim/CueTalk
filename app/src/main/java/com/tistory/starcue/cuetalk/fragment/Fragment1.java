@@ -25,10 +25,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,8 +35,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 import com.tistory.starcue.cuetalk.AdressRoom;
 import com.tistory.starcue.cuetalk.DatabaseHandler;
@@ -99,22 +96,26 @@ public class Fragment1 extends Fragment {
     private void testclass(ViewGroup viewGroup) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        String pn = mUser.getPhoneNumber().substring(9, 13);
+        Log.d("Fragment1>>>", "testtest: " + pn);
+
         String myUid = mAuth.getUid();
 
         Button testbtn = viewGroup.findViewById(R.id.testbtn);
         testbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("Fragment1>>>", "testtest: " + document.get("phonenumber").toString());
-                            }
-                        }
-                    }
-                });
+//                db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                Log.d("Fragment1>>>", "testtest: " + document.get("phonenumber").toString());
+//                            }
+//                        }
+//                    }
+//                });
 //                db.collection("users").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 //                    @Override
 //                    public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {

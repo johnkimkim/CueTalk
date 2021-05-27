@@ -19,6 +19,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -91,6 +92,7 @@ public class ChangeProfile extends AppCompatActivity {
     Button deletePic;
     Button addImageBtn;
     Button changePhoneNumber;
+    TextView mypn;
     Uri imageUri;
 
     boolean willdelete;
@@ -137,6 +139,9 @@ public class ChangeProfile extends AppCompatActivity {
         deletePic = findViewById(R.id.change_profile_delete_pic);
         picprogress = findViewById(R.id.change_profile_pic_progress);
         changePhoneNumber = findViewById(R.id.change_progile_change_phone_number);
+        mypn = findViewById(R.id.change_profile_mypn);
+        String pn = mCurrentUser.getPhoneNumber().substring(9, 13);
+        mypn.setText("010-****-" + pn);
         setOnClickChangePhoneNumber();
 
         setView();

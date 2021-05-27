@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="65dp"
-    android:layout_marginRight="13dp"
-    android:layout_marginTop="13dp">
+    android:layout_marginTop="13dp"
+    android:layout_marginRight="13dp">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -13,8 +13,8 @@
             android:id="@+id/bbb_img"
             android:layout_width="wrap_content"
             android:layout_height="65dp"
-            android:orientation="vertical"
-            android:layout_alignParentRight="true">
+            android:layout_alignParentRight="true"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -25,7 +25,8 @@
                     android:id="@+id/chat_room_layout_read"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#FF9800"/>
+                    android:textColor="#FF9800" />
+
                 <TextView
                     android:id="@+id/chat_room_layout_time2_img"
                     android:layout_width="wrap_content"
@@ -34,12 +35,25 @@
             </LinearLayout>
 
 
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/chat_room_layout_messege2_img"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:textColor="#000000" />
+                <ImageView
+                    android:id="@+id/chat_room_layout_messege2_img"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:textColor="#000000" />
+
+                <ProgressBar
+                    android:id="@+id/chat_room_layout_right_image_progress"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true" />
+
+            </RelativeLayout>
 
         </LinearLayout>
 

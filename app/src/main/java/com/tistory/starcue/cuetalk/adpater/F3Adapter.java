@@ -1,6 +1,7 @@
 package com.tistory.starcue.cuetalk.adpater;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,13 +9,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -80,11 +87,43 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
 //                .diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true)
 //                .override(150, 150).circleCrop().into(holder.imageView);
 
-        requestManager.load(arrayList.get(position).getPic())
-                .override(150, 150).circleCrop().into(holder.imageView);
+        requestManager
+                .load(arrayList.get(position).getPic())
+                .override(150, 150)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        holder.userprogress.setVisibility(View.GONE);
+                        return false;
+                    }
 
-        requestManager.load(arrayList.get(position).getPpic())
-                .override(150, 150).centerInside().into(holder.ppic);
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        holder.userprogress.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .circleCrop()
+                .into(holder.imageView);
+
+        requestManager
+                .load(arrayList.get(position).getPpic())
+                .override(150, 150)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        holder.writeprogress.setVisibility(View.GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        holder.writeprogress.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .centerInside()
+                .into(holder.ppic);
         holder.name.setText(arrayList.get(position).getName());
         holder.sex.setText(arrayList.get(position).getSex());
         holder.age.setText(arrayList.get(position).getAge());
@@ -205,6 +244,7 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
         TextView name, sex, age, km, messege, time;
         Button sendbtn;
         Button f3dec;
+        ProgressBar userprogress, writeprogress;
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -218,6 +258,8 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
             this.time = itemView.findViewById(R.id.f3re_time);
             this.sendbtn = itemView.findViewById(R.id.f3re_sendmsg);
             this.f3dec = itemView.findViewById(R.id.f3dec);
+            this.userprogress = itemView.findViewById(R.id.f3re_userpic_progress);
+            this.writeprogress = itemView.findViewById(R.id.f3re_write_progress);
             if (Fragment3.f3fragdec.isChecked()) {
                 f3dec.setVisibility(View.VISIBLE);
             } else {

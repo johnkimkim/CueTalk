@@ -1,6 +1,7 @@
 package com.tistory.starcue.cuetalk.adpater;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,13 +9,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -72,8 +79,24 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
 
-        requestManager.load(arrayList.get(position).getPic())
-                .override(150, 150).circleCrop().into(holder.imageView);
+        requestManager
+                .load(arrayList.get(position).getPic())
+                .override(150, 150)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        holder.progressBar.setVisibility(View.GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        holder.progressBar.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .circleCrop()
+                .into(holder.imageView);
         holder.name.setText(arrayList.get(position).getName());
         holder.sex.setText(arrayList.get(position).getSex());
         holder.age.setText(arrayList.get(position).getAge());
@@ -187,6 +210,7 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
         TextView name, sex, age, km, messege, time;
         Button sendbtn;
         Button f2dec;
+        ProgressBar progressBar;
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -199,6 +223,7 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
             this.time = itemView.findViewById(R.id.f2re_time);
             this.sendbtn = itemView.findViewById(R.id.f2re_sendmsg);
             this.f2dec = itemView.findViewById(R.id.f2dec);
+            this.progressBar = itemView.findViewById(R.id.f2re_progress);
             Log.d("F2Adapter>>>", "customViewHolder");
             if (Fragment2.f2fragdec.isChecked()) {
                 f2dec.setVisibility(View.VISIBLE);

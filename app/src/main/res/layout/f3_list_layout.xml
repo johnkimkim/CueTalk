@@ -1,29 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/f3_recyclerview"
     android:layout_width="match_parent"
     android:layout_height="70dp"
     android:layout_marginLeft="10dp"
     android:layout_marginTop="7dp"
-    android:layout_marginRight="10dp"
-    android:id="@+id/f3_recyclerview">
+    android:layout_marginRight="10dp">
 
-    <ImageView
-        android:id="@+id/f3re_pic"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/picnull" />
+    <RelativeLayout
+        android:id="@+id/f3re_userimg_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/f3re_ppic"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_toRightOf="@+id/f3re_pic"/>
+        <ImageView
+            android:id="@+id/f3re_pic"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/picnull" />
+
+        <ProgressBar
+            android:id="@+id/f3re_userpic_progress"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/f3re_write_pic_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/f3re_userimg_layout">
+
+        <ImageView
+            android:id="@+id/f3re_ppic"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+        <ProgressBar
+            android:id="@+id/f3re_write_progress"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_toRightOf="@+id/f3re_ppic">
+        android:layout_toRightOf="@+id/f3re_write_pic_layout"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -59,21 +89,21 @@
             android:id="@+id/f3re_messege"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000000"/>
+            android:textColor="#000000" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/f3re_count"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_alignParentRight="true"/><!--필요없음-->
+        android:layout_alignParentRight="true" /><!--필요없음-->
 
     <TextView
         android:id="@+id/f3re_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/f3btnlayout"
-        android:layout_below="@+id/f3re_count"/>
+        android:layout_below="@+id/f3re_count"
+        android:layout_toLeftOf="@+id/f3btnlayout" />
 
     <LinearLayout
         android:id="@+id/f3btnlayout"
@@ -94,7 +124,7 @@
             android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:text="신고"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
     </LinearLayout>
 

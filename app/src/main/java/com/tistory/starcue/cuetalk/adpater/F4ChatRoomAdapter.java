@@ -4,17 +4,24 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -119,6 +126,19 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             requestManager
                                     .load(arrayList.get(position).getUri())
                                     .override(150, 150)
+                                    .listener(new RequestListener<Drawable>() {
+                                        @Override
+                                        public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                            ((RightImageViewholder) holder).progressBar.setVisibility(View.GONE);
+                                            return false;
+                                        }
+
+                                        @Override
+                                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                            ((RightImageViewholder) holder).progressBar.setVisibility(View.GONE);
+                                            return false;
+                                        }
+                                    })
                                     .centerCrop()
                                     .into(((RightImageViewholder) holder).imagepic);
                             if (arrayList.get(position).getRead().equals("1")) {
@@ -175,6 +195,19 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             requestManager//error. requast manager?사용해서 this받기
                                     .load(userPic)
                                     .override(150, 150)
+                                    .listener(new RequestListener<Drawable>() {
+                                        @Override
+                                        public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                            ((LeftViewholder) holder).progressBar.setVisibility(View.GONE);
+                                            return false;
+                                        }
+
+                                        @Override
+                                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                            ((LeftViewholder) holder).progressBar.setVisibility(View.GONE);
+                                            return false;
+                                        }
+                                    })
                                     .circleCrop()
                                     .into(((LeftViewholder) holder).picl);
                             ((LeftViewholder) holder).picl.setOnClickListener(new View.OnClickListener() {
@@ -213,11 +246,37 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             requestManager
                                     .load(nullUser)
                                     .override(150, 150)
+                                    .listener(new RequestListener<Drawable>() {
+                                        @Override
+                                        public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                            ((LeftImageViewholder) holder).userpicprogress.setVisibility(View.GONE);
+                                            return false;
+                                        }
+
+                                        @Override
+                                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                            ((LeftImageViewholder) holder).userpicprogress.setVisibility(View.GONE);
+                                            return false;
+                                        }
+                                    })
                                     .circleCrop()
                                     .into(((LeftImageViewholder) holder).picli);
                             requestManager
                                     .load(arrayList.get(position).getUri())
                                     .override(150, 150)
+                                    .listener(new RequestListener<Drawable>() {
+                                        @Override
+                                        public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                            ((LeftImageViewholder) holder).progressBar.setVisibility(View.GONE);
+                                            return false;
+                                        }
+
+                                        @Override
+                                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                            ((LeftImageViewholder) holder).progressBar.setVisibility(View.GONE);
+                                            return false;
+                                        }
+                                    })
                                     .centerCrop()
                                     .into(((LeftImageViewholder) holder).image);
                             ((LeftImageViewholder) holder).image.setOnClickListener(new View.OnClickListener() {
@@ -323,6 +382,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public class LeftViewholder extends RecyclerView.ViewHolder {
         ImageView picl;
         TextView time, name, messege;
+        ProgressBar progressBar;
 
         public LeftViewholder(@NonNull View itemView) {
             super(itemView);
@@ -330,6 +390,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             this.name = itemView.findViewById(R.id.chat_room_layout_name1);
             this.time = itemView.findViewById(R.id.chat_room_layout_time1);
             this.messege = itemView.findViewById(R.id.chat_room_layout_messege1);
+            this.progressBar = itemView.findViewById(R.id.chat_room_layout_progress);
         }
     }
 
@@ -347,6 +408,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public class LeftImageViewholder extends RecyclerView.ViewHolder {
         ImageView picli, image;
         TextView time, name;
+        ProgressBar userpicprogress, progressBar;
 
         public LeftImageViewholder(@NonNull View itemView) {
             super(itemView);
@@ -354,18 +416,22 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             this.image = itemView.findViewById(R.id.chat_room_layout_messege1_img);
             this.name = itemView.findViewById(R.id.chat_room_layout_name1_img);
             this.time = itemView.findViewById(R.id.chat_room_layout_time1_img);
+            this.progressBar = itemView.findViewById(R.id.chat_room_layout_progress_image);
+            this.userpicprogress = itemView.findViewById(R.id.chat_room_layout_userpic_progress_image);
         }
     }
 
     public class RightImageViewholder extends RecyclerView.ViewHolder {
         TextView timepic, read;
         ImageView imagepic;
+        ProgressBar progressBar;
 
         public RightImageViewholder(@NonNull View itemView) {
             super(itemView);
             this.timepic = itemView.findViewById(R.id.chat_room_layout_time2_img);
             this.imagepic = itemView.findViewById(R.id.chat_room_layout_messege2_img);
             this.read = itemView.findViewById(R.id.chat_room_layout_read);
+            this.progressBar = itemView.findViewById(R.id.chat_room_layout_right_image_progress);
         }
     }
 

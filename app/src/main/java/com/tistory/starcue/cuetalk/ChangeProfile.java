@@ -3,6 +3,7 @@ package com.tistory.starcue.cuetalk;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +26,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.ObjectKey;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -78,7 +83,7 @@ public class ChangeProfile extends AppCompatActivity {
     RadioGroup radioGroup;
     Spinner agespin;
     RelativeLayout relativeLayout;
-    ProgressBar progressBar;
+    ProgressBar progressBar, picprogress;
 
     String[] items = {"나이", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70"};
 
@@ -129,6 +134,7 @@ public class ChangeProfile extends AppCompatActivity {
         imageView = findViewById(R.id.change_profile_image);
         addImageBtn = findViewById(R.id.add_image);
         deletePic = findViewById(R.id.change_profile_delete_pic);
+        picprogress = findViewById(R.id.change_profile_pic_progress);
 
         setView();
 
@@ -164,7 +170,24 @@ public class ChangeProfile extends AppCompatActivity {
                 } else if (mySex.equals("여자")) {
                     radioGroup.check(R.id.change_profile_sexfemale);
                 }
-                Glide.with(ChangeProfile.this).load(myPicUri).override(300, 300).circleCrop().into(imageView);
+                Glide.with(ChangeProfile.this)
+                        .load(myPicUri)
+                        .override(300, 300)
+                        .listener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                picprogress.setVisibility(View.GONE);
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                picprogress.setVisibility(View.GONE);
+                                return false;
+                            }
+                        })
+                        .circleCrop()
+                        .into(imageView);
                 relativeLayout.setVisibility(View.GONE);
             }
         }).addOnFailureListener(new OnFailureListener() {

@@ -7,16 +7,31 @@
     android:layout_marginTop="7dp"
     android:layout_marginRight="10dp">
 
-    <ImageView
-        android:id="@+id/f2re_pic"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/picnull" />
+    <RelativeLayout
+        android:id="@+id/f2re_user_pic_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/f2re_pic"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/picnull" />
+
+        <ProgressBar
+            android:id="@+id/f2re_progress"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/f2re_pic"
+        android:layout_toRightOf="@+id/f2re_user_pic_layout"
         android:orientation="vertical">
 
         <LinearLayout
@@ -88,7 +103,7 @@
             android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:text="신고"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
     </LinearLayout>
 

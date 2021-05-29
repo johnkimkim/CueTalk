@@ -4,16 +4,171 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/access_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="액세스 권한 허용"/>
+        android:text="필수 권한 허용이 필요합니다."
+        android:textSize="18dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/access_title"
+        android:layout_marginTop="40dp"
+        android:layout_centerHorizontal="true">
+
+        <!--layout 1 -->
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
+            <ImageView
+                android:id="@+id/access_layout_1"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/access_phone"
+                android:layout_centerVertical="true"/>
+            <TextView
+                android:id="@+id/access_must_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="[필수] 전화"
+                android:textStyle="bold"
+                android:layout_toRightOf="@+id/access_layout_1"
+                android:layout_marginLeft="15dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="기기별 계정로그인에 사용하기 위한 권한"
+                android:layout_toRightOf="@+id/access_layout_1"
+                android:layout_below="@+id/access_must_phone"
+                android:layout_marginLeft="15dp"/>
+        </RelativeLayout>
+
+        <!-- layout 2 -->
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
+            <ImageView
+                android:id="@+id/access_layout_2"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/access_location"
+                android:layout_centerVertical="true"/>
+            <TextView
+                android:id="@+id/access_must_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="[필수] 위치"
+                android:textStyle="bold"
+                android:layout_toRightOf="@+id/access_layout_2"
+                android:layout_marginLeft="15dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="회원별 거리 계산을 위한 권한"
+                android:layout_toRightOf="@+id/access_layout_2"
+                android:layout_below="@+id/access_must_location"
+                android:layout_marginLeft="15dp"/>
+        </RelativeLayout>
+
+        <!-- layout 3 -->
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
+            <ImageView
+                android:id="@+id/access_layout_3"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/access_acount_book"
+                android:layout_centerVertical="true"/>
+            <TextView
+                android:id="@+id/access_must_address_book"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="[필수] 주소록"
+                android:textStyle="bold"
+                android:layout_toRightOf="@+id/access_layout_3"
+                android:layout_marginLeft="15dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="구글 계정 정보로 가입자 확인에 필요한 권한"
+                android:layout_toRightOf="@+id/access_layout_3"
+                android:layout_below="@+id/access_must_address_book"
+                android:layout_marginLeft="15dp"/>
+        </RelativeLayout>
+
+        <!-- layout 4 -->
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
+            <ImageView
+                android:id="@+id/access_layout_4"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/access_storage"
+                android:layout_centerVertical="true"/>
+            <TextView
+                android:id="@+id/access_must_storage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="[필수] 저장공간"
+                android:textStyle="bold"
+                android:layout_toRightOf="@+id/access_layout_4"
+                android:layout_marginLeft="15dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="사진 업로드를 위한 권한"
+                android:layout_toRightOf="@+id/access_layout_4"
+                android:layout_below="@+id/access_must_storage"
+                android:layout_marginLeft="15dp"/>
+        </RelativeLayout>
+
+        <!-- layout 5 -->
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
+            <ImageView
+                android:id="@+id/access_layout_5"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/access_camera"
+                android:layout_centerVertical="true"/>
+            <TextView
+                android:id="@+id/access_must_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="[필수] 카메라"
+                android:textStyle="bold"
+                android:layout_toRightOf="@+id/access_layout_5"
+                android:layout_marginLeft="15dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="사진 업로드를 위한 권한"
+                android:layout_toRightOf="@+id/access_layout_5"
+                android:layout_below="@+id/access_must_camera"
+                android:layout_marginLeft="15dp"/>
+        </RelativeLayout>
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/agree_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp"
         android:text="확인"/>
 
 </RelativeLayout>

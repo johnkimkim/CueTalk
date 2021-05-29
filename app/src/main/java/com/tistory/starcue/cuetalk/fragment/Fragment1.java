@@ -106,6 +106,7 @@ public class Fragment1 extends Fragment {
         testbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                testbtn.setEnabled(false);
 //                db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
 //                    @Override
 //                    public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {

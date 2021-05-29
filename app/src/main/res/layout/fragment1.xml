@@ -51,7 +51,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_margin="30dp" />
+        android:layout_margin="30dp"
+        android:background="@drawable/button_on_click"
+        android:text="테스트"/>
 
     <Spinner
         android:id="@+id/f1spinner"

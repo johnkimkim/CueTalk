@@ -24,7 +24,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="17dp">
             <ImageView
                 android:id="@+id/access_layout_1"
                 android:layout_width="40dp"
@@ -52,7 +52,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="17dp">
             <ImageView
                 android:id="@+id/access_layout_2"
                 android:layout_width="40dp"
@@ -80,7 +80,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="17dp">
             <ImageView
                 android:id="@+id/access_layout_3"
                 android:layout_width="40dp"
@@ -108,7 +108,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="17dp">
             <ImageView
                 android:id="@+id/access_layout_4"
                 android:layout_width="40dp"
@@ -135,8 +135,7 @@
         <!-- layout 5 -->
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp">
+            android:layout_height="wrap_content">
             <ImageView
                 android:id="@+id/access_layout_5"
                 android:layout_width="40dp"
@@ -164,11 +163,15 @@
 
     <Button
         android:id="@+id/agree_btn"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="50dp"
-        android:text="확인"/>
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:text="확인"
+        android:textColor="@color/white"
+        android:background="@drawable/button_on_click"/>
 
 </RelativeLayout>

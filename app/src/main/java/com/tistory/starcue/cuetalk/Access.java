@@ -1,27 +1,18 @@
 package com.tistory.starcue.cuetalk;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Access extends AppCompatActivity {
@@ -61,6 +52,7 @@ public class Access extends AppCompatActivity {
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                okbtn.setEnabled(false);
                 checkPermission(view);
             }
         });
@@ -78,7 +70,8 @@ public class Access extends AppCompatActivity {
 
             @Override
             public void onPermissionDenied(List<String> deniedPermissions) {
-                Toast.makeText(Access.this, "모든 권한을 허용해야 사용가능", Toast.LENGTH_LONG).show();
+                okbtn.setEnabled(true);
+                Toast.makeText(Access.this, "모든 권한을 허용해주셔야 접속 가능합니다", Toast.LENGTH_LONG).show();
             }
         };
 

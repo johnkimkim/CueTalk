@@ -17,19 +17,16 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
@@ -54,7 +51,6 @@ public class PhoneNumber extends AppCompatActivity {
 
     private TextView mPhoneNumber;
     private Button mButton;
-    private TextView feedtext;
 
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallback;
 
@@ -66,6 +62,7 @@ public class PhoneNumber extends AppCompatActivity {
 
     private FirebaseFirestore db;
     private String myUid;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,8 +83,6 @@ public class PhoneNumber extends AppCompatActivity {
     private void setunit() {
         mPhoneNumber = findViewById(R.id.edittext);
         mButton = findViewById(R.id.okbtn);
-        feedtext = findViewById(R.id.login_feedback);
-        feedtext.setVisibility(View.GONE);
 
         load = findViewById(R.id.access2_loading);
         load.setVisibility(View.GONE);
@@ -117,6 +112,8 @@ public class PhoneNumber extends AppCompatActivity {
                     mButton.setEnabled(false);
                 } else {
                     mButton.setEnabled(true);
+                    InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                    manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                 }
             }
 
@@ -126,6 +123,37 @@ public class PhoneNumber extends AppCompatActivity {
             }
         });
     }
+
+//    private void setLottie() {
+//        animationView.playAnimation();
+//        Handler handler = new Handler();
+//        animationView.addAnimatorListener(new Animator.AnimatorListener() {
+//            @Override
+//            public void onAnimationStart(Animator animator) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animator animator) {
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        animationView.playAnimation();
+//                    }
+//                }, 1500);
+//            }
+//
+//            @Override
+//            public void onAnimationCancel(Animator animator) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animator animator) {
+//
+//            }
+//        });
+//    }
 
     private void checkAll() {
         cba.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -224,12 +252,10 @@ public class PhoneNumber extends AppCompatActivity {
                                 }
                                 if (count.contains(mPhoneNumber.getText().toString())) {
                                     Log.d("Fragment1>>>", "test2");
-                                    feedtext.setVisibility(View.VISIBLE);
                                     load.setVisibility(View.GONE);
-                                    feedtext.setText("해당 전화번호는 정책위반으로 인해 서비스 이용이 정지되었습니다.");
+                                    Toast.makeText(PhoneNumber.this, "해당 전화번호는 정책위반으로 인해 서비스 이용이 정지되었습니다.", Toast.LENGTH_SHORT).show();
                                 } else {
                                     Log.d("Fragment1>>>", "test3");
-                                    feedtext.setVisibility(View.GONE);
                                     load.setVisibility(View.VISIBLE);
                                     mButton.setEnabled(false);
 
@@ -261,13 +287,12 @@ public class PhoneNumber extends AppCompatActivity {
         mCallback = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                signInWithPhoneAuthCredential(phoneAuthCredential);
+//                signInWithPhoneAuthCredential(phoneAuthCredential);
             }
 
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
-                feedtext.setText("실패!");
-                feedtext.setVisibility(View.VISIBLE);
+                Toast.makeText(PhoneNumber.this, "알 수 없는 문제로 실패했습니다. 다시 시해도해주세요", Toast.LENGTH_SHORT).show();
                 load.setVisibility(View.INVISIBLE);
                 mButton.setEnabled(true);
             }
@@ -318,32 +343,32 @@ public class PhoneNumber extends AppCompatActivity {
         }
     }
 
-    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(PhoneNumber.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-//                            // Sign in success, update UI with the signed-in user's information
-//                            Log.d(TAG, "signInWithCredential:success");
-//
-//                            FirebaseUser user = task.getResult().getUser();
-//                            // ...
-//                            sendUserToHome();
-                        } else {
-                            // Sign in failed, display a message and update the UI
-                            Log.w(">>>", "signInWithCredential:failure", task.getException());
-                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                // The verification code entered was invalid
-                                feedtext.setText("인증코드를 다시 확인해주세요");
-                                feedtext.setVisibility(View.VISIBLE);
-                            }
-                        }
-                        load.setVisibility(View.INVISIBLE);
-                        mButton.setEnabled(true);
-                    }
-                });
-    }
+//    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+//        mAuth.signInWithCredential(credential)
+//                .addOnCompleteListener(PhoneNumber.this, new OnCompleteListener<AuthResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<AuthResult> task) {
+//                        if (task.isSuccessful()) {
+////                            // Sign in success, update UI with the signed-in user's information
+////                            Log.d(TAG, "signInWithCredential:success");
+////
+////                            FirebaseUser user = task.getResult().getUser();
+////                            // ...
+////                            sendUserToHome();
+//                        } else {
+//                            // Sign in failed, display a message and update the UI
+//                            Log.w(">>>", "signInWithCredential:failure", task.getException());
+//                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+//                                // The verification code entered was invalid
+//                                feedtext.setText("인증코드를 다시 확인해주세요");
+//                                feedtext.setVisibility(View.VISIBLE);
+//                            }
+//                        }
+//                        load.setVisibility(View.INVISIBLE);
+//                        mButton.setEnabled(true);
+//                    }
+//                });
+//    }
 
     private void sendUserToHome() {
         Intent intent = new Intent(PhoneNumber.this, FLogin.class);

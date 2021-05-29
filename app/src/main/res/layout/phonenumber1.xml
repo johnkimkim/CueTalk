@@ -61,13 +61,27 @@
             android:text="인증요청"
             android:textColor="@color/white"
             android:textStyle="bold" />
-
-        <ProgressBar
-            android:id="@+id/otp_progress_bar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:visibility="invisible" />
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/phonenumber1_load"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#A6000000"
+        android:clickable="true">
+
+        <com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:loader_animDur="80"
+            app:loader_bigCircleRadius="28dp"
+            app:loader_circleRadius="7dp"
+            app:loader_defaultColor="@color/light_gray"
+            app:loader_firstShadowColor="@color/base1"
+            app:loader_secondShadowColor="@color/base3"
+            app:loader_selectedColor="@color/base2"
+            app:loader_showRunningShadow="true"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -63,6 +63,7 @@ public class PhoneNumber extends AppCompatActivity {
     private FirebaseFirestore db;
     private String myUid;
 
+    View view;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,7 +85,7 @@ public class PhoneNumber extends AppCompatActivity {
         mPhoneNumber = findViewById(R.id.edittext);
         mButton = findViewById(R.id.okbtn);
 
-        load = findViewById(R.id.access2_loading);
+        load = findViewById(R.id.phonenumber_load);
         load.setVisibility(View.GONE);
         load.bringToFront();
         cba = findViewById(R.id.access2_checkbox);
@@ -293,7 +294,7 @@ public class PhoneNumber extends AppCompatActivity {
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 Toast.makeText(PhoneNumber.this, "알 수 없는 문제로 실패했습니다. 다시 시해도해주세요", Toast.LENGTH_SHORT).show();
-                load.setVisibility(View.INVISIBLE);
+                load.setVisibility(View.GONE);
                 mButton.setEnabled(true);
             }
 
@@ -338,9 +339,6 @@ public class PhoneNumber extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (mCurrentUser != null) {
-            sendUserToHome();
-        }
     }
 
 //    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
@@ -370,13 +368,7 @@ public class PhoneNumber extends AppCompatActivity {
 //                });
 //    }
 
-    private void sendUserToHome() {
-        Intent intent = new Intent(PhoneNumber.this, FLogin.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
-    }
+
 
     @Override
     public void onBackPressed() {

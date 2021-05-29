@@ -8,7 +8,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -45,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
     public static TextView btn4count;
     public static TextView btn5count;
     public static RelativeLayout loading;
-    public static ProgressBar mainProgressBar;
 
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
@@ -87,8 +85,7 @@ public class MainActivity extends AppCompatActivity {
 //        btn4count.bringToFront();
         btn5 = findViewById(R.id.btn5);
         btn5count = findViewById(R.id.btn5count);
-        loading = findViewById(R.id.loading);
-        mainProgressBar = findViewById(R.id.mainpro);
+        loading = findViewById(R.id.main_load);
         loading.bringToFront();
 
         btn1.setOnClickListener((View v) -> {

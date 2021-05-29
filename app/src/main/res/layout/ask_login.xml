@@ -1,37 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="앱을 재설치했거나\n이미 로그인 중 입니다.\n다른기기에서 로그아웃 후 새로 로그인 하시겠습니까?"
-        android:gravity="center"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"/>
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/yes_btn"
+        <TextView
+            android:id="@+id/ask_login_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="네"/>
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="앱을 재설치했거나\n이미 로그인 중 입니다.\n다른기기에서 로그아웃 후 새로 로그인 하시겠습니까?" />
 
-        <Button
-            android:id="@+id/no_btn"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="아니요"/>
+            android:orientation="horizontal"
+            android:layout_marginTop="30dp"
+            android:layout_below="@+id/ask_login_textview">
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/yes_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="네"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:background="@drawable/button_on_click"
+                android:layout_margin="5dp"/>
 
-</RelativeLayout>
+            <Button
+                android:id="@+id/no_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="아니요"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:background="@drawable/button_on_click"
+                android:layout_margin="5dp" />
+
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

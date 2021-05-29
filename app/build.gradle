@@ -68,6 +68,8 @@ dependencies {
 
     implementation 'com.airbnb.android:lottie:3.7.0'
 
+    implementation 'com.agrawalsuneet.androidlibs:dotsloader:1.4'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -1,6 +1,7 @@
 package com.tistory.starcue.cuetalk;
 
 import android.animation.Animator;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,15 +10,19 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -54,9 +59,12 @@ public class PhoneNumber1 extends AppCompatActivity {
 
     private EditText phone1edit;
     private Button okbtn;
-    private ProgressBar progressBar;
+    private RelativeLayout load;
 
     LottieAnimationView lottie;
+
+    private AlertDialog alertDialog;
+    private Button dialogok, dialogno;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,7 +94,9 @@ public class PhoneNumber1 extends AppCompatActivity {
         phone1edit = findViewById(R.id.edittext1);
         okbtn = findViewById(R.id.okbtn1);
         okbtn.setEnabled(false);
-        progressBar = findViewById(R.id.otp_progress_bar);
+        load = findViewById(R.id.phonenumber1_load);
+        load.setVisibility(View.GONE);
+        load.bringToFront();
         lottie = findViewById(R.id.phonenumber1_lottie);
         lottie.playAnimation();
         setLottie();
@@ -151,6 +161,7 @@ public class PhoneNumber1 extends AppCompatActivity {
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                load.setVisibility(View.VISIBLE);
 
                 InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);//키보드내리기
                 manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);//키보드내리기
@@ -159,7 +170,6 @@ public class PhoneNumber1 extends AppCompatActivity {
                 if (otp.isEmpty()) {
                     Toast.makeText(PhoneNumber1.this, "인증번호를 입력해주세요.", Toast.LENGTH_SHORT).show();
                 } else {
-                    progressBar.setVisibility(View.VISIBLE);
                     okbtn.setEnabled(false);
 
                     PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mAuthVerificationId, otp);
@@ -204,7 +214,7 @@ public class PhoneNumber1 extends AppCompatActivity {
     }
 
     private void goBackSplashActivity() {
-        progressBar.setVisibility(View.INVISIBLE);
+        load.setVisibility(View.GONE);
         okbtn.setEnabled(false);
         Intent intent = new Intent(PhoneNumber1.this, SplashActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -293,7 +303,76 @@ public class PhoneNumber1 extends AppCompatActivity {
     }
 
     private void goToAsk() {
-        startActivity(new Intent(PhoneNumber1.this, AskLogin.class));
+//        startActivity(new Intent(PhoneNumber1.this, AskLogin.class));
+        LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout layout = (LinearLayout) vi.inflate(R.layout.logout_dialog, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(PhoneNumber1.this);
+        builder.setView(layout);
+        alertDialog = builder.create();
+
+        alertDialog.show();
+        //set size
+        WindowManager.LayoutParams layoutParams = alertDialog.getWindow().getAttributes();
+        layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
+//            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+//            layoutParams.dimAmount = 0.7f;
+
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        alertDialog.getWindow().setAttributes(layoutParams);
+
+        dialogok = layout.findViewById(R.id.logout_dialog_okbtn);
+        dialogno = layout.findViewById(R.id.logout_dialog_cancelbtn);
+
+        dialogno.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                Intent intent = new Intent(PhoneNumber1.this, SplashActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
+
+        dialogok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAuth.signOut();
+                alertDialog.dismiss();
+                setfirestoredata();
+            }
+        });
+    }
+
+    private void setfirestoredata() {
+
+        databaseHandler.setDB(PhoneNumber1.this);
+        databaseHandler = new DatabaseHandler(this);
+        sqLiteDatabase = databaseHandler.getWritableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery("select uniqueField from uniqueTable where _rowid_ = 1", null);
+        cursor.moveToFirst();
+        String uniquestring = cursor.getString(0);
+
+        String user_uid = mAuth.getUid();
+
+        Map<String, Object> user = new HashMap<>();
+        user.put("unique", uniquestring);
+
+        db.collection("users").document(user_uid)
+                .update(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        checkUser();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
     }
 
     private String getUniqueInSql() {

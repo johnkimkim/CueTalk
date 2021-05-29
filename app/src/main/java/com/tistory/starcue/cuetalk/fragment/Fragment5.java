@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -315,7 +317,6 @@ public class Fragment5 extends Fragment {
             builder.setView(layout);
             alertDialog = builder.create();
 
-            alertDialog.show();
             //set size
             WindowManager.LayoutParams layoutParams = alertDialog.getWindow().getAttributes();
             layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
@@ -325,6 +326,10 @@ public class Fragment5 extends Fragment {
             layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
             layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
             alertDialog.getWindow().setAttributes(layoutParams);
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+
+            alertDialog.show();
 
             logoutDialogOkBtn = layout.findViewById(R.id.logout_dialog_okbtn);
             logoutDialogNoBtn = layout.findViewById(R.id.logout_dialog_cancelbtn);

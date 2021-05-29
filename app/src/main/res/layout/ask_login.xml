@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/dialog_layout">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -14,6 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:gravity="center"
+            android:layout_margin="20dp"
             android:text="앱을 재설치했거나\n이미 로그인 중 입니다.\n다른기기에서 로그아웃 후 새로 로그인 하시겠습니까?" />
 
         <LinearLayout
@@ -32,7 +34,7 @@
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:background="@drawable/button_on_click"
-                android:layout_margin="5dp"/>
+                android:layout_margin="10dp"/>
 
             <Button
                 android:id="@+id/no_btn"
@@ -43,7 +45,7 @@
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:background="@drawable/button_on_click"
-                android:layout_margin="5dp" />
+                android:layout_margin="10dp"/>
 
         </LinearLayout>
     </RelativeLayout>

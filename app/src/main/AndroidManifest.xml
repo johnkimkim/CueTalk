@@ -33,6 +33,7 @@
         <activity android:name=".LoginActivity" android:screenOrientation="portrait"/>
         <activity android:name=".PhoneNumber" android:screenOrientation="portrait"/>
         <activity android:name=".PhoneNumber1" android:screenOrientation="portrait"/>
+        <activity android:name=".AskLogin" android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert"/>
         <activity android:name=".ChangeProfile" android:screenOrientation="portrait"/>
         <activity android:name=".AdressRoom" android:screenOrientation="portrait"/>
         <activity android:name=".Access" android:screenOrientation="portrait"/>

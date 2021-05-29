@@ -1,9 +1,11 @@
 package com.tistory.starcue.cuetalk;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -12,12 +14,13 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -50,9 +53,10 @@ public class PhoneNumber1 extends AppCompatActivity {
     private String mAuthVerificationId;
 
     private EditText phone1edit;
-    private TextView feedtext;
     private Button okbtn;
     private ProgressBar progressBar;
+
+    LottieAnimationView lottie;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,10 +84,12 @@ public class PhoneNumber1 extends AppCompatActivity {
 
     private void setinit() {
         phone1edit = findViewById(R.id.edittext1);
-        feedtext = findViewById(R.id.phone1feedback);
         okbtn = findViewById(R.id.okbtn1);
         okbtn.setEnabled(false);
         progressBar = findViewById(R.id.otp_progress_bar);
+        lottie = findViewById(R.id.phonenumber1_lottie);
+        lottie.playAnimation();
+        setLottie();
 
         phone1edit.addTextChangedListener(new TextWatcher() {
             @Override
@@ -98,12 +104,44 @@ public class PhoneNumber1 extends AppCompatActivity {
                 if (count.length() < 6) {
                     okbtn.setEnabled(false);
                 } else {
+                    InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);//키보드내리기
+                    manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);//키보드내리기
                     okbtn.setEnabled(true);
                 }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+
+    private void setLottie() {
+        Handler handler = new Handler();
+        lottie.addAnimatorListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        lottie.playAnimation();
+                    }
+                }, 2500);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
 
             }
         });
@@ -119,8 +157,7 @@ public class PhoneNumber1 extends AppCompatActivity {
 
                 String otp = phone1edit.getText().toString();
                 if (otp.isEmpty()) {
-                    feedtext.setText("인증코드를 입력해주세요");//필요없음
-                    feedtext.setVisibility(View.VISIBLE);
+                    Toast.makeText(PhoneNumber1.this, "인증번호를 입력해주세요.", Toast.LENGTH_SHORT).show();
                 } else {
                     progressBar.setVisibility(View.VISIBLE);
                     okbtn.setEnabled(false);
@@ -149,8 +186,8 @@ public class PhoneNumber1 extends AppCompatActivity {
                             Log.w(">>>", "signInWithCredential:failure", task.getException());
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                 // The verification code entered was invalid
-                                feedtext.setText("인증코드를 다시 확인해주세요");
-                                feedtext.setVisibility(View.VISIBLE);
+                                Toast.makeText(PhoneNumber1.this, "인증코드를 다시 확인해주세요", Toast.LENGTH_SHORT).show();
+                                okbtn.setEnabled(true);
                             }
                         }
 

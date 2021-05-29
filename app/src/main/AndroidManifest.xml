@@ -32,7 +32,6 @@
         <activity android:name=".F1Chat" android:screenOrientation="portrait"/>
         <activity android:name=".LoginActivity" android:screenOrientation="portrait"/>
         <activity android:name=".FLogin" android:screenOrientation="portrait"/>
-<!--        <activity android:name=".Splash" android:screenOrientation="portrait"/>-->
         <activity android:name=".PhoneNumber" android:screenOrientation="portrait"/>
         <activity android:name=".PhoneNumber1" android:screenOrientation="portrait"/>
         <activity android:name=".AskLogin" android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert"/>

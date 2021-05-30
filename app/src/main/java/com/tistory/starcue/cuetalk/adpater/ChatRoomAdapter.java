@@ -8,13 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -271,7 +271,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public class LeftViewholder extends RecyclerView.ViewHolder {
         ImageView picl;
         TextView time, name, messege;
-        ProgressBar progressBar;
+        CircularDotsLoader progressBar;
 
         public LeftViewholder(@NonNull View itemView) {
             super(itemView);
@@ -296,7 +296,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public class LeftImageViewholder extends RecyclerView.ViewHolder {
         ImageView picli, image;
         TextView time, name;
-        ProgressBar userpicprogress, progressBar;
+        CircularDotsLoader userpicprogress, progressBar;
 
         public LeftImageViewholder(@NonNull View itemView) {
             super(itemView);
@@ -312,7 +312,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public class RightImageViewholder extends RecyclerView.ViewHolder {
         TextView timepic;
         ImageView imagepic;
-        ProgressBar progressBar;
+        CircularDotsLoader progressBar;
 
         public RightImageViewholder(@NonNull View itemView) {
             super(itemView);

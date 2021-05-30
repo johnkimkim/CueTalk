@@ -30,6 +30,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
+import com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -65,7 +66,8 @@ import java.util.Map;
 public class Fragment5 extends Fragment {
 
     ImageView pic;
-    ProgressBar glideprogress;
+//    ProgressBar glideprogress;
+    CircularDotsLoader glideprogress;
     TextView name, age, sex;
     Button reset, logout, deleteUser, ask;
     DatabaseHandler databaseHandler;

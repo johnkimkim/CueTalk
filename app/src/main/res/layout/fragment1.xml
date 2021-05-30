@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.Fragment1">
 
     <RelativeLayout
@@ -18,9 +18,9 @@
             android:id="@+id/viewpagerbtn"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_margin="10dp"/>
+            android:layout_alignParentRight="true"
+            android:layout_margin="10dp" />
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/f1viewpager"
@@ -33,15 +33,15 @@
             android:id="@+id/f1dot"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/f1viewpager"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="4dp"
             app:dotsColor="@color/dot_color_1"
-            app:dotsStrokeColor="@color/dot_color_2"
             app:dotsCornerRadius="8dp"
             app:dotsSize="11dp"
             app:dotsSpacing="3dp"
-            app:dotsStrokeWidth="2dp"
-            android:layout_below="@id/f1viewpager"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="4dp"/>
+            app:dotsStrokeColor="@color/dot_color_2"
+            app:dotsStrokeWidth="2dp" />
 
     </RelativeLayout>
 
@@ -53,16 +53,30 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="30dp"
         android:background="@drawable/button_on_click"
-        android:text="테스트"/>
+        android:text="테스트" />
 
-    <Spinner
-        android:id="@+id/f1spinner"
-        android:layout_width="250dp"
-        android:layout_height="60dp"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/viewpagerlayout"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:dropDownWidth="140dp"
-        android:spinnerMode="dialog" />
+        android:orientation="horizontal">
+        <Spinner
+            android:id="@+id/f1spinner1"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:dropDownWidth="140dp"
+            android:spinnerMode="dialog"/>
 
+        <Spinner
+            android:id="@+id/f1spinner"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:dropDownWidth="140dp"
+            android:spinnerMode="dialog" />
+    </LinearLayout>
 </RelativeLayout>

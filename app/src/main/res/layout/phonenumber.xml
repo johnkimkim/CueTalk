@@ -146,7 +146,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/access2_0"
             android:orientation="vertical"
-            android:layout_centerHorizontal="true">
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp">
 
             <TextView
                 android:id="@+id/phonetext"

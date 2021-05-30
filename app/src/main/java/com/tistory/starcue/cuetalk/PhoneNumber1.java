@@ -1,23 +1,30 @@
 package com.tistory.starcue.cuetalk;
 
 import android.animation.Animator;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -57,6 +64,9 @@ public class PhoneNumber1 extends AppCompatActivity {
     private RelativeLayout load;
 
     LottieAnimationView lottie;
+
+    private Button yes, no;
+    private AlertDialog alertDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -188,6 +198,7 @@ public class PhoneNumber1 extends AppCompatActivity {
                             Log.w(">>>", "signInWithCredential:failure", task.getException());
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                 // The verification code entered was invalid
+                                load.setVisibility(View.GONE);
                                 Toast.makeText(PhoneNumber1.this, "인증코드를 다시 확인해주세요", Toast.LENGTH_SHORT).show();
                                 okbtn.setEnabled(true);
                             }
@@ -206,7 +217,6 @@ public class PhoneNumber1 extends AppCompatActivity {
     }
 
     private void goBackSplashActivity() {
-        load.setVisibility(View.GONE);
         okbtn.setEnabled(false);
         Intent intent = new Intent(PhoneNumber1.this, SplashActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -295,7 +305,89 @@ public class PhoneNumber1 extends AppCompatActivity {
     }
 
     private void goToAsk() {
-        startActivity(new Intent(PhoneNumber1.this, AskLogin.class));
+//        startActivity(new Intent(PhoneNumber1.this, AskLogin.class));
+        LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout layout = (LinearLayout) vi.inflate(R.layout.ask_login, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(PhoneNumber1.this);
+        builder.setView(layout);
+        alertDialog = builder.create();
+
+        //set size
+        WindowManager.LayoutParams layoutParams = alertDialog.getWindow().getAttributes();
+        layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
+//            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+//            layoutParams.dimAmount = 0.7f;
+
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        alertDialog.getWindow().setAttributes(layoutParams);
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        alertDialog.show();
+
+        yes = layout.findViewById(R.id.yes_btn);
+        no = layout.findViewById(R.id.no_btn);
+
+        setOnClickYes();
+        setOnClickNo();
+    }
+
+    private void setOnClickYes() {
+        yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                yes.setEnabled(false);
+                no.setEnabled(false);
+                alertDialog.dismiss();
+                setfirestoredata();
+            }
+        });
+    }
+
+    private void setOnClickNo() {
+        no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                yes.setEnabled(false);
+                no.setEnabled(false);
+                mAuth.signOut();
+                alertDialog.dismiss();
+                Intent intent = new Intent(PhoneNumber1.this, PhoneNumber.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void setfirestoredata() {
+
+        databaseHandler.setDB(PhoneNumber1.this);
+        databaseHandler = new DatabaseHandler(this);
+        sqLiteDatabase = databaseHandler.getWritableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery("select uniqueField from uniqueTable where _rowid_ = 1", null);
+        cursor.moveToFirst();
+        String uniquestring = cursor.getString(0);
+
+        String user_uid = mAuth.getUid();
+
+        Map<String, Object> user = new HashMap<>();
+        user.put("unique", uniquestring);
+
+        db.collection("users").document(user_uid)
+                .update(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        checkUser();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
     }
 
     private String getUniqueInSql() {

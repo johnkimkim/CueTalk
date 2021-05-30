@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="150dp">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <TextView
+            android:id="@+id/login_another_device_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
+            android:gravity="center_horizontal"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="20dp"
             android:text="다른 기기에서 로그인 해서 로그아웃됐습니다. \n로그인 화면으로 이동합니다." />
 
         <Button
             android:id="@+id/login_another_device_okbtn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_margin="10dp"
-            android:text="확인" />
+            android:layout_margin="30dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/login_another_device_title"
+            android:background="@drawable/button_on_click"
+            android:text="확인"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
     </RelativeLayout>
 
 </LinearLayout>

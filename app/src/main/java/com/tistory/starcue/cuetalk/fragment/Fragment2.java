@@ -1,19 +1,9 @@
 package com.tistory.starcue.cuetalk.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -30,30 +20,27 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.bumptech.glide.Glide;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.tistory.starcue.cuetalk.AdressRoom;
 import com.tistory.starcue.cuetalk.GpsTracker;
 import com.tistory.starcue.cuetalk.R;
-import com.tistory.starcue.cuetalk.adpater.AdressRoomAdapter;
 import com.tistory.starcue.cuetalk.adpater.F2Adapter;
 import com.tistory.starcue.cuetalk.item.F2Item;
-import com.tistory.starcue.cuetalk.item.F4ChatRoomItem;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -160,6 +147,16 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
             @Override
             public void onClick(View view) {
                 page = 1;
+                btn1.setBackgroundResource(R.drawable.button_defult);
+                btn1.setTextColor(getResources().getColor(R.color.white));
+                btn2.setBackgroundResource(R.drawable.button_empty);
+                btn2.setTextColor(getResources().getColor(R.color.black));
+                btn3.setBackgroundResource(R.drawable.button_empty);
+                btn3.setTextColor(getResources().getColor(R.color.black));
+                btn4.setBackgroundResource(R.drawable.button_empty);
+                btn4.setTextColor(getResources().getColor(R.color.black));
+                btn5.setBackgroundResource(R.drawable.button_empty);
+                btn5.setTextColor(getResources().getColor(R.color.black));
                 progressBar.setVisibility(View.VISIBLE);
                 setListBtn1();
             }
@@ -169,6 +166,16 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
             @Override
             public void onClick(View view) {
                 page = 2;
+                btn1.setBackgroundResource(R.drawable.button_empty);
+                btn1.setTextColor(getResources().getColor(R.color.black));
+                btn2.setBackgroundResource(R.drawable.button_defult);
+                btn2.setTextColor(getResources().getColor(R.color.white));
+                btn3.setBackgroundResource(R.drawable.button_empty);
+                btn3.setTextColor(getResources().getColor(R.color.black));
+                btn4.setBackgroundResource(R.drawable.button_empty);
+                btn4.setTextColor(getResources().getColor(R.color.black));
+                btn5.setBackgroundResource(R.drawable.button_empty);
+                btn5.setTextColor(getResources().getColor(R.color.black));
                 progressBar.setVisibility(View.VISIBLE);
                 setListBtn2();
             }
@@ -178,6 +185,16 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
             @Override
             public void onClick(View view) {
                 page = 3;
+                btn1.setBackgroundResource(R.drawable.button_empty);
+                btn1.setTextColor(getResources().getColor(R.color.black));
+                btn2.setBackgroundResource(R.drawable.button_empty);
+                btn2.setTextColor(getResources().getColor(R.color.black));
+                btn3.setBackgroundResource(R.drawable.button_defult);
+                btn3.setTextColor(getResources().getColor(R.color.white));
+                btn4.setBackgroundResource(R.drawable.button_empty);
+                btn4.setTextColor(getResources().getColor(R.color.black));
+                btn5.setBackgroundResource(R.drawable.button_empty);
+                btn5.setTextColor(getResources().getColor(R.color.black));
                 progressBar.setVisibility(View.VISIBLE);
                 setListBtn3();
             }
@@ -187,6 +204,16 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
             @Override
             public void onClick(View view) {
                 page = 4;
+                btn1.setBackgroundResource(R.drawable.button_empty);
+                btn1.setTextColor(getResources().getColor(R.color.black));
+                btn2.setBackgroundResource(R.drawable.button_empty);
+                btn2.setTextColor(getResources().getColor(R.color.black));
+                btn3.setBackgroundResource(R.drawable.button_empty);
+                btn3.setTextColor(getResources().getColor(R.color.black));
+                btn4.setBackgroundResource(R.drawable.button_defult);
+                btn4.setTextColor(getResources().getColor(R.color.white));
+                btn5.setBackgroundResource(R.drawable.button_empty);
+                btn5.setTextColor(getResources().getColor(R.color.black));
                 progressBar.setVisibility(View.VISIBLE);
                 setListBtn4();
             }
@@ -196,6 +223,16 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
             @Override
             public void onClick(View view) {
                 page = 5;
+                btn1.setBackgroundResource(R.drawable.button_empty);
+                btn1.setTextColor(getResources().getColor(R.color.black));
+                btn2.setBackgroundResource(R.drawable.button_empty);
+                btn2.setTextColor(getResources().getColor(R.color.black));
+                btn3.setBackgroundResource(R.drawable.button_empty);
+                btn3.setTextColor(getResources().getColor(R.color.black));
+                btn4.setBackgroundResource(R.drawable.button_empty);
+                btn4.setTextColor(getResources().getColor(R.color.black));
+                btn5.setBackgroundResource(R.drawable.button_defult);
+                btn5.setTextColor(getResources().getColor(R.color.white));
                 progressBar.setVisibility(View.VISIBLE);
                 setListBtn5();
             }
@@ -380,14 +417,19 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         Log.d("Fragment2>>>", "onResume");
         if (arrayList.size() == 0) {
             if (page == 1) {
+                btn1.setBackgroundResource(R.drawable.button_defult);
                 setListBtn1();
             } else if (page == 2) {
+                btn2.setBackgroundResource(R.drawable.button_defult);
                 setListBtn2();
             } else if (page == 3) {
+                btn3.setBackgroundResource(R.drawable.button_defult);
                 setListBtn3();
             } else if (page == 4) {
+                btn4.setBackgroundResource(R.drawable.button_defult);
                 setListBtn4();
             } else if (page == 5) {
+                btn5.setBackgroundResource(R.drawable.button_defult);
                 setListBtn5();
             }
         }

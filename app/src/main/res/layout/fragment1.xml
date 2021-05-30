@@ -68,7 +68,11 @@
             android:layout_weight="1"
             android:layout_margin="10dp"
             android:dropDownWidth="140dp"
-            android:spinnerMode="dialog"/>
+            android:spinnerMode="dialog"
+            android:background="@drawable/spinner_outline"
+            android:popupBackground="@drawable/spinner_popup_outline"
+            tools:listitem="@layout/spinner_layout"
+            android:gravity="center_horizontal"/>
 
         <Spinner
             android:id="@+id/f1spinner"
@@ -77,6 +81,9 @@
             android:layout_weight="1"
             android:layout_margin="10dp"
             android:dropDownWidth="140dp"
-            android:spinnerMode="dialog" />
+            android:spinnerMode="dialog"
+            android:background="@drawable/spinner_outline"
+            android:popupBackground="@drawable/spinner_popup_outline"
+            tools:listitem="@layout/spinner_layout"/>
     </LinearLayout>
 </RelativeLayout>

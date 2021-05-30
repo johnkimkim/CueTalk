@@ -156,9 +156,20 @@ public class Fragment1 extends Fragment {
 
         spinner1 = rootView.findViewById(R.id.f1spinner1);
         spinner = rootView.findViewById(R.id.f1spinner);
+
+//        try {
+//            Field popup = Spinner.class.getDeclaredField("mPopup");
+//            popup.setAccessible(true);
+//            ListPopupWindow window = (ListPopupWindow) popup.get(spinner1);
+//            window.setBackgroundDrawable(getResources().getDrawable(R.drawable.spinner_popup_outline));
+//        } catch (NoClassDefFoundError | ClassCastException | NoSuchFieldException | IllegalAccessException e) {
+//            e.printStackTrace();
+//        }
+
         adapter1 = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_item, firstAdressList);
         adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_item, adressList);
         adapter1.setDropDownViewResource(android.R.layout.select_dialog_item);
+
         adapter.setDropDownViewResource(android.R.layout.select_dialog_item);
         spinner1.setAdapter(adapter1);
         spinner.setAdapter(adapter);

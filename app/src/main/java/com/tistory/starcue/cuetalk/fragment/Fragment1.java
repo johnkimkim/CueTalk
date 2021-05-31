@@ -1,8 +1,11 @@
 package com.tistory.starcue.cuetalk.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -12,14 +15,17 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.view.WindowManager;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -61,6 +67,8 @@ import java.util.Objects;
 
 public class Fragment1 extends Fragment {
 
+    Context context;
+
     RelativeLayout viewpagerlayout;
     Button viewpagerbtn;
     ViewPager viewPager;
@@ -68,9 +76,13 @@ public class Fragment1 extends Fragment {
     CountDownTimer countDownTimer;
     boolean isRunning = true;
 
-    public static Spinner spinner, spinner1;
-    ArrayAdapter<String> adapter1;
-    ArrayAdapter<String> adapter;
+    public static Button btn1, btn2;
+    AlertDialog alertDialog1, alertDialog2;
+    GridView btn1grid;
+    ListView btn2listview;
+    GridListAdapter adapter1;
+    Btn2ListAdapter adapter2;
+    ArrayList<String> btn1list = new ArrayList<>();
     List<String> firstAdressList = new ArrayList<>();
     List<String> adressList = new ArrayList<>();
     List<String> onlyAdressList = new ArrayList<>();
@@ -151,11 +163,16 @@ public class Fragment1 extends Fragment {
 
         reference = FirebaseDatabase.getInstance().getReference();
         Log.d("Fragment1>>>", "start onCreate");
-        addFirstAdressList();
         setViewPager(rootView);
 
-        spinner1 = rootView.findViewById(R.id.f1spinner1);
-        spinner = rootView.findViewById(R.id.f1spinner);
+        btn1 = rootView.findViewById(R.id.f1btn1);
+        btn2 = rootView.findViewById(R.id.f1btn2);
+        btn1.setText("지역 선택");
+        btn2.setText("방 선택");
+        btn2.setEnabled(false);
+
+        btn1OnClick();
+        btn2OnClick();
 
 //        try {
 //            Field popup = Spinner.class.getDeclaredField("mPopup");
@@ -166,74 +183,177 @@ public class Fragment1 extends Fragment {
 //            e.printStackTrace();
 //        }
 
-        adapter1 = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_item, firstAdressList);
-        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_item, adressList);
-        adapter1.setDropDownViewResource(android.R.layout.select_dialog_item);
+//        adapter1 = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_item, firstAdressList);
+//        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_item, adressList);
+//        adapter1.setDropDownViewResource(android.R.layout.select_dialog_item);
+//
+//        adapter.setDropDownViewResource(android.R.layout.select_dialog_item);
+//        spinner1.setAdapter(adapter1);
+//        spinner.setAdapter(adapter);
+//        adapter1.notifyDataSetChanged();
+//        adapter.notifyDataSetChanged();
 
-        adapter.setDropDownViewResource(android.R.layout.select_dialog_item);
-        spinner1.setAdapter(adapter1);
-        spinner.setAdapter(adapter);
-        adapter1.notifyDataSetChanged();
-        adapter.notifyDataSetChanged();
+//        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                String s = firstAdressList.get(i);
+//                if (!s.equals("지역 선택")) {
+//                    spinner.setEnabled(true);
+//                    setAdressList(s);
+//                } else {
+//                    onlyAdressList.clear();
+//                    adressList.clear();
+//                    onlyAdressList.add("방 선택");
+//                    adressList.add("방 선택");
+//                    spinner.setEnabled(false);
+//                    spinner.setSelection(0);
+//                }
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
 
-        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String s = firstAdressList.get(i);
-                if (!s.equals("지역 선택")) {
-                    spinner.setEnabled(true);
-                    setAdressList(s);
-                } else {
-                    onlyAdressList.clear();
-                    adressList.clear();
-                    onlyAdressList.add("방 선택");
-                    adressList.add("방 선택");
-                    spinner.setEnabled(false);
-                    spinner.setSelection(0);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String s = onlyAdressList.get(i);
-                if (!s.equals("방 선택")) {
-                    MainActivity.loading.setVisibility(View.VISIBLE);
-                    reference.getRef().child("adressRoom").child(s).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                        @Override
-                        public void onSuccess(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.getChildrenCount() < 30) {
-                                setDbAdress(s);
-                                Intent intent = new Intent(getActivity(), AdressRoom.class);
-//                                intent.putExtra("adress", s);
-                                startActivity(intent);
-                                spinner1.setSelection(0);
-                                spinner.setSelection(0);
-                                MainActivity.loading.setVisibility(View.GONE);
-                            } else {
-                                Toast.makeText(getActivity(), "대화방 인원수가 꽉 찼습니다", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                Toast.makeText(getActivity(), "nothing", Toast.LENGTH_LONG).show();
-            }
-        });
+//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                String s = onlyAdressList.get(i);
+//                if (!s.equals("방 선택")) {
+//                    MainActivity.loading.setVisibility(View.VISIBLE);
+//                    reference.getRef().child("adressRoom").child(s).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//                        @Override
+//                        public void onSuccess(DataSnapshot dataSnapshot) {
+//                            if (dataSnapshot.getChildrenCount() < 30) {
+//                                setDbAdress(s);
+//                                Intent intent = new Intent(getActivity(), AdressRoom.class);
+////                                intent.putExtra("adress", s);
+//                                startActivity(intent);
+//                                spinner1.setSelection(0);
+//                                spinner.setSelection(0);
+//                                MainActivity.loading.setVisibility(View.GONE);
+//                            } else {
+//                                Toast.makeText(getActivity(), "대화방 인원수가 꽉 찼습니다", Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
+//                    });
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//                Toast.makeText(getActivity(), "nothing", Toast.LENGTH_LONG).show();
+//            }
+//        });
 
         testclass(rootView);
 
         return rootView;
+    }
+
+    private void btn1OnClick() {
+        btn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btn1dialog();
+            }
+        });
+    }
+
+    private void btn2OnClick() {
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btn2dialog();
+            }
+        });
+    }
+
+    private void btn1dialog() {
+        btn1list.clear();
+        btn1list.add("서울");
+        btn1list.add("경기");
+        btn1list.add("인천");
+        btn1list.add("부산");
+        btn1list.add("광주");
+        btn1list.add("세종");
+        btn1list.add("대전");
+        btn1list.add("강원");
+        btn1list.add("충북");
+        btn1list.add("충남");
+        btn1list.add("전남");
+        btn1list.add("전북");
+        btn1list.add("경남");
+        btn1list.add("경북");
+        btn1list.add("제주");
+        LayoutInflater vi = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout layout = (LinearLayout) vi.inflate(R.layout.f1btn1dialog, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setView(layout);
+        alertDialog1 = builder.create();
+
+        //set size
+        WindowManager.LayoutParams layoutParams = alertDialog1.getWindow().getAttributes();
+        layoutParams.copyFrom(alertDialog1.getWindow().getAttributes());
+//            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+//            layoutParams.dimAmount = 0.7f;
+
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        alertDialog1.getWindow().setAttributes(layoutParams);
+        alertDialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));//layout backgroud drawable 적용시키기
+
+        alertDialog1.show();
+
+        btn1grid = layout.findViewById(R.id.f1btn1dialog_gridview);
+        adapter1 = new GridListAdapter();
+        btn1grid.setAdapter(adapter1);
+        adapter1.notifyDataSetChanged();
+    }
+
+    private void btn2dialog() {
+        LayoutInflater vi = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout layout = (LinearLayout) vi.inflate(R.layout.f1btn2dialog, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setView(layout);
+        alertDialog2 = builder.create();
+
+        //set size
+        WindowManager.LayoutParams layoutParams = alertDialog2.getWindow().getAttributes();
+        layoutParams.copyFrom(alertDialog2.getWindow().getAttributes());
+//            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+//            layoutParams.dimAmount = 0.7f;
+
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        alertDialog2.getWindow().setAttributes(layoutParams);
+        alertDialog2.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        alertDialog2.show();
+
+        btn2listview = layout.findViewById(R.id.f1btn2dialog_listview);
+
+        adapter2 = new Btn2ListAdapter();
+        btn2listview.setAdapter(adapter2);
+        adapter2.notifyDataSetChanged();
+
+        reference.getRef().child("adressRoom").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (int i = 0; i < adressList.size(); i++) {
+                    int count = (int) snapshot.child(onlyAdressList.get(i)).getChildrenCount();
+                    adressList.set(i, onlyAdressList.get(i) + " (" + count + "/30)");
+                }
+                adapter2.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void setViewPager(View view) {
@@ -478,7 +598,7 @@ public class Fragment1 extends Fragment {
                         adressList.set(i, onlyAdressList.get(i) + " (" + count + "/30)");
                     }
                 }
-                adapter.notifyDataSetChanged();
+//                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -486,5 +606,129 @@ public class Fragment1 extends Fragment {
 
             }
         });
+    }
+
+    public class GridListAdapter extends BaseAdapter {
+        @Override
+        public int getCount() {
+            return btn1list.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return btn1list.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            context = viewGroup.getContext();
+            if (view == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.f1btn1dialog_item, viewGroup, false);
+            }
+
+            Button btn = view.findViewById(R.id.f1btn1dialog_textview);
+
+            btn.setText(btn1list.get(i));
+
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onlyAdressList.clear();
+                    adressList.clear();
+                    onlyAdressList.add(btn1list.get(i) + "1");
+                    onlyAdressList.add(btn1list.get(i) + "2");
+                    onlyAdressList.add(btn1list.get(i) + "3");
+                    onlyAdressList.add(btn1list.get(i) + "4");
+                    onlyAdressList.add(btn1list.get(i) + "5");
+                    adressList.add(btn1list.get(i) + "1");
+                    adressList.add(btn1list.get(i) + "2");
+                    adressList.add(btn1list.get(i) + "3");
+                    adressList.add(btn1list.get(i) + "4");
+                    adressList.add(btn1list.get(i) + "5");
+                    btn1.setText(btn1list.get(i));
+                    if (!btn1.getText().toString().equals("지역 선택")) {
+                        btn2.setEnabled(true);
+                    }
+
+                    alertDialog1.dismiss();
+                }
+            });
+            return view;
+        }
+    }
+
+    public class Btn2ListAdapter extends BaseAdapter {
+        @Override
+        public int getCount() {
+            return adressList.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return adressList.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            context = viewGroup.getContext();
+            if (view == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.f1btn2dialog_item, viewGroup, false);
+            }
+
+            Button btn = view.findViewById(R.id.f1btn2dialog_btn);
+
+            btn.setText(adressList.get(i));
+
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    alertDialog2.dismiss();
+                    MainActivity.loading.setVisibility(View.VISIBLE);
+                    reference.getRef().child("adressRoom").child(onlyAdressList.get(i)).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                        @Override
+                        public void onSuccess(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.getChildrenCount() < 30) {
+                                setDbAdress(onlyAdressList.get(i));
+                                Intent intent = new Intent(getActivity(), AdressRoom.class);
+//                                intent.putExtra("adress", s);
+                                startActivity(intent);
+                                MainActivity.loading.setVisibility(View.GONE);
+                                btn1.setText("지역 선택");
+                                btn2.setText("방 선택");
+                                btn2.setEnabled(false);
+                            } else {
+                                Toast.makeText(getActivity(), "대화방 인원수가 꽉 찼습니다", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            });
+
+            return view;
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        btn1.setText("지역 선택");
+        btn2.setText("방 선택");
+        if (btn2.isEnabled()) {
+            btn2.setEnabled(false);
+        }
+        onlyAdressList.clear();
+        adressList.clear();
     }
 }

@@ -61,29 +61,20 @@
         android:layout_below="@+id/viewpagerlayout"
         android:layout_marginTop="20dp"
         android:orientation="horizontal">
-        <Spinner
-            android:id="@+id/f1spinner1"
+        <Button
+            android:id="@+id/f1btn1"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_weight="1"
             android:layout_margin="10dp"
-            android:dropDownWidth="140dp"
-            android:spinnerMode="dialog"
-            android:background="@drawable/spinner_outline"
-            android:popupBackground="@drawable/spinner_popup_outline"
-            tools:listitem="@layout/spinner_layout"
-            android:gravity="center_horizontal"/>
+            android:background="@drawable/spinner_outline"/>
 
-        <Spinner
-            android:id="@+id/f1spinner"
+        <Button
+            android:id="@+id/f1btn2"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_weight="1"
             android:layout_margin="10dp"
-            android:dropDownWidth="140dp"
-            android:spinnerMode="dialog"
-            android:background="@drawable/spinner_outline"
-            android:popupBackground="@drawable/spinner_popup_outline"
-            tools:listitem="@layout/spinner_layout"/>
+            android:background="@drawable/spinner_outline"/>
     </LinearLayout>
 </RelativeLayout>

@@ -25,8 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.tistory.starcue.cuetalk.fragment.Fragment1.spinner;
-
 public class F1intent extends AppCompatActivity {
 
     DatabaseHandler databaseHandler;
@@ -84,7 +82,7 @@ public class F1intent extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        spinner.setSelection(0);
+//        spinner.setSelection(0);
     }
 
     //특정 경로의 전체 내용에 대한 변경 사항을 읽고 수진 대기함

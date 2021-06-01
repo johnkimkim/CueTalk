@@ -6,20 +6,21 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -87,7 +88,6 @@ public class Fragment5 extends Fragment {
 
     Button logoutDialogOkBtn, logoutDialogNoBtn;
     Button deleteUserDialogOkBtn, deleteUserDialogNoBtn;
-    private ProgressBar progressBar;
 
     private TextView appversion;
     private RelativeLayout updatelayout;
@@ -319,36 +319,49 @@ public class Fragment5 extends Fragment {
             builder.setView(layout);
             alertDialog = builder.create();
 
-            //set size
-            WindowManager.LayoutParams layoutParams = alertDialog.getWindow().getAttributes();
-            layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
-//            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-//            layoutParams.dimAmount = 0.7f;
-
-            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-            alertDialog.getWindow().setAttributes(layoutParams);
-            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-
             alertDialog.show();
+
+            //set size
+//            WindowManager.LayoutParams layoutParams = alertDialog.getWindow().getAttributes();
+//            layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
+////            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+////            layoutParams.dimAmount = 0.7f;
+//
+//            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+//            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+//            alertDialog.getWindow().setAttributes(layoutParams);
+
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            Window window = alertDialog.getWindow();
+            int x = (int) (size.x * 0.9);
+            int y = (int) (size.y * 0.3);
+            window.setLayout(x, y);
+
 
             logoutDialogOkBtn = layout.findViewById(R.id.logout_dialog_okbtn);
             logoutDialogNoBtn = layout.findViewById(R.id.logout_dialog_cancelbtn);
-            progressBar = layout.findViewById(R.id.logout_dialog_progress_bar);
 
-            logoutDialogNoBtn.setOnClickListener(view1 -> alertDialog.dismiss());
+            logoutDialogNoBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    alertDialog.dismiss();
+                }
+            });
 
             logoutDialogOkBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    MainActivity.loading.setVisibility(View.VISIBLE);
                     alertDialog.setCancelable(false);
-                    progressBar.setVisibility(View.VISIBLE);
                     logout.setEnabled(false);
                     logoutDialogOkBtn.setEnabled(false);
                     logoutDialogNoBtn.setEnabled(false);
                     mAuth.signOut();
                     startActivity(new Intent(getActivity(), SplashActivity.class));
+                    MainActivity.loading.setVisibility(View.GONE);
                 }
             });
         });
@@ -365,19 +378,18 @@ public class Fragment5 extends Fragment {
                 alertDialog = builder.create();
 
                 alertDialog.show();
-                //set size
-                WindowManager.LayoutParams layoutParams = alertDialog.getWindow().getAttributes();
-                layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
-//            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-//            layoutParams.dimAmount = 0.7f;
 
-                layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-                layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                alertDialog.getWindow().setAttributes(layoutParams);
+                alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                Display display = getActivity().getWindowManager().getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                Window window = alertDialog.getWindow();
+                int x = (int) (size.x * 0.9);
+                int y = (int) (size.y * 0.3);
+                window.setLayout(x, y);
 
                 deleteUserDialogOkBtn = layout.findViewById(R.id.delete_user_dialog_okbtn);
                 deleteUserDialogNoBtn = layout.findViewById(R.id.delete_user_dialog_cancelbtn);
-                progressBar = layout.findViewById(R.id.delete_user_dialog_progress_bar);
 
                 deleteUserDialogNoBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -389,8 +401,9 @@ public class Fragment5 extends Fragment {
                 deleteUserDialogOkBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        MainActivity.loading.setVisibility(View.VISIBLE);
+                        alertDialog.dismiss();
                         alertDialog.setCancelable(false);
-                        progressBar.setVisibility(View.VISIBLE);
                         deleteUser.setEnabled(false);
                         deleteUserDialogOkBtn.setEnabled(false);
                         deleteUserDialogNoBtn.setEnabled(false);
@@ -476,6 +489,7 @@ public class Fragment5 extends Fragment {
                 databaseHandler.uniquedelete();
                 alertDialog.dismiss();
                 startActivity(new Intent(getActivity(), SplashActivity.class));
+                MainActivity.loading.setVisibility(View.GONE);
             }
         });
 //        mAuth.signOut();

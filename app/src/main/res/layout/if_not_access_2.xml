@@ -1,27 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/dialog_layout">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/access2_dialog_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:text="전부 동의 후 이용가능" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/if_not_access_2_btn_layout">
 
-        <Button
-            android:id="@+id/access2_dialog_okbtn"
-            android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/access2_dialog_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="필수 약관 동의 후\n앱 접속이 가능합니다." />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/if_not_access_2_btn_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_margin="10dp"
-            android:layout_below="@+id/access2_dialog_title"
-            android:text="확인" />
+            android:layout_alignParentBottom="true">
+
+            <Button
+                android:id="@+id/access2_dialog_okbtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="15dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:background="@drawable/button_on_click"
+                android:text="확인" />
+        </RelativeLayout>
     </RelativeLayout>
 
 </LinearLayout>

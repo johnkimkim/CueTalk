@@ -1,36 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/dialog_layout">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/inchat_dialog_if_i_out_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:text="대화방을 나가겠습니까?" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/inchat_dialog_if_i_out">
 
-        <Button
-            android:id="@+id/inchat_dialog_if_i_out_okbtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_toLeftOf="@+id/inchat_dialog_if_i_out_cancelbtn"
-            android:layout_below="@+id/inchat_dialog_if_i_out_title"
-            android:text="확인" />
+            <TextView
+                android:id="@+id/inchat_dialog_if_i_out_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="대화방을 나가겠습니까?" />
+        </RelativeLayout>
 
-        <Button
-            android:id="@+id/inchat_dialog_if_i_out_cancelbtn"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/inchat_dialog_if_i_out"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_margin="10dp"
-            android:layout_below="@+id/inchat_dialog_if_i_out_title"
-            android:text="취소" />
+            android:layout_alignParentBottom="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/inchat_dialog_if_i_out_okbtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/button_on_click"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:text="확인" />
+
+                <Button
+                    android:id="@+id/inchat_dialog_if_i_out_cancelbtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/button_on_click_2"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:text="취소" />
+            </LinearLayout>
+        </RelativeLayout>
     </RelativeLayout>
 
 </LinearLayout>

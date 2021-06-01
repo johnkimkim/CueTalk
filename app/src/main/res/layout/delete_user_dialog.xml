@@ -1,45 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/dialog_layout">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/delete_user_dialog_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:text="회원탈퇴 하시겠습니까?" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/delete_user_dialog_btn_layout">
 
-        <Button
-            android:id="@+id/delete_user_dialog_okbtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_below="@+id/delete_user_dialog_title"
-            android:layout_toLeftOf="@+id/delete_user_dialog_cancelbtn"
-            android:text="확인" />
+            <TextView
+                android:id="@+id/delete_user_dialog_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="회원탈퇴 하시겠습니까?" />
+        </RelativeLayout>
 
-        <Button
-            android:id="@+id/delete_user_dialog_cancelbtn"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/delete_user_dialog_btn_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_margin="10dp"
-            android:layout_below="@+id/delete_user_dialog_title"
-            android:text="취소" />
+            android:layout_alignParentBottom="true">
 
-        <ProgressBar
-            android:id="@+id/delete_user_dialog_progress_bar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:visibility="invisible" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/delete_user_dialog_okbtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="5dp"
+                    android:text="확인"
+                    android:textColor="@color/white"
+                    android:background="@drawable/button_on_click"/>
+
+                <Button
+                    android:id="@+id/delete_user_dialog_cancelbtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="20dp"
+                    android:text="취소"
+                    android:textColor="@color/black"
+                    android:background="@drawable/button_on_click_2" />
+            </LinearLayout>
+        </RelativeLayout>
+
     </RelativeLayout>
 
 </LinearLayout>

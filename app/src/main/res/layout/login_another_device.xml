@@ -1,32 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/dialog_layout">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/login_another_device_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="20dp"
-            android:text="다른 기기에서 로그인 해서 로그아웃됐습니다. \n로그인 화면으로 이동합니다." />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/login_another_device_btn_layout">
 
-        <Button
-            android:id="@+id/login_another_device_okbtn"
+            <TextView
+                android:id="@+id/login_another_device_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_margin="20dp"
+                android:gravity="center"
+                android:text="다른 기기에서 로그인 해서 로그아웃됐습니다. \n로그인 화면으로 이동합니다." />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/login_another_device_btn_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="30dp"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/login_another_device_title"
-            android:background="@drawable/button_on_click"
-            android:text="확인"
-            android:textColor="@color/white"
-            android:textStyle="bold"/>
+            android:layout_alignParentBottom="true">
+
+            <Button
+                android:id="@+id/login_another_device_okbtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="15dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/button_on_click"
+                android:text="확인"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+        </RelativeLayout>
     </RelativeLayout>
 
 </LinearLayout>

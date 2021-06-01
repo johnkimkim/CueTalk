@@ -16,88 +16,150 @@
     <LinearLayout
         android:id="@+id/btnlayout"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="55dp"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
 
-        <!--        <Button-->
-        <!--            android:id="@+id/testbtn"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="match_parent"-->
-        <!--            android:layout_weight="1"-->
-        <!--            android:layout_margin="5dp"-->
-        <!--            android:text="delete"/>-->
-
-        <Button
-            android:id="@+id/btn1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="2dp"
-            android:layout_weight="1"
-            android:text="지역별" />
-
-        <Button
-            android:id="@+id/btn2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="2dp"
-            android:layout_weight="1"
-            android:text="거리순" />
-
-        <Button
-            android:id="@+id/btn3"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="2dp"
-            android:layout_weight="1"
-            android:text="중고거래" />
-
         <RelativeLayout
+            android:id="@+id/btn1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
 
-            <Button
-                android:id="@+id/btn4"
+            <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="2dp"
-                android:text="메시지" />
+                android:layout_above="@+id/btn1_text"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="3dp"
+                android:src="@drawable/btn1selected" />
 
+            <TextView
+                android:id="@+id/btn1_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="2dp"
+                android:layout_marginBottom="3dp"
+                android:text="지역별" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/btn2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/btn2_text"
+                android:src="@drawable/btn2selected" />
+
+            <TextView
+                android:id="@+id/btn2_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="2dp"
+                android:layout_marginBottom="3dp"
+                android:text="거리순" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/btn3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/btn3_text"
+                android:src="@drawable/btn3selected" />
+
+            <TextView
+                android:id="@+id/btn3_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="2dp"
+                android:layout_marginBottom="3dp"
+                android:text="중고거래" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/btn4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/btn4selected"
+                android:layout_above="@+id/btn4_text"/>
+
+            <TextView
+                android:id="@+id/btn4_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="2dp"
+                android:layout_marginBottom="3dp"
+                android:text="채팅"/>
             <TextView
                 android:id="@+id/btn4count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:textColor="#000000"
-                android:textSize="20dp"
-                android:translationZ="5dp" />
+                android:layout_margin="5dp"
+                android:textColor="@color/white"
+                android:textSize="15dp"
+                android:background="@drawable/countcircle"
+                android:gravity="center" />
 
         </RelativeLayout>
 
 
         <RelativeLayout
+            android:id="@+id/btn5"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
 
-            <Button
-                android:id="@+id/btn5"
+            <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:src="@drawable/btn5selected"
+                android:layout_above="@+id/btn5_text"/>
+
+            <TextView
+                android:id="@+id/btn5_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
                 android:layout_margin="2dp"
+                android:layout_marginBottom="3dp"
                 android:text="설정" />
 
             <TextView
                 android:id="@+id/btn5count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:textColor="#000000"
-                android:textSize="20dp"
-                android:translationZ="5dp" />
+                android:layout_margin="5dp"
+                android:textColor="@color/white"
+                android:textSize="15dp"
+                android:background="@drawable/countcircle"
+                android:gravity="center" />
         </RelativeLayout>
 
     </LinearLayout>
@@ -112,6 +174,7 @@
         <com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             app:loader_animDur="80"
             app:loader_bigCircleRadius="28dp"
             app:loader_circleRadius="7dp"
@@ -119,8 +182,7 @@
             app:loader_firstShadowColor="@color/base1"
             app:loader_secondShadowColor="@color/base3"
             app:loader_selectedColor="@color/base2"
-            app:loader_showRunningShadow="true"
-            android:layout_centerInParent="true"/>
+            app:loader_showRunningShadow="true" />
     </RelativeLayout>
 
 </RelativeLayout>

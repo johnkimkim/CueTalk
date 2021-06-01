@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -40,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     ViewPager viewPager;
 
 
-    Button btn1, btn2, btn3, btn4, btn5;
+    RelativeLayout btn1, btn2, btn3, btn4, btn5;
     public static TextView btn4count;
     public static TextView btn5count;
     public static RelativeLayout loading;

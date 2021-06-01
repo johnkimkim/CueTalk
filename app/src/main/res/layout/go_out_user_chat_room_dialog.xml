@@ -1,36 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/dialog_layout">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/go_out_user_chat_room_dialog">
+
         <TextView
             android:id="@+id/fragment4_chat_room_dialog_user_out_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_centerInParent="true"
             android:text="상대방이 대화를 종료했습니다" />
+        </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/go_out_user_chat_room_dialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
         <Button
             android:id="@+id/fragment4_chat_room_dialog_user_out_okbtn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/fragment4_chat_room_dialog_user_out_title"
-            android:layout_margin="10dp"
+            android:background="@drawable/button_on_click"
+            android:layout_marginBottom="15dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
             android:text="확인" />
-
-        <ProgressBar
-            android:id="@+id/fragment4_chat_room_dialog_user_out_progress_bar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:visibility="invisible" />
+        </RelativeLayout>
     </RelativeLayout>
 
 </LinearLayout>

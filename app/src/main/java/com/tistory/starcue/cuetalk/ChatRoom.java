@@ -18,7 +18,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,7 +73,7 @@ public class ChatRoom extends AppCompatActivity {
     private Button addbtn, sendbtn, backbtn, callbtn, sendMessegeBtn;
     private TextView title;
     private EditText edit;
-    private ProgressBar progressbar;
+    private RelativeLayout load;
 
     DatabaseHandler databaseHandler;
     private SQLiteDatabase sqLiteDatabase;
@@ -205,11 +205,11 @@ public class ChatRoom extends AppCompatActivity {
         addbtn = findViewById(R.id.chat_room_sendimage);
         sendbtn = findViewById(R.id.chat_room_sendbutton);
         edit = findViewById(R.id.chat_room_edittext);
-        progressbar = findViewById(R.id.chat_room_progress_bar);
+        load = findViewById(R.id.chat_room_progress_load);
         backbtn = findViewById(R.id.chat_room_backbtn);
         callbtn = findViewById(R.id.chat_room_callbtn);
         title = findViewById(R.id.chat_room_title_user);
-        progressbar.setVisibility(View.GONE);
+        load.setVisibility(View.GONE);
         sendMessegeBtn = findViewById(R.id.chat_room_send_messege);
 
         setOnAddbtn();
@@ -312,9 +312,8 @@ public class ChatRoom extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 isClickBtn = true;
-                okbtn.setEnabled(false);
-                alertDialog.setCancelable(false);
-                progressbar.setVisibility(View.VISIBLE);
+                alertDialog.dismiss();
+                load.setVisibility(View.VISIBLE);
                 deleteMydb();
 //                arrayList.clear();//error
             }
@@ -341,17 +340,25 @@ public class ChatRoom extends AppCompatActivity {
                 alertDialog.dismiss();
             }
             alertDialogA.show();
-            progressbar.setVisibility(View.GONE);
         }
 
         /*Unable to add window -- token android.os.BinderProxy@7c9958a is not valid; is your activity running?*/
+
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        Window window = alertDialog.getWindow();
+        int x = (int) (size.x * 0.9);
+        int y = (int) (size.y * 0.3);
+        window.setLayout(x, y);
 
         Button okbtn = layout.findViewById(R.id.inchat_dialog_if_user_out_okbtn);
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 okbtn.setEnabled(false);
-                progressbar.setVisibility(View.VISIBLE);
+                load.setVisibility(View.VISIBLE);
                 deleteMydbA();
             }
         });
@@ -408,8 +415,6 @@ public class ChatRoom extends AppCompatActivity {
                 reference.updateChildren(updateUser1);
                 alertDialog.dismiss();
                 goToAdressRoom();
-
-                progressbar.setVisibility(View.GONE);
             }
         });
 
@@ -429,7 +434,6 @@ public class ChatRoom extends AppCompatActivity {
                 reference.updateChildren(updateUser1);
                 alertDialogA.dismiss();
                 goToAdressRoom();
-                progressbar.setVisibility(View.GONE);
             }
         });
 

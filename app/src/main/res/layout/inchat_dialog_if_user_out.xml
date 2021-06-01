@@ -8,21 +8,35 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/inchat_dialog_if_user_out_btn_layout">
+
         <TextView
             android:id="@+id/inchat_dialog_if_user_out_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_centerInParent="true"
             android:text="상대방이 대화를 종료했습니다" />
-
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/inchat_dialog_if_user_out_btn_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
         <Button
             android:id="@+id/inchat_dialog_if_user_out_okbtn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_margin="10dp"
-            android:layout_below="@+id/inchat_dialog_if_user_out_title"
+            android:layout_marginBottom="15dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/button_on_click"
+            android:textColor="@color/white"
+            android:textStyle="bold"
             android:text="확인" />
+        </RelativeLayout>
     </RelativeLayout>
 
 </LinearLayout>

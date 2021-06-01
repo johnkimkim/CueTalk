@@ -5,17 +5,21 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -82,7 +86,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     RecyclerView recyclerView;
     Button sendimg, sendmsg, gobackbtn, outroombtn, decbtn;
     EditText editText;
-    ProgressBar progressBar;
+    RelativeLayout load;
 
     private DatabaseReference reference;
     private FirebaseAuth mAuth;
@@ -96,7 +100,6 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     Uri imageUri;
     String picUri;
 
-    AlertDialog alertDialogC;
     AlertDialog alertDialogD;
 
     boolean isOpen;
@@ -206,8 +209,8 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         outroombtn = findViewById(R.id.fragment4_chat_room_outroom);
         editText = findViewById(R.id.fragment4_chat_room_edittext);
         decbtn = findViewById(R.id.fragment4_chat_room_send_callbtn);
-        progressBar = findViewById(R.id.fragment4_chat_room_progress_bar);
-        progressBar.setVisibility(View.VISIBLE);
+        load = findViewById(R.id.fragment4_chat_room_load);
+        load.setVisibility(View.GONE);
 
         setdb();
 
@@ -401,7 +404,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
 
                 }
                 adapter.notifyDataSetChanged();
-                progressBar.setVisibility(View.GONE);
+                load.setVisibility(View.GONE);
 
             }
 
@@ -493,7 +496,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                     }
                 }, 100);
 
-                progressBar.setVisibility(View.GONE);
+                load.setVisibility(View.GONE);
             }
 
             @Override
@@ -790,7 +793,6 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     }
 
     private void goOutDialog() {//내가 나갈때
-        ProgressBar progressBar1;
         LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout layout = (LinearLayout) vi.inflate(R.layout.go_out_chat_room_dialog, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(Fragment4ChatRoom.this);
@@ -799,29 +801,27 @@ public class Fragment4ChatRoom extends AppCompatActivity {
 
         if (!Fragment4ChatRoom.this.isFinishing()) {
             alertDialogD.show();
-            //set size
-            WindowManager.LayoutParams layoutParams = alertDialogD.getWindow().getAttributes();
-            layoutParams.copyFrom(alertDialogD.getWindow().getAttributes());
-//            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-//            layoutParams.dimAmount = 0.7f;
-
-            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-            alertDialogD.getWindow().setAttributes(layoutParams);
         }
+
+        alertDialogD.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        Window window = alertDialogD.getWindow();
+        int x = (int) (size.x * 0.9);
+        int y = (int) (size.y * 0.3);
+        window.setLayout(x, y);
 
         Button okbtn = layout.findViewById(R.id.go_out_chat_room_dialog_okbtn);
         Button cancel = layout.findViewById(R.id.go_out_chat_room_dialog_cancelbtn);
-        progressBar1 = layout.findViewById(R.id.go_out_chat_room_dialog_progress_bar);
 
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("Fragment4ChatRoom>>>", "first out onclick");
-                alertDialogD.setCancelable(false);
+                load.setVisibility(View.VISIBLE);
                 okbtn.setEnabled(false);
                 cancel.setEnabled(false);
-                progressBar1.setVisibility(View.VISIBLE);
+                alertDialogD.dismiss();
                 goOutSetIsChat();
             }
         });
@@ -834,8 +834,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         });
     }
 
-    private void userGoOutDialog() {
-        ProgressBar progressBar1;
+    private void userGoOutDialog() {//상대가 나갔을때
         LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout layout = (LinearLayout) vi.inflate(R.layout.go_out_user_chat_room_dialog, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(Fragment4ChatRoom.this);
@@ -844,28 +843,24 @@ public class Fragment4ChatRoom extends AppCompatActivity {
 
         if (!Fragment4ChatRoom.this.isFinishing()) {
             alertDialogD.show();
-            Log.d("Fragment4ChatRoom>>>", "dialogImageD show");
-            //set size
-            WindowManager.LayoutParams layoutParams = alertDialogD.getWindow().getAttributes();
-            layoutParams.copyFrom(alertDialogD.getWindow().getAttributes());
-//            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-//            layoutParams.dimAmount = 0.7f;
-
-            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-            alertDialogD.getWindow().setAttributes(layoutParams);
         }
+        alertDialogD.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        Window window = alertDialogD.getWindow();
+        int x = (int) (size.x * 0.9);
+        int y = (int) (size.y * 0.3);
+        window.setLayout(x, y);
         alertDialogD.setCancelable(false);
 
         Button okbtn = layout.findViewById(R.id.fragment4_chat_room_dialog_user_out_okbtn);
-        progressBar1 = layout.findViewById(R.id.fragment4_chat_room_dialog_user_out_progress_bar);
 
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("Fragment4ChatRoom>>>", "okbtn onclick");
-                okbtn.setEnabled(false);
-                progressBar1.setVisibility(View.VISIBLE);
+                load.setVisibility(View.VISIBLE);
+                alertDialogD.dismiss();
                 deleteImageISendB();
             }
         });

@@ -11,14 +11,15 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -162,7 +163,12 @@ public class GpsTracker extends Service implements LocationListener {
                 updateGps.put("latitude", getLatitude());
                 updateGps.put("longitude", getLongitude());
                 updateGps.put("token", token);
-                documentReference.update(updateGps);
+                documentReference.update(updateGps).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        MainActivity.loading.setVisibility(View.GONE);
+                    }
+                });
             }
         });
 

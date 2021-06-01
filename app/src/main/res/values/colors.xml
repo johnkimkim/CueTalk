@@ -14,7 +14,8 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="gray">#636363</color>
-    <color name="light_gray">#B7C2FF</color>
+    <color name="lgray">#CFCFCF</color>
+    <color name="light_gray">#D4DAFF</color>
 
     <color name="my_red">#FF0000</color>
     <color name="empty">#00000000</color>

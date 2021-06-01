@@ -60,14 +60,18 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/viewpagerlayout"
         android:layout_marginTop="20dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:clipToPadding="false">
         <Button
             android:id="@+id/f1btn1"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_weight="1"
             android:layout_margin="10dp"
-            android:background="@drawable/spinner_outline"/>
+            android:background="@drawable/spinner_outline"
+            app:elevation="5dp"
+            android:translationZ="5dp"
+            android:stateListAnimator="@null"/>
 
         <Button
             android:id="@+id/f1btn2"

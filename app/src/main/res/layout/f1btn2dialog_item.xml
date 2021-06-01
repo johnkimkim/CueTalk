@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="7dp"
-        android:background="@drawable/f1btn1dialogbtnbg" />
+        android:background="@drawable/f1btn1dialogbtnbg"
+        style="@style/Widget.AppCompat.Button.Borderless"/>
 
 </RelativeLayout>

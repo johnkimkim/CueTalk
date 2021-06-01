@@ -66,7 +66,7 @@ import java.util.Map;
 public class Fragment5 extends Fragment {
 
     ImageView pic;
-//    ProgressBar glideprogress;
+    //    ProgressBar glideprogress;
     CircularDotsLoader glideprogress;
     TextView name, age, sex;
     Button reset, logout, deleteUser, ask;

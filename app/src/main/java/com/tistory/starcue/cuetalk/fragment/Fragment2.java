@@ -418,18 +418,23 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         if (arrayList.size() == 0) {
             if (page == 1) {
                 btn1.setBackgroundResource(R.drawable.button_defult);
+                btn1.setTextColor(getResources().getColor(R.color.white));
                 setListBtn1();
             } else if (page == 2) {
                 btn2.setBackgroundResource(R.drawable.button_defult);
+                btn2.setTextColor(getResources().getColor(R.color.white));
                 setListBtn2();
             } else if (page == 3) {
                 btn3.setBackgroundResource(R.drawable.button_defult);
+                btn3.setTextColor(getResources().getColor(R.color.white));
                 setListBtn3();
             } else if (page == 4) {
                 btn4.setBackgroundResource(R.drawable.button_defult);
+                btn4.setTextColor(getResources().getColor(R.color.white));
                 setListBtn4();
             } else if (page == 5) {
                 btn5.setBackgroundResource(R.drawable.button_defult);
+                btn5.setTextColor(getResources().getColor(R.color.white));
                 setListBtn5();
             }
         }

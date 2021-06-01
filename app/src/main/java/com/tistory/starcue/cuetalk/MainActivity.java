@@ -214,13 +214,19 @@ public class MainActivity extends AppCompatActivity {
             this.isEnabled = isEnabled;
         }
 
+//        @Override
+//        protected boolean canScroll(View v, boolean checkV, int dx, int x, int y) {//f1 viewpager scroll lock
+//            if (v != this && v instanceof ViewPager) {
+//                return true;
+//            }
+//            return super.canScroll(v, checkV, dx, x, y);
+//        }
+
         @Override
         protected boolean canScroll(View v, boolean checkV, int dx, int x, int y) {//f1 viewpager scroll lock
-            if (v != this && v instanceof ViewPager) {
-                return true;
-            }
-            return super.canScroll(v, checkV, dx, x, y);
+            return true;
         }
+
     }
 
     private void updateGps() {

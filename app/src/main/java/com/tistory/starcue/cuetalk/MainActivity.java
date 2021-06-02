@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     RelativeLayout btn1, btn2, btn3, btn4, btn5;
+    ImageView btn1img, btn2img, btn3img, btn4img, btn5img;
     public static TextView btn4count;
     public static TextView btn5count;
     public static RelativeLayout loading;
@@ -60,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         setdb();
-        setViewPager();
         setinit();
+        setViewPager();
 
         updateGps();
 
@@ -86,6 +89,11 @@ public class MainActivity extends AppCompatActivity {
         btn5count = findViewById(R.id.btn5count);
         loading = findViewById(R.id.main_load);
         loading.bringToFront();
+        btn1img = findViewById(R.id.btn1img);
+        btn2img = findViewById(R.id.btn2img);
+        btn3img = findViewById(R.id.btn3img);
+        btn4img = findViewById(R.id.btn4img);
+        btn5img = findViewById(R.id.btn5img);
 
         btn1.setOnClickListener((View v) -> {
             viewPager.setCurrentItem(0, false);
@@ -123,43 +131,88 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setOffscreenPageLimit(5);
         viewPager.setAdapter(sectionsPagerAdapter);
 
-//        viewPager.setPageTransformer(true, new ViewPager.PageTransformer() {
-//            @Override
-//            public void transformPage(@NonNull View page, float position) {
-//                page.setTranslationX(page.getWidth() * -position);
-//                if (position <= -1.0F || position >= 1.0F) {
-//                    page.setAlpha(0.0F);
-//                } else if (position == 0.0F) {
-//                    page.setAlpha(1.0F);
-//                } else {
-//                    page.setAlpha(1.0F - Math.abs(position));
-//                }
-//
-//            }
-//        });
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-//        int i = viewPager.getCurrentItem();
-//        if (i == 0) {
-//            btn1.setBackgroundColor(getResources().getColor(R.color.gray));
-//            btn2.setBackgroundColor(getResources().getColor(R.color.purple_500));
-//            btn3.setBackgroundColor(getResources().getColor(R.color.purple_500));
-//            btn4.setBackgroundColor(getResources().getColor(R.color.purple_500));
-//        } else if (i == 1) {
-//            btn2.setBackgroundColor(getResources().getColor(R.color.gray));
-//            btn1.setBackgroundColor(getResources().getColor(R.color.purple_500));
-//            btn3.setBackgroundColor(getResources().getColor(R.color.purple_500));
-//            btn4.setBackgroundColor(getResources().getColor(R.color.purple_500));
-//        } else if (i == 2) {
-//            btn3.setBackgroundColor(getResources().getColor(R.color.gray));
-//            btn1.setBackgroundColor(getResources().getColor(R.color.purple_500));
-//            btn2.setBackgroundColor(getResources().getColor(R.color.purple_500));
-//            btn4.setBackgroundColor(getResources().getColor(R.color.purple_500));
-//        } else if (i == 3) {
-//            btn4.setBackgroundColor(getResources().getColor(R.color.gray));
-//            btn1.setBackgroundColor(getResources().getColor(R.color.purple_500));
-//            btn2.setBackgroundColor(getResources().getColor(R.color.purple_500));
-//            btn3.setBackgroundColor(getResources().getColor(R.color.purple_500));
-//        }
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                Log.d("MainActivity>>>", "position: " + i);
+                if (i == 0) {
+                    btn1img.setImageResource(R.drawable.btn1selected);
+                    btn2img.setImageResource(R.drawable.btn2defult);
+                    btn3img.setImageResource(R.drawable.btn3defult);
+                    btn4img.setImageResource(R.drawable.btn4defult);
+                    btn5img.setImageResource(R.drawable.btn5defult);
+                } else if (i == 1) {
+                    btn1img.setImageResource(R.drawable.btn1defult);
+                    btn2img.setImageResource(R.drawable.btn2selected);
+                    btn3img.setImageResource(R.drawable.btn3defult);
+                    btn4img.setImageResource(R.drawable.btn4defult);
+                    btn5img.setImageResource(R.drawable.btn5defult);
+                } else if (i == 2) {
+                    btn1img.setImageResource(R.drawable.btn1defult);
+                    btn2img.setImageResource(R.drawable.btn2defult);
+                    btn3img.setImageResource(R.drawable.btn3selected);
+                    btn4img.setImageResource(R.drawable.btn4defult);
+                    btn5img.setImageResource(R.drawable.btn5defult);
+                } else if (i == 3) {
+                    btn1img.setImageResource(R.drawable.btn1defult);
+                    btn2img.setImageResource(R.drawable.btn2defult);
+                    btn3img.setImageResource(R.drawable.btn3defult);
+                    btn4img.setImageResource(R.drawable.btn4selected);
+                    btn5img.setImageResource(R.drawable.btn5defult);
+                } else if (i == 4) {
+                    btn1img.setImageResource(R.drawable.btn1defult);
+                    btn2img.setImageResource(R.drawable.btn2defult);
+                    btn3img.setImageResource(R.drawable.btn3defult);
+                    btn4img.setImageResource(R.drawable.btn4defult);
+                    btn5img.setImageResource(R.drawable.btn5selected);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+
+        int i = viewPager.getCurrentItem();
+        if (i == 0) {
+            btn1img.setImageResource(R.drawable.btn1selected);
+            btn2img.setImageResource(R.drawable.btn2defult);
+            btn3img.setImageResource(R.drawable.btn3defult);
+            btn4img.setImageResource(R.drawable.btn4defult);
+            btn5img.setImageResource(R.drawable.btn5defult);
+        } else if (i == 1) {
+            btn1img.setImageResource(R.drawable.btn1defult);
+            btn2img.setImageResource(R.drawable.btn2selected);
+            btn3img.setImageResource(R.drawable.btn3defult);
+            btn4img.setImageResource(R.drawable.btn4defult);
+            btn5img.setImageResource(R.drawable.btn5defult);
+        } else if (i == 2) {
+            btn1img.setImageResource(R.drawable.btn1defult);
+            btn2img.setImageResource(R.drawable.btn2defult);
+            btn3img.setImageResource(R.drawable.btn3selected);
+            btn4img.setImageResource(R.drawable.btn4defult);
+            btn5img.setImageResource(R.drawable.btn5defult);
+        } else if (i == 3) {
+            btn1img.setImageResource(R.drawable.btn1defult);
+            btn2img.setImageResource(R.drawable.btn2defult);
+            btn3img.setImageResource(R.drawable.btn3defult);
+            btn4img.setImageResource(R.drawable.btn4selected);
+            btn5img.setImageResource(R.drawable.btn5defult);
+        } else if (i == 4) {
+            btn1img.setImageResource(R.drawable.btn1defult);
+            btn2img.setImageResource(R.drawable.btn2defult);
+            btn3img.setImageResource(R.drawable.btn3defult);
+            btn4img.setImageResource(R.drawable.btn4defult);
+            btn5img.setImageResource(R.drawable.btn5selected);
+        }
+
     }
 
     public static class SectionsPagerAdapter extends FragmentPagerAdapter {

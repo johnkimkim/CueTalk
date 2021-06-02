@@ -16,7 +16,8 @@
     <LinearLayout
         android:id="@+id/btnlayout"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="4dp"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
 
@@ -27,6 +28,7 @@
             android:layout_weight="1">
 
             <ImageView
+                android:id="@+id/btn1img"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_above="@+id/btn1_text"
@@ -58,6 +60,7 @@
             android:layout_weight="1">
 
             <ImageView
+                android:id="@+id/btn2img"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_above="@+id/btn2_text"
@@ -87,6 +90,7 @@
             android:layout_weight="1">
 
             <ImageView
+                android:id="@+id/btn3img"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_above="@+id/btn3_text"
@@ -116,6 +120,7 @@
             android:layout_weight="1">
 
             <ImageView
+                android:id="@+id/btn4img"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/btn4selected"
@@ -140,7 +145,8 @@
                 android:textColor="@color/white"
                 android:textSize="15dp"
                 android:background="@drawable/countcircle"
-                android:gravity="center" />
+                android:gravity="center"
+                android:visibility="gone"/>
             <View
                 android:layout_width="1dp"
                 android:layout_height="40dp"
@@ -158,6 +164,7 @@
             android:layout_weight="1">
 
             <ImageView
+                android:id="@+id/btn5img"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/btn5selected"

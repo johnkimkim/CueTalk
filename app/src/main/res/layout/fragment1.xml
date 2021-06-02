@@ -65,20 +65,23 @@
         <Button
             android:id="@+id/f1btn1"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
-            android:layout_margin="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="5dp"
             android:background="@drawable/spinner_outline"
-            app:elevation="5dp"
-            android:translationZ="5dp"
-            android:stateListAnimator="@null"/>
+            android:drawableRight="@drawable/spinner_down"/>
 
         <Button
             android:id="@+id/f1btn2"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
-            android:layout_margin="10dp"
-            android:background="@drawable/spinner_outline"/>
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/spinner_outline"
+            android:drawableRight="@drawable/spinner_down" />
     </LinearLayout>
 </RelativeLayout>

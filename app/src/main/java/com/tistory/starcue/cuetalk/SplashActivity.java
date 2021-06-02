@@ -152,6 +152,15 @@ public class SplashActivity extends AppCompatActivity {
             alertDialog.show();
         }
 
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        Window window = alertDialog.getWindow();
+        int x = (int) (size.x * 0.9);
+        int y = (int) (size.y * 0.3);
+        window.setLayout(x, y);
+
         /*Unable to add window -- token android.os.BinderProxy@7c9958a is not valid; is your activity running?*/
 
         TextView textView = layout.findViewById(R.id.update_dialog_title);

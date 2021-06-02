@@ -575,6 +575,7 @@ public class Fragment4 extends Fragment {
     private void setMainBtn4Count(List<String> countList) {
 
         MainActivity.btn4count.setText("");
+        MainActivity.btn4count.setVisibility(View.GONE);
         List<String> ls = new ArrayList<>();
         int allcount = 0;
         for (int i = 0; i < countList.size(); i++) {
@@ -583,7 +584,7 @@ public class Fragment4 extends Fragment {
             Log.d("Fragment4>>>", "get countList.size() " + countList.size());
             if (ls.size() == countList.size()) {
                 if (Integer.toString(allcount).equals("0")) {
-                    MainActivity.btn4count.setVisibility(View.INVISIBLE);
+                    MainActivity.btn4count.setVisibility(View.GONE);
                     MainActivity.btn4count.setText("");
                 } else {
                     MainActivity.btn4count.setVisibility(View.VISIBLE);

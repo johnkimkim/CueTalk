@@ -1,95 +1,239 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.Fragment5">
 
-    <LinearLayout
-        android:layout_width="300dp"
-        android:layout_height="500dp"
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="185dp"
+        android:background="@color/base3" />
+
+    <Button
+        android:id="@+id/resetprofile"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="22dp"
+        android:layout_marginRight="18dp"
+        android:background="@drawable/editicon" />
+
+    <RelativeLayout
+        android:id="@+id/f5piclayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:orientation="vertical">
+        android:layout_marginTop="20dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="프로필" />
+        <ImageView
+            android:id="@+id/fragment5image"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/fragment5image"
-                android:layout_width="100dp"
-                android:layout_height="100dp" />
-
-            <com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
-                android:id="@+id/fragment5progress"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                app:loader_animDur="80"
-                app:loader_bigCircleRadius="18dp"
-                app:loader_circleRadius="4dp"
-                app:loader_defaultColor="@color/light_gray"
-                app:loader_firstShadowColor="@color/base1"
-                app:loader_secondShadowColor="@color/base3"
-                app:loader_selectedColor="@color/base2"
-                app:loader_showRunningShadow="true"
-                android:layout_centerInParent="true"/>
-
-        </RelativeLayout>
+        <com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
+            android:id="@+id/fragment5progress"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            app:loader_animDur="80"
+            app:loader_bigCircleRadius="18dp"
+            app:loader_circleRadius="4dp"
+            app:loader_defaultColor="@color/light_gray"
+            app:loader_firstShadowColor="@color/base1"
+            app:loader_secondShadowColor="@color/base3"
+            app:loader_selectedColor="@color/base2"
+            app:loader_showRunningShadow="true" />
 
         <TextView
             android:id="@+id/profilename"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="닉네임 : " />
+            android:layout_below="@+id/fragment5image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+    </RelativeLayout>
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/f5cardview"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_below="@+id/f5piclayout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="30dp"
+        app:cardCornerRadius="13dp"
+        app:cardElevation="3dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="나이" />
+
+                <TextView
+                    android:id="@+id/profileage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="성별" />
+
+                <TextView
+                    android:id="@+id/profilesex"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <RelativeLayout
+        android:id="@+id/f5notifylayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/f5cardview"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginLeft="40dp">
+        <ImageView
+            android:id="@+id/f5notifyicon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/f5iconnotify"
+            android:layout_centerVertical="true"/>
         <TextView
-            android:id="@+id/profileage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="나이 : " />
-
-        <TextView
-            android:id="@+id/profilesex"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="성별 : " />
-
-        <Button
-            android:id="@+id/resetprofile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="프로필수정" />
-
+            android:text="알림설정"
+            android:layout_toRightOf="@+id/f5notifyicon"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:textSize="18dp"/>
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/f5switch"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/logout_btn"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/lgray"
+        android:layout_below="@+id/f5notifylayout"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"/>
+    <RelativeLayout
+        android:id="@+id/f5logoutlayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/f5notifylayout"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginLeft="40dp">
+        <ImageView
+            android:id="@+id/f5logouticon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/f5iconlogout"
+            android:layout_centerVertical="true"/>
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:text="로그아웃" />
-
-        <Button
-            android:id="@+id/fragment5_delete_user"
+            android:text="로그아웃"
+            android:layout_toRightOf="@+id/f5logouticon"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:textSize="18dp"/>
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@drawable/clickicon"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/lgray"
+        android:layout_below="@+id/f5logoutlayout"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"/>
+    <RelativeLayout
+        android:id="@+id/f5deleteuserlayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/f5logoutlayout"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginLeft="40dp">
+        <ImageView
+            android:id="@+id/f5deleteusericon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/f5icondeleteuser"
+            android:layout_centerVertical="true"/>
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="회원탈퇴" />
+            android:text="회원탈퇴"
+            android:layout_toRightOf="@+id/f5deleteusericon"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:textSize="18dp"/>
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@drawable/clickicon"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/f5ask"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="문의하기"/>
+            android:text="문의하기" />
 
         <RelativeLayout
             android:layout_width="wrap_content"

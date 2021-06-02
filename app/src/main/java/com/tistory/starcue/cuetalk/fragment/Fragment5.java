@@ -70,7 +70,8 @@ public class Fragment5 extends Fragment {
     //    ProgressBar glideprogress;
     CircularDotsLoader glideprogress;
     TextView name, age, sex;
-    Button reset, logout, deleteUser, ask;
+    Button reset, ask;
+    RelativeLayout logout, deleteUser;
     DatabaseHandler databaseHandler;
     SwitchCompat switchCompat;
     private SQLiteDatabase sqLiteDatabase;
@@ -110,13 +111,13 @@ public class Fragment5 extends Fragment {
         age = rootView.findViewById(R.id.profileage);
         sex = rootView.findViewById(R.id.profilesex);
         reset = rootView.findViewById(R.id.resetprofile);
-        logout = rootView.findViewById(R.id.logout_btn);
+        logout = rootView.findViewById(R.id.f5logoutlayout);
         pic = rootView.findViewById(R.id.fragment5image);
         appversion = rootView.findViewById(R.id.nowversiontextview);
         updatelayout = rootView.findViewById(R.id.f5updatelayout);
         updatebtn = rootView.findViewById(R.id.updatebtn);
         setOnClickPic();
-        deleteUser = rootView.findViewById(R.id.fragment5_delete_user);
+        deleteUser = rootView.findViewById(R.id.f5deleteuserlayout);
         ask = rootView.findViewById(R.id.f5ask);
         switchCompat = rootView.findViewById(R.id.f5switch);
         glideprogress = rootView.findViewById(R.id.fragment5progress);

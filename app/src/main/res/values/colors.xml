@@ -22,4 +22,7 @@
 
     <color name="dot_color_1">#858585</color>
     <color name="dot_color_2">#858585</color>
+
+    <color name="male">#556DFF</color>
+    <color name="female">#F47676</color>
 </resources>

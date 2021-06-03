@@ -112,6 +112,7 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         write = v.findViewById(R.id.writemsg);
         f2fragdec = v.findViewById(R.id.f2fragdec);
         f2fragdec.setChecked(false);
+        f2fragdec.setBackgroundResource(R.drawable.sirenicon);
         progressBar = v.findViewById(R.id.fragment2_progress_bar);
         swipeRefreshLayout = v.findViewById(R.id.f2_swipe);
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -126,9 +127,11 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
             @Override
             public void onClick(View view) {
                 if (f2fragdec.isChecked()) {
+                    f2fragdec.setBackgroundResource(R.drawable.sirendefaulticon);
                     recyclerView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                 } else {
+                    f2fragdec.setBackgroundResource(R.drawable.sirenicon);
                     recyclerView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                 }

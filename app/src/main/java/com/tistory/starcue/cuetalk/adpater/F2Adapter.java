@@ -99,6 +99,11 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
                 .into(holder.imageView);
         holder.name.setText(arrayList.get(position).getName());
         holder.sex.setText(arrayList.get(position).getSex());
+        if (arrayList.get(position).getSex().equals("남자")) {
+            holder.sex.setTextColor(context.getResources().getColor(R.color.male));
+        } else {
+            holder.sex.setTextColor(context.getResources().getColor(R.color.female));
+        }
         holder.age.setText(arrayList.get(position).getAge());
         holder.messege.setText(arrayList.get(position).getMessege());
 

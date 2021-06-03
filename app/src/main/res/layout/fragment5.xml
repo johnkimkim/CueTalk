@@ -123,151 +123,265 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_below="@+id/f5cardview"
+        android:layout_marginLeft="40dp"
         android:layout_marginTop="15dp"
-        android:layout_marginBottom="5dp"
         android:layout_marginRight="40dp"
-        android:layout_marginLeft="40dp">
+        android:layout_marginBottom="5dp">
+
         <ImageView
             android:id="@+id/f5notifyicon"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:background="@drawable/f5iconnotify"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:background="@drawable/f5iconnotify" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="알림설정"
-            android:layout_toRightOf="@+id/f5notifyicon"
             android:layout_centerVertical="true"
             android:layout_marginLeft="14dp"
-            android:textSize="18dp"/>
+            android:layout_toRightOf="@+id/f5notifyicon"
+            android:text="알림설정"
+            android:textSize="18dp" />
+
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/f5switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"/>
-    </RelativeLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/lgray"
-        android:layout_below="@+id/f5notifylayout"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"/>
-    <RelativeLayout
-        android:id="@+id/f5logoutlayout"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_below="@+id/f5notifylayout"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginRight="40dp"
-        android:layout_marginLeft="40dp">
-        <ImageView
-            android:id="@+id/f5logouticon"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:background="@drawable/f5iconlogout"
-            android:layout_centerVertical="true"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="로그아웃"
-            android:layout_toRightOf="@+id/f5logouticon"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="14dp"
-            android:textSize="18dp"/>
-        <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:background="@drawable/clickicon"
-            android:layout_alignParentRight="true"
             android:layout_centerVertical="true" />
     </RelativeLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/lgray"
+        android:layout_below="@+id/f5notifylayout"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@color/lgray" />
+
+    <RelativeLayout
+        android:id="@+id/f5qnalayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/f5notifylayout"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginBottom="5dp">
+        <ImageView
+            android:id="@+id/f5qnaiconimg"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/f5qnaicon" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:layout_toRightOf="@+id/f5qnaiconimg"
+            android:text="자주 찾는 질문"
+            android:textSize="18dp" />
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/clickicon" />
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/f5qnalayout"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@color/lgray" />
+
+
+    <RelativeLayout
+        android:id="@+id/f5questionlayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/f5qnalayout"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginBottom="5dp">
+
+        <ImageView
+            android:id="@+id/f5questionicon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/f5questionicon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:layout_toRightOf="@+id/f5questionicon"
+            android:text="문의하기"
+            android:textSize="18dp" />
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/clickicon" />
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/f5questionlayout"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@color/lgray" />
+
+    <RelativeLayout
+        android:id="@+id/f5appversionlayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/f5questionlayout"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginBottom="5dp">
+        <ImageView
+            android:id="@+id/f5appversionimg"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/f5appversionicon" />
+        <TextView
+            android:id="@+id/f5appversiontitletext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:layout_toRightOf="@+id/f5appversionimg"
+            android:text="앱 버전"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/f5appversionnotifyicon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="4dp"
+            android:background="@drawable/countcircle"
+            android:layout_toRightOf="@+id/f5appversiontitletext"
+            android:text="!"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/nowversiontextview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/f5updatelayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_below="@+id/f5appversionlayout">
+
+        <Button
+            android:id="@+id/updatebtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#00000000" />
+
+    </RelativeLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/f5updatelayout"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@color/lgray" />
+
+    <RelativeLayout
+        android:id="@+id/f5logoutlayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/f5updatelayout"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginBottom="5dp">
+
+        <ImageView
+            android:id="@+id/f5logouticon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/f5iconlogout" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:layout_toRightOf="@+id/f5logouticon"
+            android:text="로그아웃"
+            android:textSize="18dp" />
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/clickicon" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
         android:layout_below="@+id/f5logoutlayout"
         android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"/>
+        android:layout_marginRight="30dp"
+        android:background="@color/lgray" />
+
     <RelativeLayout
         android:id="@+id/f5deleteuserlayout"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_below="@+id/f5logoutlayout"
+        android:layout_marginLeft="40dp"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="40dp"
-        android:layout_marginLeft="40dp">
+        android:layout_marginRight="40dp">
+
         <ImageView
             android:id="@+id/f5deleteusericon"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:background="@drawable/f5icondeleteuser"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:background="@drawable/f5icondeleteuser" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="회원탈퇴"
-            android:layout_toRightOf="@+id/f5deleteusericon"
             android:layout_centerVertical="true"
             android:layout_marginLeft="14dp"
-            android:textSize="18dp"/>
+            android:layout_toRightOf="@+id/f5deleteusericon"
+            android:text="회원탈퇴"
+            android:textSize="18dp" />
+
         <ImageView
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:background="@drawable/clickicon"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:background="@drawable/clickicon" />
     </RelativeLayout>
-    <LinearLayout
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/f5ask"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="문의하기" />
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="app version" />
-
-            <TextView
-                android:id="@+id/nowversiontextview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/f5updatelayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
-
-            <Button
-                android:id="@+id/updatebtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#00000000" />
-
-        </RelativeLayout>
-
-    </LinearLayout>
 
 </RelativeLayout>

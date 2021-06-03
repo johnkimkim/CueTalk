@@ -70,8 +70,9 @@ public class Fragment5 extends Fragment {
     //    ProgressBar glideprogress;
     CircularDotsLoader glideprogress;
     TextView name, age, sex;
-    Button reset, ask;
-    RelativeLayout logout, deleteUser;
+    TextView updatenotifyicon;
+    Button reset;
+    RelativeLayout logout, deleteUser, ask, qna;
     DatabaseHandler databaseHandler;
     SwitchCompat switchCompat;
     private SQLiteDatabase sqLiteDatabase;
@@ -114,11 +115,13 @@ public class Fragment5 extends Fragment {
         logout = rootView.findViewById(R.id.f5logoutlayout);
         pic = rootView.findViewById(R.id.fragment5image);
         appversion = rootView.findViewById(R.id.nowversiontextview);
+        qna = rootView.findViewById(R.id.f5qnalayout);
+        updatenotifyicon = rootView.findViewById(R.id.f5appversionnotifyicon);
         updatelayout = rootView.findViewById(R.id.f5updatelayout);
         updatebtn = rootView.findViewById(R.id.updatebtn);
         setOnClickPic();
         deleteUser = rootView.findViewById(R.id.f5deleteuserlayout);
-        ask = rootView.findViewById(R.id.f5ask);
+        ask = rootView.findViewById(R.id.f5questionlayout);
         switchCompat = rootView.findViewById(R.id.f5switch);
         glideprogress = rootView.findViewById(R.id.fragment5progress);
 
@@ -130,7 +133,7 @@ public class Fragment5 extends Fragment {
         reset_profile();
         logoutBtn();
         deleteUser();
-
+        qnaOnClick();
 
         return rootView;
     }
@@ -146,9 +149,11 @@ public class Fragment5 extends Fragment {
                 if (!documentSnapshot.get("version").toString().equals(nowVersion)) {
                     MainActivity.btn5count.setVisibility(View.VISIBLE);
                     MainActivity.btn5count.setText("1");
+                    updatenotifyicon.setVisibility(View.VISIBLE);
                     updatelayout.setVisibility(View.VISIBLE);
                 } else {
                     MainActivity.btn5count.setVisibility(View.INVISIBLE);
+                    updatenotifyicon.setVisibility(View.GONE);
                     updatelayout.setVisibility(View.GONE);
                 }
                 setOnClickUpdateLayout(messege, url);
@@ -298,6 +303,16 @@ public class Fragment5 extends Fragment {
             @Override
             public void onFailure(@NonNull Exception e) {
 
+            }
+        });
+    }
+
+    private void qnaOnClick() {
+        qna.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Intent intent = new Intent(getActivity(), QnaActivity.class);
+//                startActivity(intent);
             }
         });
     }

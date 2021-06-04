@@ -9,7 +9,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="185dp"
-        android:background="@color/base3" />
+        android:background="@color/base4" />
 
     <RelativeLayout
         android:id="@+id/viewpagerlayout"
@@ -43,7 +43,7 @@
             android:layout_marginTop="4dp"
             app:dotsColor="@color/dot_color_1"
             app:dotsCornerRadius="8dp"
-            app:dotsSize="11dp"
+            app:dotsSize="9dp"
             app:dotsSpacing="3dp"
             app:dotsStrokeColor="@color/dot_color_2"
             app:dotsStrokeWidth="2dp" />

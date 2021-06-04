@@ -106,7 +106,8 @@
         android:layout_height="50dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:indeterminateTint="@color/base1"/>
 
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

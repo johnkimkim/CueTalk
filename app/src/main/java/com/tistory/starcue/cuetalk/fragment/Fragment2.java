@@ -2,21 +2,27 @@ package com.tistory.starcue.cuetalk.fragment;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Display;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +78,7 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
     EditText dialogEditText;
     Button dialogyes, dialogno;
     TextView dialogcount;
+    RelativeLayout dialogload;
     SwipeRefreshLayout swipeRefreshLayout;
 
     private GpsTracker gpsTracker;
@@ -271,20 +278,21 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
 
                 alertDialog.show();
                 //set size
-                WindowManager.LayoutParams layoutParams = alertDialog.getWindow().getAttributes();
-                layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
-//            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-//            layoutParams.dimAmount = 0.7f;
-
-                layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-                layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                alertDialog.getWindow().setAttributes(layoutParams);
+                alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                Display display = getActivity().getWindowManager().getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                Window window = alertDialog.getWindow();
+                int x = (int) (size.x * 0.9);
+                int y = (int) (size.y * 0.5);
+                window.setLayout(x, y);
 
                 dialogEditText = layout.findViewById(R.id.f2write_edit);
                 dialogyes = layout.findViewById(R.id.f2write_ok);
                 dialogno = layout.findViewById(R.id.f2write_no);
-                progressBar = layout.findViewById(R.id.fragment2_dialog_progress_bar);
                 dialogcount = layout.findViewById(R.id.f2write_text_count);
+                dialogload = layout.findViewById(R.id.f2write_load);
+                dialogload.setVisibility(View.GONE);
 
                 dialogEditText.addTextChangedListener(new TextWatcher() {
                     @Override
@@ -304,14 +312,25 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                     }
                 });
 
+                dialogEditText.setOnKeyListener(new View.OnKeyListener() {//줄바꿈 하나만 허용
+                    @Override
+                    public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                        if (dialogEditText.getText().toString().contains("\n")) {
+                            if (i == keyEvent.KEYCODE_ENTER) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                });
+
                 dialogyes.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         String getMessege = dialogEditText.getText().toString();
                         if (!getMessege.equals("")) {
-                            dialogLoading();
                             hideKeyboard(view);
-                            progressBar.setVisibility(View.VISIBLE);
+                            dialogload.setVisibility(View.VISIBLE);
                             alertDialog.setCancelable(false);
                             write();
                         } else {
@@ -387,9 +406,9 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        dialogFinishLoading();
-                        Toast.makeText(getActivity(), "실패, 다시시도", Toast.LENGTH_SHORT).show();
-                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getActivity(), "네트워크 오류로 인해 글 작성에 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                        dialogload.setVisibility(View.GONE);
+                        alertDialog.setCancelable(true);
                     }
                 });
 
@@ -398,9 +417,9 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                dialogFinishLoading();
-                Toast.makeText(getActivity(), "실패, 다시시도", Toast.LENGTH_SHORT).show();
-                progressBar.setVisibility(View.GONE);
+                Toast.makeText(getActivity(), "네트워크 오류로 인해 글 작성에 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                dialogload.setVisibility(View.GONE);
+                alertDialog.setCancelable(true);
             }
         });
     }
@@ -652,18 +671,6 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
     private void hideKeyboard(View v) {
         InputMethodManager manager = (InputMethodManager) v.getContext().getSystemService(INPUT_METHOD_SERVICE);
         manager.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-    }
-
-    private void dialogLoading() {
-        dialogEditText.setEnabled(false);
-        dialogyes.setEnabled(false);
-        dialogno.setEnabled(false);
-    }
-
-    private void dialogFinishLoading() {
-        dialogEditText.setEnabled(true);
-        dialogyes.setEnabled(true);
-        dialogno.setEnabled(true);
     }
 
 }

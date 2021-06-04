@@ -2,71 +2,128 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/dialog_layout"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:gravity="center">
 
-        <TextView
-            android:id="@+id/f2write_tiele"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
-            android:text="글작성" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/f2write_dialog_btn_layout"
+            android:gravity="center">
 
-        <EditText
-            android:id="@+id/f2write_edit"
-            android:layout_width="300dp"
-            android:layout_height="150dp"
-            android:layout_below="@+id/f2write_tiele"
-            android:layout_centerHorizontal="true"
-            android:maxLength="20" />
+            <TextView
+                android:id="@+id/f2write_tiele"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:text="글 작성"
+                android:textSize="16dp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/f2write_text_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/f2write_edit"
-            android:layout_alignRight="@+id/f2write_edit"
-            android:gravity="end"
-            android:text="0 / 20"/>
+            <TextView
+                android:id="@+id/f2write_title1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/f2write_tiele"
+                android:layout_marginTop="20dp"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:text="부적합한 내용 및 미풍망속을 저해하는 글은\n경고없이 삭제 및 회원정지 될 수 있습니다." />
 
-        <LinearLayout
+            <EditText
+                android:id="@+id/f2write_edit"
+                android:layout_width="300dp"
+                android:layout_height="100dp"
+                android:layout_below="@+id/f2write_title1"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/write_edittext"
+                android:maxLength="20"
+                android:padding="30dp"
+                android:hint="글 작성"/>
+
+            <TextView
+                android:id="@+id/f2write_text_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/f2write_edit"
+                android:layout_alignRight="@+id/f2write_edit"
+                android:gravity="end"
+                android:text="0 / 20" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/f2write_dialog_btn_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/f2write_text_count"
-            android:orientation="horizontal">
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="15dp">
 
-            <Button
-                android:id="@+id/f2write_ok"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/f2write_ok"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_on_click"
+                    android:text="보내기"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/f2write_no"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_on_click_2"
+                    android:text="취소"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/f2write_load"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/dialogloadbg"
+            android:clickable="true"
+            android:visibility="gone">
+
+            <com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="보내기" />
-
-            <Button
-                android:id="@+id/f2write_no"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="취소" />
-
-        </LinearLayout>
-
-
-        <ProgressBar
-            android:id="@+id/fragment2_dialog_progress_bar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:visibility="invisible" />
+                android:layout_centerInParent="true"
+                app:loader_animDur="80"
+                app:loader_bigCircleRadius="28dp"
+                app:loader_circleRadius="7dp"
+                app:loader_defaultColor="@color/light_gray"
+                app:loader_firstShadowColor="@color/base1"
+                app:loader_secondShadowColor="@color/base3"
+                app:loader_selectedColor="@color/base2"
+                app:loader_showRunningShadow="true" />
+        </RelativeLayout>
 
     </RelativeLayout>
-
 
 
 </LinearLayout>

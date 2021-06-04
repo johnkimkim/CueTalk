@@ -119,30 +119,11 @@ public class Fragment1 extends Fragment {
         testbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                testbtn.setEnabled(false);
-//                db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
-//                        if (task.isSuccessful()) {
-//                            for (QueryDocumentSnapshot document : task.getResult()) {
-//                                Log.d("Fragment1>>>", "testtest: " + document.get("phonenumber").toString());
-//                            }
-//                        }
-//                    }
-//                });
-//                db.collection("users").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
-//                        if (task.isSuccessful()) {
-//                            DocumentSnapshot documentSnapshot = task.getResult();
-//                            if (documentSnapshot.get("name1") != null) {
-//                                Log.d("Fragment1>>>", "test have");
-//                            } else {
-//                                Log.d("Fragment1>>>", "test null");
-//                            }
-//                        }
-//                    }
-//                });
+//                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams();
+                ViewGroup.LayoutParams params = testbtn.getLayoutParams();
+                params.width = viewpagerlayout.getWidth();
+                params.height = viewpagerlayout.getWidth();
+                testbtn.setLayoutParams(params);
             }
         });
     }

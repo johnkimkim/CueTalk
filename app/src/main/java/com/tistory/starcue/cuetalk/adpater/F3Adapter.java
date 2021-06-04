@@ -1,14 +1,19 @@
 package com.tistory.starcue.cuetalk.adpater;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +57,7 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
 
     private ArrayList<F3Item> arrayList;
     private Context context;
+    private Activity activity;
 
     private GpsTracker gpsTracker;
 
@@ -60,10 +66,11 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
 
     private RequestManager requestManager;
 
-    public F3Adapter(ArrayList<F3Item> arrayList, Context context, RequestManager requestManager) {
+    public F3Adapter(ArrayList<F3Item> arrayList, Context context, RequestManager requestManager, Activity activity) {
         this.arrayList = arrayList;
         this.context = context;
         this.requestManager = requestManager;
+        this.activity = activity;
     }
 
     @NonNull
@@ -123,10 +130,16 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
                         return false;
                     }
                 })
-                .centerInside()
+                .centerCrop()
                 .into(holder.ppic);
         holder.name.setText(arrayList.get(position).getName());
         holder.sex.setText(arrayList.get(position).getSex());
+        if (arrayList.get(position).getSex().equals("남자")) {
+            holder.sex.setTextColor(context.getResources().getColor(R.color.male));
+        } else {
+            holder.sex.setTextColor(context.getResources().getColor(R.color.female));
+        }
+
         holder.age.setText(arrayList.get(position).getAge());
         holder.messege.setText(arrayList.get(position).getMessege());
 
@@ -239,15 +252,19 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
     }
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
+        CardView mainlayout;
+        RelativeLayout underlayout;
         ImageView imageView, ppic;
         TextView name, sex, age, km, messege, time;
         Button sendbtn;
         Button f3dec;
-        CardView f3deccard;
+        CardView f3deccard, f3sendcard;
         CircularDotsLoader userprogress, writeprogress;
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
+            this.mainlayout = itemView.findViewById(R.id.f3_recyclerview);
+            this.underlayout = itemView.findViewById(R.id.f3re_under_layout);
             this.imageView = itemView.findViewById(R.id.f3re_pic);
             this.ppic = itemView.findViewById(R.id.f3re_ppic);
             this.name = itemView.findViewById(R.id.f3re_name);
@@ -259,6 +276,7 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
             this.sendbtn = itemView.findViewById(R.id.f3re_sendmsg);
             this.f3dec = itemView.findViewById(R.id.f3dec);
             this.f3deccard = itemView.findViewById(R.id.f3dec_card);
+            this.f3sendcard = itemView.findViewById(R.id.f3cardbtn);
             this.userprogress = itemView.findViewById(R.id.f3re_userpic_progress);
             this.writeprogress = itemView.findViewById(R.id.f3re_write_progress);
             if (Fragment3.f3fragdec.isChecked()) {
@@ -266,6 +284,32 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
             } else {
                 f3deccard.setVisibility(View.GONE);
             }
+
+            Display display = activity.getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int x = (int) (size.x * 0.25);
+            int xx = (int) (size.x * 0.11);
+
+            ViewGroup.LayoutParams params1 = ppic.getLayoutParams();
+            params1.width = x;
+            params1.height = x;
+            ppic.setLayoutParams(params1);
+
+            ViewGroup.LayoutParams params2 = mainlayout.getLayoutParams();
+            params2.width = WindowManager.LayoutParams.MATCH_PARENT;
+            params2.height = x;
+            mainlayout.setLayoutParams(params2);
+
+//            LinearLayout.LayoutParams params3 = (LinearLayout.LayoutParams) f3sendcard.getLayoutParams();
+//            params2.width = xx;
+//            params2.height = xx;
+//            f3sendcard.setLayoutParams(params3);
+//
+//            LinearLayout.LayoutParams params4 = (LinearLayout.LayoutParams) f3deccard.getLayoutParams();
+//            params2.width = xx;
+//            params2.height = xx;
+//            f3deccard.setLayoutParams(params4);
         }
     }
     public double getDistance(double lat1, double lng1, double lat2, double lng2) {

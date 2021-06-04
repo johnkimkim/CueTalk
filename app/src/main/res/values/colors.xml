@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="base1">#556DFF</color><!--button defult color-->
+<!--    <color name="base1">#556DFF</color>&lt;!&ndash;button defult color&ndash;&gt;-->
+<!--    <color name="base2">#465AD6</color>&lt;!&ndash;status bar color&ndash;&gt;-->
+<!--    <color name="base3">#8C9DFD</color>-->
+
+    <color name="base1">#5B7FF2</color><!--button defult color-->
     <color name="base2">#465AD6</color><!--status bar color-->
-    <color name="base3">#8C9DFD</color>
+    <color name="base3">#EAEDF8</color>
+    <color name="base4">#8C9DFD</color>
+    <color name="base5">#F5F7FF</color>
 
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
@@ -16,6 +22,8 @@
     <color name="gray">#636363</color>
     <color name="lgray">#DFDFDF</color>
     <color name="light_gray">#D4DAFF</color>
+
+    <color name="f2f3buttonsolid">#E8E8E8</color>
 
     <color name="my_red">#FF0000</color>
     <color name="empty">#00000000</color>

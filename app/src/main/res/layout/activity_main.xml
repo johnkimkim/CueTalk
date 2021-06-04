@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@color/base5">
 
     <view
         android:id="@+id/viewpager"
@@ -17,9 +18,11 @@
         android:id="@+id/btnlayout"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:paddingTop="3dp"
         android:layout_marginBottom="4dp"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@color/base5">
 
         <RelativeLayout
             android:id="@+id/btn1"

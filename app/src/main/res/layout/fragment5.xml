@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.Fragment5">
+    tools:context=".fragment.Fragment5"
+    android:background="@color/base5">
 
     <View
         android:layout_width="match_parent"
         android:layout_height="185dp"
-        android:background="@color/base3" />
+        android:background="@color/base4" />
 
     <Button
         android:id="@+id/resetprofile"

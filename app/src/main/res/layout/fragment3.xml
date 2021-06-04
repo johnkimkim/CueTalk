@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.Fragment3">
+    tools:context=".fragment.Fragment3"
+    android:background="@color/base5">
 
     <CheckBox
         android:id="@+id/f3fragdec"

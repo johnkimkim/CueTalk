@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.Fragment2">
+    tools:context=".fragment.Fragment2"
+    android:background="@color/base5">
 
     <RelativeLayout
         android:id="@+id/f2titlebar"
@@ -26,7 +27,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="6dp"
             android:background="@drawable/sirenicon"
-            android:button="@android:color/transparent"/>
+            android:button="@android:color/transparent" />
     </RelativeLayout>
 
     <LinearLayout
@@ -105,7 +106,7 @@
         android:layout_height="50dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

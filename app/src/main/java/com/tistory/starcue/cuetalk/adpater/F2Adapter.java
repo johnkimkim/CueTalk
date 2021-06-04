@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader;
@@ -117,13 +118,11 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
         }
 
         if (arrayList.get(position).getUid().equals(myUid)) {
-            holder.sendbtn.setText("삭제");
             holder.f2dec.setEnabled(false);
-            holder.sendbtn.setTextColor(context.getResources().getColor(R.color.my_red));
+            holder.sendbtn.setBackgroundResource(R.drawable.f2f3deletebuttonimg);
         } else {
-            holder.sendbtn.setText("메시지");
             holder.f2dec.setEnabled(true);
-            holder.sendbtn.setTextColor(context.getResources().getColor(R.color.black));
+            holder.sendbtn.setBackgroundResource(R.drawable.f2f3sendmessageicon);
         }
 
         String latitudeS = arrayList.get(position).getLatitude();//set km
@@ -200,6 +199,7 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
         holder.f2dec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                MainActivity.loading.setVisibility(View.VISIBLE);
                 DecDialog.F2DecDialog(context, arrayList.get(position).getUid(), myUid);
             }
         });
@@ -215,6 +215,7 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
         TextView name, sex, age, km, messege, time;
         Button sendbtn;
         Button f2dec;
+        CardView f2deccard;
         CircularDotsLoader progressBar;
 
         public CustomViewHolder(@NonNull View itemView) {
@@ -228,12 +229,13 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
             this.time = itemView.findViewById(R.id.f2re_time);
             this.sendbtn = itemView.findViewById(R.id.f2re_sendmsg);
             this.f2dec = itemView.findViewById(R.id.f2dec);
+            this.f2deccard = itemView.findViewById(R.id.f2dec_card);
             this.progressBar = itemView.findViewById(R.id.f2re_progress);
             Log.d("F2Adapter>>>", "customViewHolder");
             if (Fragment2.f2fragdec.isChecked()) {
-                f2dec.setVisibility(View.VISIBLE);
+                f2deccard.setVisibility(View.VISIBLE);
             } else {
-                f2dec.setVisibility(View.GONE);
+                f2deccard.setVisibility(View.GONE);
             }
         }
     }

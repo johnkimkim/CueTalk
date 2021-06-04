@@ -114,6 +114,7 @@ public class DecDialog {
         nobtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                MainActivity.loading.setVisibility(View.GONE);
                 alertDialog.dismiss();
             }
         });
@@ -174,6 +175,7 @@ public class DecDialog {
                                     @Override
                                     public void onAnimationEnd(Animation animation) {
                                         dec2.setVisibility(View.VISIBLE);
+                                        MainActivity.loading.setVisibility(View.GONE);
                                         alertDialog.setCancelable(true);
                                     }
 

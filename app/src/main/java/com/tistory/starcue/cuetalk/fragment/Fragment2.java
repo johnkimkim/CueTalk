@@ -114,6 +114,7 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         f2fragdec.setChecked(false);
         f2fragdec.setBackgroundResource(R.drawable.sirenicon);
         progressBar = v.findViewById(R.id.fragment2_progress_bar);
+        progressBar.bringToFront();
         swipeRefreshLayout = v.findViewById(R.id.f2_swipe);
         swipeRefreshLayout.setOnRefreshListener(this);
         setWrite();
@@ -456,6 +457,7 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
     @Override
     public void onRefresh() {
         Log.d("Fragment1>>>", "onRefresh page: " + page);
+        progressBar.setVisibility(View.VISIBLE);
         if (page == 1) {
             setListBtn1();
         } else if (page == 2) {

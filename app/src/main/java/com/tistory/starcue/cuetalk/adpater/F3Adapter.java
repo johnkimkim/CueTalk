@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader;
@@ -139,13 +140,11 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
         }
 
         if (arrayList.get(position).getUid().equals(myUid)) {
-            holder.sendbtn.setText("삭제");
             holder.f3dec.setEnabled(false);
-            holder.sendbtn.setTextColor(context.getResources().getColor(R.color.my_red));
+            holder.sendbtn.setBackgroundResource(R.drawable.f2f3deletebuttonimg);
         } else {
-            holder.sendbtn.setText("메시지");
             holder.f3dec.setEnabled(true);
-            holder.sendbtn.setTextColor(context.getResources().getColor(R.color.black));
+            holder.sendbtn.setBackgroundResource(R.drawable.f2f3sendmessageicon);
         }
 
         String latitudeS = arrayList.get(position).getLatitude();//set km
@@ -244,6 +243,7 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
         TextView name, sex, age, km, messege, time;
         Button sendbtn;
         Button f3dec;
+        CardView f3deccard;
         CircularDotsLoader userprogress, writeprogress;
 
         public CustomViewHolder(@NonNull View itemView) {
@@ -258,12 +258,13 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
             this.time = itemView.findViewById(R.id.f3re_time);
             this.sendbtn = itemView.findViewById(R.id.f3re_sendmsg);
             this.f3dec = itemView.findViewById(R.id.f3dec);
+            this.f3deccard = itemView.findViewById(R.id.f3dec_card);
             this.userprogress = itemView.findViewById(R.id.f3re_userpic_progress);
             this.writeprogress = itemView.findViewById(R.id.f3re_write_progress);
             if (Fragment3.f3fragdec.isChecked()) {
-                f3dec.setVisibility(View.VISIBLE);
+                f3deccard.setVisibility(View.VISIBLE);
             } else {
-                f3dec.setVisibility(View.GONE);
+                f3deccard.setVisibility(View.GONE);
             }
         }
     }

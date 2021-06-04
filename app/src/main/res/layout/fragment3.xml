@@ -3,54 +3,74 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.Fragment3"
-    android:background="@color/base5">
+    android:background="@color/base5"
+    tools:context=".fragment.Fragment3">
 
-    <CheckBox
-        android:id="@+id/f3fragdec"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:text="신고"/>
+    <RelativeLayout
+        android:id="@+id/f3titlebar"
+        android:layout_width="match_parent"
+        android:layout_height="45dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="중고거래"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+        <CheckBox
+            android:id="@+id/f3fragdec"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="6dp"
+            android:background="@drawable/sirenicon"
+            android:button="@android:color/transparent" />
+
+    </RelativeLayout>
 
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
         android:id="@+id/f3linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@+id/f3fragdec">
+        android:layout_below="@+id/f3titlebar"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/f3b1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="1"/>
+            android:text="1" />
+
         <Button
             android:id="@+id/f3b2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="2"/>
+            android:text="2" />
+
         <Button
             android:id="@+id/f3b3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="3"/>
+            android:text="3" />
+
         <Button
             android:id="@+id/fragment3_my"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="내글"/>
+            android:text="내글" />
+
         <Button
             android:id="@+id/fragment3_write"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="글쓰기"/>
+            android:text="글쓰기" />
 
     </LinearLayout>
 
@@ -61,8 +81,8 @@
         android:layout_height="50dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:visibility="invisible"
-        android:indeterminateTint="@color/base1" />
+        android:indeterminateTint="@color/base1"
+        android:visibility="invisible" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/f3_swipe"
@@ -70,10 +90,10 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/f3linear">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment3_recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/fragment3_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -14,7 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -26,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -84,7 +86,7 @@ public class ChangeProfile extends AppCompatActivity {
     RadioGroup radioGroup;
     Spinner agespin;
     RelativeLayout relativeLayout;
-    ProgressBar progressBar, picprogress;
+    CircularDotsLoader picprogress;
 
     String[] items = {"나이", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70"};
 
@@ -92,7 +94,7 @@ public class ChangeProfile extends AppCompatActivity {
     Button deletePic;
     Button addImageBtn;
     Button changePhoneNumber;
-    TextView mypn;
+    TextView mypn, editcount;
     Uri imageUri;
 
     boolean willdelete;
@@ -126,6 +128,7 @@ public class ChangeProfile extends AppCompatActivity {
 
     private void setinit() {
         editText = findViewById(R.id.change_profile_editid);
+        editcount = findViewById(R.id.change_profile_name_count);
         yesbtn = findViewById(R.id.change_profile_yesbtn);
         nobtn = findViewById(R.id.change_profile_nobtn);
         radiomale = findViewById(R.id.change_profile_sexmale);
@@ -133,7 +136,6 @@ public class ChangeProfile extends AppCompatActivity {
         radioGroup = findViewById(R.id.change_profile_radiogroup);
         agespin = findViewById(R.id.change_profile_agespin);
         relativeLayout = findViewById(R.id.change_profile_progresslayout);
-        progressBar = findViewById(R.id.change_profile_progress_bar);
         imageView = findViewById(R.id.change_profile_image);
         addImageBtn = findViewById(R.id.add_image);
         deletePic = findViewById(R.id.change_profile_delete_pic);
@@ -160,6 +162,27 @@ public class ChangeProfile extends AppCompatActivity {
             }
         });
 
+        setEditTextWithCount();
+    }
+
+    private void setEditTextWithCount() {
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String input = editText.getText().toString();
+                editcount.setText(input.length() + " / 5");
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 
     private void setOnClickChangePhoneNumber() {
@@ -242,7 +265,6 @@ public class ChangeProfile extends AppCompatActivity {
                 Toast.makeText(ChangeProfile.this, "성별을 선택해주세요", Toast.LENGTH_SHORT).show();
             } else {
                 relativeLayout.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.VISIBLE);
 
                 updateUser(newName, newSex, newAge);
             }
@@ -274,7 +296,6 @@ public class ChangeProfile extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         relativeLayout.setVisibility(View.GONE);
-                        progressBar.setVisibility(View.GONE);
                         Toast.makeText(ChangeProfile.this, "네트워크문제로 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show();
                     }
                 });

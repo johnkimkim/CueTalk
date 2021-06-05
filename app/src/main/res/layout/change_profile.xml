@@ -1,97 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <!--    <RelativeLayout-->
-    <!--        android:id="@+id/progresslayout"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:background="#8F323232">-->
-    <!--        <ProgressBar-->
-    <!--            android:id="@+id/progress_bar"-->
-    <!--            style="?android:attr/progressBarStyle"-->
-    <!--            android:layout_width="50dp"-->
-    <!--            android:layout_height="50dp"-->
-    <!--            android:visibility="invisible"-->
-    <!--            android:layout_centerHorizontal="true"-->
-    <!--            android:layout_centerVertical="true"/>-->
-    <!--    </RelativeLayout>-->
+    android:layout_height="match_parent"
+    android:background="@color/base5">
 
     <LinearLayout
-        android:layout_width="300dp"
-        android:layout_height="600dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:gravity="center"
+        android:layout_marginLeft="60dp"
+        android:layout_marginRight="60dp"
         android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="프로필 변경" />
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:text="프로필 변경"
+            android:textSize="20dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/base3" />
 
         <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="120dp">
 
-            <ImageView
-                android:id="@+id/change_profile_image"
-                android:layout_width="100dp"
-                android:layout_height="100dp" />
+            <RelativeLayout
+                android:id="@+id/change_profile_change_pic_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="10dp">
 
-            <ProgressBar
-                android:id="@+id/change_profile_pic_progress"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true" />
+                <ImageView
+                    android:id="@+id/change_profile_image"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
 
+                <com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
+                    android:id="@+id/change_profile_pic_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    app:loader_animDur="80"
+                    app:loader_bigCircleRadius="20dp"
+                    app:loader_circleRadius="5dp"
+                    app:loader_defaultColor="@color/light_gray"
+                    app:loader_firstShadowColor="@color/base1"
+                    app:loader_secondShadowColor="@color/base3"
+                    app:loader_selectedColor="@color/base2"
+                    app:loader_showRunningShadow="true" />
+
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/change_profile_delete_pic"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="10dp"
+                android:layout_toRightOf="@+id/change_profile_change_pic_layout"
+                android:background="@drawable/cancel" />
         </RelativeLayout>
 
-        <Button
-            android:id="@+id/change_profile_delete_pic"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/cancel" />
 
         <Button
             android:id="@+id/add_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="이미지추가" />
+            android:layout_gravity="center_horizontal"
+            android:text="사진 추가 / 변경"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:background="@drawable/add_pic_outline"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="이름" />
+
+            <TextView
+                android:id="@+id/change_profile_name_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:text="0 / 5" />
+        </RelativeLayout>
 
         <EditText
             android:id="@+id/change_profile_editid"
-            android:layout_width="200dp"
-            android:layout_height="60dp"
-            android:hint="닉네임 입력" />
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/change_profile_outline"
+            android:gravity="center"
+            android:hint="닉네임 입력"
+            android:maxLength="5" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="나이" />
 
         <Spinner
             android:id="@+id/change_profile_agespin"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/change_profile_outline"
             android:dropDownWidth="140dp"
-            android:spinnerMode="dialog" />
+            android:gravity="center"
+            android:spinnerMode="dropdown" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="성별" />
 
         <RadioGroup
             android:id="@+id/change_profile_radiogroup"
-            android:layout_width="70dp"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/change_profile_outline"
+            android:orientation="horizontal">
 
             <RadioButton
                 android:id="@+id/change_profile_sexmale"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
                 android:text="남자" />
 
             <RadioButton
                 android:id="@+id/change_profile_sexfemale"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+
                 android:text="여자" />
 
         </RadioGroup>
@@ -100,36 +164,57 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/change_profile_yesbtn"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="2dp"
+                android:layout_marginRight="5dp"
                 android:layout_weight="1"
-                android:text="변경" />
+                android:background="@drawable/button_on_click"
+                android:text="변경"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/change_profile_nobtn"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="2dp"
+                android:layout_marginLeft="5dp"
                 android:layout_weight="1"
-                android:text="취소" />
+                android:background="@drawable/button_on_click_2"
+                android:text="취소"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/change_profile_mypn"
+        <View
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""/>
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/base3"/>
 
-        <Button
-            android:id="@+id/change_progile_change_phone_number"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="핸드폰번호 변경"/>
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/change_profile_mypn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="" />
+
+            <Button
+                android:id="@+id/change_progile_change_phone_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="전화번호 변경"
+                android:layout_alignParentRight="true"/>
+        </RelativeLayout>
     </LinearLayout>
 
     <RelativeLayout
@@ -137,16 +222,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#8F323232"
-        android:clickable="true">
+        android:clickable="true"
+        android:visibility="gone">
 
-        <ProgressBar
+        <com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
             android:id="@+id/change_profile_progress_bar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:visibility="invisible" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:loader_animDur="80"
+            app:loader_bigCircleRadius="28dp"
+            app:loader_circleRadius="7dp"
+            app:loader_defaultColor="@color/light_gray"
+            app:loader_firstShadowColor="@color/base1"
+            app:loader_secondShadowColor="@color/base3"
+            app:loader_selectedColor="@color/base2"
+            app:loader_showRunningShadow="true" />
     </RelativeLayout>
 
 </RelativeLayout>

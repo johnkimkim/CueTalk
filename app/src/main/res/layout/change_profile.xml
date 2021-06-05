@@ -7,7 +7,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/change_profile_btn_layout"
+        android:fillViewport="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -20,6 +22,8 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="60dp"
                 android:layout_marginRight="60dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:orientation="vertical">
 
                 <TextView
@@ -171,80 +175,105 @@
                 <View
                     android:layout_width="wrap_content"
                     android:layout_height="1dp"
-                    android:background="@color/base3"
-                    android:layout_marginTop="10dp"/>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
+                    android:background="@color/base3" />
 
-                    <Button
-                        android:id="@+id/change_profile_yesbtn"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/button_on_click"
-                        android:text="변경"
-                        android:textColor="@color/white"
-                        android:textStyle="bold" />
-
-                    <Button
-                        android:id="@+id/change_profile_nobtn"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/button_on_click_2"
-                        android:text="취소"
-                        android:textColor="@color/black"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-<!--                <RelativeLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginTop="10dp">-->
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/change_profile_mypn"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_centerVertical="true"-->
-<!--                        android:text="" />-->
-
-<!--                    <Button-->
-<!--                        android:id="@+id/change_progile_change_phone_number"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_alignParentRight="true"-->
-<!--                        android:text="전화번호 변경" />-->
-<!--                </RelativeLayout>-->
-            </LinearLayout>
-
-            <RelativeLayout
-                android:id="@+id/change_profile_progresslayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#8F323232"
-                android:clickable="true"
-                android:visibility="gone">
-
-                <com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
-                    android:id="@+id/change_profile_progress_bar"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    app:loader_animDur="80"
-                    app:loader_bigCircleRadius="28dp"
-                    app:loader_circleRadius="7dp"
-                    app:loader_defaultColor="@color/light_gray"
-                    app:loader_firstShadowColor="@color/base1"
-                    app:loader_secondShadowColor="@color/base3"
-                    app:loader_selectedColor="@color/base2"
-                    app:loader_showRunningShadow="true" />
-            </RelativeLayout>
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="전화번호" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:background="@drawable/change_profile_outline">
+
+
+                    <TextView
+                        android:id="@+id/change_profile_my_phonenumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_centerVertical="true"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="변경"
+                        android:layout_toLeftOf="@+id/change_profile_change_phonenumber_btn"
+                        android:layout_marginRight="3dp"
+                        android:layout_centerVertical="true"/>
+                    <Button
+                        android:id="@+id/change_profile_change_phonenumber_btn"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/clickicon"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="10dp"
+                        android:layout_centerVertical="true" />
+                </RelativeLayout>
+            </LinearLayout>
         </RelativeLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/change_profile_btn_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="15dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/change_profile_yesbtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_on_click"
+            android:text="변경"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/change_profile_nobtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_on_click_2"
+            android:text="취소"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/change_profile_progresslayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#8F323232"
+        android:clickable="true"
+        android:visibility="gone">
+
+        <com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
+            android:id="@+id/change_profile_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:loader_animDur="80"
+            app:loader_bigCircleRadius="28dp"
+            app:loader_circleRadius="7dp"
+            app:loader_defaultColor="@color/light_gray"
+            app:loader_firstShadowColor="@color/base1"
+            app:loader_secondShadowColor="@color/base3"
+            app:loader_selectedColor="@color/base2"
+            app:loader_showRunningShadow="true" />
+    </RelativeLayout>
 </RelativeLayout>

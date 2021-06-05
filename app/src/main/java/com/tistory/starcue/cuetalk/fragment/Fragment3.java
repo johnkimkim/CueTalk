@@ -1,6 +1,5 @@
 package com.tistory.starcue.cuetalk.fragment;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -68,8 +67,6 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private SharedPreferences sharedPreferences;
 
-    Activity activity;
-
     String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
     String[] items = {"category 선택", "컴퓨터/전자", "중고핸드폰", "암거나"};
@@ -116,7 +113,6 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment3, container, false);
 
         gpsTracker = new GpsTracker(getActivity());
-        activity = getActivity();
 
         setfirebase();
         setinit(rootView);
@@ -180,7 +176,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
 //        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         arrayList = new ArrayList<>();
 
-        adapter = new F3Adapter(arrayList, getActivity(), Glide.with(Fragment3.this), activity);
+        adapter = new F3Adapter(arrayList, getActivity(), Glide.with(Fragment3.this), getActivity());
         recyclerView.setAdapter(adapter);
 
     }

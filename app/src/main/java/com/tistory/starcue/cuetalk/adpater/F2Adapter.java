@@ -1,5 +1,6 @@
 package com.tistory.starcue.cuetalk.adpater;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -51,6 +52,7 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
 
     private ArrayList<F2Item> arrayList;
     private Context context;
+    private Activity activity;
 
     private GpsTracker gpsTracker;
 
@@ -59,10 +61,11 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
 
     private RequestManager requestManager;
 
-    public F2Adapter(ArrayList<F2Item> arrayList, Context context, RequestManager requestManager) {
+    public F2Adapter(ArrayList<F2Item> arrayList, Context context, RequestManager requestManager, Activity activity) {
         this.arrayList = arrayList;
         this.context = context;
         this.requestManager = requestManager;
+        this.activity = activity;
     }
 
     @NonNull
@@ -153,7 +156,7 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
                 Log.d("Fragment2>>>", "sendbtn onClick");
                 if (arrayList.get(position).getUid().equals(myUid)) {
                     MainActivity.loading.setVisibility(View.GONE);
-                    DeleteMyDialog.f2deleteMyDialog(context, myUid);
+                    DeleteMyDialog.f2deleteMyDialog(context, myUid, activity);
                 } else {
                     reference = FirebaseDatabase.getInstance().getReference();
                     reference.getRef().child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {

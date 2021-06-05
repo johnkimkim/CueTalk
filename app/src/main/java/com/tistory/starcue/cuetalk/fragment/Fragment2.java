@@ -256,7 +256,7 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         recyclerView.setLayoutManager(layoutManager);
         arrayList = new ArrayList<>();
 
-        adapter = new F2Adapter(arrayList, getActivity(), Glide.with(Fragment2.this));
+        adapter = new F2Adapter(arrayList, getActivity(), Glide.with(Fragment2.this), getActivity());
         recyclerView.setAdapter(adapter);
 
 //        Query query = firestore.collection("f2messege").orderBy("time", Query.Direction.ASCENDING);

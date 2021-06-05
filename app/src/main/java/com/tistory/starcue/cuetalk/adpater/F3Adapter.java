@@ -188,7 +188,7 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
                 Log.d("Fragment2>>>", "sendbtn onClick");
                 if (arrayList.get(position).getUid().equals(myUid)) {
                     MainActivity.loading.setVisibility(View.GONE);
-                    DeleteMyDialog.f3deleteMyDialog(context, myUid);
+                    DeleteMyDialog.f3deleteMyDialog(context, myUid, activity);
                 } else {
                     reference = FirebaseDatabase.getInstance().getReference();
                     reference.getRef().child("messege").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {

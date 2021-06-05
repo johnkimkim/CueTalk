@@ -93,8 +93,7 @@ public class ChangeProfile extends AppCompatActivity {
     ImageView imageView;
     Button deletePic;
     Button addImageBtn;
-    Button changePhoneNumber;
-    TextView mypn, editcount;
+    TextView editcount;
     Uri imageUri;
 
     boolean willdelete;
@@ -140,11 +139,8 @@ public class ChangeProfile extends AppCompatActivity {
         addImageBtn = findViewById(R.id.add_image);
         deletePic = findViewById(R.id.change_profile_delete_pic);
         picprogress = findViewById(R.id.change_profile_pic_progress);
-        changePhoneNumber = findViewById(R.id.change_progile_change_phone_number);
-        mypn = findViewById(R.id.change_profile_mypn);
-        String pn = mCurrentUser.getPhoneNumber().substring(9, 13);
-        mypn.setText("010-****-" + pn);
-        setOnClickChangePhoneNumber();
+//        String pn = mCurrentUser.getPhoneNumber().substring(9, 13);
+//        mypn.setText("010-****-" + pn);
 
         setView();
 
@@ -185,15 +181,15 @@ public class ChangeProfile extends AppCompatActivity {
         });
     }
 
-    private void setOnClickChangePhoneNumber() {
-        changePhoneNumber.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ChangeProfile.this, ChangePhoneNumber.class);
-                startActivity(intent);
-            }
-        });
-    }
+//    private void setOnClickChangePhoneNumber() {
+//        changePhoneNumber.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(ChangeProfile.this, ChangePhoneNumber.class);
+//                startActivity(intent);
+//            }
+//        });
+//    }
 
     private void setView() {
         db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

@@ -15,7 +15,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -30,11 +29,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.tistory.starcue.cuetalk.AdressRoom;
-import com.tistory.starcue.cuetalk.item.AdressRoomItem;
 import com.tistory.starcue.cuetalk.GpsTracker;
 import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.SeePicDialog;
 import com.tistory.starcue.cuetalk.SendMessege;
+import com.tistory.starcue.cuetalk.item.AdressRoomItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -243,7 +242,9 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
             @Override
             public void onClick(View view) {
                 String uri = arrayList.get(position).getPic();
-                SeePicDialog.seePicDialog(context, uri);
+                if (!uri.equals(nullPic) && !uri.equals(nullPicF)) {
+                    SeePicDialog.seePicDialog(context, uri);
+                }
             }
         });
 

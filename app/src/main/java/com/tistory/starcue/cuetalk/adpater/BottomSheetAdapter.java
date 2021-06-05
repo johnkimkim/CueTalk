@@ -188,7 +188,9 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
             @Override
             public void onClick(View view) {
                 String myUri = bottomList.get(position).getPic();
-                SeePicDialog.seePicDialog(context, myUri);
+                if (!myUri.equals(nullPic) && !myUri.equals(nullPicF)) {
+                    SeePicDialog.seePicDialog(context, myUri);
+                }
             }
         });
     }

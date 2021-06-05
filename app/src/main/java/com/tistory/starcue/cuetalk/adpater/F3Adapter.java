@@ -52,6 +52,9 @@ import java.util.Locale;
 
 public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> {
 
+    String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
+    String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
+
     FirebaseAuth mAuth;
     String myUid;
 
@@ -227,7 +230,9 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
             @Override
             public void onClick(View view) {
                 Log.d("F3Adapter>>>", "get pic uri: " + arrayList.get(position).getPic());
-                SeePicDialog.seePicDialog(context, arrayList.get(position).getPic());
+                if (!arrayList.get(position).getPic().equals(nullPic) && !arrayList.get(position).getPic().equals(nullPicF)) {
+                    SeePicDialog.seePicDialog(context, arrayList.get(position).getPic());
+                }
             }
         });
 

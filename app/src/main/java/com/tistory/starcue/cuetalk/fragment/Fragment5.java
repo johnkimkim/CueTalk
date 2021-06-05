@@ -178,7 +178,9 @@ public class Fragment5 extends Fragment {
         pic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SeePicDialog.seePicDialog(getActivity(), myUri);
+                if (!myUri.equals(nullPic) && !myUri.equals(nullPicF)) {
+                    SeePicDialog.seePicDialog(getActivity(), myUri);
+                }
             }
         });
     }

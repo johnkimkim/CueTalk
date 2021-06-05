@@ -35,6 +35,7 @@ import com.tistory.starcue.cuetalk.DeleteMyDialog;
 import com.tistory.starcue.cuetalk.GpsTracker;
 import com.tistory.starcue.cuetalk.MainActivity;
 import com.tistory.starcue.cuetalk.R;
+import com.tistory.starcue.cuetalk.SeePicDialog;
 import com.tistory.starcue.cuetalk.SendMessege;
 import com.tistory.starcue.cuetalk.fragment.Fragment2;
 import com.tistory.starcue.cuetalk.item.F2Item;
@@ -46,6 +47,10 @@ import java.util.Date;
 import java.util.Locale;
 
 public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> {
+
+    String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
+    String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
+
 
     FirebaseAuth mAuth;
     String myUid;
@@ -195,7 +200,9 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if (!arrayList.get(position).getPic().equals(nullPic) && !arrayList.get(position).getPic().equals(nullPicF)) {
+                    SeePicDialog.seePicDialog(context, arrayList.get(position).getPic());
+                }
             }
         });
 

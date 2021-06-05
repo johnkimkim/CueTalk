@@ -155,7 +155,9 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 @Override
                 public void onClick(View view) {
                     String uri = arrayList.get(position).getPic();
-                    SeePicDialog.seePicDialog(context, uri);
+                    if (!uri.equals(nullPic) && !uri.equals(nullPicF)) {
+                        SeePicDialog.seePicDialog(context, uri);
+                    }
                 }
             });
             ((LeftImageViewholder) holder).image.setOnClickListener(new View.OnClickListener() {
@@ -165,9 +167,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     SeePicDialog.seePicDialog(context, uri);
                 }
             });
-            if (arrayList.get(position).getPic().equals(nullPic) || arrayList.get(position).getPic().equals(nullPicF)) {
-                ((LeftImageViewholder) holder).picli.setEnabled(false);
-            }
         } else if (holder instanceof RightViewholder) {
             ((RightViewholder) holder).time1.setText(time2);//error
             ((RightViewholder) holder).messege1.setText(arrayList.get(position).getMessege());
@@ -198,12 +197,11 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 @Override
                 public void onClick(View view) {
                     String uri = arrayList.get(position).getPic();
-                    SeePicDialog.seePicDialog(context, uri);
+                    if (!uri.equals(nullPic) && !uri.equals(nullPicF)) {
+                        SeePicDialog.seePicDialog(context, uri);
+                    }
                 }
             });
-            if (arrayList.get(position).getPic().equals(nullPic) || arrayList.get(position).getPic().equals(nullPicF)) {
-                ((LeftViewholder) holder).picl.setEnabled(false);
-            }
         } else if (holder instanceof CenterViewholder) {
             ((CenterViewholder) holder).textView.setText("입장완료");
         } else if (holder instanceof CenterBottomViewholder) {

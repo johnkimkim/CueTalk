@@ -163,7 +163,9 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                 @Override
                                 public void onClick(View view) {
                                     String uri = userPic;
-                                    SeePicDialog.seePicDialog(context, uri);
+                                    if (!uri.equals(nullPic) && !uri.equals(nullPicF)) {
+                                        SeePicDialog.seePicDialog(context, uri);
+                                    }
                                 }
                             });
                             ((LeftImageViewholder) holder).image.setOnClickListener(new View.OnClickListener() {
@@ -173,11 +175,6 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                     SeePicDialog.seePicDialog(context, uri);
                                 }
                             });
-                            if (userPic.equals(nullPic) || userPic.equals(nullPicF)) {
-                                ((LeftImageViewholder) holder).picli.setEnabled(false);
-                            } else {
-                                ((LeftImageViewholder) holder).picli.setEnabled(true);
-                            }
                         } else if (holder instanceof RightViewholder) {
                             ((RightViewholder) holder).time1.setText(time2);
                             ((RightViewholder) holder).messege1.setText(arrayList.get(position).getMessege());
@@ -214,14 +211,11 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                 @Override
                                 public void onClick(View view) {
                                     String uri = userPic;
-                                    SeePicDialog.seePicDialog(context, uri);
+                                    if (!uri.equals(nullPic) && !uri.equals(nullPicF) && !uri.equals(nullUser)) {
+                                        SeePicDialog.seePicDialog(context, uri);
+                                    }
                                 }
                             });
-                            if (userPic.equals(nullPic) || userPic.equals(nullPicF)) {
-                                ((LeftViewholder) holder).picl.setEnabled(false);
-                            } else {
-                                ((LeftViewholder) holder).picl.setEnabled(true);
-                            }
                         } else if (holder instanceof CenterViewholder) {
                             ((CenterViewholder) holder).textView.setText("입장완료");
                         } else if (holder instanceof CenterBottomViewholder) {

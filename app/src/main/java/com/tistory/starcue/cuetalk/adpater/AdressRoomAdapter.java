@@ -1,5 +1,6 @@
 package com.tistory.starcue.cuetalk.adpater;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.location.Location;
@@ -65,10 +66,13 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
 
     private RequestManager requestManager;
 
-    public AdressRoomAdapter(ArrayList<AdressRoomItem> arrayList, Context context, RequestManager requestManager) {
+    Activity activity;
+
+    public AdressRoomAdapter(ArrayList<AdressRoomItem> arrayList, Context context, RequestManager requestManager, Activity activity) {
         this.arrayList = arrayList;
         this.context = context;
         this.requestManager = requestManager;
+        this.activity = activity;
 
         mAuth = FirebaseAuth.getInstance();
         myUid = mAuth.getUid();
@@ -221,14 +225,14 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
                             Log.d("AdressRoomAdapter>>>", "count = 0");
                             String userUid = arrayList.get(position).getUid();
                             SendMessege sendMessege = new SendMessege(context);
-                            sendMessege.setSendMessegeDialog(context, userUid, view);
+                            sendMessege.setSendMessegeDialog(context, userUid, activity);
                         } else {
                             if (dataSnapshot.hasChild(roomkey) || dataSnapshot.hasChild(roomkey1)) {
                                 Toast.makeText(context, "이미 대화 중 입니다. 메시지함을 확인해주세요", Toast.LENGTH_SHORT).show();
                             } else {
                                 String userUid = arrayList.get(position).getUid();
                                 SendMessege sendMessege = new SendMessege(context);
-                                sendMessege.setSendMessegeDialog(context, userUid, view);//laskdfjkl
+                                sendMessege.setSendMessegeDialog(context, userUid, activity);//laskdfjkl
                             }
                         }
 

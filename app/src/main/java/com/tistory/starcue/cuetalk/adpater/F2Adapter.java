@@ -178,7 +178,7 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
                                 MainActivity.loading.setVisibility(View.GONE);
                                 String userUid = arrayList.get(position).getUid();
                                 SendMessege sendMessege = new SendMessege(context);
-                                sendMessege.setSendMessegeDialog(context, userUid, view);
+                                sendMessege.setSendMessegeDialog(context, userUid, activity);
                             } else {
                                 if (dataSnapshot.hasChild(roomkey) || dataSnapshot.hasChild(roomkey1)) {
                                     MainActivity.loading.setVisibility(View.GONE);
@@ -187,7 +187,7 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
                                     MainActivity.loading.setVisibility(View.GONE);
                                     String userUid = arrayList.get(position).getUid();
                                     SendMessege sendMessege = new SendMessege(context);
-                                    sendMessege.setSendMessegeDialog(context, userUid, view);//laskdfjkl
+                                    sendMessege.setSendMessegeDialog(context, userUid, activity);//laskdfjkl
                                 }
                             }
 

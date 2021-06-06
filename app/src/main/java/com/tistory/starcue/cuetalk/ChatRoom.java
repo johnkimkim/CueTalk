@@ -1,5 +1,6 @@
 package com.tistory.starcue.cuetalk;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -92,12 +93,16 @@ public class ChatRoom extends AppCompatActivity {
 
     String where;
 
+    Activity activity;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_room);
 
         where = getIntent().getStringExtra("intentwhere");//양쪽 다 where 가지고있음
+
+        activity = ChatRoom.this;
 
         setinit();
         setdb();
@@ -260,13 +265,13 @@ public class ChatRoom extends AppCompatActivity {
 
                                         if (i == 0) {
                                             SendMessege sendMessege = new SendMessege(ChatRoom.this);
-                                            sendMessege.setSendMessegeDialog(ChatRoom.this, userUid, view);
+                                            sendMessege.setSendMessegeDialog(ChatRoom.this, userUid, activity);
                                         } else {
                                             if (dataSnapshot.hasChild(roomkey) || dataSnapshot.hasChild(roomkey1)) {
                                                 Toast.makeText(ChatRoom.this, "이미 대화 중 입니다. 메시지함을 확인해주세요", Toast.LENGTH_SHORT).show();
                                             } else {
                                                 SendMessege sendMessege = new SendMessege(ChatRoom.this);
-                                                sendMessege.setSendMessegeDialog(ChatRoom.this, userUid, view);
+                                                sendMessege.setSendMessegeDialog(ChatRoom.this, userUid, activity);
                                             }
                                         }
                                     }

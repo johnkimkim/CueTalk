@@ -1,19 +1,34 @@
 package com.tistory.starcue.cuetalk;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
+import com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,6 +66,9 @@ public class SendMessege {
     private DatabaseReference reference;
     private FirebaseAuth mAuth;
     String myUid;
+    ImageView userPic;
+    TextView tuserName, tuserSex, tuserAge;
+    CircularDotsLoader picload;
 
     private GpsTracker gpsTracker;
 
@@ -58,7 +76,7 @@ public class SendMessege {
         this.context = context;
     }
 
-    public void setSendMessegeDialog(Context context, String userUid, View view) {
+    public void setSendMessegeDialog(Context context, String userUid, Activity activity) {
         reference = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -72,18 +90,57 @@ public class SendMessege {
 
         alertDialog.show();
         //set size
-        WindowManager.LayoutParams layoutParams = alertDialog.getWindow().getAttributes();
-        layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
-//            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-//            layoutParams.dimAmount = 0.7f;
-
-        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        alertDialog.getWindow().setAttributes(layoutParams);
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        Window window = alertDialog.getWindow();
+        int x = (int) (size.x * 0.9);
+        int y = (int) (size.y * 0.6);
+        window.setLayout(x, y);
 
         editText = layout.findViewById(R.id.send_messege_edit);
         okbtn = layout.findViewById(R.id.send_messege_ok);
         nobtn = layout.findViewById(R.id.send_messege_no);
+        userPic = layout.findViewById(R.id.send_messege_user_pic);
+        tuserName = layout.findViewById(R.id.send_messege_user_name);
+        tuserSex = layout.findViewById(R.id.send_messege_user_sex);
+        tuserAge = layout.findViewById(R.id.send_messege_user_age);
+        picload = layout.findViewById(R.id.send_messege_user_pic_load);
+        picload.bringToFront();
+        picload.setVisibility(View.VISIBLE);
+
+        db.collection("users").document(userUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Glide.with(context).load(documentSnapshot.get("pic").toString())
+                        .override(150, 150)
+                        .listener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                picload.setVisibility(View.GONE);
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                picload.setVisibility(View.GONE);
+                                return false;
+                            }
+                        })
+                        .circleCrop()
+                        .into(userPic);
+                tuserName.setText(documentSnapshot.get("name").toString());
+                if (documentSnapshot.get("sex").toString().equals("남자")) {
+                    tuserSex.setTextColor(context.getResources().getColor(R.color.male));
+                    tuserSex.setText(documentSnapshot.get("sex").toString());
+                } else {
+                    tuserSex.setTextColor(context.getResources().getColor(R.color.female));
+                    tuserSex.setText(documentSnapshot.get("sex").toString());
+                }
+                tuserAge.setText(documentSnapshot.get("age").toString());
+            }
+        });
 
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override

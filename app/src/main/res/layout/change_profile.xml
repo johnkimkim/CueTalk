@@ -161,7 +161,8 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="남자" />
+                        android:text="남자"
+                        android:buttonTint="@color/base1"/>
 
                     <RadioButton
                         android:id="@+id/change_profile_sexfemale"
@@ -169,7 +170,8 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="여자" />
+                        android:text="여자"
+                        android:buttonTint="@color/base1" />
 
                 </RadioGroup>
 

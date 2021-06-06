@@ -187,7 +187,7 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
         holder.sendbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity.loading.setVisibility(View.GONE);
+                MainActivity.loading.setVisibility(View.VISIBLE);
                 Log.d("Fragment2>>>", "sendbtn onClick");
                 if (arrayList.get(position).getUid().equals(myUid)) {
                     MainActivity.loading.setVisibility(View.GONE);
@@ -207,7 +207,7 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
                                 MainActivity.loading.setVisibility(View.GONE);
                                 String userUid = arrayList.get(position).getUid();
                                 SendMessege sendMessege = new SendMessege(context);
-                                sendMessege.setSendMessegeDialog(context, userUid, view);
+                                sendMessege.setSendMessegeDialog(context, userUid, activity);
                             } else {
                                 if (dataSnapshot.hasChild(roomkey) || dataSnapshot.hasChild(roomkey1)) {
                                     MainActivity.loading.setVisibility(View.GONE);
@@ -216,7 +216,7 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
                                     MainActivity.loading.setVisibility(View.GONE);
                                     String userUid = arrayList.get(position).getUid();
                                     SendMessege sendMessege = new SendMessege(context);
-                                    sendMessege.setSendMessegeDialog(context, userUid, view);//laskdfjkl
+                                    sendMessege.setSendMessegeDialog(context, userUid, activity);//laskdfjkl
                                 }
                             }
 

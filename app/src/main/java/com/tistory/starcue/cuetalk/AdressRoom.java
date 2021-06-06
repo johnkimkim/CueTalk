@@ -1,5 +1,6 @@
 package com.tistory.starcue.cuetalk;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -98,10 +99,14 @@ public class AdressRoom extends AppCompatActivity {
     boolean isSetList;
     public static boolean goChatRoom;
 
+    Activity activity;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.adress_room);
+
+        activity = AdressRoom.this;
 
         isSetList = false;
         goChatRoom = false;
@@ -249,7 +254,7 @@ public class AdressRoom extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         arrayList = new ArrayList<>();
 
-        adapter = new AdressRoomAdapter(arrayList, AdressRoom.this, Glide.with(AdressRoom.this));
+        adapter = new AdressRoomAdapter(arrayList, AdressRoom.this, Glide.with(AdressRoom.this), activity);
         recyclerView.setAdapter(adapter);
 
         database = FirebaseDatabase.getInstance();

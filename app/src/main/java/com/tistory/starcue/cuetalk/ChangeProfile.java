@@ -706,8 +706,8 @@ public class ChangeProfile extends AppCompatActivity {
     }
 
     private void setagespin() {
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(ChangeProfile.this, android.R.layout.select_dialog_item, items);
-        arrayAdapter.setDropDownViewResource(android.R.layout.select_dialog_item);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(ChangeProfile.this, R.layout.change_profile_spinner_layout, R.id.change_profile_spinner_layout_text, items);
+        arrayAdapter.setDropDownViewResource(R.layout.change_profile_spinner_layout);
         agespin.setAdapter(arrayAdapter);
         agespin.setDropDownWidth(WindowManager.LayoutParams.MATCH_PARENT);
 

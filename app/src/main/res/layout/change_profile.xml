@@ -80,7 +80,7 @@
                         android:layout_marginBottom="10dp"
                         android:layout_toRightOf="@+id/change_profile_change_pic_layout"
                         android:background="@drawable/change_profile_cancel_cb"
-                        android:button="@null"/>
+                        android:button="@null" />
                 </RelativeLayout>
 
 
@@ -136,9 +136,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:background="@drawable/change_profile_outline"
-                    android:popupBackground="@drawable/change_profile_outline"
                     android:dropDownWidth="140dp"
                     android:gravity="center"
+                    android:popupBackground="@drawable/change_profile_outline"
                     android:spinnerMode="dropdown" />
 
                 <TextView
@@ -169,7 +169,6 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-
                         android:text="여자" />
 
                 </RadioGroup>
@@ -197,24 +196,25 @@
                         android:id="@+id/change_profile_my_phonenumber"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_centerVertical="true"/>
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="변경"
-                        android:layout_toLeftOf="@+id/change_profile_change_phonenumber_btn"
+                        android:layout_centerVertical="true"
                         android:layout_marginRight="3dp"
-                        android:layout_centerVertical="true"/>
+                        android:layout_toLeftOf="@+id/change_profile_change_phonenumber_btn"
+                        android:text="변경" />
+
                     <Button
                         android:id="@+id/change_profile_change_phonenumber_btn"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:background="@drawable/clickicon"
                         android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
                         android:layout_marginRight="10dp"
-                        android:layout_centerVertical="true" />
+                        android:background="@drawable/clickicon" />
                 </RelativeLayout>
             </LinearLayout>
         </RelativeLayout>

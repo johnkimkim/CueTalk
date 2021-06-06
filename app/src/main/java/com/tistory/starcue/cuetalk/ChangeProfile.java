@@ -10,6 +10,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -574,6 +575,7 @@ public class ChangeProfile extends AppCompatActivity {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(ChangeProfile.this, android.R.layout.select_dialog_item, items);
         arrayAdapter.setDropDownViewResource(android.R.layout.select_dialog_item);
         agespin.setAdapter(arrayAdapter);
+        agespin.setDropDownWidth(WindowManager.LayoutParams.MATCH_PARENT);
 
         agespin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

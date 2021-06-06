@@ -135,6 +135,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:background="@drawable/change_profile_outline"
+                    android:popupBackground="@drawable/change_profile_outline"
                     android:dropDownWidth="140dp"
                     android:gravity="center"
                     android:spinnerMode="dropdown" />

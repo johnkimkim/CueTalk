@@ -15,6 +15,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -86,13 +88,13 @@ public class ChangeProfile extends AppCompatActivity {
     String newPicUri;
     RadioGroup radioGroup;
     Spinner agespin;
-    RelativeLayout relativeLayout;
-    CircularDotsLoader picprogress;
+    RelativeLayout load;
+    CircularDotsLoader loadInPic;
 
     String[] items = {"나이", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70"};
 
     ImageView imageView;
-    Button deletePic;
+    CheckBox deletePic;
     Button addImageBtn;
     TextView editcount;
     Uri imageUri;
@@ -137,11 +139,13 @@ public class ChangeProfile extends AppCompatActivity {
         radiofemale = findViewById(R.id.change_profile_sexfemale);
         radioGroup = findViewById(R.id.change_profile_radiogroup);
         agespin = findViewById(R.id.change_profile_agespin);
-        relativeLayout = findViewById(R.id.change_profile_progresslayout);
+        load = findViewById(R.id.change_profile_progresslayout);
+        load.setVisibility(View.VISIBLE);
+        loadInPic = findViewById(R.id.change_profile_pic_progress);
+        loadInPic.setVisibility(View.VISIBLE);
         imageView = findViewById(R.id.change_profile_image);
         addImageBtn = findViewById(R.id.add_image);
         deletePic = findViewById(R.id.change_profile_delete_pic);
-        picprogress = findViewById(R.id.change_profile_pic_progress);
         myPn = findViewById(R.id.change_profile_my_phonenumber);
         changePnBtn = findViewById(R.id.change_profile_change_phonenumber_btn);
         String pn = mCurrentUser.getPhoneNumber().substring(9, 13);
@@ -157,10 +161,13 @@ public class ChangeProfile extends AppCompatActivity {
             }
         });
 
-        deletePic.setOnClickListener(new View.OnClickListener() {
+        deletePic.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                setDeletePicButton();
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (!b) {
+                    deletePic.setEnabled(false);
+                    setDeletePicButton();
+                }
             }
         });
 
@@ -207,6 +214,13 @@ public class ChangeProfile extends AppCompatActivity {
                 int ageint = Integer.parseInt(myAge);
                 agespin.setSelection(ageint - 19);
                 myPicUri = documentSnapshot.get("pic").toString();
+                if (!myPicUri.equals(nullPic) && !myPicUri.equals(nullPicF)) {
+                    deletePic.setChecked(true);
+                    deletePic.setEnabled(true);
+                } else {
+                    deletePic.setChecked(false);
+                    deletePic.setEnabled(false);
+                }
                 mySex = documentSnapshot.get("sex").toString();
                 if (mySex.equals("남자")) {
                     radioGroup.check(R.id.change_profile_sexmale);
@@ -219,19 +233,21 @@ public class ChangeProfile extends AppCompatActivity {
                         .listener(new RequestListener<Drawable>() {
                             @Override
                             public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                picprogress.setVisibility(View.GONE);
+                                loadInPic.setVisibility(View.GONE);
+                                load.setVisibility(View.GONE);
                                 return false;
                             }
 
                             @Override
                             public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                picprogress.setVisibility(View.GONE);
+                                loadInPic.setVisibility(View.GONE);
+                                load.setVisibility(View.GONE);
                                 return false;
                             }
                         })
                         .circleCrop()
                         .into(imageView);
-                relativeLayout.setVisibility(View.GONE);
+                load.setVisibility(View.GONE);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -243,34 +259,41 @@ public class ChangeProfile extends AppCompatActivity {
     }
 
     private void setYesBtn() {
-        yesbtn.setOnClickListener(view -> {
-            hideKeyboard(view);
-            if (radiomale.isChecked()) {
-                newSex = "남자";
-            } else if (radiofemale.isChecked()) {
-                newSex = "여자";
-            } else {
-                newSex = "";
+        yesbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                load.setVisibility(View.VISIBLE);
+                /*경우의 수
+                 * 기존 정보랑 바꼈을때
+                 * 이미지 변경
+                 * 이미지 삭제
+                 * 이미지 추가*/
+                hideKeyboard(view);
+                if (radiomale.isChecked()) {
+                    newSex = "남자";
+                } else if (radiofemale.isChecked()) {
+                    newSex = "여자";
+                } else {
+                    newSex = "";
+                }
+
+                newName = editText.getText().toString();
+
+                int i = Integer.parseInt(newAge);
+
+                if (newName.equals("")) {
+                    Toast.makeText(ChangeProfile.this, "닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
+                } else if (newName.matches(".*[ㄱ-ㅎ ㅏ-ㅣ]+.*")) {
+                    Toast.makeText(ChangeProfile.this, "올바른 닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
+                } else if (i == 0) {
+                    Toast.makeText(ChangeProfile.this, "나이를 선택해주세요", Toast.LENGTH_SHORT).show();
+                } else if (newSex.equals("")) {
+                    Toast.makeText(ChangeProfile.this, "성별을 선택해주세요", Toast.LENGTH_SHORT).show();
+                } else {
+                    load.setVisibility(View.VISIBLE);
+                    updateUser(newName, newSex, newAge);
+                }
             }
-
-            newName = editText.getText().toString();
-
-            int i = Integer.parseInt(newAge);
-
-            if (newName.equals("")) {
-                Toast.makeText(ChangeProfile.this, "닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
-            } else if (newName.matches(".*[ㄱ-ㅎ ㅏ-ㅣ]+.*")) {
-                Toast.makeText(ChangeProfile.this, "올바른 닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
-            } else if (i == 0) {
-                Toast.makeText(ChangeProfile.this, "나이를 선택해주세요", Toast.LENGTH_SHORT).show();
-            } else if (newSex.equals("")) {
-                Toast.makeText(ChangeProfile.this, "성별을 선택해주세요", Toast.LENGTH_SHORT).show();
-            } else {
-                relativeLayout.setVisibility(View.VISIBLE);
-
-                updateUser(newName, newSex, newAge);
-            }
-
         });
     }
 
@@ -286,22 +309,224 @@ public class ChangeProfile extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        if (imageUri != null) {
-                            uploadPic();
-                        } else {
-                            ifNoAddPic();
+                        if (myPicUri.equals(nullPic) || myPicUri.equals(nullPicF)) {//원래 pic 없는 상태에서
+                            if (deletePic.isChecked()) {//pic 추가했을때
+                                noPicAddNewPic();
+                            } else {//pic 추가 안했을때
+                                noPicNoNewPic();
+                            }
+                        } else {//원래 pic 있는 상태에서
+                            if (deletePic.isChecked()) {
+                                if (imageUri != null) {//pic변경할때
+                                    hasPicChangePic();
+                                } else {//pic 안바꿀때
+                                    hasPicNochangePic();
+                                }
+                            } else {//pic 삭제할때
+                                hasPicDeletePic();
+                            }
                         }
-                        Log.d("ChangeProfile>>>", "check2");
+
+//                        if (imageUri != null) {//새로운 이미지 있을때
+//                            uploadPic();
+//                        } else {//새로운이미지 없을때
+//                            ifNoAddPic();
+//                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        relativeLayout.setVisibility(View.GONE);
+                        load.setVisibility(View.GONE);
                         Toast.makeText(ChangeProfile.this, "네트워크문제로 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
+
+    private void noPicAddNewPic() {
+        final ProgressDialog pd = new ProgressDialog(ChangeProfile.this);
+        pd.setCancelable(false);
+        pd.setTitle("이미지 업로드 중...");
+        pd.show();
+
+        StorageReference storageReference1 = storageReference.child("images/" + myUid);
+        storageReference1.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) { //storage에 image file 여부 확인
+                if (listResult.getItems().size() == 0) {
+                    noPicAddNewPic2(myUid + "count1", pd);
+                } else {
+                    for (StorageReference listResult1 : listResult.getItems()) {
+                        if (listResult1.getName().equals(myUid + "count1")) {
+                            noPicAddNewPic2(myUid + "count2", pd);
+                            storageReference.child("images/" + myUid + "/" + myUid + "count1").delete();
+                        } else if (listResult1.getName().equals(myUid + "count2")) {
+                            noPicAddNewPic2(myUid + "count1", pd);
+                            storageReference.child("images/" + myUid + "/" + myUid + "count2").delete();
+                        }
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("ChangeProfile>>>", "onFailure");
+            }
+        });
+    }
+
+    private void noPicAddNewPic2(String fileName, ProgressDialog pd) {
+        StorageReference riversRef = storageReference.child("images/" + myUid + "/" + fileName);
+        riversRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                //upload pic in firestore
+                storageReference.child("images/" + myUid + "/" + fileName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Log.d("ChangeProfile>>>", "test upload onSuccess");
+                        newPicUri = uri.toString();
+                        updateFirestoreUserPic(newPicUri);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });//upload pic in firestore
+                pd.dismiss();
+                Snackbar.make(findViewById(android.R.id.content), "이미지 업로드 성공", Snackbar.LENGTH_LONG).show();
+//                goToMain();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                pd.dismiss();
+                load.setVisibility(View.GONE);
+                Toast.makeText(ChangeProfile.this, "업로드실패", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                pd.setMessage("Pro: " + (int) progressPercent + "%");
+            }
+        });
+    }
+
+    private void noPicNoNewPic() {
+        Map<String, Object> map = new HashMap<>();
+        if (newSex.equals("남자")) {
+            map.put("pic", nullPic);
+        } else {
+            map.put("pic", nullPicF);
+        }
+        db.collection("users").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                f2change();
+            }
+        });
+    }
+
+    private void hasPicChangePic() {
+        final ProgressDialog pd = new ProgressDialog(ChangeProfile.this);
+        pd.setCancelable(false);
+        pd.setTitle("이미지 업로드 중...");
+        pd.show();
+
+        StorageReference storageReference1 = storageReference.child("images/" + myUid);
+        storageReference1.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) { //storage에 image file 여부 확인
+                for (StorageReference listResult1 : listResult.getItems()) {
+                    if (listResult1.getName().equals(myUid + "count1")) {
+                        noPicAddNewPic2(myUid + "count2", pd);
+                        storageReference.child("images/" + myUid + "/" + myUid + "count1").delete();
+                    } else if (listResult1.getName().equals(myUid + "count2")) {
+                        noPicAddNewPic2(myUid + "count1", pd);
+                        storageReference.child("images/" + myUid + "/" + myUid + "count2").delete();
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("ChangeProfile>>>", "onFailure");
+            }
+        });
+    }
+
+    private void hasPicNochangePic() {
+        Map<String, Object> map = new HashMap<>();
+        if (newSex.equals("남자")) {
+            map.put("pic", nullPic);
+        } else {
+            map.put("pic", nullPicF);
+        }
+        db.collection("users").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                f2change();
+            }
+        });
+    }
+
+    private void hasPicDeletePic() {
+        StorageReference storageReference1 = storageReference.child("images/" + myUid);
+        storageReference1.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) { //storage에 image file 여부 확인
+                for (StorageReference listResult1 : listResult.getItems()) {
+                    if (listResult1.getName().equals(myUid + "count1")) {
+                        storageReference.child("images/" + myUid + "/" + myUid + "count1").delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Map<String, Object> map = new HashMap<>();
+                                if (newSex.equals("남자")) {
+                                    map.put("pic", nullPic);
+                                } else {
+                                    map.put("pic", nullPicF);
+                                }
+                                db.collection("users").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        f2change();
+                                    }
+                                });
+                            }
+                        });
+                    } else if (listResult1.getName().equals(myUid + "count2")) {
+                        storageReference.child("images/" + myUid + "/" + myUid + "count2").delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Map<String, Object> map = new HashMap<>();
+                                if (newSex.equals("남자")) {
+                                    map.put("pic", nullPic);
+                                } else {
+                                    map.put("pic", nullPicF);
+                                }
+                                db.collection("users").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        f2change();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("ChangeProfile>>>", "onFailure");
+            }
+        });
+    }
+
+
+    /**/
 
     private void uploadPic() {//pic 변경 및 신규등록
         final ProgressDialog pd = new ProgressDialog(ChangeProfile.this);
@@ -337,7 +562,7 @@ public class ChangeProfile extends AppCompatActivity {
     }
 
     private void ifNoAddPic() {
-        if (willdelete) {//사진 삭제할때
+        if (!deletePic.isChecked()) {//사진 삭제할때
             Log.d("ChangeProfile>>>", "testtest1");
             Map<String, Object> map = new HashMap<>();
             if (newSex.equals("남자")) {
@@ -435,11 +660,13 @@ public class ChangeProfile extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
             imageUri = data.getData();
-            imageView.setImageURI(imageUri);
+            imageView.setImageURI(imageUri);//glide 사용하기
+            deletePic.setEnabled(true);
+            deletePic.setChecked(true);
         }
     }
 
-    private void uploadPic2(String fileName, ProgressDialog pd) {//storage에 image file 업로드하기
+    private void uploadPic2(String fileName, ProgressDialog pd) {//storage에 image file 업로드
         StorageReference riversRef = storageReference.child("images/" + myUid + "/" + fileName);
         riversRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -450,7 +677,7 @@ public class ChangeProfile extends AppCompatActivity {
                     public void onSuccess(Uri uri) {
                         Log.d("ChangeProfile>>>", "test upload onSuccess");
                         newPicUri = uri.toString();
-                        updateFirestoreUser(newPicUri);
+                        updateFirestoreUserPic(newPicUri);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -459,7 +686,6 @@ public class ChangeProfile extends AppCompatActivity {
                     }
                 });//upload pic in firestore
                 pd.dismiss();
-                relativeLayout.setVisibility(View.GONE);
                 Snackbar.make(findViewById(android.R.id.content), "이미지 업로드 성공", Snackbar.LENGTH_LONG).show();
 //                goToMain();
             }
@@ -467,7 +693,7 @@ public class ChangeProfile extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 pd.dismiss();
-                relativeLayout.setVisibility(View.GONE);
+                load.setVisibility(View.GONE);
                 Toast.makeText(ChangeProfile.this, "업로드실패", Toast.LENGTH_SHORT).show();
             }
         }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -478,98 +704,6 @@ public class ChangeProfile extends AppCompatActivity {
             }
         });
     }
-
-//    private void f2changepic() {
-//        //if delete pic
-//        //f2 change pic
-//        Map<String, Object> map2 = new HashMap<>();
-//        if (mySex.equals("남자")) {
-//            map2.put("pic", nullPic);
-//            map2.put("sex", newSex);
-//            map2.put("age", newAge);
-//            map2.put("name", newName);
-//        } else {
-//            map2.put("pic", nullPicF);
-//            map2.put("sex", newSex);
-//            map2.put("age", newAge);
-//            map2.put("name", newName);
-//        }
-//
-//        db.collection("f2messege").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    DocumentSnapshot snapshot = task.getResult();
-//                    if (snapshot != null && snapshot.exists()) {
-//                        db.collection("f2messege").document(myUid).update(map2).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                            @Override
-//                            public void onSuccess(Void aVoid) {//storage mypic delete
-//                                f3changePic();
-//                            }
-//                        });
-//                    } else {
-//                        goToMain();
-//                    }
-//                } else {
-//                    Log.d("ChangeProfile>>>", "onFailed2");
-//                }
-//            }
-//        });
-//    }
-//
-//    private void f3changePic() {
-//        Map<String, Object> map2 = new HashMap<>();
-//        if (mySex.equals("남자")) {
-//            map2.put("pic", nullPic);
-//            map2.put("sex", newSex);
-//            map2.put("age", newAge);
-//            map2.put("name", newName);
-//        } else {
-//            map2.put("pic", nullPicF);
-//            map2.put("sex", newSex);
-//            map2.put("age", newAge);
-//            map2.put("name", newName);
-//        }
-//        db.collection("f3messege").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    DocumentSnapshot snapshot = task.getResult();
-//                    if (snapshot != null && snapshot.exists()) {
-//                        db.collection("f3messege").document(myUid).update(map2).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                            @Override
-//                            public void onSuccess(Void aVoid) {//storage mypic delete
-//                                goToMain();
-//                            }
-//                        });
-//                    } else {
-//                        goToMain();
-//                    }
-//                }
-//            }
-//        });
-//    }
-
-//    private void f4change() {
-//        reference.getRef().child("myroom").child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-//            @Override
-//            public void onSuccess(DataSnapshot dataSnapshot) {
-//                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-//                    reference.getRef().child("messege").child(dataSnapshot1.getKey()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-//                        @Override
-//                        public void onSuccess(DataSnapshot dataSnapshot) {
-//                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                                if (snapshot.getKey().equals(myUid)) {
-//                                    Map<String, Object> map = new HashMap<>();
-//                                    map.put("age")
-//                                }
-//                            }
-//                        }
-//                    });
-//                }
-//            }
-//        });
-//    }
 
     private void setagespin() {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(ChangeProfile.this, android.R.layout.select_dialog_item, items);
@@ -594,7 +728,7 @@ public class ChangeProfile extends AppCompatActivity {
         });
     }
 
-    private void updateFirestoreUser(String uri) {
+    private void updateFirestoreUserPic(String uri) {
         Map<String, Object> userPic = new HashMap<>();
         userPic.put("pic", uri);
         Log.d("ChangeProfile>>>", "test updateFirestoreUser");
@@ -614,11 +748,10 @@ public class ChangeProfile extends AppCompatActivity {
         map.put("name", newName);
         map.put("sex", newSex);
         map.put("age", newAge);
+
         if (newPicUri != null) {
             map.put("pic", newPicUri);
-            Log.d("ChangeProfile>>>", "test newPicUri have f2");
         } else {
-            Log.d("ChangeProfile>>>", "test newPicUri null f2");
             if (newSex.equals("남자")) {
                 map.put("pic", nullPic);
             } else {

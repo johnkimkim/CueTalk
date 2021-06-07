@@ -3,6 +3,7 @@ package com.tistory.starcue.cuetalk.adpater;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +14,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -89,7 +96,24 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
 
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
-        requestManager.load(arrayList.get(position).getPic()).override(150,150).circleCrop().into(holder.imageView);
+        requestManager
+                .load(arrayList.get(position).getPic())
+                .override(150,150)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        holder.load.setVisibility(View.GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        holder.load.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .circleCrop()
+                .into(holder.imageView);
         if (arrayList.get(position).getPic().equals(nullPic) && arrayList.get(position).getPic().equals(nullPicF)) {
             holder.imageView.setEnabled(false);
         } else {
@@ -254,6 +278,7 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
+        CircularDotsLoader load;
         TextView name;
         TextView sex;
         TextView age;
@@ -263,6 +288,7 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
             this.imageView = itemView.findViewById(R.id.adress_room_layout_pic);
+            this.load = itemView.findViewById(R.id.adress_room_layout_pic_load);
             this.name = itemView.findViewById(R.id.adress_room_layout_name);
             this.sex = itemView.findViewById(R.id.adress_room_layout_sex);
             this.age = itemView.findViewById(R.id.adress_room_layout_age);

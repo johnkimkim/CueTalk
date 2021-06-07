@@ -111,30 +111,11 @@ public class Fragment1 extends Fragment {
         String pn = mUser.getPhoneNumber().substring(9, 13);
         Log.d("Fragment1>>>", "testtest: " + pn);
 
-        databaseHandler.setDB(getActivity());
-        databaseHandler = new DatabaseHandler(getActivity());
-        sqLiteDatabase = databaseHandler.getWritableDatabase();
-
         Button testbtn = viewGroup.findViewById(R.id.testbtn);
-        Button testbtn1 = viewGroup.findViewById(R.id.testbtn1);
-        Button testbtn2 = viewGroup.findViewById(R.id.testbtn2);
         testbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                databaseHandler.roomnameinsert("roomname");
-            }
-        });
-        testbtn1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("Fragment1>>>", "testtest: " + getRoomname());
-            }
-        });
-        testbtn2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                databaseHandler.roomnamedelete();
             }
         });
     }

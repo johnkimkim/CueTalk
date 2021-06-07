@@ -155,79 +155,6 @@ public class Fragment1 extends Fragment {
         btn1OnClick();
         btn2OnClick();
 
-//        try {
-//            Field popup = Spinner.class.getDeclaredField("mPopup");
-//            popup.setAccessible(true);
-//            ListPopupWindow window = (ListPopupWindow) popup.get(spinner1);
-//            window.setBackgroundDrawable(getResources().getDrawable(R.drawable.spinner_popup_outline));
-//        } catch (NoClassDefFoundError | ClassCastException | NoSuchFieldException | IllegalAccessException e) {
-//            e.printStackTrace();
-//        }
-
-//        adapter1 = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_item, firstAdressList);
-//        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_item, adressList);
-//        adapter1.setDropDownViewResource(android.R.layout.select_dialog_item);
-//
-//        adapter.setDropDownViewResource(android.R.layout.select_dialog_item);
-//        spinner1.setAdapter(adapter1);
-//        spinner.setAdapter(adapter);
-//        adapter1.notifyDataSetChanged();
-//        adapter.notifyDataSetChanged();
-
-//        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                String s = firstAdressList.get(i);
-//                if (!s.equals("지역 선택")) {
-//                    spinner.setEnabled(true);
-//                    setAdressList(s);
-//                } else {
-//                    onlyAdressList.clear();
-//                    adressList.clear();
-//                    onlyAdressList.add("방 선택");
-//                    adressList.add("방 선택");
-//                    spinner.setEnabled(false);
-//                    spinner.setSelection(0);
-//                }
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
-
-//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                String s = onlyAdressList.get(i);
-//                if (!s.equals("방 선택")) {
-//                    MainActivity.loading.setVisibility(View.VISIBLE);
-//                    reference.getRef().child("adressRoom").child(s).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-//                        @Override
-//                        public void onSuccess(DataSnapshot dataSnapshot) {
-//                            if (dataSnapshot.getChildrenCount() < 30) {
-//                                setDbAdress(s);
-//                                Intent intent = new Intent(getActivity(), AdressRoom.class);
-////                                intent.putExtra("adress", s);
-//                                startActivity(intent);
-//                                spinner1.setSelection(0);
-//                                spinner.setSelection(0);
-//                                MainActivity.loading.setVisibility(View.GONE);
-//                            } else {
-//                                Toast.makeText(getActivity(), "대화방 인원수가 꽉 찼습니다", Toast.LENGTH_SHORT).show();
-//                            }
-//                        }
-//                    });
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//                Toast.makeText(getActivity(), "nothing", Toast.LENGTH_LONG).show();
-//            }
-//        });
 
         testclass(rootView);
 
@@ -320,7 +247,7 @@ public class Fragment1 extends Fragment {
         btn2listview.setAdapter(adapter2);
         adapter2.notifyDataSetChanged();
 
-        reference.getRef().child("adressRoom").addValueEventListener(new ValueEventListener() {
+        reference.getRef().child("adressRoom").child(onlyAdressList.get(1).substring(0, onlyAdressList.get(1).length() - 1)).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (int i = 0; i < adressList.size(); i++) {
@@ -570,7 +497,7 @@ public class Fragment1 extends Fragment {
         adressList.add(s + "4");
         adressList.add(s + "5");
 
-        reference.getRef().child("adressRoom").addValueEventListener(new ValueEventListener() {
+        reference.getRef().child("adressRoom").child(onlyAdressList.get(1).substring(0, onlyAdressList.get(1).length() - 1)).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (int i = 0; i < adressList.size(); i++) {
@@ -677,7 +604,7 @@ public class Fragment1 extends Fragment {
                 public void onClick(View view) {
                     alertDialog2.dismiss();
                     MainActivity.loading.setVisibility(View.VISIBLE);
-                    reference.getRef().child("adressRoom").child(onlyAdressList.get(i)).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    reference.getRef().child("adressRoom").child(onlyAdressList.get(i).substring(0, onlyAdressList.get(i).length() - 1)).child(onlyAdressList.get(i)).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                         @Override
                         public void onSuccess(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.getChildrenCount() < 30) {

@@ -79,29 +79,6 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
         mAuth = FirebaseAuth.getInstance();
         myUid = mAuth.getUid();
 
-//        if (bottomList.get(position).getPic() == null) {
-//            if (bottomList.get(position).getSex().equals("남자")) {
-//                Glide.with(holder.imageView)
-//                        .load(nullPic)
-//                        .override(150, 150)
-//                        .circleCrop()
-//                        .into(holder.imageView);
-//            } else {
-//                Glide.with(holder.imageView)
-//                        .load(nullPicF)
-//                        .override(150, 150)
-//                        .circleCrop()
-//                        .into(holder.imageView);
-//            }
-//            holder.imageView.setEnabled(false);
-//        } else {
-//            Glide.with(holder.imageView)
-//                    .load(bottomList.get(position).getPic())
-//                    .override(150, 150)
-//                    .circleCrop()
-//                    .into(holder.imageView);
-//            holder.imageView.setEnabled(true);
-//        }
         requestManager.load(bottomList.get(position).getPic()).override(150,150).circleCrop().into(holder.imageView);
         if (bottomList.get(position).getPic().equals(nullPic) && bottomList.get(position).getPic().equals(nullPicF)) {
             holder.imageView.setEnabled(false);
@@ -144,6 +121,7 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
                 AdressRoom.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
                 String adress = getAdress();
+                String adressm = adress.substring(0, adress.length() - 1);
                 myUid = mAuth.getUid();
                 String userUid = bottomList.get(position).getUid();
                 String userPic = bottomList.get(position).getPic();
@@ -157,10 +135,10 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
 //                databaseHandler.insertWhere(myUid);
 
                 Map<String, Object> updateUser = new HashMap<>();
-                updateUser.put("/adressRoom/" + adress + "/" + myUid + "/" + "/ischat/", 2);
-                updateUser.put("/adressRoom/" + adress + "/" + myUid + "/" + "/where/", myUid);
-                updateUser.put("/adressRoom/" + adress + "/" + userUid + "/" + "/ischat/", 2);
-                updateUser.put("/adressRoom/" + adress + "/" + userUid + "/" + "/where/", myUid);
+                updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + myUid + "/" + "/ischat/", 2);
+                updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + myUid + "/" + "/where/", myUid);
+                updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + userUid + "/" + "/ischat/", 2);
+                updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + userUid + "/" + "/where/", myUid);
                 reference.updateChildren(updateUser).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -196,6 +174,7 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
     }
 
     private void creatChatting(String where, String myUid, String userUid, String userPic, String userName, String userSex, String userAge, String userLatitude, String userLongitude) {
+        String wherem = where.substring(0, where.length() - 1);
         db = FirebaseFirestore.getInstance();
 
         reference = FirebaseDatabase.getInstance().getReference();
@@ -218,23 +197,23 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
                 String age = documentSnapshot.getString("age");
 
                 Map<String, Object> updateUser = new HashMap<>();
-                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/uid/", myUid);
-                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/pic/", pic);
-                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/name/", name);
-                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/sex/", sex);
-                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/age/", age);
-                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/latitude/", latitudeS);
-                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/longitude/", longitudeS);
-                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/ischat/", "1");
+                updateUser.put("/inchat/" + wherem + "/" + where + "/" + myUid + "/" + "/uid/", myUid);
+                updateUser.put("/inchat/" + wherem + "/" + where + "/" + myUid + "/" + "/pic/", pic);
+                updateUser.put("/inchat/" + wherem + "/" + where + "/" + myUid + "/" + "/name/", name);
+                updateUser.put("/inchat/" + wherem + "/" + where + "/" + myUid + "/" + "/sex/", sex);
+                updateUser.put("/inchat/" + wherem + "/" + where + "/" + myUid + "/" + "/age/", age);
+                updateUser.put("/inchat/" + wherem + "/" + where + "/" + myUid + "/" + "/latitude/", latitudeS);
+                updateUser.put("/inchat/" + wherem + "/" + where + "/" + myUid + "/" + "/longitude/", longitudeS);
+                updateUser.put("/inchat/" + wherem + "/" + where + "/" + myUid + "/" + "/ischat/", "1");
 
-                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/uid/", userUid);
-                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/pic/", userPic);
-                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/name/", userName);
-                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/sex/", userSex);
-                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/age/", userAge);
-                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/latitude/", userLatitude);
-                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/longitude/", userLongitude);
-                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/ischat/", "1");
+                updateUser.put("/inchat/" + wherem + "/" + where + "/" + userUid + "/" + "/uid/", userUid);
+                updateUser.put("/inchat/" + wherem + "/" + where + "/" + userUid + "/" + "/pic/", userPic);
+                updateUser.put("/inchat/" + wherem + "/" + where + "/" + userUid + "/" + "/name/", userName);
+                updateUser.put("/inchat/" + wherem + "/" + where + "/" + userUid + "/" + "/sex/", userSex);
+                updateUser.put("/inchat/" + wherem + "/" + where + "/" + userUid + "/" + "/age/", userAge);
+                updateUser.put("/inchat/" + wherem + "/" + where + "/" + userUid + "/" + "/latitude/", userLatitude);
+                updateUser.put("/inchat/" + wherem + "/" + where + "/" + userUid + "/" + "/longitude/", userLongitude);
+                updateUser.put("/inchat/" + wherem + "/" + where + "/" + userUid + "/" + "/ischat/", "1");
 
                 Map<String, Object> firstmsg = new HashMap<>();
                 firstmsg.put("time", "dlqwkddhksfycjtaptlwl");
@@ -242,7 +221,7 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
                 firstmsg.put("pic", null);
                 firstmsg.put("name", null);
                 firstmsg.put("uri", null);
-                reference.child("inchat").child(where).child("messege").push().updateChildren(firstmsg);
+                reference.child("inchat").child(wherem).child(where).child("messege").push().updateChildren(firstmsg);
                 reference.updateChildren(updateUser);
             }
         }).addOnFailureListener(new OnFailureListener() {

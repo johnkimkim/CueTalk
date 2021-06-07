@@ -92,6 +92,7 @@ public class ChatRoom extends AppCompatActivity {
     String picUri;
 
     String where;
+    String wherem;
 
     Activity activity;
 
@@ -101,6 +102,7 @@ public class ChatRoom extends AppCompatActivity {
         setContentView(R.layout.chat_room);
 
         where = getIntent().getStringExtra("intentwhere");//양쪽 다 where 가지고있음
+        wherem = where.substring(0, where.length() - 1);
 
         activity = ChatRoom.this;
 
@@ -140,7 +142,7 @@ public class ChatRoom extends AppCompatActivity {
 
         recyclerView.setAdapter(adapter);
 
-        reference.getRef().child("inchat").child(where).child("messege").addChildEventListener(new ChildEventListener() {
+        reference.getRef().child("inchat").child(wherem).child(where).child("messege").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Log.d("ChatRoom>>>", "messege get key: " + snapshot.getKey());
@@ -202,7 +204,7 @@ public class ChatRoom extends AppCompatActivity {
         sendmsg.put("/name/", myName);
         sendmsg.put("/pic/", myPic);
         sendmsg.put("/time/", getTime());
-        reference.child("inchat").child(where).child("messege").push().updateChildren(sendmsg);
+        reference.child("inchat").child(wherem).child(where).child("messege").push().updateChildren(sendmsg);
     }
 
     private void setinit() {
@@ -227,7 +229,7 @@ public class ChatRoom extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d("ChatRoom>>>", "get where: ");
                 Log.d("ChatRoom>>>", "get where: " + where);
-                reference.getRef().child("inchat").child(where).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                reference.getRef().child("inchat").child(wherem).child(where).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                     @Override
                     public void onSuccess(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -248,7 +250,7 @@ public class ChatRoom extends AppCompatActivity {
 
 
 
-                reference.getRef().child("inchat").child(where).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                reference.getRef().child("inchat").child(wherem).child(where).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                     @Override
                     public void onSuccess(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -370,7 +372,7 @@ public class ChatRoom extends AppCompatActivity {
     }
 
     private void checkDbChange() {
-        reference.getRef().child("inchat").child(where).addChildEventListener(new ChildEventListener() {
+        reference.getRef().child("inchat").child(wherem).child(where).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
@@ -404,8 +406,8 @@ public class ChatRoom extends AppCompatActivity {
 
     private void deleteMydb() {//내가 먼저 대화방 나갔을때
         Map<String, Object> updateUser = new HashMap<>();
-        updateUser.put("/adressRoom/" + getAdress() + "/" + myUid + "/" + "/ischat/", 1);
-        updateUser.put("/inchat/" + where + "/" + myUid + "/ischat/", "2");
+        updateUser.put("/adressRoom/" + getAdress().substring(0, getAdress().length() - 1) + "/" + getAdress() + "/" + myUid + "/" + "/ischat/", 1);
+        updateUser.put("/inchat/" + wherem + "/" + where + "/" + myUid + "/ischat/", "2");
         Log.d("ChatRoom>>>", "go out get where: " + where);
 
         deleteMyStoragePic();
@@ -416,7 +418,7 @@ public class ChatRoom extends AppCompatActivity {
                 isClickBtn = true;
 
                 Map<String, Object> updateUser1 = new HashMap<>();
-                updateUser1.put("/adressRoom/" + where + "/" + myUid + "/" + "/where/", null);
+                updateUser1.put("/adressRoom/" + wherem + "/" + where + "/" + myUid + "/" + "/where/", null);
                 reference.updateChildren(updateUser1);
                 alertDialog.dismiss();
                 goToAdressRoom();
@@ -427,15 +429,15 @@ public class ChatRoom extends AppCompatActivity {
 
     private void deleteMydbA() {//상대방이 대화방 나갔을때
         Map<String, Object> updateUser = new HashMap<>();
-        updateUser.put("/adressRoom/" + getAdress() + "/" + myUid + "/" + "/ischat/", 1);
+        updateUser.put("/adressRoom/" + getAdress().substring(0, getAdress().length() - 1) + "/" + getAdress() + "/" + myUid + "/" + "/ischat/", 1);
         reference.updateChildren(updateUser);
 
         deleteMyStoragePic();
-        reference.getRef().child("inchat").child(where).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+        reference.getRef().child("inchat").child(wherem).child(where).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Map<String, Object> updateUser1 = new HashMap<>();
-                updateUser1.put("/adressRoom/" + where + "/" + myUid + "/" + "/where/", null);
+                updateUser1.put("/adressRoom/" + wherem + "/" + where + "/" + myUid + "/" + "/where/", null);
                 reference.updateChildren(updateUser1);
                 alertDialogA.dismiss();
                 goToAdressRoom();
@@ -597,7 +599,7 @@ public class ChatRoom extends AppCompatActivity {
         sendimgmap.put("name", myName);
         sendimgmap.put("pic", myPic);
         sendimgmap.put("time", getTime());
-        reference.child("inchat").child(where).child("messege").push().updateChildren(sendimgmap).addOnSuccessListener(new OnSuccessListener<Void>() {
+        reference.child("inchat").child(wherem).child(where).child("messege").push().updateChildren(sendimgmap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
 

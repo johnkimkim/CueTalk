@@ -77,6 +77,7 @@ public class AdressRoom extends AppCompatActivity {
     String name, sex, age, pic;
     String uid;
     String adress;
+    String adressm;
 
     private GpsTracker gpsTracker;
 
@@ -121,6 +122,7 @@ public class AdressRoom extends AppCompatActivity {
 //        databaseHandler.deleteWhere();
 
         adress = getAdress();
+        adressm = adress.substring(0, adress.length() - 1);
 
 //        adress = getIntent().getStringExtra("adress");
 //        Log.d("AdressRoom>>>", "get intent adress: " + adress);
@@ -260,7 +262,7 @@ public class AdressRoom extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         reference = FirebaseDatabase.getInstance().getReference();
 
-        reference.getRef().child("adressRoom").child(adress).addChildEventListener(new ChildEventListener() {
+        reference.getRef().child("adressRoom").child(adressm).child(adress).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {//db추가시
                 Log.d("AdressRoom>>>", "onChildAdded");
@@ -302,7 +304,7 @@ public class AdressRoom extends AppCompatActivity {
             }
 
         });
-        reference.getRef().child("adressRoom").child(adress).addListenerForSingleValueEvent(new ValueEventListener() {//최초 list 불러오기
+        reference.getRef().child("adressRoom").child(adressm).child(adress).addListenerForSingleValueEvent(new ValueEventListener() {//최초 list 불러오기
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -330,7 +332,7 @@ public class AdressRoom extends AppCompatActivity {
             }
         });
 
-        reference.getRef().child("adressRoom").child(adress).child(uid).addValueEventListener(new ValueEventListener() {//db변경시
+        reference.getRef().child("adressRoom").child(adressm).child(adress).child(uid).addValueEventListener(new ValueEventListener() {//db변경시
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Long l = dataSnapshot.child("ischat").getValue(Long.class);
@@ -338,7 +340,7 @@ public class AdressRoom extends AppCompatActivity {
                     int i = l.intValue();
                     if (i == 2) {
                         progressBar.setVisibility(View.VISIBLE);
-                        reference.getRef().child("adressRoom").child(adress).child(uid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                        reference.getRef().child("adressRoom").child(adressm).child(adress).child(uid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                             @Override
                             public void onSuccess(DataSnapshot dataSnapshot) {
                                 goChatRoom = true;
@@ -408,14 +410,14 @@ public class AdressRoom extends AppCompatActivity {
     private void updateAdressRoom(String picUri, String uid, String name, String sex, String age, String latitude, String longitude, int ischat) {
         reference = FirebaseDatabase.getInstance().getReference();
         Map<String, Object> updateUser = new HashMap<>();
-        updateUser.put("/adressRoom/" + adress + "/" + uid + "/" + "/uid/", uid);
-        updateUser.put("/adressRoom/" + adress + "/" + uid + "/" + "/pic/", picUri);
-        updateUser.put("/adressRoom/" + adress + "/" + uid + "/" + "/name/", name);
-        updateUser.put("/adressRoom/" + adress + "/" + uid + "/" + "/sex", sex);
-        updateUser.put("/adressRoom/" + adress + "/" + uid + "/" + "/age/", age);
-        updateUser.put("/adressRoom/" + adress + "/" + uid + "/" + "/latitude/", latitude);
-        updateUser.put("/adressRoom/" + adress + "/" + uid + "/" + "/longitude/", longitude);
-        updateUser.put("/adressRoom/" + adress + "/" + uid + "/" + "/ischat/", ischat);
+        updateUser.put("/adressRoom/" + "/" + adressm + "/" + adress + "/" + uid + "/" + "/uid/", uid);
+        updateUser.put("/adressRoom/" + "/" + adressm + "/" + adress + "/" + uid + "/" + "/pic/", picUri);
+        updateUser.put("/adressRoom/" + "/" + adressm + "/" + adress + "/" + uid + "/" + "/name/", name);
+        updateUser.put("/adressRoom/" + "/" + adressm + "/" + adress + "/" + uid + "/" + "/sex", sex);
+        updateUser.put("/adressRoom/" + "/" + adressm + "/" + adress + "/" + uid + "/" + "/age/", age);
+        updateUser.put("/adressRoom/" + "/" + adressm + "/" + adress + "/" + uid + "/" + "/latitude/", latitude);
+        updateUser.put("/adressRoom/" + "/" + adressm + "/" + adress + "/" + uid + "/" + "/longitude/", longitude);
+        updateUser.put("/adressRoom/" + "/" + adressm + "/" + adress + "/" + uid + "/" + "/ischat/", ischat);
         reference.updateChildren(updateUser);
     }
 
@@ -428,7 +430,7 @@ public class AdressRoom extends AppCompatActivity {
         Log.d("AdressRoom>>>", "goToMain");
         deleteBottomList();
         reference = FirebaseDatabase.getInstance().getReference();
-        reference.getRef().child("adressRoom").child(adress).child(uid).removeValue();
+        reference.getRef().child("adressRoom").child(adressm).child(adress).child(uid).removeValue();
         reference.getRef().child("대화신청").child(uid).removeValue();
         databaseHandler.adressdelete();
         finish();

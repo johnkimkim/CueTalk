@@ -2,10 +2,11 @@ package com.tistory.starcue.cuetalk;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -14,11 +15,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -60,10 +61,10 @@ public class LoginActivity extends AppCompatActivity {
     RadioGroup radioGroup;
     Spinner agespin;
     RelativeLayout relativeLayout;
-    ProgressBar progressBar;
     ImageView pic;
     Button addpic;
     Uri imageUri;
+    TextView editidcount;
 
     String[] items = {"나이", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70"};
 
@@ -91,24 +92,45 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setinit() {
-        editid = findViewById(R.id.editid);
+        editid = findViewById(R.id.longin_activity_editid);
         loginbtn = findViewById(R.id.loginbtn);
-        radiomale = findViewById(R.id.sexmale);
-        radiofemale = findViewById(R.id.sexfemale);
-        radioGroup = findViewById(R.id.radiogroup);
-        agespin = findViewById(R.id.agespin);
+        radiomale = findViewById(R.id.login_activity_sexmale);
+        radiofemale = findViewById(R.id.login_activity_sexfemale);
+        radioGroup = findViewById(R.id.login_activity_radiogroup);
+        agespin = findViewById(R.id.longin_activity_agespin);
         relativeLayout = findViewById(R.id.progresslayout);
-        progressBar = findViewById(R.id.progress_bar);
         pic = findViewById(R.id.login_profile_image);
         addpic = findViewById(R.id.login_add_image);
+        editidcount = findViewById(R.id.login_activity_name_count);
 
         relativeLayout.setVisibility(View.GONE);
-        progressBar.setVisibility(View.GONE);
 
         addpic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 chooosePic();
+            }
+        });
+
+        setEditTextWithCount();
+    }
+
+    private void setEditTextWithCount() {
+        editid.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String input = editid.getText().toString();
+                editidcount.setText(input.length() + " / 5");
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
     }
@@ -132,6 +154,7 @@ public class LoginActivity extends AppCompatActivity {
     private void uploadPic() {
 
         final ProgressDialog pd = new ProgressDialog(LoginActivity.this);
+        pd.setCancelable(false);
         pd.setTitle("이미지 업로드 중...");
         pd.show();
 
@@ -161,7 +184,6 @@ public class LoginActivity extends AppCompatActivity {
 
                                         }
                                     });//upload pic in firestore
-                            goToMain();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -200,6 +222,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setLoginbtn() {
         loginbtn.setOnClickListener(view -> {
+            relativeLayout.setVisibility(View.VISIBLE);
             hideKeyboard(view);
             if (radiomale.isChecked()) {
                 sexstring = "남자";
@@ -214,23 +237,16 @@ public class LoginActivity extends AppCompatActivity {
             int i = Integer.parseInt(agestring);
 
             if (name.equals("")) {
-                Toast.makeText(LoginActivity.this, "name", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
             } else if (name.matches(".*[ㄱ-ㅎ ㅏ-ㅣ]+.*")) {
                 Toast.makeText(LoginActivity.this, "올바른 닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
             } else if (i == 0) {
-                Toast.makeText(LoginActivity.this, "age", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "나이를 선택해주세요", Toast.LENGTH_SHORT).show();
             } else if (sexstring.equals("")) {
-                Toast.makeText(LoginActivity.this, "sex", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "성별을 선택해주세요", Toast.LENGTH_SHORT).show();
             } else {
-                relativeLayout.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.VISIBLE);
 
                 updateUser(name, sexstring, agestring);
-                if (imageUri != null) {
-                    uploadPic();
-                } else {
-                    ifNullPic();
-                }
 
             }
 
@@ -240,8 +256,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setagespin() {
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(LoginActivity.this, android.R.layout.select_dialog_item, items);
-        arrayAdapter.setDropDownViewResource(android.R.layout.select_dialog_item);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(LoginActivity.this, R.layout.change_profile_spinner_layout, R.id.change_profile_spinner_layout_text, items);
+        arrayAdapter.setDropDownViewResource(R.layout.change_profile_spinner_layout);
         agespin.setAdapter(arrayAdapter);
 
         agespin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -280,14 +296,17 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-
+                        if (imageUri != null) {
+                            uploadPic();
+                        } else {
+                            ifNullPic();
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         relativeLayout.setVisibility(View.GONE);
-                        progressBar.setVisibility(View.GONE);
                         Toast.makeText(LoginActivity.this, "네트워크문제로 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -302,7 +321,7 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-
+                        goToMain();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

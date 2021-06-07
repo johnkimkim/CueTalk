@@ -4,7 +4,6 @@ import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
@@ -70,7 +69,7 @@ import java.util.Map;
 
 public class Fragment4ChatRoom extends AppCompatActivity {
 
-    private SharedPreferences sharedPreferences;
+//    private SharedPreferences sharedPreferences;
 
     private static final String serverKey = " AAAAqHwsNuA:APA91bEhOL4uoOR3d0Ys1qbFflQelzTPwaxBFLRI5Prx7tCor-KoivdXAKpLjz_PDlFctKT1iVPhwgXcPq8ioYh_TvaqSHPPjhCc98M5z7g9i3reg8Cqjbn-J0LbXXi0pSeMJa8KuYRk";
     private static final String FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send";
@@ -168,15 +167,15 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         super.onResume();
         cancelNotify(userUid);
 
-        sharedPreferences = getSharedPreferences("saveroomkey", MODE_PRIVATE);
-        if (sharedPreferences != null) {
-            getroomname = sharedPreferences.getString("getroomname", "");
-            if (!getroomname.equals("")) {
-                setState();
-            }
-        }
 
-//        Log.d("Fragment4ChatRoom>>>", "set state onResume roomkey: " + getroomname);
+//        sharedPreferences = getSharedPreferences("saveroomkey", MODE_PRIVATE);
+//        if (sharedPreferences != null) {
+//            getroomname = sharedPreferences.getString("getroomname", "");
+//            if (!getroomname.equals("")) {
+//                setState();
+//            }
+//        }
+
     }
 
     @Override
@@ -189,16 +188,16 @@ public class Fragment4ChatRoom extends AppCompatActivity {
 
         setOutState();
 
-        if (!pressBack) {//back버튼 누르지 않고 밖으로 나갔을때 getroomname 저장
-            sharedPreferences = getSharedPreferences("saveroomkey", MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("getroomname", getroomname);
-            editor.apply();
-        } else {//back버튼 눌렀을때는 sharedPreferences 삭제
-            sharedPreferences = getSharedPreferences("saveroomkey", MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.remove("getroomname").apply();
-        }
+//        if (!pressBack) {//back버튼 누르지 않고 밖으로 나갔을때 getroomname 저장
+//            sharedPreferences = getSharedPreferences("saveroomkey", MODE_PRIVATE);
+//            SharedPreferences.Editor editor = sharedPreferences.edit();
+//            editor.putString("getroomname", getroomname);
+//            editor.apply();
+//        } else {//back버튼 눌렀을때는 sharedPreferences 삭제
+//            sharedPreferences = getSharedPreferences("saveroomkey", MODE_PRIVATE);
+//            SharedPreferences.Editor editor = sharedPreferences.edit();
+//            editor.remove("getroomname").apply();
+//        }
     }
 
     private void setinit() {

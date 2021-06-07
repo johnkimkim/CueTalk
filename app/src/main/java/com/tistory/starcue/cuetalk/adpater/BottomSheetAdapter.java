@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -120,8 +119,7 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
                 AdressRoom.progressBar.setVisibility(View.VISIBLE);
                 AdressRoom.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
-                String adress = getAdress();
-                String adressm = adress.substring(0, adress.length() - 1);
+
                 myUid = mAuth.getUid();
                 String userUid = bottomList.get(position).getUid();
                 String userPic = bottomList.get(position).getPic();
@@ -130,23 +128,24 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
                 String userAge = bottomList.get(position).getAge();
                 String userLatitude = bottomList.get(position).getLatitude();
                 String userLongitude = bottomList.get(position).getLongitude();
+
+                creatChatting(myUid, myUid, userUid, userPic, userName, userSex, userAge, userLatitude, userLongitude);
+
                 reference = FirebaseDatabase.getInstance().getReference();
 
 //                databaseHandler.insertWhere(myUid);
 
-                Map<String, Object> updateUser = new HashMap<>();
-                updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + myUid + "/" + "/ischat/", 2);
-                updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + myUid + "/" + "/where/", myUid);
-                updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + userUid + "/" + "/ischat/", 2);
-                updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + userUid + "/" + "/where/", myUid);
-                reference.updateChildren(updateUser).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        creatChatting(myUid, myUid, userUid, userPic, userName, userSex, userAge, userLatitude, userLongitude);
-                    }
-                });
-                Log.d("BotttomSheetAdapter>>>", "get adress: " + getAdress());
-
+//                Map<String, Object> updateUser = new HashMap<>();
+//                updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + myUid + "/" + "/ischat/", 2);
+//                updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + myUid + "/" + "/where/", myUid);
+//                updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + userUid + "/" + "/ischat/", 2);
+//                updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + userUid + "/" + "/where/", myUid);
+//                reference.updateChildren(updateUser).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        creatChatting(myUid, myUid, userUid, userPic, userName, userSex, userAge, userLatitude, userLongitude);
+//                    }
+//                });
             }
         });
 
@@ -174,7 +173,6 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
     }
 
     private void creatChatting(String where, String myUid, String userUid, String userPic, String userName, String userSex, String userAge, String userLatitude, String userLongitude) {
-        String wherem = where.substring(0, where.length() - 1);
         db = FirebaseFirestore.getInstance();
 
         reference = FirebaseDatabase.getInstance().getReference();
@@ -197,32 +195,45 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
                 String age = documentSnapshot.getString("age");
 
                 Map<String, Object> updateUser = new HashMap<>();
-                updateUser.put("/inchat/" + wherem + "/" + where + "/" + myUid + "/" + "/uid/", myUid);
-                updateUser.put("/inchat/" + wherem + "/" + where + "/" + myUid + "/" + "/pic/", pic);
-                updateUser.put("/inchat/" + wherem + "/" + where + "/" + myUid + "/" + "/name/", name);
-                updateUser.put("/inchat/" + wherem + "/" + where + "/" + myUid + "/" + "/sex/", sex);
-                updateUser.put("/inchat/" + wherem + "/" + where + "/" + myUid + "/" + "/age/", age);
-                updateUser.put("/inchat/" + wherem + "/" + where + "/" + myUid + "/" + "/latitude/", latitudeS);
-                updateUser.put("/inchat/" + wherem + "/" + where + "/" + myUid + "/" + "/longitude/", longitudeS);
-                updateUser.put("/inchat/" + wherem + "/" + where + "/" + myUid + "/" + "/ischat/", "1");
+                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/uid/", myUid);
+                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/pic/", pic);
+                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/name/", name);
+                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/sex/", sex);
+                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/age/", age);
+                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/latitude/", latitudeS);
+                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/longitude/", longitudeS);
+                updateUser.put("/inchat/" + where + "/" + myUid + "/" + "/ischat/", "1");
 
-                updateUser.put("/inchat/" + wherem + "/" + where + "/" + userUid + "/" + "/uid/", userUid);
-                updateUser.put("/inchat/" + wherem + "/" + where + "/" + userUid + "/" + "/pic/", userPic);
-                updateUser.put("/inchat/" + wherem + "/" + where + "/" + userUid + "/" + "/name/", userName);
-                updateUser.put("/inchat/" + wherem + "/" + where + "/" + userUid + "/" + "/sex/", userSex);
-                updateUser.put("/inchat/" + wherem + "/" + where + "/" + userUid + "/" + "/age/", userAge);
-                updateUser.put("/inchat/" + wherem + "/" + where + "/" + userUid + "/" + "/latitude/", userLatitude);
-                updateUser.put("/inchat/" + wherem + "/" + where + "/" + userUid + "/" + "/longitude/", userLongitude);
-                updateUser.put("/inchat/" + wherem + "/" + where + "/" + userUid + "/" + "/ischat/", "1");
+                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/uid/", userUid);
+                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/pic/", userPic);
+                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/name/", userName);
+                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/sex/", userSex);
+                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/age/", userAge);
+                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/latitude/", userLatitude);
+                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/longitude/", userLongitude);
+                updateUser.put("/inchat/" + where + "/" + userUid + "/" + "/ischat/", "1");
 
+                String adress = getAdress();
+                String adressm = adress.substring(0, adress.length() - 1);
                 Map<String, Object> firstmsg = new HashMap<>();
                 firstmsg.put("time", "dlqwkddhksfycjtaptlwl");
                 firstmsg.put("messege", "dlqwkddhksfycjtaptlwl");
                 firstmsg.put("pic", null);
                 firstmsg.put("name", null);
                 firstmsg.put("uri", null);
-                reference.child("inchat").child(wherem).child(where).child("messege").push().updateChildren(firstmsg);
-                reference.updateChildren(updateUser);
+
+                reference.child("inchat").child(where).child("messege").push().updateChildren(firstmsg);
+                reference.updateChildren(updateUser).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Map<String, Object> updateUser = new HashMap<>();
+                        updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + myUid + "/" + "/ischat/", 2);
+                        updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + myUid + "/" + "/where/", myUid);
+                        updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + userUid + "/" + "/ischat/", 2);
+                        updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + userUid + "/" + "/where/", myUid);
+                        reference.updateChildren(updateUser);
+                    }
+                });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

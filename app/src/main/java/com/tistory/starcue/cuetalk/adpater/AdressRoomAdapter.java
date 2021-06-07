@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.location.Location;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,9 +81,6 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
     @Override
     public CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-//        Context context = parent.getContext();
-//        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adress_room_layout, parent, false);
         CustomViewHolder holder = new CustomViewHolder(view);
 
@@ -93,31 +89,6 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
 
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
-
-        //position에 해당하는 데이터를 뷰홀더의 아이템뷰에 표시
-//        if (arrayList.get(position).getPic() == null) {
-//            if (arrayList.get(position).getSex().equals("남자")) {
-//                Glide.with(holder.imageView)
-//                        .load(nullPic)
-//                        .override(150, 150)
-//                        .circleCrop()
-//                        .into(holder.imageView);
-//            } else {
-//                Glide.with(holder.imageView)
-//                        .load(nullPicF)
-//                        .override(150, 150)
-//                        .circleCrop()
-//                        .into(holder.imageView);
-//            }
-//            holder.imageView.setEnabled(false);
-//        } else {
-//            Glide.with(holder.imageView)
-//                    .load(arrayList.get(position).getPic())
-//                    .override(150, 150)
-//                    .circleCrop()
-//                    .into(holder.imageView);
-//            holder.imageView.setEnabled(true);
-//        }
         requestManager.load(arrayList.get(position).getPic()).override(150,150).circleCrop().into(holder.imageView);
         if (arrayList.get(position).getPic().equals(nullPic) && arrayList.get(position).getPic().equals(nullPicF)) {
             holder.imageView.setEnabled(false);
@@ -150,9 +121,6 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
             int i = (int) Math.floor(ddd) / 1000;
             holder.km.setText(Integer.toString(i) + "km");
         }
-        Log.d("AdressRoomAdapter>>>", "myUid: " + myUid);
-        Log.d("AdressRoomAdapter>>>", "text: " + arrayList.get(position).getUid());
-
 
         if (arrayList.get(position).getUid().equals(myUid)) {
             holder.btn.setEnabled(false);
@@ -173,7 +141,6 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
                 AdressRoom.userList.add(useruid);
                 for (int i = 0; i < AdressRoom.userList.size(); i++) {
                     String testString = AdressRoom.userList.get(i);
-                    Log.d("AdressRoomAdapter>>>", testString);
                 }
 
                 db = FirebaseFirestore.getInstance();
@@ -213,16 +180,9 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
                     @Override
                     public void onSuccess(DataSnapshot dataSnapshot) {
                         int i = (int) dataSnapshot.getChildrenCount();
-                        Log.d("AdressRoomAdapter>>>", "count: " + i);//messege 밑에 child 갯수
-
-                        Log.d("AdressRoomAdapter>>>", "position key: " + arrayList.get(position).getUid());
                         String roomkey = arrayList.get(position).getUid() + myUid;
                         String roomkey1 = myUid + arrayList.get(position).getUid();
-
-                        Log.d("AdressRoomAdpater>>>", "snapshot get key: " + dataSnapshot.getKey());
-
                         if (i == 0) {
-                            Log.d("AdressRoomAdapter>>>", "count = 0");
                             String userUid = arrayList.get(position).getUid();
                             SendMessege sendMessege = new SendMessege(context);
                             sendMessege.setSendMessegeDialog(context, userUid, activity);

@@ -3,10 +3,9 @@ package com.tistory.starcue.cuetalk;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,12 +24,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final String UNIQUE_TABLE_NAME = "uniqueTable";
     private static final String ADRESS_TABLE_NAME = "adress";
+    private static final String ROOMNAME_TABLE_NAME = "roomname";
 
     public static final String UNIQUE = "uniqueField";
     public static final String ADRESS = "adressField";
+    public static final String ROOMNAME = "roomnameField";
 
     private static final String UNIQUE_CREATE_TEAM = "create table if not exists " + UNIQUE_TABLE_NAME + "(" + UNIQUE + "TEXT" + ")";
     private static final String ADRESS_CREATE_TEAM = "create table if not exists " + ADRESS_TABLE_NAME + "(" + ADRESS + "TEXT" + ")";
+    private static final String ROOMNAME_CREATE_TEAM = "create table if not exists " + ROOMNAME_TABLE_NAME + "(" + ROOMNAME + "TEXT" + ")";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSTION);
@@ -73,8 +75,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL("DROP TABLE " + UNIQUE_TABLE_NAME);
         db.execSQL("DROP TABLE " + ADRESS_TABLE_NAME);
+        db.execSQL("DROP TABLE " + ROOMNAME_TABLE_NAME);
         db.execSQL(UNIQUE_CREATE_TEAM);
         db.execSQL(ADRESS_CREATE_TEAM);
+        db.execSQL(ROOMNAME_CREATE_TEAM);
     }
 
     public void openDatabase() {
@@ -113,6 +117,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(UNIQUE, unique);
         sqLiteDatabase.insert(UNIQUE_TABLE_NAME, null, contentValues);
+    }
+
+    public void roomnameinsert(String roomname) {
+        sqLiteDatabase = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ROOMNAME, roomname);
+        sqLiteDatabase.insert(ROOMNAME_TABLE_NAME, null, contentValues);
+    }
+
+    public String getRoomname() {
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from roomname where _rowid_ = 1", null);
+        cursor.moveToFirst();
+        String adress = cursor.getString(0);
+        cursor.close();
+        return adress;
+    }
+
+    public void roomnamedelete() {
+        sqLiteDatabase = this.getWritableDatabase();
+        sqLiteDatabase.execSQL("delete from roomname");
     }
 
     public void changeUnique(String unique) {

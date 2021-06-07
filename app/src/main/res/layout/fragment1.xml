@@ -50,16 +50,34 @@
 
     </RelativeLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true">
     <Button
         android:id="@+id/testbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="30dp"
         android:background="@drawable/button_on_click"
-        android:text="테스트" />
-
+        android:text="추가"
+        android:textColor="@color/white"/>
+        <Button
+            android:id="@+id/testbtn1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_on_click"
+            android:text="출력"
+            android:textColor="@color/white"/>
+        <Button
+            android:id="@+id/testbtn2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_on_click"
+            android:text="삭제"
+            android:textColor="@color/white" />
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -63,7 +63,6 @@ public class ChatRoom extends AppCompatActivity {
     private ChatRoomAdapter adapter;
 
     private DatabaseReference reference;
-    private DatabaseReference reference1;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     StorageReference storageReference;
@@ -91,8 +90,8 @@ public class ChatRoom extends AppCompatActivity {
     Uri imageUri;
     String picUri;
 
-    String where;
-    String wherem;
+//    String where;
+//    String wherem;
 
     Activity activity;
 
@@ -101,8 +100,9 @@ public class ChatRoom extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_room);
 
-        where = getIntent().getStringExtra("intentwhere");//양쪽 다 where 가지고있음
-        wherem = where.substring(0, where.length() - 1);
+//        where = getIntent().getStringExtra("intentwhere");//양쪽 다 where 가지고있음
+////        wherem = where.substring(0, where.length() - 1);
+//        Log.d("ChatRoom>>>", "test get room name: " + where);
 
         activity = ChatRoom.this;
 
@@ -111,7 +111,6 @@ public class ChatRoom extends AppCompatActivity {
 
         setOnClickBackbtn();
 
-        setRecyclerView();
         checkDbChange();
         sendMessege();
 
@@ -130,6 +129,47 @@ public class ChatRoom extends AppCompatActivity {
         AdressRoom.goChatRoom = false;
     }
 
+    private void setinit() {
+        recyclerView = findViewById(R.id.chat_room_recyclerview);
+        addbtn = findViewById(R.id.chat_room_sendimage);
+        sendbtn = findViewById(R.id.chat_room_sendbutton);
+        edit = findViewById(R.id.chat_room_edittext);
+        load = findViewById(R.id.chat_room_progress_load);
+        backbtn = findViewById(R.id.chat_room_backbtn);
+        callbtn = findViewById(R.id.chat_room_callbtn);
+        title = findViewById(R.id.chat_room_title_user);
+        load.setVisibility(View.GONE);
+        sendMessegeBtn = findViewById(R.id.chat_room_send_messege);
+
+        setOnAddbtn();
+        setCallBtn();
+    }
+
+    private void setdb() {
+        db = FirebaseFirestore.getInstance();
+        reference = FirebaseDatabase.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
+        myUid = mAuth.getUid();
+
+        databaseHandler.setDB(ChatRoom.this);
+        databaseHandler = new DatabaseHandler(ChatRoom.this);
+        sqLiteDatabase = databaseHandler.getWritableDatabase();
+
+//        where = getMyWhere();
+
+        db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                myName = documentSnapshot.get("name").toString();
+                myPic = documentSnapshot.get("pic").toString();
+            }
+        });
+
+        sendMessegeBtnOnClick();
+        setRecyclerView();
+    }
+
     private void setRecyclerView() {
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(ChatRoom.this);
@@ -142,7 +182,9 @@ public class ChatRoom extends AppCompatActivity {
 
         recyclerView.setAdapter(adapter);
 
-        reference.getRef().child("inchat").child(wherem).child(where).child("messege").addChildEventListener(new ChildEventListener() {
+        Log.d("ChatRoom>>>", "get room name: " + getRoomname());
+        String roomname = getRoomname();
+        reference.getRef().child("inchat").child(getRoomname()).child("messege").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Log.d("ChatRoom>>>", "messege get key: " + snapshot.getKey());
@@ -204,23 +246,7 @@ public class ChatRoom extends AppCompatActivity {
         sendmsg.put("/name/", myName);
         sendmsg.put("/pic/", myPic);
         sendmsg.put("/time/", getTime());
-        reference.child("inchat").child(wherem).child(where).child("messege").push().updateChildren(sendmsg);
-    }
-
-    private void setinit() {
-        recyclerView = findViewById(R.id.chat_room_recyclerview);
-        addbtn = findViewById(R.id.chat_room_sendimage);
-        sendbtn = findViewById(R.id.chat_room_sendbutton);
-        edit = findViewById(R.id.chat_room_edittext);
-        load = findViewById(R.id.chat_room_progress_load);
-        backbtn = findViewById(R.id.chat_room_backbtn);
-        callbtn = findViewById(R.id.chat_room_callbtn);
-        title = findViewById(R.id.chat_room_title_user);
-        load.setVisibility(View.GONE);
-        sendMessegeBtn = findViewById(R.id.chat_room_send_messege);
-
-        setOnAddbtn();
-        setCallBtn();
+        reference.child("inchat").child(getRoomname()).child("messege").push().updateChildren(sendmsg);
     }
 
     private void setCallBtn() {
@@ -228,13 +254,13 @@ public class ChatRoom extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d("ChatRoom>>>", "get where: ");
-                Log.d("ChatRoom>>>", "get where: " + where);
-                reference.getRef().child("inchat").child(wherem).child(where).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                Log.d("ChatRoom>>>", "get where: " + getRoomname());
+                reference.getRef().child("inchat").child(getRoomname()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                     @Override
                     public void onSuccess(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             if (!snapshot.getKey().equals(myUid) && !snapshot.getKey().equals("messege")) {
-                                DecDialog.ChatRoomDecDialog(ChatRoom.this, snapshot.getKey(), myUid, where);
+                                DecDialog.ChatRoomDecDialog(ChatRoom.this, snapshot.getKey(), myUid, getRoomname());
                             }
                         }
                     }
@@ -247,10 +273,7 @@ public class ChatRoom extends AppCompatActivity {
         sendMessegeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
-
-                reference.getRef().child("inchat").child(wherem).child(where).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                reference.getRef().child("inchat").child(getRoomname()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                     @Override
                     public void onSuccess(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -351,11 +374,11 @@ public class ChatRoom extends AppCompatActivity {
 
         /*Unable to add window -- token android.os.BinderProxy@7c9958a is not valid; is your activity running?*/
 
-        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        alertDialogA.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        Window window = alertDialog.getWindow();
+        Window window = alertDialogA.getWindow();
         int x = (int) (size.x * 0.9);
         int y = (int) (size.y * 0.3);
         window.setLayout(x, y);
@@ -372,7 +395,7 @@ public class ChatRoom extends AppCompatActivity {
     }
 
     private void checkDbChange() {
-        reference.getRef().child("inchat").child(wherem).child(where).addChildEventListener(new ChildEventListener() {
+        reference.getRef().child("inchat").child(getRoomname()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
@@ -407,8 +430,8 @@ public class ChatRoom extends AppCompatActivity {
     private void deleteMydb() {//내가 먼저 대화방 나갔을때
         Map<String, Object> updateUser = new HashMap<>();
         updateUser.put("/adressRoom/" + getAdress().substring(0, getAdress().length() - 1) + "/" + getAdress() + "/" + myUid + "/" + "/ischat/", 1);
-        updateUser.put("/inchat/" + wherem + "/" + where + "/" + myUid + "/ischat/", "2");
-        Log.d("ChatRoom>>>", "go out get where: " + where);
+        updateUser.put("/inchat/" + getRoomname() + "/" + myUid + "/ischat/", "2");
+        Log.d("ChatRoom>>>", "go out get where: " + getRoomname());
 
         deleteMyStoragePic();
 
@@ -418,7 +441,7 @@ public class ChatRoom extends AppCompatActivity {
                 isClickBtn = true;
 
                 Map<String, Object> updateUser1 = new HashMap<>();
-                updateUser1.put("/adressRoom/" + wherem + "/" + where + "/" + myUid + "/" + "/where/", null);
+                updateUser1.put("/adressRoom/" + getAdress().substring(0, getAdress().length() - 1) + "/" + getAdress() + "/" + myUid + "/" + "/where/", null);
                 reference.updateChildren(updateUser1);
                 alertDialog.dismiss();
                 goToAdressRoom();
@@ -433,11 +456,11 @@ public class ChatRoom extends AppCompatActivity {
         reference.updateChildren(updateUser);
 
         deleteMyStoragePic();
-        reference.getRef().child("inchat").child(wherem).child(where).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+        reference.getRef().child("inchat").child(getRoomname()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Map<String, Object> updateUser1 = new HashMap<>();
-                updateUser1.put("/adressRoom/" + wherem + "/" + where + "/" + myUid + "/" + "/where/", null);
+                updateUser1.put("/adressRoom/" + getAdress().substring(0, getAdress().length() - 1) + "/" + getAdress() + "/" + myUid + "/" + "/where/", null);
                 reference.updateChildren(updateUser1);
                 alertDialogA.dismiss();
                 goToAdressRoom();
@@ -455,29 +478,12 @@ public class ChatRoom extends AppCompatActivity {
         return adress;
     }
 
-    private void setdb() {
-        db = FirebaseFirestore.getInstance();
-        reference = FirebaseDatabase.getInstance().getReference();
-        storageReference = FirebaseStorage.getInstance().getReference();
-        mAuth = FirebaseAuth.getInstance();
-        myUid = mAuth.getUid();
-
-        databaseHandler.setDB(ChatRoom.this);
-        databaseHandler = new DatabaseHandler(ChatRoom.this);
-        sqLiteDatabase = databaseHandler.getWritableDatabase();
-
-//        where = getMyWhere();
-
-        db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                myName = documentSnapshot.get("name").toString();
-                myPic = documentSnapshot.get("pic").toString();
-            }
-        });
-
-        sendMessegeBtnOnClick();
-
+    private String getRoomname() {
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from roomname where _rowid_ = 1", null);
+        cursor.moveToFirst();
+        String adress = cursor.getString(0);
+        cursor.close();
+        return adress;
     }
 
     private String getMyAdress() {
@@ -599,7 +605,7 @@ public class ChatRoom extends AppCompatActivity {
         sendimgmap.put("name", myName);
         sendimgmap.put("pic", myPic);
         sendimgmap.put("time", getTime());
-        reference.child("inchat").child(wherem).child(where).child("messege").push().updateChildren(sendimgmap).addOnSuccessListener(new OnSuccessListener<Void>() {
+        reference.child("inchat").child(getRoomname()).child("messege").push().updateChildren(sendimgmap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
 

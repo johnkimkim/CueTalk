@@ -3,6 +3,7 @@ package com.tistory.starcue.cuetalk.fragment;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -58,11 +59,8 @@ import com.tistory.starcue.cuetalk.f1viewpager.F1ViewpagerIntent;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 public class Fragment1 extends Fragment {
@@ -113,27 +111,40 @@ public class Fragment1 extends Fragment {
         String pn = mUser.getPhoneNumber().substring(9, 13);
         Log.d("Fragment1>>>", "testtest: " + pn);
 
-        String myUid = mAuth.getUid();
+        databaseHandler.setDB(getActivity());
+        databaseHandler = new DatabaseHandler(getActivity());
+        sqLiteDatabase = databaseHandler.getWritableDatabase();
 
         Button testbtn = viewGroup.findViewById(R.id.testbtn);
+        Button testbtn1 = viewGroup.findViewById(R.id.testbtn1);
+        Button testbtn2 = viewGroup.findViewById(R.id.testbtn2);
         testbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams();
-                ViewGroup.LayoutParams params = testbtn.getLayoutParams();
-                params.width = viewpagerlayout.getWidth();
-                params.height = viewpagerlayout.getWidth();
-                testbtn.setLayoutParams(params);
+
+                databaseHandler.roomnameinsert("roomname");
+            }
+        });
+        testbtn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("Fragment1>>>", "testtest: " + getRoomname());
+            }
+        });
+        testbtn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                databaseHandler.roomnamedelete();
             }
         });
     }
 
-    private String getTime() {
-        long now = System.currentTimeMillis();
-        Date mDate = new Date(now);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM_dd HH:mm:ss", Locale.KOREA);
-        String date = format.format(mDate);
-        return date;
+    private String getRoomname() {
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from roomname where _rowid_ = 1", null);
+        cursor.moveToFirst();
+        String adress = cursor.getString(0);
+        cursor.close();
+        return adress;
     }
 
     @Override
@@ -154,7 +165,6 @@ public class Fragment1 extends Fragment {
 
         btn1OnClick();
         btn2OnClick();
-
 
         testclass(rootView);
 
@@ -247,7 +257,8 @@ public class Fragment1 extends Fragment {
         btn2listview.setAdapter(adapter2);
         adapter2.notifyDataSetChanged();
 
-        reference.getRef().child("adressRoom").child(onlyAdressList.get(1).substring(0, onlyAdressList.get(1).length() - 1)).addValueEventListener(new ValueEventListener() {
+        //btn2 count
+        reference.getRef().child("adressRoom").child(btn1.getText().toString()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (int i = 0; i < adressList.size(); i++) {
@@ -479,6 +490,7 @@ public class Fragment1 extends Fragment {
     public void onResume() {
         super.onResume();
         setDeleteAdress();
+        databaseHandler.roomnamedelete();
     }
 
     private void setAdressList(String s) {
@@ -497,7 +509,7 @@ public class Fragment1 extends Fragment {
         adressList.add(s + "4");
         adressList.add(s + "5");
 
-        reference.getRef().child("adressRoom").child(onlyAdressList.get(1).substring(0, onlyAdressList.get(1).length() - 1)).addValueEventListener(new ValueEventListener() {
+        reference.getRef().child("adressRoom").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (int i = 0; i < adressList.size(); i++) {
@@ -604,7 +616,7 @@ public class Fragment1 extends Fragment {
                 public void onClick(View view) {
                     alertDialog2.dismiss();
                     MainActivity.loading.setVisibility(View.VISIBLE);
-                    reference.getRef().child("adressRoom").child(onlyAdressList.get(i).substring(0, onlyAdressList.get(i).length() - 1)).child(onlyAdressList.get(i)).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    reference.getRef().child("adressRoom").child(btn1.getText().toString()).child(onlyAdressList.get(i)).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                         @Override
                         public void onSuccess(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.getChildrenCount() < 30) {

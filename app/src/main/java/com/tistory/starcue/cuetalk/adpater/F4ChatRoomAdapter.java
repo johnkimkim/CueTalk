@@ -324,6 +324,19 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             requestManager//error. requast manager?사용해서 this받기
                                     .load(nullUser)
                                     .override(150, 150)
+                                    .listener(new RequestListener<Drawable>() {
+                                        @Override
+                                        public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                            ((LeftViewholder) holder).progressBar.setVisibility(View.GONE);
+                                            return false;
+                                        }
+
+                                        @Override
+                                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                            ((LeftViewholder) holder).progressBar.setVisibility(View.GONE);
+                                            return false;
+                                        }
+                                    })
                                     .circleCrop()
                                     .into(((LeftViewholder) holder).picl);
                             ((LeftViewholder) holder).picl.setEnabled(false);

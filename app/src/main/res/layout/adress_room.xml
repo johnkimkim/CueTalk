@@ -6,6 +6,7 @@
     android:background="@color/base5">
 
     <RelativeLayout
+        android:id="@+id/adress_room_main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

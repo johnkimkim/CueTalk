@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -138,6 +141,20 @@ public class AdressRoom extends AppCompatActivity {
         upanddown.setBackgroundResource(R.drawable.bottom_up);
         linearLayout = findViewById(R.id.bottom_sheet_id);
         bottomSheetBehavior = BottomSheetBehavior.from(linearLayout);
+
+        //bottom sheet set size
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int x = size.x;
+        double yd = size.y * 0.6;
+        int y = (int) yd;
+        ViewGroup.LayoutParams params = recyclerViewBottom.getLayoutParams();
+        params.width = x;
+        params.height = y;
+        recyclerViewBottom.setLayoutParams(params);
+        //bottom sheet set size
+
 
         titlebar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -358,6 +375,7 @@ public class AdressRoom extends AppCompatActivity {
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 

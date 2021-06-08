@@ -130,7 +130,9 @@ public class Fragment1 extends Fragment {
         testbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                double d = 10.1234;
+                int i = (int) d;
+                Log.d("Fragment1>>>", "testtest: " + Integer.toString(i));
             }
         });
     }

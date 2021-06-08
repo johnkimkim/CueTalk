@@ -18,9 +18,10 @@
         <RelativeLayout
             android:id="@+id/titlebar"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="55dp">
 
             <ImageView
+                android:id="@+id/bottom_sheet_img"
                 android:layout_width="37dp"
                 android:layout_height="28dp"
                 android:background="@drawable/handle"
@@ -28,12 +29,14 @@
 
             <TextView
                 android:id="@+id/title"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
+                android:layout_below="@+id/bottom_sheet_img"
                 android:gravity="center"
                 android:textStyle="bold"
-                android:textColor="#ffff"/>
+                android:textColor="#ffff"
+                android:background="@drawable/countcircle"/>
 
             <ImageView
                 android:id="@+id/upanddown"
@@ -48,9 +51,9 @@
         <View
             android:id="@+id/vivi"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="1dp"
             android:layout_below="@+id/titlebar"
-            android:background="#3F4895" />
+            android:background="@color/base5" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/sheetlist"

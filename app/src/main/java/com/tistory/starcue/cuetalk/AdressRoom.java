@@ -230,7 +230,13 @@ public class AdressRoom extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int size = (int) snapshot.getChildrenCount();
                 TextView textView = findViewById(R.id.title);
-                textView.setText(Integer.toString(size));
+                if (size == 0) {
+                    textView.setText("0");
+                    textView.setVisibility(View.GONE);
+                } else {
+                    textView.setText(Integer.toString(size));
+                    textView.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override

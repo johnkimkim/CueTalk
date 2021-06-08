@@ -3,6 +3,7 @@ package com.tistory.starcue.cuetalk.adpater;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +14,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -78,13 +85,31 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
         mAuth = FirebaseAuth.getInstance();
         myUid = mAuth.getUid();
 
-        requestManager.load(bottomList.get(position).getPic()).override(150,150).circleCrop().into(holder.imageView);
+        requestManager
+                .load(bottomList.get(position).getPic())
+                .override(150,150)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        holder.load.setVisibility(View.GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        holder.load.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .circleCrop()
+                .into(holder.imageView);
         if (bottomList.get(position).getPic().equals(nullPic) && bottomList.get(position).getPic().equals(nullPicF)) {
             holder.imageView.setEnabled(false);
         } else {
             holder.imageView.setEnabled(true);
         }
 
+        holder.edit.setText(bottomList.get(position).getEdit());
         holder.name.setText(bottomList.get(position).getName());
         holder.sex.setText(bottomList.get(position).getSex());
         holder.age.setText(bottomList.get(position).getAge());
@@ -266,14 +291,18 @@ public class BottomSheetAdapter extends RecyclerView.Adapter<BottomSheetAdapter.
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
+        TextView edit;
         TextView name;
         TextView sex;
         TextView age;
         TextView km;
         Button btn, deleteBtn;
+        CircularDotsLoader load;
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
             this.imageView = itemView.findViewById(R.id.bottom_sheet_layout_pic);
+            this.load = itemView.findViewById(R.id.bottom_sheet_layout_pic_load);
+            this.edit = itemView.findViewById(R.id.bottom_sheet_layout_edit);
             this.name = itemView.findViewById(R.id.bottom_sheet_layout_name);
             this.sex = itemView.findViewById(R.id.bottom_sheet_layout_sex);
             this.age = itemView.findViewById(R.id.bottom_sheet_layout_age);

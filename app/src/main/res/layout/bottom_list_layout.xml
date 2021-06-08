@@ -1,56 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="70dp">
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="7dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginRight="7dp"
+    app:cardCornerRadius="8dp">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="65dp">
 
-        <ImageView
-            android:id="@+id/bottom_sheet_layout_pic"
-            android:layout_width="50dp"
-            android:layout_height="50dp"/>
-
-        <TextView
-            android:id="@+id/bottom_sheet_layout_name"
+        <RelativeLayout
+            android:id="@+id/bottom_sheet_layout_user_pic_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000000"/>
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="6dp">
+
+            <ImageView
+                android:id="@+id/bottom_sheet_layout_pic"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:src="@drawable/picnull" />
+
+            <com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
+                android:id="@+id/bottom_sheet_layout_pic_load"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                app:loader_animDur="80"
+                app:loader_bigCircleRadius="12dp"
+                app:loader_circleRadius="3dp"
+                app:loader_defaultColor="@color/light_gray"
+                app:loader_firstShadowColor="@color/base1"
+                app:loader_secondShadowColor="@color/base3"
+                app:loader_selectedColor="@color/base2"
+                app:loader_showRunningShadow="true" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:layout_toLeftOf="@+id/bottom_sheet_layout_km"
+            android:layout_toRightOf="@+id/bottom_sheet_layout_user_pic_layout">
+
+            <TextView
+                android:id="@+id/bottom_sheet_layout_edit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/bottom_sheet_layout_about_user"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="3dp"
+                android:gravity="center_vertical"
+                android:textColor="#000000"
+                android:textSize="15dp" />
+
+            <LinearLayout
+                android:id="@+id/bottom_sheet_layout_about_user"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="3dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/bottom_sheet_layout_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" | " />
+
+                <TextView
+                    android:id="@+id/bottom_sheet_layout_sex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" | " />
+
+                <TextView
+                    android:id="@+id/bottom_sheet_layout_age"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </RelativeLayout>
 
         <TextView
-            android:id="@+id/bottom_sheet_layout_sex"
+            android:id="@+id/bottom_sheet_layout_km"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000000" />
+            android:layout_toLeftOf="@+id/bottom_sheet_layout_btn_layout" />
 
-        <TextView
-            android:id="@+id/bottom_sheet_layout_age"
+        <LinearLayout
+            android:id="@+id/bottom_sheet_layout_btn_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000000" />
-    </LinearLayout>
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/bottom_sheet_layout_km"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/bottom_sheet_layout_chatbtn"/>
+            <androidx.cardview.widget.CardView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:elevation="4dp"
+                app:cardBackgroundColor="@color/base3"
+                app:cardCornerRadius="8dp">
 
-    <Button
-        android:id="@+id/bottom_sheet_layout_chatbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/bottom_sheet_layout_delete"
-        android:layout_centerVertical="true"
-        android:text="대화ㄱ"/>
+                <Button
+                    android:id="@+id/bottom_sheet_layout_chatbtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:background="@color/base3"
+                    android:text="대화\n시작"
+                    android:textStyle="bold" />
+            </androidx.cardview.widget.CardView>
 
-    <Button
-        android:id="@+id/bottom_sheet_layout_delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:text="삭제"/>
-</RelativeLayout>
+            <androidx.cardview.widget.CardView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:elevation="4dp"
+                app:cardBackgroundColor="@color/base3"
+                app:cardCornerRadius="8dp">
+
+                <Button
+                    android:id="@+id/bottom_sheet_layout_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/base3"
+                    android:text="삭제"
+                    android:textStyle="bold" />
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

@@ -54,7 +54,7 @@
                     android:layout_below="@+id/send_messege_user_pic_layout"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:layout_margin="5dp">
+                    android:layout_margin="8dp">
 
                     <TextView
                         android:id="@+id/send_messege_user_name"
@@ -110,7 +110,7 @@
                     android:layout_below="@+id/send_messege_edit_count"
                     android:layout_centerHorizontal="true"
                     android:background="@color/base3"
-                    android:layout_margin="5dp"/>
+                    android:layout_margin="8dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"

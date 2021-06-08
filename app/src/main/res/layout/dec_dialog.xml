@@ -54,42 +54,49 @@
                                 android:id="@+id/radio1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:buttonTint="@color/base1"
                                 android:text="음란한 내용을 담고 있습니다." />
 
                             <RadioButton
                                 android:id="@+id/radio2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:buttonTint="@color/base1"
                                 android:text="폭력적인 내용을 담고 있습니다." />
 
                             <RadioButton
                                 android:id="@+id/radio3"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:buttonTint="@color/base1"
                                 android:text="자해나 자살과 관련된 내용입니다." />
 
                             <RadioButton
                                 android:id="@+id/radio4"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:buttonTint="@color/base1"
                                 android:text="부적절한 상품을 홍보하고 있습니다." />
 
                             <RadioButton
                                 android:id="@+id/radio5"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:buttonTint="@color/base1"
                                 android:text="저작권, 명예회손 등 기타 권리를 침해합니다." />
 
                             <RadioButton
                                 android:id="@+id/radio6"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:buttonTint="@color/base1"
                                 android:text="특정인의 개인정보가 포함되어 있습니다." />
 
                             <RadioButton
                                 android:id="@+id/radio7"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:buttonTint="@color/base1"
                                 android:text="기타" />
                         </RadioGroup>
 

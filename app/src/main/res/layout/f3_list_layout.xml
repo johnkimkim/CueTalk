@@ -51,7 +51,8 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@+id/f3re_userimg_layout">
+                android:layout_above="@+id/f3re_userimg_layout"
+                android:layout_toLeftOf="@+id/f3btnlayout">
 
                 <TextView
                     android:id="@+id/f3re_messege"

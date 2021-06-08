@@ -2,11 +2,6 @@ package com.tistory.starcue.cuetalk.item;
 
 import android.widget.Button;
 
-import com.google.firebase.database.Exclude;
-
-import java.util.HashMap;
-import java.util.Map;
-
 public class AdressRoomItem {
 
     public String name;
@@ -18,6 +13,7 @@ public class AdressRoomItem {
     public String longitude;
     public String uid;
     public Button btn;
+    public String edit;
     public int ischat;
 
     public int isIschat() {
@@ -90,6 +86,14 @@ public class AdressRoomItem {
 
     public void setKm(String km) {
         this.km = km;
+    }
+
+    public String getEdit() {
+        return edit;
+    }
+
+    public void setEdit(String edit) {
+        this.edit = edit;
     }
 
     public String getPic() {

@@ -78,7 +78,7 @@
                     android:layout_height="30dp"
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/add_pic_outline"
-                    android:text="  사진 추가 / 변경  "
+                    android:text="사진 추가"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
 

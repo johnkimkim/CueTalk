@@ -12,7 +12,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -399,17 +398,23 @@ public class AdressRoom extends AppCompatActivity {
     }
 
     private void updateAdressRoom(String picUri, String uid, String name, String sex, String age, String latitude, String longitude, int ischat) {
-        reference = FirebaseDatabase.getInstance().getReference();
-        Map<String, Object> updateUser = new HashMap<>();
-        updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + uid + "/" + "/uid/", uid);
-        updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + uid + "/" + "/pic/", picUri);
-        updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + uid + "/" + "/name/", name);
-        updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + uid + "/" + "/sex", sex);
-        updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + uid + "/" + "/age/", age);
-        updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + uid + "/" + "/latitude/", latitude);
-        updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + uid + "/" + "/longitude/", longitude);
-        updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + uid + "/" + "/ischat/", ischat);
-        reference.updateChildren(updateUser);
+        db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                String edit = documentSnapshot.get("f1edit").toString();
+                Map<String, Object> updateUser = new HashMap<>();
+                updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + uid + "/" + "/edit/", edit);
+                updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + uid + "/" + "/uid/", uid);
+                updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + uid + "/" + "/pic/", picUri);
+                updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + uid + "/" + "/name/", name);
+                updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + uid + "/" + "/sex", sex);
+                updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + uid + "/" + "/age/", age);
+                updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + uid + "/" + "/latitude/", latitude);
+                updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + uid + "/" + "/longitude/", longitude);
+                updateUser.put("/adressRoom/" + adressm + "/" + adress + "/" + uid + "/" + "/ischat/", ischat);
+                reference.updateChildren(updateUser);
+            }
+        });
     }
 
     @Override

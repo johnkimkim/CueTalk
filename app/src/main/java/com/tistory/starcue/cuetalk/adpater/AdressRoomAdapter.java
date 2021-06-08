@@ -119,6 +119,7 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
         } else {
             holder.imageView.setEnabled(true);
         }
+        holder.edit.setText(arrayList.get(position).getEdit());
         holder.name.setText(arrayList.get(position).getName());
         holder.sex.setText(arrayList.get(position).getSex());
         holder.age.setText(arrayList.get(position).getAge());
@@ -147,15 +148,15 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
         }
 
         if (arrayList.get(position).getUid().equals(myUid)) {
-            holder.btn.setEnabled(false);
             holder.btn.setText("나");
+            holder.btn.setEnabled(false);
             holder.sendmsgbtn.setEnabled(false);
         } else if (arrayList.get(position).isIschat() == 2) {
             holder.btn.setEnabled(false);
-            holder.btn.setText("대화중");
+            holder.btn.setText("대화\n중");
         } else {
             holder.btn.setEnabled(true);
-            holder.btn.setText("대화신청");
+            holder.btn.setText("대화\n신청");
         }
 
         holder.btn.setOnClickListener(new View.OnClickListener() {
@@ -279,6 +280,7 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
     public class CustomViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         CircularDotsLoader load;
+        TextView edit;
         TextView name;
         TextView sex;
         TextView age;
@@ -289,6 +291,7 @@ public class AdressRoomAdapter extends RecyclerView.Adapter<AdressRoomAdapter.Cu
             super(itemView);
             this.imageView = itemView.findViewById(R.id.adress_room_layout_pic);
             this.load = itemView.findViewById(R.id.adress_room_layout_pic_load);
+            this.edit = itemView.findViewById(R.id.adress_room_layout_edit);
             this.name = itemView.findViewById(R.id.adress_room_layout_name);
             this.sex = itemView.findViewById(R.id.adress_room_layout_sex);
             this.age = itemView.findViewById(R.id.adress_room_layout_age);

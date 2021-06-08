@@ -53,7 +53,8 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/send_messege_user_pic_layout"
                     android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_margin="5dp">
 
                     <TextView
                         android:id="@+id/send_messege_user_name"
@@ -102,16 +103,18 @@
                     android:text="0 / 20" />
 
                 <View
+                    android:id="@+id/send_messege_view2"
                     android:layout_width="300dp"
                     android:layout_height="1dp"
                     android:layout_below="@+id/send_messege_edit_count"
                     android:layout_centerHorizontal="true"
-                    android:background="@color/base3" />
+                    android:background="@color/base3"
+                    android:layout_margin="5dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/send_messege_edit_count"
+                    android:layout_below="@+id/send_messege_view2"
                     android:layout_centerHorizontal="true"
                     android:gravity="center"
                     android:text="상대방에게 불쾌감을 주거나\n부적절한 내용 전송 시\n경고없이 이용정지 될 수 있습니다." />

@@ -10,19 +10,25 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,7 +38,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -60,8 +68,12 @@ import com.tistory.starcue.cuetalk.f1viewpager.F1ViewpagerIntent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class Fragment1 extends Fragment {
 
@@ -78,6 +90,8 @@ public class Fragment1 extends Fragment {
     AlertDialog alertDialog1, alertDialog2;
     GridView btn1grid;
     ListView btn2listview;
+    EditText edit;
+    TextView editcount;
     GridListAdapter adapter1;
     Btn2ListAdapter adapter2;
     ArrayList<String> btn1list = new ArrayList<>();
@@ -91,6 +105,7 @@ public class Fragment1 extends Fragment {
 
     private FirebaseFirestore db;
 
+    FirebaseAuth mAuth;
     String myUid;
     String isnull;
 
@@ -133,17 +148,21 @@ public class Fragment1 extends Fragment {
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment1, container, false);
 
         db = FirebaseFirestore.getInstance();
-
+        mAuth = FirebaseAuth.getInstance();
+        myUid = mAuth.getUid();
         reference = FirebaseDatabase.getInstance().getReference();
         Log.d("Fragment1>>>", "start onCreate");
         setViewPager(rootView);
 
+        edit = rootView.findViewById(R.id.f1_edittext);
+        editcount = rootView.findViewById(R.id.f1_edit_count);
         btn1 = rootView.findViewById(R.id.f1btn1);
         btn2 = rootView.findViewById(R.id.f1btn2);
         btn1.setText("지역 선택");
         btn2.setText("방 선택");
         btn2.setEnabled(false);
 
+        setEditCount();
         btn1OnClick();
         btn2OnClick();
 
@@ -152,10 +171,58 @@ public class Fragment1 extends Fragment {
         return rootView;
     }
 
+    private void setEditCount() {
+        edit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String input = edit.getText().toString();
+                editcount.setText(input.length() + " / 10");
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        edit.setOnKeyListener(new View.OnKeyListener() {//줄바꿈 금지
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if (i == keyEvent.KEYCODE_ENTER) {
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void setEditText() {
+        db.collection("users").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot snapshot = task.getResult();
+                    if (snapshot.get("f1edit") == null) {
+                        edit.setText("");
+                    } else {
+                        edit.setText(snapshot.get("f1edit").toString());
+                    }
+                }
+            }
+        });
+    }
+
     private void btn1OnClick() {
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                InputMethodManager manager = (InputMethodManager) view.getContext().getSystemService(INPUT_METHOD_SERVICE);
+                manager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                 btn1dialog();
             }
         });
@@ -165,6 +232,8 @@ public class Fragment1 extends Fragment {
         btn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                InputMethodManager manager = (InputMethodManager) view.getContext().getSystemService(INPUT_METHOD_SERVICE);
+                manager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                 btn2dialog();
             }
         });
@@ -471,6 +540,7 @@ public class Fragment1 extends Fragment {
     public void onResume() {
         super.onResume();
         setDeleteAdress();
+        setEditText();
         databaseHandler.roomnamedelete();
     }
 
@@ -600,17 +670,32 @@ public class Fragment1 extends Fragment {
                     reference.getRef().child("adressRoom").child(btn1.getText().toString()).child(onlyAdressList.get(i)).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                         @Override
                         public void onSuccess(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.getChildrenCount() < 30) {
-                                setDbAdress(onlyAdressList.get(i));
-                                Intent intent = new Intent(getActivity(), AdressRoom.class);
-//                                intent.putExtra("adress", s);
-                                startActivity(intent);
-                                MainActivity.loading.setVisibility(View.GONE);
-                                btn1.setText("지역 선택");
-                                btn2.setText("방 선택");
-                                btn2.setEnabled(false);
+                            if (edit.getText().toString().length() != 0) {
+                                if (dataSnapshot.getChildrenCount() < 30) {
+                                    Map<String, Object> map = new HashMap<>();
+                                    map.put("f1edit", edit.getText().toString());
+                                    db.collection("users").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            setDbAdress(onlyAdressList.get(i));
+                                            Intent intent = new Intent(getActivity(), AdressRoom.class);
+                                            startActivity(intent);
+                                            MainActivity.loading.setVisibility(View.GONE);
+                                            btn1.setText("지역 선택");
+                                            btn2.setText("방 선택");
+                                            btn2.setEnabled(false);
+                                        }
+                                    });
+                                } else {
+                                    MainActivity.loading.setVisibility(View.GONE);
+                                    Toast.makeText(getActivity(), "대화방 인원수가 꽉 찼습니다", Toast.LENGTH_SHORT).show();
+                                }
                             } else {
-                                Toast.makeText(getActivity(), "대화방 인원수가 꽉 찼습니다", Toast.LENGTH_SHORT).show();
+                                MainActivity.loading.setVisibility(View.GONE);
+                                edit.requestFocus();
+                                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
+                                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                                Toast.makeText(getActivity(), "인사말을 입력해주세요", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

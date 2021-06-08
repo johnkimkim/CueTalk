@@ -152,11 +152,37 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             requestManager
                                     .load(userPic)
                                     .override(150, 150)
+                                    .listener(new RequestListener<Drawable>() {
+                                        @Override
+                                        public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                            ((LeftImageViewholder) holder).userpicprogress.setVisibility(View.GONE);
+                                            return false;
+                                        }
+
+                                        @Override
+                                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                            ((LeftImageViewholder) holder).userpicprogress.setVisibility(View.GONE);
+                                            return false;
+                                        }
+                                    })
                                     .circleCrop()
                                     .into(((LeftImageViewholder) holder).picli);
                             requestManager
                                     .load(arrayList.get(position).getUri())
                                     .override(150, 150)
+                                    .listener(new RequestListener<Drawable>() {
+                                        @Override
+                                        public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                            ((LeftImageViewholder) holder).progressBar.setVisibility(View.GONE);
+                                            return false;
+                                        }
+
+                                        @Override
+                                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                            ((LeftImageViewholder) holder).progressBar.setVisibility(View.GONE);
+                                            return false;
+                                        }
+                                    })
                                     .centerCrop()
                                     .into(((LeftImageViewholder) holder).image);
                             ((LeftImageViewholder) holder).picli.setOnClickListener(new View.OnClickListener() {

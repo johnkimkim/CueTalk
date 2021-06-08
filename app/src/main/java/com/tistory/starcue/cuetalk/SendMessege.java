@@ -209,11 +209,6 @@ public class SendMessege {
                 fmsg.put("read/", "dlqwkddhksfycjtaptlwl");
 
                 messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/uid/", myUid);
-//                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/name/", name);
-//                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/sex/", sex);
-//                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/age/", age);
-//                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/latitude/", latitude);
-//                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/longitude/", longitude);
                 messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/ischat/", "1");
                 messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/state/", "1");
                 messegeMap.put("/myroom/" + myUid + "/" + myUid + userUid, myUid + userUid);
@@ -221,7 +216,7 @@ public class SendMessege {
 //                messegeMap.put("/messege/" + myUid + userUid + "/" + myUid + "/pic/", pic);
 
                 firstmsg.put("messege", messege);
-                firstmsg.put("name", name);
+//                firstmsg.put("name", name);
                 firstmsg.put("time", getTime());
                 firstmsg.put("read", "1");
                 firstmsg.put("uid", myUid);

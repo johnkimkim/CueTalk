@@ -669,6 +669,7 @@ public class DecDialog {
                                     F4ChatRoomItem f4ChatRoomItem = snapshot2.getValue(F4ChatRoomItem.class);
                                     count.add(f4ChatRoomItem);
                                     map1.put("messege", snapshot2.child("messege").getValue(String.class));
+                                    map1.put("uid", snapshot2.child("uid").getValue(String.class));
                                     map1.put("name", snapshot2.child("name").getValue(String.class));
                                     map1.put("time", snapshot2.child("time").getValue(String.class));
                                     map1.put("uri", snapshot2.child("uri").getValue(String.class));

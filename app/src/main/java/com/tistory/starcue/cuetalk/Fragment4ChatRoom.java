@@ -752,7 +752,6 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         Map<String, Object> sendmsgpic = new HashMap<>();
         Map<String, Object> lastmsg = new HashMap<>();
         sendmsgpic.put("uri", uri);
-        sendmsgpic.put("pic", myPic);
         sendmsgpic.put("time", getTime());
         sendmsgpic.put("read", "1");
         sendmsgpic.put("uid", myUid);

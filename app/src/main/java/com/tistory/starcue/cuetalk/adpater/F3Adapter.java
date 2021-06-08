@@ -246,7 +246,7 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
         holder.f3dec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DecDialog.F3DecDialog(context, arrayList.get(position).getUid(), myUid);
+                DecDialog.F3DecDialog(context, arrayList.get(position).getUid(), myUid, activity);
             }
         });
     }

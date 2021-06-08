@@ -91,7 +91,8 @@
                     android:background="@drawable/write_edittext"
                     android:hint="글 작성"
                     android:maxLength="20"
-                    android:padding="30dp" />
+                    android:paddingLeft="30dp"
+                    android:paddingRight="30dp"/>
 
                 <TextView
                     android:id="@+id/send_messege_edit_count"

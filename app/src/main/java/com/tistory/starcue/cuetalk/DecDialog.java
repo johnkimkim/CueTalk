@@ -1,17 +1,24 @@
 package com.tistory.starcue.cuetalk;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Display;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -40,17 +47,18 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class DecDialog {
     private static AlertDialog alertDialog;
-    private static TextView title;
+    private static TextView count;
     private static RadioGroup radioGroup;
-    private static RadioButton radio1, radio2, radio3, radio4;
+    private static RadioButton radio1, radio2, radio3, radio4, radio5, radio6, radio7;
     private static EditText editText;
     private static Button yesbtn, nobtn;
     private static RelativeLayout dec1, dec2;
-    private static ProgressBar progressBar;
+    private static Button dec2btn;
+    private static RelativeLayout progressBar;
     private static String category;
     private static LinearLayout decmain;
 
-    public static void F2DecDialog(Context context, String userUid, String myUid) {
+    public static void F2DecDialog(Context context, String userUid, String myUid, Activity activity) {
         LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout layout = (LinearLayout) vi.inflate(R.layout.dec_dialog, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -59,52 +67,69 @@ public class DecDialog {
 
         alertDialog.show();
         //set size
-        WindowManager.LayoutParams layoutParams = alertDialog.getWindow().getAttributes();
-        layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
-//            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-//            layoutParams.dimAmount = 0.7f;
-
-        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        alertDialog.getWindow().setAttributes(layoutParams);
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        Window window = alertDialog.getWindow();
+        int x = (int) (size.x * 0.9);
+        int y = (int) (size.y * 0.8);
+        window.setLayout(x, y);
 
         radioGroup = layout.findViewById(R.id.dec_radio_group);
         radio1 = layout.findViewById(R.id.radio1);
         radio2 = layout.findViewById(R.id.radio2);
         radio3 = layout.findViewById(R.id.radio3);
         radio4 = layout.findViewById(R.id.radio4);
+        radio5 = layout.findViewById(R.id.radio5);
+        radio6 = layout.findViewById(R.id.radio6);
+        radio7 = layout.findViewById(R.id.radio7);
         editText = layout.findViewById(R.id.dec_dialog_edit);
+        count = layout.findViewById(R.id.dec_dialog_edit_count);
         yesbtn = layout.findViewById(R.id.dec_dialog_ok);
         nobtn = layout.findViewById(R.id.dec_dialog_no);
         dec1 = layout.findViewById(R.id.dec_1);
         dec2 = layout.findViewById(R.id.dec_2);
+        dec2btn = layout.findViewById(R.id.dec_2_okbtn);
         progressBar = layout.findViewById(R.id.dec_dialog_progress_bar);
+        progressBar.setVisibility(View.INVISIBLE);
         decmain = layout.findViewById(R.id.dec_main);
 
         dec2.setVisibility(View.INVISIBLE);
 
+        edittextcountset(editText, count);
+
         yesbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 alertDialog.setCancelable(false);
                 progressBar.setVisibility(View.VISIBLE);
                 hideKB(context, decmain);
                 if (radio1.isChecked()) {
                     category = "음란";
                 } else if (radio2.isChecked()) {
-                    category = "스팸";
-                } else if (radio3.isChecked()) {
                     category = "폭력";
+                } else if (radio3.isChecked()) {
+                    category = "자해자살";
                 } else if (radio4.isChecked()) {
+                    category = "부적절홍보";
+                } else if (radio5.isChecked()) {
+                    category = "기타권리";
+                } else if (radio6.isChecked()) {
+                    category = "개인정보";
+                } else if (radio7.isChecked()) {
                     category = "기타";
-                } else {
-                    category = "";
                 }
 
+
                 if (category.equals("")) {
-                    Toast.makeText(context, "category 선택해주세요", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(context, "신고 유형을 선택해주세요", Toast.LENGTH_SHORT).show();
                 } else if (editText.getText().toString().equals("")) {
-                    Toast.makeText(context, "cuz 선택해주세요", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(context, "신고 사유을 간단히 적어주세요", Toast.LENGTH_SHORT).show();
+
                 } else {
                     F2SaveDec(context, userUid, myUid, editText.getText().toString(), category);
                 }
@@ -114,7 +139,13 @@ public class DecDialog {
         nobtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity.loading.setVisibility(View.GONE);
+                alertDialog.dismiss();
+            }
+        });
+
+        dec2btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 alertDialog.dismiss();
             }
         });
@@ -175,7 +206,6 @@ public class DecDialog {
                                     @Override
                                     public void onAnimationEnd(Animation animation) {
                                         dec2.setVisibility(View.VISIBLE);
-                                        MainActivity.loading.setVisibility(View.GONE);
                                         alertDialog.setCancelable(true);
                                     }
 
@@ -197,7 +227,7 @@ public class DecDialog {
         });
     }
 
-    public static void F3DecDialog(Context context, String userUid, String myUid) {
+    public static void F3DecDialog(Context context, String userUid, String myUid, Activity activity) {
 
         LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout layout = (LinearLayout) vi.inflate(R.layout.dec_dialog, null);
@@ -207,30 +237,37 @@ public class DecDialog {
 
         alertDialog.show();
         //set size
-        WindowManager.LayoutParams layoutParams = alertDialog.getWindow().getAttributes();
-        layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
-//            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-//            layoutParams.dimAmount = 0.7f;
-
-        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        alertDialog.getWindow().setAttributes(layoutParams);
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        Window window = alertDialog.getWindow();
+        int x = (int) (size.x * 0.9);
+        int y = (int) (size.y * 0.8);
+        window.setLayout(x, y);
 
         radioGroup = layout.findViewById(R.id.dec_radio_group);
         radio1 = layout.findViewById(R.id.radio1);
         radio2 = layout.findViewById(R.id.radio2);
         radio3 = layout.findViewById(R.id.radio3);
         radio4 = layout.findViewById(R.id.radio4);
+        radio5 = layout.findViewById(R.id.radio5);
+        radio6 = layout.findViewById(R.id.radio6);
+        radio7 = layout.findViewById(R.id.radio7);
         editText = layout.findViewById(R.id.dec_dialog_edit);
+        count = layout.findViewById(R.id.dec_dialog_edit_count);
         yesbtn = layout.findViewById(R.id.dec_dialog_ok);
         nobtn = layout.findViewById(R.id.dec_dialog_no);
         dec1 = layout.findViewById(R.id.dec_1);
         dec2 = layout.findViewById(R.id.dec_2);
+        dec2btn = layout.findViewById(R.id.dec_2_okbtn);
         progressBar = layout.findViewById(R.id.dec_dialog_progress_bar);
+        progressBar.setVisibility(View.INVISIBLE);
         decmain = layout.findViewById(R.id.dec_main);
 
         dec2.setVisibility(View.INVISIBLE);
 
+        edittextcountset(editText, count);
 
         yesbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -241,19 +278,25 @@ public class DecDialog {
                 if (radio1.isChecked()) {
                     category = "음란";
                 } else if (radio2.isChecked()) {
-                    category = "스팸";
-                } else if (radio3.isChecked()) {
                     category = "폭력";
+                } else if (radio3.isChecked()) {
+                    category = "자해자살";
                 } else if (radio4.isChecked()) {
+                    category = "부적절홍보";
+                } else if (radio5.isChecked()) {
+                    category = "기타권리";
+                } else if (radio6.isChecked()) {
+                    category = "개인정보";
+                } else if (radio7.isChecked()) {
                     category = "기타";
-                } else {
-                    category = "";
                 }
 
                 if (category.equals("")) {
-                    Toast.makeText(context, "category 선택해주세요", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(context, "신고 유형을 선택해주세요", Toast.LENGTH_SHORT).show();
                 } else if (editText.getText().toString().equals("")) {
-                    Toast.makeText(context, "cuz 선택해주세요", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(context, "신고 사유을 간단히 적어주세요", Toast.LENGTH_SHORT).show();
                 } else {
                     F3SaveDec(context, userUid, myUid, editText.getText().toString(), category);
                 }
@@ -261,6 +304,13 @@ public class DecDialog {
         });
 
         nobtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        dec2btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 alertDialog.dismiss();
@@ -345,7 +395,7 @@ public class DecDialog {
         });
     }
 
-    public static void ChatRoomDecDialog(Context context, String userUid, String myUid, String where) {
+    public static void ChatRoomDecDialog(Context context, String userUid, String myUid, String where, Activity activity) {
 
         LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout layout = (LinearLayout) vi.inflate(R.layout.dec_dialog, null);
@@ -355,14 +405,14 @@ public class DecDialog {
 
         alertDialog.show();
         //set size
-        WindowManager.LayoutParams layoutParams = alertDialog.getWindow().getAttributes();
-        layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
-//            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-//            layoutParams.dimAmount = 0.7f;
-
-        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        alertDialog.getWindow().setAttributes(layoutParams);
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        Window window = alertDialog.getWindow();
+        int x = (int) (size.x * 0.9);
+        int y = (int) (size.y * 0.8);
+        window.setLayout(x, y);
 
         radioGroup = layout.findViewById(R.id.dec_radio_group);
         radio1 = layout.findViewById(R.id.radio1);
@@ -370,14 +420,19 @@ public class DecDialog {
         radio3 = layout.findViewById(R.id.radio3);
         radio4 = layout.findViewById(R.id.radio4);
         editText = layout.findViewById(R.id.dec_dialog_edit);
+        count = layout.findViewById(R.id.dec_dialog_edit_count);
         yesbtn = layout.findViewById(R.id.dec_dialog_ok);
         nobtn = layout.findViewById(R.id.dec_dialog_no);
         dec1 = layout.findViewById(R.id.dec_1);
         dec2 = layout.findViewById(R.id.dec_2);
+        dec2btn = layout.findViewById(R.id.dec_2_okbtn);
         progressBar = layout.findViewById(R.id.dec_dialog_progress_bar);
+        progressBar.setVisibility(View.INVISIBLE);
         decmain = layout.findViewById(R.id.dec_main);
 
         dec2.setVisibility(View.INVISIBLE);
+
+        edittextcountset(editText, count);
 
         yesbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -388,23 +443,38 @@ public class DecDialog {
                 if (radio1.isChecked()) {
                     category = "음란";
                 } else if (radio2.isChecked()) {
-                    category = "스팸";
-                } else if (radio3.isChecked()) {
                     category = "폭력";
+                } else if (radio3.isChecked()) {
+                    category = "자해자살";
                 } else if (radio4.isChecked()) {
+                    category = "부적절홍보";
+                } else if (radio5.isChecked()) {
+                    category = "기타권리";
+                } else if (radio6.isChecked()) {
+                    category = "개인정보";
+                } else if (radio7.isChecked()) {
                     category = "기타";
                 }
 
                 if (category.equals("")) {
-                    Toast.makeText(context, "카테고리 선택해주세요", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(context, "신고 유형을 선택해주세요", Toast.LENGTH_SHORT).show();
                 } else if (editText.getText().toString().equals("")) {
-                    Toast.makeText(context, "이유 선택해주세요", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(context, "신고 사유을 간단히 적어주세요", Toast.LENGTH_SHORT).show();
                 }
                 ChatRoomSaveDec(context, userUid, myUid, where, editText.getText().toString(), category);
             }
         });
 
         nobtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        dec2btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 alertDialog.dismiss();
@@ -489,7 +559,7 @@ public class DecDialog {
 
 
 
-    public static void F4ChatRoomDecDialog(Context context, String userUid, String myUid, String getroomname) {
+    public static void F4ChatRoomDecDialog(Context context, String userUid, String myUid, String getroomname, Activity activity) {
 
         LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout layout = (LinearLayout) vi.inflate(R.layout.dec_dialog, null);
@@ -499,14 +569,14 @@ public class DecDialog {
 
         alertDialog.show();
         //set size
-        WindowManager.LayoutParams layoutParams = alertDialog.getWindow().getAttributes();
-        layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
-//            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-//            layoutParams.dimAmount = 0.7f;
-
-        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        alertDialog.getWindow().setAttributes(layoutParams);
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        Window window = alertDialog.getWindow();
+        int x = (int) (size.x * 0.9);
+        int y = (int) (size.y * 0.8);
+        window.setLayout(x, y);
 
         radioGroup = layout.findViewById(R.id.dec_radio_group);
         radio1 = layout.findViewById(R.id.radio1);
@@ -514,14 +584,19 @@ public class DecDialog {
         radio3 = layout.findViewById(R.id.radio3);
         radio4 = layout.findViewById(R.id.radio4);
         editText = layout.findViewById(R.id.dec_dialog_edit);
+        count = layout.findViewById(R.id.dec_dialog_edit_count);
         yesbtn = layout.findViewById(R.id.dec_dialog_ok);
         nobtn = layout.findViewById(R.id.dec_dialog_no);
         dec1 = layout.findViewById(R.id.dec_1);
         dec2 = layout.findViewById(R.id.dec_2);
+        dec2btn = layout.findViewById(R.id.dec_2_okbtn);
         progressBar = layout.findViewById(R.id.dec_dialog_progress_bar);
+        progressBar.setVisibility(View.INVISIBLE);
         decmain = layout.findViewById(R.id.dec_main);
 
         dec2.setVisibility(View.INVISIBLE);
+
+        edittextcountset(editText, count);
 
         yesbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -532,23 +607,38 @@ public class DecDialog {
                 if (radio1.isChecked()) {
                     category = "음란";
                 } else if (radio2.isChecked()) {
-                    category = "스팸";
-                } else if (radio3.isChecked()) {
                     category = "폭력";
+                } else if (radio3.isChecked()) {
+                    category = "자해자살";
                 } else if (radio4.isChecked()) {
+                    category = "부적절홍보";
+                } else if (radio5.isChecked()) {
+                    category = "기타권리";
+                } else if (radio6.isChecked()) {
+                    category = "개인정보";
+                } else if (radio7.isChecked()) {
                     category = "기타";
                 }
 
                 if (category.equals("")) {
-                    Toast.makeText(context, "카테고리 선택해주세요", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(context, "신고 유형을 선택해주세요", Toast.LENGTH_SHORT).show();
                 } else if (editText.getText().toString().equals("")) {
-                    Toast.makeText(context, "이유 선택해주세요", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(context, "신고 사유을 간단히 적어주세요", Toast.LENGTH_SHORT).show();
                 }
                 F4ChatRoomSaveDec(context, userUid, myUid, editText.getText().toString(), category, getroomname);
             }
         });
 
         nobtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        dec2btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 alertDialog.dismiss();
@@ -645,4 +735,37 @@ public class DecDialog {
         InputMethodManager manager = (InputMethodManager)context.getSystemService(INPUT_METHOD_SERVICE);
         manager.hideSoftInputFromWindow(decmain.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
+
+    private static void edittextcountset(EditText edit, TextView count) {
+        edit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String input = edit.getText().toString();
+                count.setText(input.length() + " / 20");
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        edit.setOnKeyListener(new View.OnKeyListener() {//줄바꿈 하나만 허용
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if (edit.getText().toString().contains("\n")) {
+                    if (i == keyEvent.KEYCODE_ENTER) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
 }

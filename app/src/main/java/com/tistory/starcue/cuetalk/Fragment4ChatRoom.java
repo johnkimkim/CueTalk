@@ -1,5 +1,6 @@
 package com.tistory.starcue.cuetalk;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -109,10 +110,14 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     String msgUid;
     String myState;
 
+    Activity activity;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment4_chat_room);
+
+        activity = Fragment4ChatRoom.this;
 
         isOpen = false;
         outAlready = false;
@@ -222,7 +227,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         decbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DecDialog.F4ChatRoomDecDialog(Fragment4ChatRoom.this, userUid, myUid, getroomname);
+                DecDialog.F4ChatRoomDecDialog(Fragment4ChatRoom.this, userUid, myUid, getroomname, activity);
             }
         });
     }

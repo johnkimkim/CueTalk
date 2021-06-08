@@ -260,7 +260,7 @@ public class ChatRoom extends AppCompatActivity {
                     public void onSuccess(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             if (!snapshot.getKey().equals(myUid) && !snapshot.getKey().equals("messege")) {
-                                DecDialog.ChatRoomDecDialog(ChatRoom.this, snapshot.getKey(), myUid, getRoomname());
+                                DecDialog.ChatRoomDecDialog(ChatRoom.this, snapshot.getKey(), myUid, getRoomname(), activity);
                             }
                         }
                     }

@@ -209,8 +209,7 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
         holder.f2dec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity.loading.setVisibility(View.VISIBLE);
-                DecDialog.F2DecDialog(context, arrayList.get(position).getUid(), myUid);
+                DecDialog.F2DecDialog(context, arrayList.get(position).getUid(), myUid, activity);
             }
         });
     }
@@ -301,4 +300,6 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
             return "6개월전";
         }
     }
+
+
 }

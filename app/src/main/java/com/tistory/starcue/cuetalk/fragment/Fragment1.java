@@ -127,12 +127,12 @@ public class Fragment1 extends Fragment {
         Log.d("Fragment1>>>", "testtest: " + pn);
 
         Button testbtn = viewGroup.findViewById(R.id.testbtn);
+        TextView test1 = viewGroup.findViewById(R.id.test1);
+        TextView test2 = viewGroup.findViewById(R.id.test2);
         testbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                double d = 10.1234;
-                int i = (int) d;
-                Log.d("Fragment1>>>", "testtest: " + Integer.toString(i));
+                test1.setTextSize(14);
             }
         });
     }

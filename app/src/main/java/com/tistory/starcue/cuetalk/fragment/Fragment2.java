@@ -312,13 +312,11 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                     }
                 });
 
-                dialogEditText.setOnKeyListener(new View.OnKeyListener() {//줄바꿈 하나만 허용
+                dialogEditText.setOnKeyListener(new View.OnKeyListener() {//줄바꿈 방지
                     @Override
                     public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                        if (dialogEditText.getText().toString().contains("\n")) {
-                            if (i == keyEvent.KEYCODE_ENTER) {
-                                return true;
-                            }
+                        if (i == keyEvent.KEYCODE_ENTER) {
+                            return true;
                         }
                         return false;
                     }

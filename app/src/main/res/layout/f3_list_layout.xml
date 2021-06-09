@@ -40,7 +40,6 @@
         </RelativeLayout>
 
 
-
         <RelativeLayout
             android:id="@+id/f3re_under_layout"
             android:layout_width="wrap_content"
@@ -58,11 +57,11 @@
                     android:id="@+id/f3re_messege"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:gravity="center_vertical"
                     android:textColor="#000000"
-                    android:textSize="15dp"
-                    android:textStyle="bold"
-                    android:gravity="center_vertical"/>
+                    android:textStyle="bold" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:id="@+id/f3re_userimg_layout"
                 android:layout_width="wrap_content"
@@ -71,18 +70,18 @@
 
                 <ImageView
                     android:id="@+id/f3re_pic"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
                     android:src="@drawable/picnull" />
 
                 <com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
                     android:id="@+id/f3re_userpic_progress"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_centerInParent="true"
                     app:loader_animDur="80"
-                    app:loader_bigCircleRadius="12dp"
-                    app:loader_circleRadius="3dp"
+                    app:loader_bigCircleRadius="8dp"
+                    app:loader_circleRadius="2dp"
                     app:loader_defaultColor="@color/light_gray"
                     app:loader_firstShadowColor="@color/base1"
                     app:loader_secondShadowColor="@color/base3"
@@ -90,13 +89,23 @@
                     app:loader_showRunningShadow="true" />
             </RelativeLayout>
 
+            <TextView
+                android:id="@+id/f3re_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/manytextlayout"
+                android:layout_toRightOf="@+id/f3re_userimg_layout"
+                android:layout_marginLeft="3dp"
+                android:layout_marginBottom="2dp"/>
+
             <LinearLayout
                 android:id="@+id/manytextlayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_toRightOf="@+id/f3re_userimg_layout"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginLeft="3dp">
 
                 <TextView
                     android:id="@+id/f3re_name"
@@ -134,12 +143,6 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/f3re_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/manytextlayout"
-                android:layout_toLeftOf="@+id/f3btnlayout" />
 
             <LinearLayout
                 android:id="@+id/f3btnlayout"

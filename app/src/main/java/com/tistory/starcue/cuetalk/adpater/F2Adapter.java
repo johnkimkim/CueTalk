@@ -115,6 +115,11 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
         }
         holder.age.setText(arrayList.get(position).getAge());
         holder.messege.setText(arrayList.get(position).getMessege());
+//        if (arrayList.get(position).getMessege().length() > 15) {
+//            holder.messege.setTextSize(12);
+//        } else {
+//            holder.messege.setTextSize(15);
+//        }
 
         String time = arrayList.get(position).getTime();
 //        String time2 = time.substring(11);

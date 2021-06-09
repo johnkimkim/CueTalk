@@ -4,26 +4,29 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +39,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
@@ -70,7 +76,6 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
 
     String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
-    String[] items = {"category 선택", "컴퓨터/전자", "중고핸드폰", "암거나"};
 
     private GpsTracker gpsTracker;
 
@@ -92,12 +97,14 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
     private ProgressBar progressBar;
 
     private AlertDialog alertDialog;
-    Spinner dialogSpinner;
     ImageView dialogImageView;
     Button dialogBtn, dialogyes, dialogno;
     EditText dialogEditText;
     ProgressBar dialogProgressBar;
     TextView dialogcount;
+    RadioGroup radioGroup1, radioGroup2;
+    RadioButton radio1, radio2, radio3, radio4, radio5, radio6;
+    boolean group = false;
 
     Uri imageUri;
     String picUri, messege, category;
@@ -269,16 +276,17 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
 
         alertDialog.show();
         //set size
-        WindowManager.LayoutParams layoutParams = alertDialog.getWindow().getAttributes();
-        layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
-//            layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-//            layoutParams.dimAmount = 0.7f;
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        Window window = alertDialog.getWindow();
+        int x = (int) (size.x * 0.9);
+        int y = (int) (size.y * 0.8);
+        window.setLayout(x, y);
 
-        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        alertDialog.getWindow().setAttributes(layoutParams);
+        int xx = (int) (size.x * 0.22);
 
-        dialogSpinner = layout.findViewById(R.id.f3write_spinner);
         dialogImageView = layout.findViewById(R.id.f3write_img);
         dialogBtn = layout.findViewById(R.id.f3write_add_btn);
         dialogEditText = layout.findViewById(R.id.f3write_edit);
@@ -286,6 +294,19 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         dialogno = layout.findViewById(R.id.f3write_no);
         dialogProgressBar = layout.findViewById(R.id.fragment3_dialog_progress_bar);
         dialogcount = layout.findViewById(R.id.f3write_text_count);
+        radioGroup1 = layout.findViewById(R.id.f3dialog_radiogroup1);
+        radioGroup2 = layout.findViewById(R.id.f3dialog_radiogroup2);
+        radio1 = layout.findViewById(R.id.radio1);
+        radio2 = layout.findViewById(R.id.radio2);
+        radio3 = layout.findViewById(R.id.radio3);
+        radio4 = layout.findViewById(R.id.radio4);
+        radio5 = layout.findViewById(R.id.radio5);
+        radio6 = layout.findViewById(R.id.radio6);
+
+        ViewGroup.LayoutParams params = dialogImageView.getLayoutParams();
+        params.width = xx;
+        params.height = xx;
+        dialogImageView.setLayoutParams(params);
 
         dialogEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -317,30 +338,6 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
             }
         });
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_item, items);
-        adapter.setDropDownViewResource(android.R.layout.select_dialog_item);
-        dialogSpinner.setAdapter(adapter);
-        dialogSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i == 0) {
-                    category = "0";
-                } else if (i == 1) {
-                    category = "1";
-                } else if (i == 2) {
-                    category = "2";
-                } else if (i == 3) {
-                    category = "3";
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                Toast.makeText(getActivity(), "nothing", Toast.LENGTH_LONG).show();
-            }
-        });
-
         dialogBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -355,7 +352,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                 alertDialog.setCancelable(false);
                 messege = dialogEditText.getText().toString();
 
-                if (category.equals("0")) {
+                if (!radio1.isChecked() && !radio2.isChecked() && !radio3.isChecked() && !radio4.isChecked() && !radio5.isChecked() && !radio6.isChecked()) {
                     Toast.makeText(getActivity(), "카테고리를 선택해주세요", Toast.LENGTH_SHORT).show();
                 } else if (picUri == null) {
                     Toast.makeText(getActivity(), "이미지를 선택해주세요", Toast.LENGTH_SHORT).show();
@@ -363,6 +360,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                     Toast.makeText(getActivity(), "메시지를 선택해주세요", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.d("Fragment3>>>", "get pic uri: " + picUri);
+
                     dialogLoading();
                     firstUploadPicInStorage();
                 }
@@ -374,6 +372,42 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
             public void onClick(View view) {
                 dialogEditText.setText("");
                 alertDialog.dismiss();
+            }
+        });
+
+        radioGroup1.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                if (i != -1 && group) {
+                    group = false;
+                    radioGroup2.clearCheck();
+                }
+                group = true;
+                if (radio1.isChecked()) {
+                    category = "핸폰";
+                } else if (radio2.isChecked()) {
+                    category = "컴터";
+                } else if (radio3.isChecked()) {
+                    category = "패션";
+                }
+            }
+        });
+
+        radioGroup2.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                if (i != -1 && group) {
+                    group = false;
+                    radioGroup1.clearCheck();
+                }
+                group = true;
+                if (radio4.isChecked()) {
+                    category = "미용";
+                } else if (radio5.isChecked()) {
+                    category = "전자";
+                } else if (radio6.isChecked()) {
+                    category = "티켓";
+                }
             }
         });
     }
@@ -391,7 +425,12 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
             imageUri = data.getData();
             picUri = imageUri.toString();
-            dialogImageView.setImageURI(imageUri);
+//            dialogImageView.setImageURI(imageUri);
+            RequestOptions requestOptions = new RequestOptions();
+            requestOptions = requestOptions.transform(new CenterCrop(), new RoundedCorners(8));
+            Glide.with(Fragment3.this).load(imageUri).override(150, 150)
+                    .apply(requestOptions)
+                    .into(dialogImageView);
         }
     }
 
@@ -629,7 +668,6 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
 
     private void dialogLoading() {
         dialogImageView.setEnabled(false);
-        dialogSpinner.setEnabled(false);
         dialogBtn.setEnabled(false);
         dialogyes.setEnabled(false);
         dialogno.setEnabled(false);
@@ -638,7 +676,6 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
 
     private void dialogFinishLoading() {
         dialogImageView.setEnabled(true);
-        dialogSpinner.setEnabled(true);
         dialogBtn.setEnabled(true);
         dialogyes.setEnabled(true);
         dialogno.setEnabled(true);

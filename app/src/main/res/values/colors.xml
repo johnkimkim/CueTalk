@@ -33,4 +33,7 @@
 
     <color name="male">#556DFF</color>
     <color name="female">#F47676</color>
+
+    <drawable name="f3radiowhite">#ffffff</drawable>
+    <drawable name="f3radioblack">#000000</drawable>
 </resources>

@@ -75,7 +75,7 @@
                 android:layout_below="@+id/f2re_messege"
                 android:layout_marginLeft="3dp"
                 android:layout_marginBottom="3dp"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="3dp"
                 android:orientation="horizontal">
 
                 <TextView

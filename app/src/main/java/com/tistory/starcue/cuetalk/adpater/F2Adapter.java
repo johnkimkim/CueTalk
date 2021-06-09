@@ -251,6 +251,14 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
             } else {
                 f2deccard.setVisibility(View.GONE);
             }
+
+//            Display display = activity.getWindowManager().getDefaultDisplay();
+//            Point size = new Point();
+//            display.getSize(size);
+//            int x = (int) (size.x * 0.25);
+//            int xx = (int) (size.x * 0.22);
+//            int xxx = (int) (size.x * 0.015);
+//            int xxxx = (int) (x / 2);
         }
     }
 

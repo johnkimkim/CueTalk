@@ -25,7 +25,10 @@ import com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -116,6 +119,9 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
                 .circleCrop()
                 .into(holder.imageView);
 
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions = requestOptions.transform(new CenterCrop(), new RoundedCorners(8));
+
         requestManager
                 .load(arrayList.get(position).getPpic())
                 .override(150, 150)
@@ -132,7 +138,7 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
                         return false;
                     }
                 })
-                .centerCrop()
+                .apply(requestOptions)
                 .into(holder.ppic);
         holder.name.setText(arrayList.get(position).getName());
         holder.sex.setText(arrayList.get(position).getSex());
@@ -257,14 +263,13 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
         CardView mainlayout;
-        RelativeLayout underlayout;
+        RelativeLayout underlayout, userpiclayout, mainlayout2;
         ImageView imageView, ppic;
         TextView name, sex, age, km, messege, time;
         Button sendbtn;
         Button f3dec;
         CardView f3deccard, f3sendcard;
         CircularDotsLoader userprogress, writeprogress;
-        RelativeLayout userlayout;
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -284,7 +289,8 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
             this.f3sendcard = itemView.findViewById(R.id.f3cardbtn);
             this.userprogress = itemView.findViewById(R.id.f3re_userpic_progress);
             this.writeprogress = itemView.findViewById(R.id.f3re_write_progress);
-            this.userlayout = itemView.findViewById(R.id.f3re_about_user_layout);
+            this.userpiclayout = itemView.findViewById(R.id.f3re_userimg_layout);
+            this.mainlayout2 = itemView.findViewById(R.id.f3_recyclerview2);
             if (Fragment3.f3fragdec.isChecked()) {
                 f3deccard.setVisibility(View.VISIBLE);
             } else {
@@ -295,33 +301,41 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
             Point size = new Point();
             display.getSize(size);
             int x = (int) (size.x * 0.25);
-            int xx = (int) (size.x * 0.11);
-            double xxx = x * 0.50;
-            int xxxi = (int) xxx;
+            int xx = (int) (size.x * 0.22);
+            int xxx = (int) (size.x * 0.015);
+            int xxxx = (int) (x / 2);
 
+            //메인 카드뷰 크기
+//            ViewGroup.LayoutParams params = mainlayout.getLayoutParams();
+//            params.width = WindowManager.LayoutParams.MATCH_PARENT;
+//            params.height = x;
+//            mainlayout.setLayoutParams(params);
+            mainlayout.setMinimumHeight(x);
+            mainlayout2.setMinimumHeight(x);
+
+            //상품 사진 크기
             ViewGroup.LayoutParams params1 = ppic.getLayoutParams();
-            params1.width = x;
-            params1.height = x;
+            params1.width = xx;
+            params1.height = xx;
             ppic.setLayoutParams(params1);
 
-            ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) userlayout.getLayoutParams();
-            marginLayoutParams.setMargins(0, xxxi, 0, 0);
-            userlayout.setLayoutParams(marginLayoutParams);
 
-//            ViewGroup.LayoutParams params2 = mainlayout.getLayoutParams();
-//            params2.width = WindowManager.LayoutParams.MATCH_PARENT;
-//            params2.height = x;
-//            mainlayout.setLayoutParams(params2);
+            //상품 사진 마진
+            ViewGroup.MarginLayoutParams mainmargin = (ViewGroup.MarginLayoutParams) ppic.getLayoutParams();
+            mainmargin.setMargins(xxx , 0, 0, 0);
+            ppic.setLayoutParams(mainmargin);
 
-//            LinearLayout.LayoutParams params3 = (LinearLayout.LayoutParams) f3sendcard.getLayoutParams();
-//            params2.width = xx;
-//            params2.height = xx;
-//            f3sendcard.setLayoutParams(params3);
+            underlayout.setMinimumHeight(xxxx);
+
+//            ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) time.getLayoutParams();
+//            marginLayoutParams.setMargins(0, x, 0, 0);
+//            time.setLayoutParams(marginLayoutParams);
 //
-//            LinearLayout.LayoutParams params4 = (LinearLayout.LayoutParams) f3deccard.getLayoutParams();
-//            params2.width = xx;
-//            params2.height = xx;
-//            f3deccard.setLayoutParams(params4);
+//            ViewGroup.MarginLayoutParams marginLayoutParams1 = (ViewGroup.MarginLayoutParams) userpiclayout.getLayoutParams();
+//            marginLayoutParams.setMargins(0, x, 0, 0);
+//            userpiclayout.setLayoutParams(marginLayoutParams1);
+
+
         }
     }
     public double getDistance(double lat1, double lng1, double lat2, double lng2) {

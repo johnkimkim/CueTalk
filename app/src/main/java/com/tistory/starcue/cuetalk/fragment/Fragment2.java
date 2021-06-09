@@ -11,7 +11,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Display;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -312,15 +311,15 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                     }
                 });
 
-                dialogEditText.setOnKeyListener(new View.OnKeyListener() {//줄바꿈 방지
-                    @Override
-                    public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                        if (i == keyEvent.KEYCODE_ENTER) {
-                            return true;
-                        }
-                        return false;
-                    }
-                });
+//                dialogEditText.setOnKeyListener(new View.OnKeyListener() {//줄바꿈 방지
+//                    @Override
+//                    public boolean onKey(View view, int i, KeyEvent keyEvent) {
+//                        if (i == keyEvent.KEYCODE_ENTER) {
+//                            return true;
+//                        }
+//                        return false;
+//                    }
+//                });
 
                 dialogyes.setOnClickListener(new View.OnClickListener() {
                     @Override

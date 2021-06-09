@@ -128,7 +128,7 @@
             android:id="@+id/test1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="김민준"/>
+            android:text="김민준\nㅇㅋ\nㅇㅋ\nㅇㅋ"/>
         <TextView
             android:id="@+id/test2"
             android:layout_width="wrap_content"

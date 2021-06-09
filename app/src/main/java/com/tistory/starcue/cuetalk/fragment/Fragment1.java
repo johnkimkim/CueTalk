@@ -3,7 +3,6 @@ package com.tistory.starcue.cuetalk.fragment;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -132,18 +131,22 @@ public class Fragment1 extends Fragment {
         testbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                test1.setTextSize(14);
+//                Log.d("Fragment1>>>", "testtest: "+ getCharNumber(test1.getText().toString(), "\n"));
             }
         });
     }
 
-    private String getRoomname() {
-        Cursor cursor = sqLiteDatabase.rawQuery("select * from roomname where _rowid_ = 1", null);
-        cursor.moveToFirst();
-        String adress = cursor.getString(0);
-        cursor.close();
-        return adress;
-    }
+//    int getCharNumber(String string, String string1) {
+//        int count = 0;
+//        for (int i = 0; i < string.length(); i++) {
+//            char ss = string.charAt(i);
+//            String s = Character.toString(ss);
+//            if (s.equals(string1)) {
+//                count++;
+//            }
+//        }
+//        return count;
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

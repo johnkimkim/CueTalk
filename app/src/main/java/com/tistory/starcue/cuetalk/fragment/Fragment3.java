@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -304,15 +305,17 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
             }
         });
 
-//        dialogEditText.setOnKeyListener(new View.OnKeyListener() {//줄바꿈 방지
-//            @Override
-//            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-//                if (i == keyEvent.KEYCODE_ENTER) {
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
+        dialogEditText.setOnKeyListener(new View.OnKeyListener() {//줄바꿈 방지
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if (getCharNumber(dialogEditText.getText().toString(), "\n") == 2) {
+                    if (i == keyEvent.KEYCODE_ENTER) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_item, items);
         adapter.setDropDownViewResource(android.R.layout.select_dialog_item);
@@ -640,5 +643,16 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         dialogyes.setEnabled(true);
         dialogno.setEnabled(true);
         dialogEditText.setEnabled(true);
+    }
+    int getCharNumber(String string, String string1) {
+        int count = 0;
+        for (int i = 0; i < string.length(); i++) {
+            char ss = string.charAt(i);
+            String s = Character.toString(ss);
+            if (s.equals(string1)) {
+                count++;
+            }
+        }
+        return count;
     }
 }

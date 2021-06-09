@@ -11,6 +11,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -302,7 +303,7 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                     @Override
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                         String input = dialogEditText.getText().toString();
-                        dialogcount.setText(input.length() + " / 20");
+                        dialogcount.setText(input.length() + " / 50");
                     }
 
                     @Override
@@ -311,15 +312,17 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                     }
                 });
 
-//                dialogEditText.setOnKeyListener(new View.OnKeyListener() {//줄바꿈 방지
-//                    @Override
-//                    public boolean onKey(View view, int i, KeyEvent keyEvent) {
-//                        if (i == keyEvent.KEYCODE_ENTER) {
-//                            return true;
-//                        }
-//                        return false;
-//                    }
-//                });
+                dialogEditText.setOnKeyListener(new View.OnKeyListener() {//줄바꿈 방지
+                    @Override
+                    public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                        if (getCharNumber(dialogEditText.getText().toString(), "\n") == 2) {
+                            if (i == keyEvent.KEYCODE_ENTER) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                });
 
                 dialogyes.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -670,4 +673,15 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         manager.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
+    int getCharNumber(String string, String string1) {
+        int count = 0;
+        for (int i = 0; i < string.length(); i++) {
+            char ss = string.charAt(i);
+            String s = Character.toString(ss);
+            if (s.equals(string1)) {
+                count++;
+            }
+        }
+        return count;
+    }
 }

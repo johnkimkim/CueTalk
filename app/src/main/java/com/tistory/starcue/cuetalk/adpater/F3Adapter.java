@@ -306,10 +306,6 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
             int xxxx = (int) (x / 2);
 
             //메인 카드뷰 크기
-//            ViewGroup.LayoutParams params = mainlayout.getLayoutParams();
-//            params.width = WindowManager.LayoutParams.MATCH_PARENT;
-//            params.height = x;
-//            mainlayout.setLayoutParams(params);
             mainlayout.setMinimumHeight(x);
             mainlayout2.setMinimumHeight(x);
 
@@ -319,23 +315,12 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
             params1.height = xx;
             ppic.setLayoutParams(params1);
 
-
             //상품 사진 마진
             ViewGroup.MarginLayoutParams mainmargin = (ViewGroup.MarginLayoutParams) ppic.getLayoutParams();
             mainmargin.setMargins(xxx , 0, 0, 0);
             ppic.setLayoutParams(mainmargin);
 
             underlayout.setMinimumHeight(xxxx);
-
-//            ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) time.getLayoutParams();
-//            marginLayoutParams.setMargins(0, x, 0, 0);
-//            time.setLayoutParams(marginLayoutParams);
-//
-//            ViewGroup.MarginLayoutParams marginLayoutParams1 = (ViewGroup.MarginLayoutParams) userpiclayout.getLayoutParams();
-//            marginLayoutParams.setMargins(0, x, 0, 0);
-//            userpiclayout.setLayoutParams(marginLayoutParams1);
-
-
         }
     }
     public double getDistance(double lat1, double lng1, double lat2, double lng2) {

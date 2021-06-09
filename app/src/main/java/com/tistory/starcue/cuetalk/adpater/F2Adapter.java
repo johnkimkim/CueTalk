@@ -2,9 +2,11 @@ package com.tistory.starcue.cuetalk.adpater;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -224,7 +226,8 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
         return (arrayList != null ? arrayList.size() : 0);
     }
 
-    public static class CustomViewHolder extends RecyclerView.ViewHolder {
+    public class CustomViewHolder extends RecyclerView.ViewHolder {
+        CardView mainlayout;
         ImageView imageView;
         TextView name, sex, age, km, messege, time;
         Button sendbtn;
@@ -234,6 +237,7 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
+            this.mainlayout = itemView.findViewById(R.id.f2_recyclerview);
             this.imageView = itemView.findViewById(R.id.f2re_pic);
             this.name = itemView.findViewById(R.id.f2re_name);
             this.sex = itemView.findViewById(R.id.f2re_sex);
@@ -252,13 +256,25 @@ public class F2Adapter extends RecyclerView.Adapter<F2Adapter.CustomViewHolder> 
                 f2deccard.setVisibility(View.GONE);
             }
 
-//            Display display = activity.getWindowManager().getDefaultDisplay();
-//            Point size = new Point();
-//            display.getSize(size);
-//            int x = (int) (size.x * 0.25);
-//            int xx = (int) (size.x * 0.22);
-//            int xxx = (int) (size.x * 0.015);
-//            int xxxx = (int) (x / 2);
+            Display display = activity.getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int x = (int) (size.x * 0.25);
+            int xx = (int) (size.x * 0.22);
+            int xxx = (int) (size.x * 0.015);
+            int xxxx = (int) (x / 2);
+            int z = (int) (size.x * 0.14);
+            int zz = (int) (size.x * 0.11);
+            int zzz = (int) (size.x * 0.07);
+
+            mainlayout.setMinimumHeight(z);
+
+            ViewGroup.LayoutParams params = imageView.getLayoutParams();
+            params.width = zz;
+            params.height = zz;
+            imageView.setLayoutParams(params);
+
+            messege.setMinHeight(zzz);
         }
     }
 

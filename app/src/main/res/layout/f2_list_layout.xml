@@ -24,9 +24,10 @@
 
             <ImageView
                 android:id="@+id/f2re_pic"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:src="@drawable/picnull" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/picnull"
+                android:layout_centerInParent="true"/>
 
             <com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
                 android:id="@+id/f2re_progress"
@@ -75,7 +76,7 @@
                 android:layout_below="@+id/f2re_messege"
                 android:layout_marginLeft="3dp"
                 android:layout_marginBottom="3dp"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="2dp"
                 android:orientation="horizontal">
 
                 <TextView

@@ -304,6 +304,7 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
             int xx = (int) (size.x * 0.22);
             int xxx = (int) (size.x * 0.015);
             int xxxx = (int) (x / 2);
+            int xxxxx = (int) (xx * 0.45);
 
             //메인 카드뷰 크기
             mainlayout.setMinimumHeight(x);
@@ -320,7 +321,20 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
             mainmargin.setMargins(xxx , 0, 0, 0);
             ppic.setLayoutParams(mainmargin);
 
+            //메시지text 크기
             underlayout.setMinimumHeight(xxxx);
+
+            //send btn크기
+            ViewGroup.LayoutParams btnp = f3sendcard.getLayoutParams();
+            btnp.width = xxxxx;
+            btnp.height = xxxxx;
+            f3sendcard.setLayoutParams(btnp);
+
+            //dec btn크기
+            ViewGroup.LayoutParams btn2p = f3deccard.getLayoutParams();
+            btn2p.width = xxxxx;
+            btn2p.height = xxxxx;
+            f3deccard.setLayoutParams(btn2p);
         }
     }
     public double getDistance(double lat1, double lng1, double lat2, double lng2) {

@@ -65,8 +65,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/f3re_under_layout"
-            android:layout_toRightOf="@+id/f3re_write_pic_layout"
-            android:layout_marginLeft="3dp">
+            android:layout_marginLeft="3dp"
+            android:layout_toRightOf="@+id/f3re_write_pic_layout">
 
             <RelativeLayout
                 android:id="@+id/f3re_userimg_layout"
@@ -158,10 +158,12 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/f3cardbtn"
-                android:layout_width="46dp"
-                android:layout_height="46dp"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
                 android:layout_gravity="center_vertical"
+                android:layout_marginTop="2dp"
                 android:layout_marginRight="5dp"
+                android:layout_marginBottom="2dp"
                 android:elevation="4dp"
                 app:cardBackgroundColor="@color/base3"
                 app:cardCornerRadius="8dp">
@@ -171,16 +173,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_margin="8dp"
+                    android:layout_margin="5dp"
                     android:background="@drawable/f2f3sendmessageicon" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/f3dec_card"
-                android:layout_width="46dp"
-                android:layout_height="46dp"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
                 android:layout_gravity="center_vertical"
+                android:layout_marginTop="2dp"
                 android:layout_marginRight="5dp"
+                android:layout_marginBottom="2dp"
                 android:background="@drawable/f2f3buttonlayout"
                 android:elevation="4dp"
                 app:cardBackgroundColor="@color/base3"
@@ -191,7 +195,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_margin="8dp"
+                    android:layout_margin="5dp"
                     android:background="@drawable/f2f3decbutton" />
             </androidx.cardview.widget.CardView>
 

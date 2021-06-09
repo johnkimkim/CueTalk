@@ -10,7 +10,6 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -265,6 +264,7 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
         Button f3dec;
         CardView f3deccard, f3sendcard;
         CircularDotsLoader userprogress, writeprogress;
+        RelativeLayout userlayout;
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -284,6 +284,7 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
             this.f3sendcard = itemView.findViewById(R.id.f3cardbtn);
             this.userprogress = itemView.findViewById(R.id.f3re_userpic_progress);
             this.writeprogress = itemView.findViewById(R.id.f3re_write_progress);
+            this.userlayout = itemView.findViewById(R.id.f3re_about_user_layout);
             if (Fragment3.f3fragdec.isChecked()) {
                 f3deccard.setVisibility(View.VISIBLE);
             } else {
@@ -295,16 +296,22 @@ public class F3Adapter extends RecyclerView.Adapter<F3Adapter.CustomViewHolder> 
             display.getSize(size);
             int x = (int) (size.x * 0.25);
             int xx = (int) (size.x * 0.11);
+            double xxx = x * 0.50;
+            int xxxi = (int) xxx;
 
             ViewGroup.LayoutParams params1 = ppic.getLayoutParams();
             params1.width = x;
             params1.height = x;
             ppic.setLayoutParams(params1);
 
-            ViewGroup.LayoutParams params2 = mainlayout.getLayoutParams();
-            params2.width = WindowManager.LayoutParams.MATCH_PARENT;
-            params2.height = x;
-            mainlayout.setLayoutParams(params2);
+            ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) userlayout.getLayoutParams();
+            marginLayoutParams.setMargins(0, xxxi, 0, 0);
+            userlayout.setLayoutParams(marginLayoutParams);
+
+//            ViewGroup.LayoutParams params2 = mainlayout.getLayoutParams();
+//            params2.width = WindowManager.LayoutParams.MATCH_PARENT;
+//            params2.height = x;
+//            mainlayout.setLayoutParams(params2);
 
 //            LinearLayout.LayoutParams params3 = (LinearLayout.LayoutParams) f3sendcard.getLayoutParams();
 //            params2.width = xx;

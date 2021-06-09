@@ -11,7 +11,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
             android:id="@+id/f3re_write_pic_layout"
@@ -48,101 +48,108 @@
             android:padding="5dp">
 
             <RelativeLayout
+                android:id="@+id/f3re_messege_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@+id/f3re_userimg_layout"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="3dp"
+                android:layout_marginLeft="3dp"
                 android:layout_toLeftOf="@+id/f3btnlayout">
 
                 <TextView
                     android:id="@+id/f3re_messege"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:textColor="#000000"
                     android:textStyle="bold" />
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/f3re_userimg_layout"
+                android:id="@+id/f3re_about_user_layout"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true">
+                android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/f3re_pic"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    android:src="@drawable/picnull" />
+                <RelativeLayout
+                    android:id="@+id/f3re_userimg_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true">
 
-                <com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
-                    android:id="@+id/f3re_userpic_progress"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_centerInParent="true"
-                    app:loader_animDur="80"
-                    app:loader_bigCircleRadius="8dp"
-                    app:loader_circleRadius="2dp"
-                    app:loader_defaultColor="@color/light_gray"
-                    app:loader_firstShadowColor="@color/base1"
-                    app:loader_secondShadowColor="@color/base3"
-                    app:loader_selectedColor="@color/base2"
-                    app:loader_showRunningShadow="true" />
+                    <ImageView
+                        android:id="@+id/f3re_pic"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:src="@drawable/picnull" />
+
+                    <com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
+                        android:id="@+id/f3re_userpic_progress"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerInParent="true"
+                        app:loader_animDur="80"
+                        app:loader_bigCircleRadius="8dp"
+                        app:loader_circleRadius="2dp"
+                        app:loader_defaultColor="@color/light_gray"
+                        app:loader_firstShadowColor="@color/base1"
+                        app:loader_secondShadowColor="@color/base3"
+                        app:loader_selectedColor="@color/base2"
+                        app:loader_showRunningShadow="true" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/f3re_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:layout_toRightOf="@+id/f3re_userimg_layout" />
+
+                <LinearLayout
+                    android:id="@+id/manytextlayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/f3re_time"
+                    android:layout_marginLeft="3dp"
+                    android:layout_toRightOf="@+id/f3re_userimg_layout"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/f3re_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" | " />
+
+                    <TextView
+                        android:id="@+id/f3re_sex"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" | " />
+
+                    <TextView
+                        android:id="@+id/f3re_age"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" | " />
+
+                    <TextView
+                        android:id="@+id/f3re_km"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
             </RelativeLayout>
-
-            <TextView
-                android:id="@+id/f3re_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/manytextlayout"
-                android:layout_toRightOf="@+id/f3re_userimg_layout"
-                android:layout_marginLeft="3dp"
-                android:layout_marginBottom="2dp"/>
-
-            <LinearLayout
-                android:id="@+id/manytextlayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_toRightOf="@+id/f3re_userimg_layout"
-                android:orientation="horizontal"
-                android:layout_marginLeft="3dp">
-
-                <TextView
-                    android:id="@+id/f3re_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=" | " />
-
-                <TextView
-                    android:id="@+id/f3re_sex"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=" | " />
-
-                <TextView
-                    android:id="@+id/f3re_age"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=" | " />
-
-                <TextView
-                    android:id="@+id/f3re_km"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
 
             <LinearLayout
                 android:id="@+id/f3btnlayout"

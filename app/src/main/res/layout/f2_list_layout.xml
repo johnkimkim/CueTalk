@@ -11,14 +11,16 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="65dp">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
             android:id="@+id/f2re_user_pic_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="6dp">
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp">
 
             <ImageView
                 android:id="@+id/f2re_pic"
@@ -45,30 +47,35 @@
         <RelativeLayout
             android:id="@+id/f2textlayout"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_toLeftOf="@+id/f2re_time"
-            android:layout_toRightOf="@+id/f2re_user_pic_layout">
+            android:layout_toRightOf="@+id/f2re_user_pic_layout"
+            android:layout_toStartOf="@+id/f2re_time"
+            android:layout_toEndOf="@+id/f2re_user_pic_layout">
 
             <!--weght1에 29dp-->
             <TextView
                 android:id="@+id/f2re_messege"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@+id/f2re_aboutuser"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
                 android:layout_marginTop="3dp"
                 android:layout_marginRight="3dp"
                 android:layout_marginLeft="3dp"
                 android:gravity="center_vertical"
                 android:textColor="#000000"
-                android:textSize="15dp" />
+                android:textSize="15dp"
+                android:text="asldfjk"/>
 
             <LinearLayout
                 android:id="@+id/f2re_aboutuser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="3dp"
+                android:layout_below="@+id/f2re_messege"
+                android:layout_marginLeft="3dp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginTop="14dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -120,7 +127,7 @@
         <LinearLayout
             android:id="@+id/f2btnlayout"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:orientation="horizontal">

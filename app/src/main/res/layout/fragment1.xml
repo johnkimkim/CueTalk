@@ -124,23 +124,19 @@
         android:orientation="horizontal"
         android:layout_marginBottom="5dp">
 
-        <TextView
-            android:id="@+id/test1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="김민준\nㅇㅋ\nㅇㅋ\nㅇㅋ"/>
-        <TextView
-            android:id="@+id/test2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="김민준"/>
-
         <Button
-            android:id="@+id/testbtn"
+            android:id="@+id/testbtn1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/button_on_click"
-            android:text="추가"
+            android:text="start"
+            android:textColor="@color/white" />
+        <Button
+            android:id="@+id/testbtn2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_on_click"
+            android:text="stop"
             android:textColor="@color/white" />
     </LinearLayout>
 </RelativeLayout>

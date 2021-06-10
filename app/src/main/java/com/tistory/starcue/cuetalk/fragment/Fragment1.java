@@ -63,6 +63,7 @@ import com.tistory.starcue.cuetalk.f1viewpager.F1F6;
 import com.tistory.starcue.cuetalk.f1viewpager.F1F7;
 import com.tistory.starcue.cuetalk.f1viewpager.F1F8;
 import com.tistory.starcue.cuetalk.f1viewpager.F1ViewpagerIntent;
+import com.tistory.starcue.cuetalk.service.KillAppService;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -125,15 +126,26 @@ public class Fragment1 extends Fragment {
         String pn = mUser.getPhoneNumber().substring(9, 13);
         Log.d("Fragment1>>>", "testtest: " + pn);
 
-        Button testbtn = viewGroup.findViewById(R.id.testbtn);
-        TextView test1 = viewGroup.findViewById(R.id.test1);
-        TextView test2 = viewGroup.findViewById(R.id.test2);
-        testbtn.setOnClickListener(new View.OnClickListener() {
+        Button testbtn1 = viewGroup.findViewById(R.id.testbtn1);
+        Button testbtn2 = viewGroup.findViewById(R.id.testbtn2);
+        testbtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Log.d("Fragment1>>>", "testtest: "+ getCharNumber(test1.getText().toString(), "\n"));
+                getActivity().startService(new Intent(getActivity(), KillAppService.class));
             }
         });
+        testbtn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().stopService(new Intent(getActivity(), KillAppService.class));
+            }
+        });
+//        testbtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+////                Log.d("Fragment1>>>", "testtest: "+ getCharNumber(test1.getText().toString(), "\n"));
+//            }
+//        });
     }
 
 //    int getCharNumber(String string, String string1) {

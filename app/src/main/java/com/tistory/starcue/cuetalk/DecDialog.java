@@ -419,6 +419,9 @@ public class DecDialog {
         radio2 = layout.findViewById(R.id.radio2);
         radio3 = layout.findViewById(R.id.radio3);
         radio4 = layout.findViewById(R.id.radio4);
+        radio5 = layout.findViewById(R.id.radio5);
+        radio6 = layout.findViewById(R.id.radio6);
+        radio7 = layout.findViewById(R.id.radio7);
         editText = layout.findViewById(R.id.dec_dialog_edit);
         count = layout.findViewById(R.id.dec_dialog_edit_count);
         yesbtn = layout.findViewById(R.id.dec_dialog_ok);
@@ -583,6 +586,9 @@ public class DecDialog {
         radio2 = layout.findViewById(R.id.radio2);
         radio3 = layout.findViewById(R.id.radio3);
         radio4 = layout.findViewById(R.id.radio4);
+        radio5 = layout.findViewById(R.id.radio5);
+        radio6 = layout.findViewById(R.id.radio6);
+        radio7 = layout.findViewById(R.id.radio7);
         editText = layout.findViewById(R.id.dec_dialog_edit);
         count = layout.findViewById(R.id.dec_dialog_edit_count);
         yesbtn = layout.findViewById(R.id.dec_dialog_ok);

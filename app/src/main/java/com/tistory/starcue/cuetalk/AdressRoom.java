@@ -39,6 +39,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
+import com.google.firebase.storage.StorageReference;
 import com.tistory.starcue.cuetalk.adpater.AdressRoomAdapter;
 import com.tistory.starcue.cuetalk.adpater.BottomSheetAdapter;
 import com.tistory.starcue.cuetalk.item.AdressRoomItem;
@@ -300,7 +303,6 @@ public class AdressRoom extends AppCompatActivity {
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {//db제거시
                 String key = snapshot.getKey();
                 int index = keyList.indexOf(key);
-                Log.d("AdressRoom>>>", Integer.toString(index));
                 arrayList.remove(index);
                 keyList.remove(index);
                 adapter.notifyDataSetChanged();
@@ -441,18 +443,12 @@ public class AdressRoom extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
     private void goToMain() {
         Log.d("AdressRoom>>>", "goToMain");
         deleteBottomList();
         reference = FirebaseDatabase.getInstance().getReference();
         reference.getRef().child("adressRoom").child(adressm).child(adress).child(myUid).removeValue();
         reference.getRef().child("대화신청").child(myUid).removeValue();
-        databaseHandler.adressdelete();
         finish();
     }
 
@@ -466,13 +462,6 @@ public class AdressRoom extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (!goChatRoom) {
-            goToMain();
-        }
-    }
 
     private void deleteBottomList() {
         for (int i = 0; i < userList.size(); i++) {
@@ -489,9 +478,59 @@ public class AdressRoom extends AppCompatActivity {
         return adress;
     }
 
+    private void deleteMyChatRoomImage() {
+        StorageReference storageReference;
+        storageReference = FirebaseStorage.getInstance().getReference();
+        storageReference.child(myUid + "/").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
+                for (StorageReference item : listResult.getItems()) {
+                    Log.d("ChatRoom>>>", item.getName());
+                    storageReference.child(myUid + "/" + item.getName()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("ChatRoomService>>>", "fail: " + e.toString());
+                        }
+                    });
+
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("ChatRoomService>>>", e.toString());
+            }
+        });
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         databaseHandler.roomnamedelete();
+        deleteMyChatRoomImage();
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!goChatRoom) {
+            goToMain();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("AdressRoom>>>", "onStop");
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("AdressRoom>>>", "onDestory");
     }
 }

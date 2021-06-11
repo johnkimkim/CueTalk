@@ -46,7 +46,7 @@ import java.util.Map;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class DecDialog {
-    private static AlertDialog alertDialog;
+    public static AlertDialog alertDialog;
     private static TextView count;
     private static RadioGroup radioGroup;
     private static RadioButton radio1, radio2, radio3, radio4, radio5, radio6, radio7;

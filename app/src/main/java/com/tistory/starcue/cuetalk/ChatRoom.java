@@ -49,6 +49,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.tistory.starcue.cuetalk.adpater.ChatRoomAdapter;
 import com.tistory.starcue.cuetalk.item.ChatRoomItem;
+import com.tistory.starcue.cuetalk.service.ChatRoomKillAppService;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -105,6 +106,7 @@ public class ChatRoom extends AppCompatActivity {
 //        Log.d("ChatRoom>>>", "test get room name: " + where);
 
         activity = ChatRoom.this;
+        startService(new Intent(ChatRoom.this, ChatRoomKillAppService.class));
 
         setinit();
         setdb();
@@ -127,6 +129,18 @@ public class ChatRoom extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         AdressRoom.goChatRoom = false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("ChatRoom>>>", "onPause");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("ChatRoom>>>", "onDestroy");
     }
 
     private void setinit() {
@@ -403,16 +417,23 @@ public class ChatRoom extends AppCompatActivity {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if (!snapshot.getKey().equals("messege") && !snapshot.getKey().equals(myUid)) {
-                    if (snapshot.child("ischat").getValue(String.class).equals("2")) {
-                        dialogA();
-                    }
-                }
+//                if (!snapshot.getKey().equals("messege") && !snapshot.getKey().equals(myUid)) {
+//                    if (snapshot.child("ischat").getValue(String.class).equals("2")) {
+//                        dialogA();
+//                    }
+//                }
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
+                if (!snapshot.getKey().equals("messege") && !snapshot.getKey().equals(myUid)) {
+                    if (alertDialog != null) {
+                        alertDialog.dismiss();
+                    } else if (DecDialog.alertDialog != null) {
+                        DecDialog.alertDialog.dismiss();
+                    }
+                    dialogA();
+                }
             }
 
             @Override
@@ -430,11 +451,12 @@ public class ChatRoom extends AppCompatActivity {
     private void deleteMydb() {//내가 먼저 대화방 나갔을때
         Map<String, Object> updateUser = new HashMap<>();
         updateUser.put("/adressRoom/" + getAdress().substring(0, getAdress().length() - 1) + "/" + getAdress() + "/" + myUid + "/" + "/ischat/", 1);
-        updateUser.put("/inchat/" + getRoomname() + "/" + myUid + "/ischat/", "2");
+//        updateUser.put("/inchat/" + getRoomname() + "/" + myUid + "/ischat/", "2");
         Log.d("ChatRoom>>>", "go out get where: " + getRoomname());
 
         deleteMyStoragePic();
 
+        reference.getRef().child("inchat").child(getRoomname()).child(myUid).removeValue();
         reference.updateChildren(updateUser).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {

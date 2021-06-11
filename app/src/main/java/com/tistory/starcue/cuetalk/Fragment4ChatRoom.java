@@ -186,23 +186,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
-//        if (!outAlready) {
-//            setOutState();
-//        }
-
         setOutState();
-
-//        if (!pressBack) {//back버튼 누르지 않고 밖으로 나갔을때 getroomname 저장
-//            sharedPreferences = getSharedPreferences("saveroomkey", MODE_PRIVATE);
-//            SharedPreferences.Editor editor = sharedPreferences.edit();
-//            editor.putString("getroomname", getroomname);
-//            editor.apply();
-//        } else {//back버튼 눌렀을때는 sharedPreferences 삭제
-//            sharedPreferences = getSharedPreferences("saveroomkey", MODE_PRIVATE);
-//            SharedPreferences.Editor editor = sharedPreferences.edit();
-//            editor.remove("getroomname").apply();
-//        }
     }
 
     private void setinit() {

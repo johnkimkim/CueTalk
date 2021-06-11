@@ -63,7 +63,6 @@ import com.tistory.starcue.cuetalk.f1viewpager.F1F6;
 import com.tistory.starcue.cuetalk.f1viewpager.F1F7;
 import com.tistory.starcue.cuetalk.f1viewpager.F1F8;
 import com.tistory.starcue.cuetalk.f1viewpager.F1ViewpagerIntent;
-import com.tistory.starcue.cuetalk.service.KillAppService;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -123,7 +122,9 @@ public class Fragment1 extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser mUser = mAuth.getCurrentUser();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         String pn = mUser.getPhoneNumber().substring(9, 13);
+        String myUi = mAuth.getUid();
         Log.d("Fragment1>>>", "testtest: " + pn);
 
         Button testbtn1 = viewGroup.findViewById(R.id.testbtn1);
@@ -131,13 +132,14 @@ public class Fragment1 extends Fragment {
         testbtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().startService(new Intent(getActivity(), KillAppService.class));
+//                getActivity().startService(new Intent(getActivity(), TestService.class));
             }
         });
         testbtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().stopService(new Intent(getActivity(), KillAppService.class));
+//                getActivity().stopService(intent);
+//                getActivity().stopService(new Intent(getActivity(), TestService.class));
             }
         });
 //        testbtn.setOnClickListener(new View.OnClickListener() {

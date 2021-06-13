@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -93,6 +95,8 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     private FirebaseFirestore db;
     private StorageReference storageReference;
 
+    LinearLayout titlelayout;
+    TextView titleName, titleSex, titleAge, titleKm;
     String myUid, userUid, myUiduserUid, userUidmyUid, userPic, userName, userSex, userAge, userLatitude, userLongitude;
     String getroomname;
     String myName, myPic, myTime;
@@ -160,6 +164,8 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         myUiduserUid = myUid + userUid;
         userUidmyUid = userUid + myUid;
         cancelNotify(userUid);
+        Log.d("Fragment4ChatRoom>>>", "get user uid: " + userUid);
+        setTitle();
     }
 
     private void cancelNotify(String userUid) {
@@ -190,9 +196,15 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     }
 
     private void setinit() {
+        titlelayout = findViewById(R.id.chat_room_title_user_layout);
+        titlelayout.setVisibility(View.INVISIBLE);
         recyclerView = findViewById(R.id.fragment4_chat_room_recyclerview);
         sendimg = findViewById(R.id.fragment4_chat_room_sendimage);
         sendmsg = findViewById(R.id.fragment4_chat_room_sendbutton);
+        titleName = findViewById(R.id.fragment4_chat_room_title_name);
+        titleSex = findViewById(R.id.fragment4_chat_room_title_sex);
+        titleAge = findViewById(R.id.fragment4_chat_room_title_age);
+        titleKm = findViewById(R.id.fragment4_chat_room_title_km);
         gobackbtn = findViewById(R.id.fragment4_chat_room_backbtn);
         outroombtn = findViewById(R.id.fragment4_chat_room_outroom);
         editText = findViewById(R.id.fragment4_chat_room_edittext);
@@ -212,6 +224,38 @@ public class Fragment4ChatRoom extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 DecDialog.F4ChatRoomDecDialog(Fragment4ChatRoom.this, userUid, myUid, getroomname, activity);
+            }
+        });
+    }
+
+    private void setTitle() {
+        db.collection("users").document(userUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                titleName.setText(documentSnapshot.get("name").toString());
+                titleSex.setText(documentSnapshot.get("sex").toString());
+                if (documentSnapshot.get("sex").toString().equals("남자")) {
+                    titleSex.setTextColor(getResources().getColor(R.color.male));
+                } else {
+                    titleSex.setTextColor(getResources().getColor(R.color.female));
+                }
+                titleAge.setText(documentSnapshot.get("age").toString());
+                double userLatitude = Double.parseDouble(documentSnapshot.get("latitude").toString());
+                double userLongitude = Double.parseDouble(documentSnapshot.get("longitude").toString());
+                GpsTracker gpsTracker = new GpsTracker(Fragment4ChatRoom.this);
+                double myLatitude = gpsTracker.getLatitude();
+                double myLongitude = gpsTracker.getLongitude();
+                double ddd = getDistance(myLatitude, myLongitude, userLatitude, userLongitude);
+                if (ddd < 500) {
+                    titleKm.setText("-50m");
+                } else if (ddd < 1000) {
+                    int i = (int) Math.floor(ddd);
+                    titleKm.setText(Integer.toString(i) + "m");
+                } else if (ddd >= 1000) {
+                    int i = (int) Math.floor(ddd) / 1000;
+                    titleKm.setText(Integer.toString(i) + "km");
+                }
+                titlelayout.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -1196,5 +1240,21 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                 onBackPressed();
             }
         });
+    }
+
+    public double getDistance(double lat1, double lng1, double lat2, double lng2) {
+        double distance;
+
+        Location locationA = new Location("point A");
+        locationA.setLatitude(lat1);
+        locationA.setLongitude(lng1);
+
+        Location locationB = new Location("point B");
+        locationB.setLatitude(lat2);
+        locationB.setLongitude(lng2);
+
+        distance = locationA.distanceTo(locationB);
+
+        return distance;
     }
 }

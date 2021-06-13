@@ -26,8 +26,8 @@
                 android:id="@+id/f2re_pic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/picnull"
-                android:layout_centerInParent="true"/>
+                android:layout_centerInParent="true"
+                android:src="@drawable/picnull" />
 
             <com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
                 android:id="@+id/f2re_progress"
@@ -50,10 +50,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:layout_toLeftOf="@+id/f2re_time"
-            android:layout_toRightOf="@+id/f2re_user_pic_layout"
             android:layout_toStartOf="@+id/f2re_time"
-            android:layout_toEndOf="@+id/f2re_user_pic_layout">
+            android:layout_toLeftOf="@+id/f2re_time"
+            android:layout_toEndOf="@+id/f2re_user_pic_layout"
+            android:layout_toRightOf="@+id/f2re_user_pic_layout">
 
             <!--weght1에 29dp-->
             <TextView
@@ -61,13 +61,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
+                android:layout_marginLeft="3dp"
                 android:layout_marginTop="3dp"
                 android:layout_marginRight="3dp"
-                android:layout_marginLeft="3dp"
                 android:gravity="center_vertical"
+                android:text="asldfjk"
                 android:textColor="#000000"
-                android:textSize="15dp"
-                android:text="asldfjk"/>
+                android:textSize="15dp" />
 
             <LinearLayout
                 android:id="@+id/f2re_aboutuser"
@@ -75,8 +75,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/f2re_messege"
                 android:layout_marginLeft="3dp"
-                android:layout_marginBottom="3dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginBottom="3dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -137,37 +137,39 @@
                 android:id="@+id/f2cardbtn"
                 android:layout_width="46dp"
                 android:layout_height="46dp"
-                android:layout_marginRight="5dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginLeft="5dp"
-                app:cardBackgroundColor="@color/base3"
+                android:layout_marginRight="5dp"
                 android:elevation="4dp"
-                app:cardCornerRadius="8dp"
-                android:layout_gravity="center_vertical">
+                app:cardBackgroundColor="@color/base3"
+                app:cardCornerRadius="8dp">
+
                 <Button
                     android:id="@+id/f2re_sendmsg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_margin="8dp"
-                    android:background="@drawable/f2f3sendmessageicon"/>
+                    android:background="@drawable/f2f3sendmessageicon" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/f2dec_card"
                 android:layout_width="46dp"
                 android:layout_height="46dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginRight="5dp"
                 android:background="@drawable/f2f3buttonlayout"
-                app:cardBackgroundColor="@color/base3"
                 android:elevation="4dp"
-                app:cardCornerRadius="8dp"
-                android:layout_gravity="center_vertical">
+                app:cardBackgroundColor="@color/base3"
+                app:cardCornerRadius="8dp">
+
                 <Button
                     android:id="@+id/f2dec"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
                     android:layout_gravity="center_vertical"
+                    android:layout_margin="8dp"
                     android:background="@drawable/f2f3decbutton" />
             </androidx.cardview.widget.CardView>
 

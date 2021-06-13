@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/chat_room_toolbar"
@@ -15,44 +15,123 @@
             android:layout_height="35dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:background="@drawable/backbtn"/>
+            android:background="@drawable/backbtn" />
 
-        <TextView
-            android:id="@+id/chat_room_title_user"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/chat_room_title_user_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="프로필"
-            android:textSize="18dp"
-            android:textStyle="bold"/>
+            android:layout_toLeftOf="@+id/chat_room_btn_layout"
+            android:layout_toRightOf="@+id/chat_room_backbtn"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/chat_room_send_messege"
+            <TextView
+                android:id="@+id/chat_room_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="16dp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/chat_room_user_sex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" | " />
+
+                <TextView
+                    android:id="@+id/chat_room_user_age"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" | " />
+
+                <TextView
+                    android:id="@+id/chat_room_user_km"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/chat_room_btn_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/chat_room_callbtn"
-            android:text="메시지"/>
-
-        <Button
-            android:id="@+id/chat_room_callbtn"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:text="신고하기"/>
+            android:orientation="horizontal">
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/chat_room_send_messege_card"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:elevation="4dp"
+                app:cardBackgroundColor="@color/base3"
+                app:cardCornerRadius="8dp">
+
+                <Button
+                    android:id="@+id/chat_room_send_messege"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/f2f3sendmessageicon" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/chat_room_dec_card"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:elevation="4dp"
+                app:cardBackgroundColor="@color/base3"
+                app:cardCornerRadius="8dp">
+
+                <Button
+                    android:id="@+id/chat_room_callbtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/f2f3decbutton" />
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chat_room_recyclerview"
-        android:layout_below="@+id/chat_room_toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/chat_room_nlayout"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="8dp"/>
+        android:layout_below="@+id/chat_room_toolbar"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="10dp" />
 
     <LinearLayout
         android:id="@+id/chat_room_nlayout"
@@ -96,6 +175,7 @@
         <com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             app:loader_animDur="80"
             app:loader_bigCircleRadius="28dp"
             app:loader_circleRadius="7dp"
@@ -103,8 +183,7 @@
             app:loader_firstShadowColor="@color/base1"
             app:loader_secondShadowColor="@color/base3"
             app:loader_selectedColor="@color/base2"
-            app:loader_showRunningShadow="true"
-            android:layout_centerInParent="true"/>
+            app:loader_showRunningShadow="true" />
     </RelativeLayout>
 
 </RelativeLayout>

@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -68,11 +69,12 @@ public class ChatRoom extends AppCompatActivity {
     private FirebaseFirestore db;
     StorageReference storageReference;
     String myUid;
-    String myName, myPic;
+    String myName, myPic, myLatitude, myLongitude, userLatitude, userLongitude;
 
+    private LinearLayout titlelayout;
     private RecyclerView recyclerView;
     private Button addbtn, sendbtn, backbtn, callbtn, sendMessegeBtn;
-    private TextView title;
+    private TextView userName, userSex, userAge, userKm;
     private EditText edit;
     private RelativeLayout load;
 
@@ -145,14 +147,19 @@ public class ChatRoom extends AppCompatActivity {
     }
 
     private void setinit() {
+        titlelayout = findViewById(R.id.chat_room_title_user_layout);
+        titlelayout.setVisibility(View.INVISIBLE);
         recyclerView = findViewById(R.id.chat_room_recyclerview);
         addbtn = findViewById(R.id.chat_room_sendimage);
         sendbtn = findViewById(R.id.chat_room_sendbutton);
         edit = findViewById(R.id.chat_room_edittext);
         load = findViewById(R.id.chat_room_progress_load);
+        userName = findViewById(R.id.chat_room_user_name);
+        userSex = findViewById(R.id.chat_room_user_sex);
+        userAge = findViewById(R.id.chat_room_user_age);
+        userKm = findViewById(R.id.chat_room_user_km);
         backbtn = findViewById(R.id.chat_room_backbtn);
         callbtn = findViewById(R.id.chat_room_callbtn);
-        title = findViewById(R.id.chat_room_title_user);
         load.setVisibility(View.GONE);
         sendMessegeBtn = findViewById(R.id.chat_room_send_messege);
 
@@ -178,11 +185,57 @@ public class ChatRoom extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 myName = documentSnapshot.get("name").toString();
                 myPic = documentSnapshot.get("pic").toString();
+                myLatitude = documentSnapshot.get("latitude").toString();
+                myLongitude = documentSnapshot.get("longitude").toString();
             }
         });
 
         sendMessegeBtnOnClick();
+        setTitle();
         setRecyclerView();
+    }
+
+    private void setTitle() {
+        reference.getRef().child("inchat").child(getRoomname()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    if (!snapshot.getKey().equals(myUid) && !snapshot.getKey().equals("messege")) {
+                        db.collection("users").document(snapshot.getKey()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                userName.setText(documentSnapshot.get("name").toString());
+                                userSex.setText(documentSnapshot.get("sex").toString());
+                                if (documentSnapshot.get("sex").toString().equals("남자")) {
+                                    userSex.setTextColor(getResources().getColor(R.color.male));
+                                } else {
+                                    userSex.setTextColor(getResources().getColor(R.color.female));
+                                }
+                                userAge.setText(documentSnapshot.get("age").toString());
+                                userLatitude = documentSnapshot.get("latitude").toString();
+                                userLongitude = documentSnapshot.get("longitude").toString();
+
+                                double myLatitudeD = Double.parseDouble(myLatitude);
+                                double myLongitudeD = Double.parseDouble(myLongitude);
+                                double userLatitudeD = Double.parseDouble(userLatitude);
+                                double userLongitudeD = Double.parseDouble(userLongitude);
+                                double ddd = getDistance(myLatitudeD, myLongitudeD, userLatitudeD, userLongitudeD);
+                                if (ddd < 50) {
+                                    userKm.setText("-50m");
+                                } else if (ddd < 1000) {
+                                    int i = (int) Math.floor(ddd);
+                                    userKm.setText(Integer.toString(i) + "m");
+                                } else if (ddd >= 1000) {
+                                    int i = (int) Math.floor(ddd) / 1000;
+                                    userKm.setText(Integer.toString(i) + "km");
+                                }
+                                titlelayout.setVisibility(View.VISIBLE);
+                            }
+                        });
+                    }
+                }
+            }
+        });
     }
 
     private void setRecyclerView() {
@@ -737,5 +790,21 @@ public class ChatRoom extends AppCompatActivity {
         } else {
             Log.d("ChatRoom>>>", "c null Focus");
         }
+    }
+
+    public double getDistance(double lat1, double lng1, double lat2, double lng2) {
+        double distance;
+
+        Location locationA = new Location("point A");
+        locationA.setLatitude(lat1);
+        locationA.setLongitude(lng1);
+
+        Location locationB = new Location("point B");
+        locationB.setLatitude(lat2);
+        locationB.setLongitude(lng2);
+
+        distance = locationA.distanceTo(locationB);
+
+        return distance;
     }
 }

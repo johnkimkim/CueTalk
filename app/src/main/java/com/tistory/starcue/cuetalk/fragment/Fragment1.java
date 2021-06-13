@@ -132,22 +132,15 @@ public class Fragment1 extends Fragment {
         testbtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                getActivity().startService(new Intent(getActivity(), TestService.class));
+
             }
         });
         testbtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                getActivity().stopService(intent);
-//                getActivity().stopService(new Intent(getActivity(), TestService.class));
+
             }
         });
-//        testbtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-////                Log.d("Fragment1>>>", "testtest: "+ getCharNumber(test1.getText().toString(), "\n"));
-//            }
-//        });
     }
 
 //    int getCharNumber(String string, String string1) {

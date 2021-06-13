@@ -16,6 +16,7 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -49,7 +50,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.tistory.starcue.cuetalk.adpater.ChatRoomAdapter;
 import com.tistory.starcue.cuetalk.item.ChatRoomItem;
-import com.tistory.starcue.cuetalk.service.ChatRoomKillAppService;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -86,7 +86,7 @@ public class ChatRoom extends AppCompatActivity {
     String nullPic = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPic.png?alt=media&token=bebf132e-75b5-47c5-99b0-26d920ae3ee8";
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
 
-    private boolean isClickBtn = false;
+    boolean imakegoout;
 
     Uri imageUri;
     String picUri;
@@ -101,12 +101,17 @@ public class ChatRoom extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_room);
 
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
 //        where = getIntent().getStringExtra("intentwhere");//양쪽 다 where 가지고있음
 ////        wherem = where.substring(0, where.length() - 1);
 //        Log.d("ChatRoom>>>", "test get room name: " + where);
 
+        AdressRoom.goChatRoom = false;
         activity = ChatRoom.this;
-        startService(new Intent(ChatRoom.this, ChatRoomKillAppService.class));
+        imakegoout = false;
+
+//        startService(new Intent(ChatRoom.this, ChatRoomKillAppService.class));
 
         setinit();
         setdb();
@@ -123,24 +128,20 @@ public class ChatRoom extends AppCompatActivity {
             }
         };
         getOnBackPressedDispatcher().addCallback(this, callback);
+
+        Log.d("ChatRoom>>>", "onCreate: " + String.valueOf(this.hasWindowFocus()));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("ChatRoom>>>", "onStart " + String.valueOf(this.hasWindowFocus()));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        AdressRoom.goChatRoom = false;
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d("ChatRoom>>>", "onPause");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d("ChatRoom>>>", "onDestroy");
+        Log.d("ChatRoom>>>", "onResume " + String.valueOf(this.hasWindowFocus()));
     }
 
     private void setinit() {
@@ -196,12 +197,10 @@ public class ChatRoom extends AppCompatActivity {
 
         recyclerView.setAdapter(adapter);
 
-        Log.d("ChatRoom>>>", "get room name: " + getRoomname());
         String roomname = getRoomname();
         reference.getRef().child("inchat").child(getRoomname()).child("messege").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d("ChatRoom>>>", "messege get key: " + snapshot.getKey());
                 ChatRoomItem chatRoomItem = snapshot.getValue(ChatRoomItem.class);//error
 
                 arrayList.add(chatRoomItem);
@@ -338,6 +337,11 @@ public class ChatRoom extends AppCompatActivity {
         alertDialog = builder.create();
 
         if (!ChatRoom.this.isFinishing()) {
+            if (DecDialog.alertDialog != null) {
+                DecDialog.alertDialog.dismiss();
+            } else if (alertDialogA != null) {
+                alertDialogA.dismiss();
+            }
             alertDialog.show();
         }
 
@@ -355,7 +359,7 @@ public class ChatRoom extends AppCompatActivity {
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isClickBtn = true;
+                imakegoout = true;
                 alertDialog.dismiss();
                 load.setVisibility(View.VISIBLE);
                 deleteMydb();
@@ -372,40 +376,45 @@ public class ChatRoom extends AppCompatActivity {
     }
 
     private void dialogA() {//상대방이 대화방 나갔을때 dialog
-        LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LinearLayout layout = (LinearLayout) vi.inflate(R.layout.inchat_dialog_if_user_out, null);
-        AlertDialog.Builder builder = new AlertDialog.Builder(ChatRoom.this);
-        builder.setView(layout);
-        builder.setCancelable(false);
-        alertDialogA = builder.create();
+        if (alertDialogA == null) {
+            LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LinearLayout layout = (LinearLayout) vi.inflate(R.layout.inchat_dialog_if_user_out, null);
+            AlertDialog.Builder builder = new AlertDialog.Builder(ChatRoom.this);
+            builder.setView(layout);
+            builder.setCancelable(false);
+            alertDialogA = builder.create();
 
-        if (!ChatRoom.this.isFinishing()) {
-            if (alertDialog != null) {
-                alertDialog.dismiss();
+            if (!ChatRoom.this.isFinishing()) {
+                if (alertDialog != null) {
+                    alertDialog.dismiss();
+                } else if (DecDialog.alertDialog != null) {
+                    DecDialog.alertDialog.dismiss();
+                }
             }
             alertDialogA.show();
+
+            /*Unable to add window -- token android.os.BinderProxy@7c9958a is not valid; is your activity running?*/
+
+            alertDialogA.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            Window window = alertDialogA.getWindow();
+            int x = (int) (size.x * 0.9);
+            int y = (int) (size.y * 0.3);
+            window.setLayout(x, y);
+
+            Button okbtn = layout.findViewById(R.id.inchat_dialog_if_user_out_okbtn);
+            okbtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    imakegoout = true;
+                    okbtn.setEnabled(false);
+                    load.setVisibility(View.VISIBLE);
+                    deleteMydbA();
+                }
+            });
         }
-
-        /*Unable to add window -- token android.os.BinderProxy@7c9958a is not valid; is your activity running?*/
-
-        alertDialogA.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        Window window = alertDialogA.getWindow();
-        int x = (int) (size.x * 0.9);
-        int y = (int) (size.y * 0.3);
-        window.setLayout(x, y);
-
-        Button okbtn = layout.findViewById(R.id.inchat_dialog_if_user_out_okbtn);
-        okbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                okbtn.setEnabled(false);
-                load.setVisibility(View.VISIBLE);
-                deleteMydbA();
-            }
-        });
     }
 
     private void checkDbChange() {
@@ -426,14 +435,7 @@ public class ChatRoom extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                if (!snapshot.getKey().equals("messege") && !snapshot.getKey().equals(myUid)) {
-                    if (alertDialog != null) {
-                        alertDialog.dismiss();
-                    } else if (DecDialog.alertDialog != null) {
-                        DecDialog.alertDialog.dismiss();
-                    }
-                    dialogA();
-                }
+                dialogA();
             }
 
             @Override
@@ -451,20 +453,15 @@ public class ChatRoom extends AppCompatActivity {
     private void deleteMydb() {//내가 먼저 대화방 나갔을때
         Map<String, Object> updateUser = new HashMap<>();
         updateUser.put("/adressRoom/" + getAdress().substring(0, getAdress().length() - 1) + "/" + getAdress() + "/" + myUid + "/" + "/ischat/", 1);
-//        updateUser.put("/inchat/" + getRoomname() + "/" + myUid + "/ischat/", "2");
-        Log.d("ChatRoom>>>", "go out get where: " + getRoomname());
+        updateUser.put("/adressRoom/" + getAdress().substring(0, getAdress().length() - 1) + "/" + getAdress() + "/" + myUid + "/" + "/where/", null);
 
         deleteMyStoragePic();
 
-        reference.getRef().child("inchat").child(getRoomname()).child(myUid).removeValue();
+//        reference.getRef().child("inchat").child(getRoomname()).child(myUid).removeValue();
+        reference.getRef().child("inchat").child(getRoomname()).removeValue();
         reference.updateChildren(updateUser).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                isClickBtn = true;
-
-                Map<String, Object> updateUser1 = new HashMap<>();
-                updateUser1.put("/adressRoom/" + getAdress().substring(0, getAdress().length() - 1) + "/" + getAdress() + "/" + myUid + "/" + "/where/", null);
-                reference.updateChildren(updateUser1);
                 alertDialog.dismiss();
                 goToAdressRoom();
             }
@@ -475,20 +472,17 @@ public class ChatRoom extends AppCompatActivity {
     private void deleteMydbA() {//상대방이 대화방 나갔을때
         Map<String, Object> updateUser = new HashMap<>();
         updateUser.put("/adressRoom/" + getAdress().substring(0, getAdress().length() - 1) + "/" + getAdress() + "/" + myUid + "/" + "/ischat/", 1);
+        updateUser.put("/adressRoom/" + getAdress().substring(0, getAdress().length() - 1) + "/" + getAdress() + "/" + myUid + "/" + "/where/", null);
         reference.updateChildren(updateUser);
 
         deleteMyStoragePic();
         reference.getRef().child("inchat").child(getRoomname()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Map<String, Object> updateUser1 = new HashMap<>();
-                updateUser1.put("/adressRoom/" + getAdress().substring(0, getAdress().length() - 1) + "/" + getAdress() + "/" + myUid + "/" + "/where/", null);
-                reference.updateChildren(updateUser1);
                 alertDialogA.dismiss();
                 goToAdressRoom();
             }
         });
-
 
     }
 
@@ -636,7 +630,6 @@ public class ChatRoom extends AppCompatActivity {
     }
 
     private void deleteMyStoragePic() {
-        isClickBtn = true;
         storageReference.child(myUid + "/").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
             public void onSuccess(ListResult listResult) {
@@ -673,4 +666,76 @@ public class ChatRoom extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("ChatRoom>>>", "onPause " + String.valueOf(this.hasWindowFocus()));
+        //hasWindowFocus = 화면에 포커스가 있을때
+        if (!imakegoout) {
+            if (hasWindowFocus()) {
+                if (alertDialog != null) {
+                    alertDialog.dismiss();
+                } else if (alertDialogA != null) {
+                    alertDialogA.dismiss();
+                }
+
+                deleteMyStoragePic();
+                String adress = getAdress();
+                String adressm = adress.substring(0, adress.length() - 1);
+                reference.getRef().child("adressRoom").child(adressm).child(adress).child(myUid).removeValue();
+                reference.getRef().child("inchat").child(getRoomname()).removeValue();
+                Intent intent = new Intent(ChatRoom.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            } else if (alertDialogA != null) {
+                Log.d("ChatRoom>>>", "onPuase asdlkfj");
+                alertDialogA.dismiss();
+
+                deleteMyStoragePic();
+                String adress = getAdress();
+                String adressm = adress.substring(0, adress.length() - 1);
+                reference.getRef().child("adressRoom").child(adressm).child(adress).child(myUid).removeValue();
+                reference.getRef().child("inchat").child(getRoomname()).removeValue();
+                Intent intent = new Intent(ChatRoom.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            }
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (alertDialog != null) {
+            alertDialog.dismiss();
+        } else if (alertDialogA != null) {
+            alertDialogA.dismiss();
+        }
+        Log.d("ChatRoom>>>", "onStop " + String.valueOf(this.hasWindowFocus()));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (alertDialog != null) {
+            alertDialog.dismiss();
+        } else if (alertDialogA != null) {
+            alertDialogA.dismiss();
+        }
+        Log.d("ChatRoom>>>", "onDestroy " + String.valueOf(this.hasWindowFocus()));
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            Log.d("ChatRoom>>>", "c has Focus");
+        } else {
+            Log.d("ChatRoom>>>", "c null Focus");
+        }
+    }
 }

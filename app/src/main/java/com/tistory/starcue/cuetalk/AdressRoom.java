@@ -135,6 +135,7 @@ public class AdressRoom extends AppCompatActivity {
         getUser();
 //        setRecyclerView();
 
+        Log.d("ChatRoom>>>", "adressroom : " + String.valueOf(this.hasWindowFocus()));
     }
 
     private void setBottomSheet() {

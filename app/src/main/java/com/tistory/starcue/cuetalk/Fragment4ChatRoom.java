@@ -866,35 +866,37 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     }
 
     private void userGoOutDialog() {//상대가 나갔을때
-        LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LinearLayout layout = (LinearLayout) vi.inflate(R.layout.go_out_user_chat_room_dialog, null);
-        AlertDialog.Builder builder = new AlertDialog.Builder(Fragment4ChatRoom.this);
-        builder.setView(layout);
-        alertDialogD = builder.create();
+        if (alertDialogD == null) {
+            LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LinearLayout layout = (LinearLayout) vi.inflate(R.layout.go_out_user_chat_room_dialog, null);
+            AlertDialog.Builder builder = new AlertDialog.Builder(Fragment4ChatRoom.this);
+            builder.setView(layout);
+            alertDialogD = builder.create();
 
-        if (!Fragment4ChatRoom.this.isFinishing()) {
-            alertDialogD.show();
-        }
-        alertDialogD.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        Window window = alertDialogD.getWindow();
-        int x = (int) (size.x * 0.9);
-        int y = (int) (size.y * 0.3);
-        window.setLayout(x, y);
-        alertDialogD.setCancelable(false);
-
-        Button okbtn = layout.findViewById(R.id.fragment4_chat_room_dialog_user_out_okbtn);
-
-        okbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                load.setVisibility(View.VISIBLE);
-                alertDialogD.dismiss();
-                deleteImageISendB();
+            if (!Fragment4ChatRoom.this.isFinishing()) {
+                alertDialogD.show();
             }
-        });
+            alertDialogD.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            Window window = alertDialogD.getWindow();
+            int x = (int) (size.x * 0.9);
+            int y = (int) (size.y * 0.3);
+            window.setLayout(x, y);
+            alertDialogD.setCancelable(false);
+
+            Button okbtn = layout.findViewById(R.id.fragment4_chat_room_dialog_user_out_okbtn);
+
+            okbtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    load.setVisibility(View.VISIBLE);
+                    alertDialogD.dismiss();
+                    deleteImageISendB();
+                }
+            });
+        }
     }
 
     private void deleteAllChatRoom() {

@@ -120,7 +120,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_margin="8dp"
-                    android:text="나가기" />
+                    android:background="@drawable/goouticon" />
             </androidx.cardview.widget.CardView>
         </LinearLayout>
     </RelativeLayout>

@@ -935,6 +935,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                         reference.child("messege").child(getroomname).child("msg").push().updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
+                                load.setVisibility(View.VISIBLE);
                                 Map<String, Object> outmap = new HashMap<>();
                                 outmap.put("/messege/" + getroomname + "/" + myUid + "/ischat/", "2");
                                 reference.updateChildren(outmap).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -1029,7 +1030,6 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                                 outAlready = true;
                                 finishedAll = true;
                                 Log.d("Fragment4ChatRoom>>>", "deleteImageISend success");
-                                alertDialogD.dismiss();
                                 finish();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
@@ -1042,7 +1042,6 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                 } else {
                     outAlready = true;
                     finishedAll = true;
-                    alertDialogD.dismiss();
                     finish();
                 }
 

@@ -1,27 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/dialog_layout">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/success_change_phone_number_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:text="상대방이 대화를 종료했습니다" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/success_change_phone_number_btn_layout"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/success_change_phone_number_okbtn"
-            android:layout_width="wrap_content"
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/success_change_phone_number_lottie"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                app:lottie_rawRes="@raw/success"
+                app:lottie_loop="false"
+                app:lottie_autoPlay="true"/>
+
+            <TextView
+                android:id="@+id/success_change_phone_number_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="10dp"
+                android:text="핸드폰 번호 변경이 완료되었습니다." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="홈 화면으로 이동합니다." />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/success_change_phone_number_btn_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_margin="10dp"
-            android:layout_below="@+id/success_change_phone_number_title"
-            android:text="확인" />
+            android:layout_alignParentBottom="true">
+
+            <Button
+                android:id="@+id/success_change_phone_number_okbtn"
+                android:layout_width="match_parent"
+                android:layout_height="41dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/button_on_click"
+                android:text="확인"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+        </RelativeLayout>
     </RelativeLayout>
 
 </LinearLayout>

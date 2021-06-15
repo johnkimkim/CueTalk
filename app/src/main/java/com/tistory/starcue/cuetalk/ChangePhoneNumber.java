@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,7 +38,8 @@ import java.util.concurrent.TimeUnit;
 
 public class ChangePhoneNumber extends AppCompatActivity {
 
-    TextView title, text, feed;
+    private RelativeLayout load;
+    TextView title;
     EditText editText;
     Button okbtn;
     FirebaseAuth mAuth;
@@ -56,9 +59,9 @@ public class ChangePhoneNumber extends AppCompatActivity {
     }
 
     private void setInit() {
+        load = findViewById(R.id.change_phone_number_load);
+        load.setVisibility(View.GONE);
         title = findViewById(R.id.change_phone_number_title);
-        text = findViewById(R.id.change_phone_number_text);
-        feed = findViewById(R.id.change_phone_number_feedback);
         editText = findViewById(R.id.change_phone_number_edittext);
         okbtn = findViewById(R.id.change_phone_number_okbtn);
         okbtn.setEnabled(false);
@@ -82,6 +85,8 @@ public class ChangePhoneNumber extends AppCompatActivity {
                     okbtn.setEnabled(false);
                 } else {
                     okbtn.setEnabled(true);
+                    InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                    manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                 }
             }
 
@@ -96,6 +101,7 @@ public class ChangePhoneNumber extends AppCompatActivity {
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                load.setVisibility(View.VISIBLE);
                 InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                 FirebaseFirestore firestore = FirebaseFirestore.getInstance();
@@ -108,8 +114,8 @@ public class ChangePhoneNumber extends AppCompatActivity {
                             if (count.size() == value.size()) {
                                 String phoneNum = "+82" + editText.getText().toString().substring(1);
                                 if (count.contains(editText.getText().toString())) {
-                                    feed.setVisibility(View.VISIBLE);
-                                    feed.setText("해당 전화번호는 정책위반으로 인해 서비스 이용이 정지되었습니다");
+                                    load.setVisibility(View.GONE);
+                                    Toast.makeText(ChangePhoneNumber.this, "해당 전화번호는 정책위반으로 인해 서비스 이용이 정지되었습니다", Toast.LENGTH_SHORT).show();
                                 } else {
                                     db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                         @Override
@@ -120,10 +126,9 @@ public class ChangePhoneNumber extends AppCompatActivity {
                                                     phonelist.add(document.get("phonenumber").toString());
                                                     if (phonelist.size() == task.getResult().size()) {
                                                         if (phonelist.contains(editText.getText().toString())) {
-                                                            feed.setVisibility(View.VISIBLE);
-                                                            feed.setText("해당 번호는 이미 존제하는 번호입니다.");
+                                                            load.setVisibility(View.GONE);
+                                                            Toast.makeText(ChangePhoneNumber.this, "해당 번호는 이미 존제하는 번호입니다.", Toast.LENGTH_SHORT).show();
                                                         } else {
-                                                            feed.setVisibility(View.GONE);
                                                             okbtn.setEnabled(false);
                                                             PhoneAuthOptions options = PhoneAuthOptions.newBuilder(mAuth)
                                                                     .setPhoneNumber(phoneNum)
@@ -153,8 +158,8 @@ public class ChangePhoneNumber extends AppCompatActivity {
 
             @Override
             public void onVerificationFailed(@NonNull @NotNull FirebaseException e) {
-                feed.setVisibility(View.VISIBLE);
-                feed.setText("실패! 다시 시도해주세요");
+                load.setVisibility(View.GONE);
+                Toast.makeText(ChangePhoneNumber.this, "네트워크 오류로 실패했습니다. 인터넷 연결을 확인 후 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
                 okbtn.setEnabled(true);
             }
 

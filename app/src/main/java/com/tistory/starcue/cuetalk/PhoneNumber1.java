@@ -194,7 +194,17 @@ public class PhoneNumber1 extends AppCompatActivity {
 //
 //                            FirebaseUser user = task.getResult().getUser();
 //                            // ...
-                            checkSameUnique();
+                            String myUid = mAuth.getUid();
+                            Map<String, Object> map = new HashMap<>();
+                            FirebaseUser mUser = mAuth.getCurrentUser();
+                            String myNewPn = "010" + mUser.getPhoneNumber().substring(5, 13);
+                            map.put("phonenumber", myNewPn);
+                            db.collection("users").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    checkSameUnique();
+                                }
+                            });
                         } else {
                             // Sign in failed, display a message and update the UI
                             Log.w(">>>", "signInWithCredential:failure", task.getException());

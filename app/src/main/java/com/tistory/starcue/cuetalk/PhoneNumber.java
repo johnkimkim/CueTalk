@@ -298,7 +298,7 @@ public class PhoneNumber extends AppCompatActivity {
 
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
-                Toast.makeText(PhoneNumber.this, "알 수 없는 문제로 실패했습니다. 다시 시해도해주세요", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PhoneNumber.this, "네트워크 오류로 실패했습니다. 인터넷 연결을 확인 후 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
                 load.setVisibility(View.GONE);
                 mButton.setEnabled(true);
             }

@@ -16,7 +16,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -112,9 +111,7 @@ public class MainActivity extends AppCompatActivity {
             viewPager.setCurrentItem(3, false);
         });
         btn5.setOnClickListener(view -> {
-//            viewPager.setCurrentItem(4, false);
-            ActivityCompat.finishAffinity(MainActivity.this);
-            System.exit(0);
+            viewPager.setCurrentItem(4, false);
         });
 
     }

@@ -132,7 +132,11 @@ public class Fragment1 extends Fragment {
         testbtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                String s = "+821012345678";
+                String ss = s.substring(9, 13);
+                String sss = s.substring(5, 9);
+                Log.d("Fragment1>>>", "test: " + ss);
+                Log.d("Fragment1>>>", "test1: " + sss);
             }
         });
         testbtn2.setOnClickListener(new View.OnClickListener() {

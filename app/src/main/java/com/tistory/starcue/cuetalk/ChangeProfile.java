@@ -99,7 +99,7 @@ public class ChangeProfile extends AppCompatActivity {
     TextView editcount;
     Uri imageUri;
     TextView myPn;
-    Button changePnBtn;
+    Button changePnBtn, seepn;
 
     boolean willdelete;
 
@@ -148,8 +148,24 @@ public class ChangeProfile extends AppCompatActivity {
         deletePic = findViewById(R.id.change_profile_delete_pic);
         myPn = findViewById(R.id.change_profile_my_phonenumber);
         changePnBtn = findViewById(R.id.change_profile_change_phonenumber_btn);
+        seepn = findViewById(R.id.change_profile_see_phone_number);
+        String fullpn = mCurrentUser.getPhoneNumber();
         String pn = mCurrentUser.getPhoneNumber().substring(9, 13);
         myPn.setText("010-****-" + pn);
+        seepn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (myPn.getText().toString().contains("*")) {
+                    String s = fullpn.substring(5, 9);
+                    String ss = fullpn.substring(9, 13);
+                    myPn.setText("010-" + s + "-" + ss);
+                    seepn.setBackgroundResource(R.drawable.seepnblind);
+                } else {
+                    myPn.setText("010-****-" + pn);
+                    seepn.setBackgroundResource(R.drawable.seepnshow);
+                }
+            }
+        });
         setOnClickChangePhoneNumber();
 
         setView();

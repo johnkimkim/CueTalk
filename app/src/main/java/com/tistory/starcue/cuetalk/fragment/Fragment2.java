@@ -437,6 +437,7 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         super.onResume();
         getPage();
         progressBar.setVisibility(View.VISIBLE);
+        f2fragdec.setBackgroundResource(R.drawable.sirenicon);
         Log.d("Fragment2>>>", "onResume");
         if (arrayList.size() == 0) {
             if (page == 1) {

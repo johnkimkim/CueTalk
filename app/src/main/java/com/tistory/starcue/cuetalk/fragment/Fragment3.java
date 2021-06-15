@@ -603,6 +603,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         super.onResume();
         Log.d("Fragment3>>>", "get page in onResume: " + page);
         getPage();
+        f3fragdec.setBackgroundResource(R.drawable.sirenicon);
         progressBar.setVisibility(View.VISIBLE);
         if (page == 0) {
             getDataListAll();

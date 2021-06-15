@@ -20,7 +20,7 @@
                 android:layout_centerInParent="true"
                 android:layout_margin="20dp"
                 android:gravity="center"
-                android:text="다른 기기에서 로그인 해서 로그아웃됐습니다. \n로그인 화면으로 이동합니다." />
+                android:text="다른 기기에서 로그인 되어 로그아웃됐습니다. \n로그인 화면으로 이동합니다." />
         </RelativeLayout>
 
         <RelativeLayout

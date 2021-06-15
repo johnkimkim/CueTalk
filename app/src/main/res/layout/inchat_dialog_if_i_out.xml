@@ -36,7 +36,7 @@
                 <Button
                     android:id="@+id/inchat_dialog_if_i_out_okbtn"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="41dp"
                     android:layout_weight="1"
                     android:layout_marginBottom="15dp"
                     android:layout_marginLeft="20dp"
@@ -49,7 +49,7 @@
                 <Button
                     android:id="@+id/inchat_dialog_if_i_out_cancelbtn"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="41dp"
                     android:layout_weight="1"
                     android:layout_marginBottom="15dp"
                     android:layout_marginLeft="5dp"

@@ -35,7 +35,7 @@
                 <Button
                     android:id="@+id/go_out_chat_room_dialog_okbtn"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="41dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="15dp"
@@ -48,7 +48,7 @@
                 <Button
                     android:id="@+id/go_out_chat_room_dialog_cancelbtn"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="41dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginBottom="15dp"

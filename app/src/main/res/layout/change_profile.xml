@@ -236,7 +236,7 @@
         <Button
             android:id="@+id/change_profile_yesbtn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="41dp"
             android:layout_marginRight="5dp"
             android:layout_marginBottom="5dp"
             android:layout_weight="1"
@@ -248,7 +248,7 @@
         <Button
             android:id="@+id/change_profile_nobtn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="41dp"
             android:layout_marginLeft="5dp"
             android:layout_marginBottom="5dp"
             android:layout_weight="1"

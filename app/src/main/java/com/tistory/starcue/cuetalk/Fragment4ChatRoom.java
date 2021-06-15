@@ -104,6 +104,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     Uri imageUri;
     String picUri;
 
+    AlertDialog alertDialogA;
     AlertDialog alertDialogD;
 
     boolean isOpen;
@@ -828,17 +829,17 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         LinearLayout layout = (LinearLayout) vi.inflate(R.layout.go_out_chat_room_dialog, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(Fragment4ChatRoom.this);
         builder.setView(layout);
-        alertDialogD = builder.create();
+        alertDialogA = builder.create();
 
         if (!Fragment4ChatRoom.this.isFinishing()) {
-            alertDialogD.show();
+            alertDialogA.show();
         }
 
-        alertDialogD.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        alertDialogA.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        Window window = alertDialogD.getWindow();
+        Window window = alertDialogA.getWindow();
         int x = (int) (size.x * 0.9);
         int y = (int) (size.y * 0.3);
         window.setLayout(x, y);
@@ -852,7 +853,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                 load.setVisibility(View.VISIBLE);
                 okbtn.setEnabled(false);
                 cancel.setEnabled(false);
-                alertDialogD.dismiss();
+                alertDialogA.dismiss();
                 goOutSetIsChat();
             }
         });
@@ -860,7 +861,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                alertDialogD.dismiss();
+                alertDialogA.dismiss();
             }
         });
     }
@@ -874,6 +875,11 @@ public class Fragment4ChatRoom extends AppCompatActivity {
             alertDialogD = builder.create();
 
             if (!Fragment4ChatRoom.this.isFinishing()) {
+                if (DecDialog.alertDialog != null) {
+                    DecDialog.alertDialog.dismiss();
+                } else if (alertDialogA != null) {
+                    alertDialogA.dismiss();
+                }
                 alertDialogD.show();
             }
             alertDialogD.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

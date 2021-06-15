@@ -80,9 +80,10 @@
         <LinearLayout
             android:id="@+id/fragment4_chat_room_btn_layout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <androidx.cardview.widget.CardView

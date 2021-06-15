@@ -89,7 +89,7 @@
                     android:layout_below="@+id/send_messege_about_user"
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/write_edittext"
-                    android:hint="글 작성"
+                    android:hint="메시지 작성"
                     android:maxLength="20"
                     android:paddingLeft="30dp"
                     android:paddingRight="30dp"/>
@@ -136,7 +136,7 @@
                 <Button
                     android:id="@+id/send_messege_ok"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="41dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="15dp"
@@ -149,7 +149,7 @@
                 <Button
                     android:id="@+id/send_messege_no"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="41dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginBottom="15dp"

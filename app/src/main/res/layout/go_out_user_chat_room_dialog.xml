@@ -29,7 +29,7 @@
         <Button
             android:id="@+id/fragment4_chat_room_dialog_user_out_okbtn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="41dp"
             android:background="@drawable/button_on_click"
             android:layout_marginBottom="15dp"
             android:layout_marginRight="20dp"

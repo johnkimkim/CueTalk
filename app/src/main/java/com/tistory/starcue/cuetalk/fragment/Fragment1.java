@@ -143,18 +143,6 @@ public class Fragment1 extends Fragment {
         });
     }
 
-//    int getCharNumber(String string, String string1) {
-//        int count = 0;
-//        for (int i = 0; i < string.length(); i++) {
-//            char ss = string.charAt(i);
-//            String s = Character.toString(ss);
-//            if (s.equals(string1)) {
-//                count++;
-//            }
-//        }
-//        return count;
-//    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment1, container, false);

@@ -128,9 +128,25 @@ public class SplashActivity extends AppCompatActivity {
                     if (!nowVersion.equals(version)) {//새버전 있을때
                         updateDialog(messege, url);
                     } else {//현제 최신버전일때
-                        checkCurrentUser();
+                        checkFix();
                     }
                 } else {//그냥 넘어가기
+                    checkFix();
+                }
+            }
+        });
+    }
+
+    private void checkFix() {
+        db.collection("version").document("fix").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                String date = documentSnapshot.get("date").toString();
+                String startTime = documentSnapshot.get("starttime").toString();
+                String endTime = documentSnapshot.get("endtime").toString();
+                if (documentSnapshot.get("fix").toString().equals("yes")) {//서버점검중
+                    fixDialog(date, startTime, endTime);
+                } else {
                     checkCurrentUser();
                 }
             }
@@ -176,6 +192,47 @@ public class SplashActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void fixDialog(String date, String start, String end) {
+        LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout layout = (LinearLayout) vi.inflate(R.layout.fix_dialog, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(SplashActivity.this);
+        builder.setView(layout);
+        builder.setCancelable(false);
+        alertDialog = builder.create();
+
+        if (!SplashActivity.this.isFinishing()) {
+            if (alertDialog != null) {
+                alertDialog.dismiss();
+            }
+            alertDialog.show();
+        }
+
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        Window window = alertDialog.getWindow();
+        int x = (int) (size.x * 0.9);
+        int y = (int) (size.y * 0.3);
+        window.setLayout(x, y);
+
+        /*Unable to add window -- token android.os.BinderProxy@7c9958a is not valid; is your activity running?*/
+
+        TextView dateText = layout.findViewById(R.id.fix_dialog_date);
+        TextView startText = layout.findViewById(R.id.fix_dialog_start_time);
+        TextView endText = layout.findViewById(R.id.fix_dialog_end_time);
+        dateText.setText(date);
+        startText.setText(start);
+        endText.setText(end);
+        Button okbtn = layout.findViewById(R.id.fix_dialog_okbtn);
+        okbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //앱종료
+            }
+        });
     }
 
     private void goToPhoneNumber() {

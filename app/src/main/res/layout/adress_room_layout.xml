@@ -22,8 +22,7 @@
             <ImageView
                 android:id="@+id/adress_room_layout_pic"
                 android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:src="@drawable/picnull" />
+                android:layout_height="55dp"/>
 
             <com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
                 android:id="@+id/adress_room_layout_pic_load"

@@ -77,8 +77,7 @@
                 <ImageView
                     android:id="@+id/f3re_pic"
                     android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    android:src="@drawable/picnull" />
+                    android:layout_height="34dp"/>
 
                 <com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
                     android:id="@+id/f3re_userpic_progress"

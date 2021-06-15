@@ -231,6 +231,9 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //앱종료
+                moveTaskToBack(true);
+                finishAndRemoveTask();
+                android.os.Process.killProcess(android.os.Process.myPid());
             }
         });
     }

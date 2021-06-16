@@ -51,7 +51,7 @@ public class ControlActivity extends AppCompatActivity {
     DatabaseReference reference;
     StorageReference storageReference;
 
-    Button f1btn, f2btn, f3btn, f4btn, btn5, clear, bottom1, bottom2;
+    Button f1btn, f2btn, f3btn, f4btn, btn5, clear, bottom;
     public static RelativeLayout f1decviewlayout, f4decviewlayout;
     public static TextView f1decviewCategory, f1decviewCuz, f1decviewWhodec, f1decviewUserUid;
     public static TextView f4decviewCategory, f4decviewCuz, f4decviewWhodec, f4decviewUserUid;
@@ -95,8 +95,7 @@ public class ControlActivity extends AppCompatActivity {
         f4btn = findViewById(R.id.control_btn4);
         btn5 = findViewById(R.id.control_btn5);
         clear = findViewById(R.id.control_clear);
-        bottom1 = findViewById(R.id.control_bottom_btn1);
-        bottom2 = findViewById(R.id.control_bottom_btn2);
+        bottom = findViewById(R.id.control_bottom_btn);
 
         f1declist = findViewById(R.id.control_f1dec_list);
         f2declist = findViewById(R.id.control_f2dec_list);

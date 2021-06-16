@@ -206,7 +206,7 @@ public class Fragment5 extends Fragment {
 
     private void setControlBtn() {
         myPhoneNumber = mCurrentUser.getPhoneNumber();
-        if (mCurrentUser.getPhoneNumber().equals("+821020123988")) {
+        if (mCurrentUser.getPhoneNumber().equals("+821020123988") || mCurrentUser.getPhoneNumber().equals("+821011111111")) {
             controlbtn.setEnabled(true);
             controlbtn.setVisibility(View.VISIBLE);
             controlbtn.setOnClickListener(new View.OnClickListener() {

@@ -507,12 +507,16 @@ public class DecDialog {
                                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                                     ChatRoomItem chatRoomItem = snapshot1.getValue(ChatRoomItem.class);
                                     count.add(chatRoomItem);
-                                    Log.d("DecDialog>>>", "count listL: " + count.size() + " / snapshot size: " + snapshot.getChildrenCount());
-                                    map1.put("messege", snapshot1.child("messege").getValue(String.class));
-                                    map1.put("name", snapshot1.child("name").getValue(String.class));
-                                    map1.put("time", snapshot1.child("time").getValue(String.class));
-                                    reference.child("chatroomdec").child(myUid).push().updateChildren(map1);
-                                    if (count.size() == snapshot.getChildrenCount()) {
+                                    if (snapshot1.child("uid").getValue() != null) {
+                                        Log.d("DecDialog>>>", "count listL: " + count.size() + " / snapshot size: " + snapshot.getChildrenCount());
+                                        map1.put("messege", snapshot1.child("messege").getValue(String.class));
+                                        map1.put("uid", snapshot1.child("uid").getValue(String.class));
+                                        map1.put("time", snapshot1.child("time").getValue(String.class));
+                                        map1.put("uri", snapshot1.child("uri").getValue(String.class));
+                                    }
+
+                                    reference.child("chatroomdec").child(where).child("messege").push().updateChildren(map1);
+                                    if (count.size() + 1 == snapshot.getChildrenCount()) {
                                         count.clear();
                                         dec1.startAnimation(out);
                                         out.setAnimationListener(new Animation.AnimationListener() {

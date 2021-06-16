@@ -89,6 +89,7 @@ public class ChatRoom extends AppCompatActivity {
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
 
     boolean imakegoout;
+    boolean willSendImg;
 
     Uri imageUri;
     String picUri;
@@ -112,6 +113,7 @@ public class ChatRoom extends AppCompatActivity {
         AdressRoom.goChatRoom = false;
         activity = ChatRoom.this;
         imakegoout = false;
+        willSendImg = false;
 
 //        startService(new Intent(ChatRoom.this, ChatRoomKillAppService.class));
 
@@ -588,6 +590,7 @@ public class ChatRoom extends AppCompatActivity {
         addbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                willSendImg = true;
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -677,7 +680,7 @@ public class ChatRoom extends AppCompatActivity {
         reference.child("inchat").child(getRoomname()).child("messege").push().updateChildren(sendimgmap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-
+                willSendImg = false;
             }
         });
     }
@@ -724,7 +727,7 @@ public class ChatRoom extends AppCompatActivity {
         super.onPause();
         Log.d("ChatRoom>>>", "onPause " + String.valueOf(this.hasWindowFocus()));
         //hasWindowFocus = 화면에 포커스가 있을때
-        if (!imakegoout) {
+        if (!imakegoout && !willSendImg) {
             if (hasWindowFocus()) {
                 if (alertDialog != null) {
                     alertDialog.dismiss();

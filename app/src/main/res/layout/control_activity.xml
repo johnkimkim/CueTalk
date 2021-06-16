@@ -84,6 +84,31 @@
         android:layout_above="@+id/control_bottom_layout"
         android:layout_below="@+id/control_btn_layout" />
 
+    <RelativeLayout
+        android:id="@+id/control_delete_user_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/control_bottom_layout"
+        android:layout_below="@+id/control_btn_layout">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/control_delete_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <EditText
+            android:id="@+id/control_delete_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@+id/control_delete_btn"/>
+        <Button
+            android:id="@+id/control_delete_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:text="완전삭제"/>
+    </RelativeLayout>
+
 
     <!-- chatroom 신고 상세보기 -->
     <RelativeLayout
@@ -167,8 +192,6 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/control_41dec_list_layout_linear" />
     </RelativeLayout>
-
-
 
 
     <!-- bottom button -->

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -36,6 +37,7 @@ public class ControlActivity extends AppCompatActivity {
     public static ArrayList<F2DecViewItem> f2decList;
     public static ArrayList<F3DecViewItem> f3decList;
     public static List<String> f4decList;
+    public static ArrayList<DeleteUserItem> deleteList;
 
 //    public static ArrayList<F1DecListItem> chatroomViewList;
 
@@ -46,17 +48,20 @@ public class ControlActivity extends AppCompatActivity {
     public static F1DecListViewAdapter f1DecViewListAdapter;
     public static F2DecViewAdapter f2DecViewAdapter;
     public static F3DecListAdapter f3DecListAdapter;
+    public static DeleteAdapter deleteAdapter;
 
     FirebaseFirestore db;
     DatabaseReference reference;
     StorageReference storageReference;
 
     Button f1btn, f2btn, f3btn, f4btn, btn5, clear, bottom;
-    public static RelativeLayout f1decviewlayout, f4decviewlayout;
+    public static RelativeLayout f1decviewlayout, f4decviewlayout, deleteUserLayout;
     public static TextView f1decviewCategory, f1decviewCuz, f1decviewWhodec, f1decviewUserUid;
     public static TextView f4decviewCategory, f4decviewCuz, f4decviewWhodec, f4decviewUserUid;
-    public static RecyclerView f1declist, f2declist, f3declist, f4declist, f1decview, f4decview;
+    public static RecyclerView f1declist, f2declist, f3declist, f4declist, f1decview, f4decview, deletelist;
     public static RelativeLayout load;
+    EditText edit, deleteEdit;
+    Button deleteBtn;
 
     Context context;
 
@@ -84,17 +89,23 @@ public class ControlActivity extends AppCompatActivity {
         f2decList = new ArrayList<>();
         f3decList = new ArrayList<>();
         f4decList = new ArrayList<>();
+        deleteList = new ArrayList<>();
 
         load = findViewById(R.id.control_load);
         load.setVisibility(View.GONE);
         f1decviewlayout = findViewById(R.id.control_f1dec__list_layout);
         f4decviewlayout = findViewById(R.id.control_f4dec__list_layout);
+        deleteUserLayout = findViewById(R.id.control_delete_user_layout);
         f1btn = findViewById(R.id.control_btn1);
         f2btn = findViewById(R.id.control_btn2);
         f3btn = findViewById(R.id.control_btn3);
         f4btn = findViewById(R.id.control_btn4);
         btn5 = findViewById(R.id.control_btn5);
         clear = findViewById(R.id.control_clear);
+        edit = findViewById(R.id.control_activity_edittext);
+        deleteEdit = findViewById(R.id.control_delete_edittext);
+        deleteBtn = findViewById(R.id.control_delete_btn);
+        deletelist = findViewById(R.id.control_delete_list);
         bottom = findViewById(R.id.control_bottom_btn);
 
         f1declist = findViewById(R.id.control_f1dec_list);
@@ -123,6 +134,7 @@ public class ControlActivity extends AppCompatActivity {
                 f2decList.clear();
                 f3decList.clear();
                 f4decList.clear();
+                deleteList.clear();
                 load.setVisibility(View.VISIBLE);
                 allGone();
                 reference.getRef().child("chatroomdec").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
@@ -147,6 +159,7 @@ public class ControlActivity extends AppCompatActivity {
                 f2decList.clear();
                 f3decList.clear();
                 f4decList.clear();
+                deleteList.clear();
                 load.setVisibility(View.VISIBLE);
                 allGone();
                 db.collection("f2dec").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -157,7 +170,6 @@ public class ControlActivity extends AppCompatActivity {
                             count += 1;
                             F2DecViewItem f2DecViewItem = snapshot.toObject(F2DecViewItem.class);
                             f2decList.add(f2DecViewItem);
-
                             if (count == queryDocumentSnapshots.size()) {
                                 getF2DecList();
                             }
@@ -173,6 +185,7 @@ public class ControlActivity extends AppCompatActivity {
                 f2decList.clear();
                 f3decList.clear();
                 f4decList.clear();
+                deleteList.clear();
                 load.setVisibility(View.VISIBLE);
                 allGone();
                 db.collection("f3dec").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -198,6 +211,7 @@ public class ControlActivity extends AppCompatActivity {
                 f2decList.clear();
                 f3decList.clear();
                 f4decList.clear();
+                deleteList.clear();
                 load.setVisibility(View.VISIBLE);
                 allGone();
                 reference.getRef().child("messegedec").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
@@ -218,12 +232,37 @@ public class ControlActivity extends AppCompatActivity {
         btn5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                f1decList.clear();
+                f2decList.clear();
+                f3decList.clear();
+                f4decList.clear();
+                deleteList.clear();
+                load.setVisibility(View.VISIBLE);
+                allGone();
+                db.collection("deleteUser").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        int count = 0;
+                        for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                            count += 1;
+                            DeleteUserItem deleteUserItem = snapshot.toObject(DeleteUserItem.class);
+                            deleteList.add(deleteUserItem);
+                            if (count == queryDocumentSnapshots.size()) {
+                                getDeleteList();
+                            }
+                        }
+                    }
+                });
             }
         });
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                f1decList.clear();
+                f2decList.clear();
+                f3decList.clear();
+                f4decList.clear();
+                deleteList.clear();
                 allGone();
             }
         });
@@ -273,6 +312,18 @@ public class ControlActivity extends AppCompatActivity {
         load.setVisibility(View.GONE);
     }
 
+    private void getDeleteList() {
+        DescendingDelete descendingDelete = new DescendingDelete();
+        Collections.sort(deleteList, descendingDelete);
+        layoutManager = new LinearLayoutManager(ControlActivity.this);
+        deletelist.setLayoutManager(layoutManager);
+        deleteAdapter = new DeleteAdapter(deleteList);
+        deletelist.setAdapter(deleteAdapter);
+        deleteAdapter.notifyDataSetChanged();;
+        deleteUserLayout.setVisibility(View.VISIBLE);
+        load.setVisibility(View.GONE);
+    }
+
     public static void getF1DecListView(Context context, ArrayList<F1DecListItem> arrayList, String category, String cuz, String whodec, String userUid) {
 //        allClearList();
         f1declist.setVisibility(View.GONE);
@@ -315,6 +366,7 @@ public class ControlActivity extends AppCompatActivity {
         f4declist.setVisibility(View.GONE);
         f1decviewlayout.setVisibility(View.GONE);
         f4decviewlayout.setVisibility(View.GONE);
+        deleteUserLayout.setVisibility(View.GONE);
     }
 
     class DescendingF2 implements Comparator<F2DecViewItem> {
@@ -329,12 +381,12 @@ public class ControlActivity extends AppCompatActivity {
             return f3DecViewItem.getDectime().compareTo(t1.getDectime());
         }
     }
-//    public static void allClearList() {
-//        f1decList.clear();
-//        f2decList.clear();
-//        f3decList.clear();
-//        f4decList.clear();
-//
-//        chatroomViewList.clear();
-//    }
+
+    class DescendingDelete implements Comparator<DeleteUserItem> {
+        @Override
+        public int compare(DeleteUserItem deleteUserItem, DeleteUserItem t1) {
+            return deleteUserItem.getDate().compareTo(t1.getDate());
+        }
+    }
+
 }

@@ -19,18 +19,22 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.tistory.starcue.cuetalk.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ControlActivity extends AppCompatActivity {
 
     public static List<String> f1decList;
-    public static List<String> f2decList;
+    public static ArrayList<F2DecViewItem> f2decList;
     public static List<String> f3decList;
     public static List<String> f4decList;
 
@@ -41,6 +45,7 @@ public class ControlActivity extends AppCompatActivity {
     DecListAdapter decListAdapter;
     F4DecListAdapter f4DecListAdapter;
     public static F1DecListViewAdapter f1DecViewListAdapter;
+    public static F2DecViewAdapter f2DecViewAdapter;
 
     FirebaseFirestore db;
     DatabaseReference reference;
@@ -141,7 +146,27 @@ public class ControlActivity extends AppCompatActivity {
         f2btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                f1decList.clear();
+                f2decList.clear();
+                f3decList.clear();
+                f4decList.clear();
+                load.setVisibility(View.VISIBLE);
+                allGone();
+                db.collection("f2dec").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        int count = 0;
+                        for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                            count += 1;
+                            F2DecViewItem f2DecViewItem = snapshot.toObject(F2DecViewItem.class);
+                            f2decList.add(f2DecViewItem);
 
+                            if (count == queryDocumentSnapshots.size()) {
+                                getF2DecList();
+                            }
+                        }
+                    }
+                });
             }
         });
         f3btn.setOnClickListener(new View.OnClickListener() {
@@ -189,6 +214,18 @@ public class ControlActivity extends AppCompatActivity {
         f1declist.setAdapter(decListAdapter);
         decListAdapter.notifyDataSetChanged();
         f1declist.setVisibility(View.VISIBLE);
+        load.setVisibility(View.GONE);
+    }
+
+    private void getF2DecList() {
+        Descending descending = new Descending();
+        Collections.sort(f2decList, descending);
+        layoutManager = new LinearLayoutManager(ControlActivity.this);
+        f2declist.setLayoutManager(layoutManager);
+        f2DecViewAdapter = new F2DecViewAdapter(f2decList, Glide.with(ControlActivity.this));
+        f2declist.setAdapter(f2DecViewAdapter);
+        f2DecViewAdapter.notifyDataSetChanged();
+        f2declist.setVisibility(View.VISIBLE);
         load.setVisibility(View.GONE);
     }
 
@@ -248,6 +285,12 @@ public class ControlActivity extends AppCompatActivity {
         f4decviewlayout.setVisibility(View.GONE);
     }
 
+    class Descending implements Comparator<F2DecViewItem> {
+        @Override
+        public int compare(F2DecViewItem f2DecViewItem, F2DecViewItem t1) {
+            return f2DecViewItem.getDectime().compareTo(t1.getDectime());
+        }
+    }
 //    public static void allClearList() {
 //        f1decList.clear();
 //        f2decList.clear();

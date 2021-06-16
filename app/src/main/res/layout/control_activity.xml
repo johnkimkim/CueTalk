@@ -114,7 +114,6 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/control_f1dec_list_layout_linear" />
     </RelativeLayout>
-
     <!--f4chatroom 신고 상세보기-->
     <RelativeLayout
         android:id="@+id/control_f4dec__list_layout"
@@ -157,6 +156,7 @@
             android:layout_below="@+id/control_41dec_list_layout_linear" />
     </RelativeLayout>
 
+    <!-- f2dec 신고 상세보기 -->
     <LinearLayout
         android:id="@+id/control_f2_dec_view"
         android:layout_width="match_parent"
@@ -186,6 +186,7 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
+    <!-- f3dec 신고 상세보기 -->
     <LinearLayout
         android:id="@+id/control_f3_dec_view"
         android:layout_width="match_parent"
@@ -225,6 +226,7 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
+    <!-- bottom button -->
     <LinearLayout
         android:id="@+id/control_bottom_layout"
         android:layout_width="match_parent"
@@ -246,6 +248,7 @@
             android:text="영정" />
     </LinearLayout>
 
+    <!-- load -->
     <RelativeLayout
         android:id="@+id/control_load"
         android:layout_width="match_parent"

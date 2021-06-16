@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.tistory.starcue.cuetalk.R;
+import com.tistory.starcue.cuetalk.SeePicDialog;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -24,6 +25,7 @@ public class F1DecListViewAdapter extends RecyclerView.Adapter<F1DecListViewAdap
     FirebaseFirestore db;
     ArrayList<F1DecListItem> arrayList;
     RequestManager requestManager;
+    String pic;
 
     public F1DecListViewAdapter(ArrayList<F1DecListItem> arrayList, RequestManager requestManager) {
         this.arrayList = arrayList;
@@ -56,11 +58,19 @@ public class F1DecListViewAdapter extends RecyclerView.Adapter<F1DecListViewAdap
                 holder.name.setText(documentSnapshot.get("name").toString());
                 holder.sex.setText(documentSnapshot.get("sex").toString());
                 holder.age.setText(documentSnapshot.get("age").toString());
+                pic = documentSnapshot.get("pic").toString();
             }
         });
 
         holder.messege.setText(arrayList.get(position).getMessege());
         holder.time.setText(arrayList.get(position).getTime());
+
+        holder.img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SeePicDialog.seePicDialog(view.getContext(), pic);
+            }
+        });
     }
 
     @Override

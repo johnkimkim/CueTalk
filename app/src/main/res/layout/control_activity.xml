@@ -15,32 +15,44 @@
             android:id="@+id/control_btn1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="f1" />
+            android:text="f1"
+            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/control_btn2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="f2" />
+            android:text="f2"
+            android:layout_weight="1" />
 
         <Button
             android:id="@+id/control_btn3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="f3" />
+            android:text="f3"
+            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/control_btn4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="f4" />
+            android:text="f4"
+            android:layout_weight="1"/>
 
+        <Button
+            android:id="@+id/control_btn5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="delete\n1month"
+            android:textSize="8dp"
+            android:layout_weight="1"/>
         <Button
             android:id="@+id/control_clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="clear"
-            android:textSize="10dp" />
+            android:textSize="10dp"
+            android:layout_weight="1" />
     </LinearLayout>
 
 
@@ -156,78 +168,11 @@
             android:layout_below="@+id/control_41dec_list_layout_linear" />
     </RelativeLayout>
 
-    <!-- f2dec 신고 상세보기 -->
-    <LinearLayout
-        android:id="@+id/control_f2_dec_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/control_bottom_layout"
-        android:layout_below="@+id/control_btn_layout"
-        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/control_f2_user_pic"
-            android:layout_width="150dp"
-            android:layout_height="150dp" />
 
-        <TextView
-            android:id="@+id/control_f2_uid"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/control_f2_messege"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/control_f2_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <!-- f3dec 신고 상세보기 -->
-    <LinearLayout
-        android:id="@+id/control_f3_dec_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/control_bottom_layout"
-        android:layout_below="@+id/control_btn_layout"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/control_f3_user_pic"
-            android:layout_width="150dp"
-            android:layout_height="150dp" />
-
-        <TextView
-            android:id="@+id/control_f3_uid"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/control_f3_messege"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/control_f3_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/control_f3_category"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/control_f3_pic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
 
     <!-- bottom button -->
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/control_bottom_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -235,18 +180,19 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/control_bottom_btn1"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/control_activity_edittext"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="경고" />
+            android:layout_toLeftOf="@+id/control_bottom_btn"/>
 
         <Button
-            android:id="@+id/control_bottom_btn2"
+            android:id="@+id/control_bottom_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:text="영정" />
-    </LinearLayout>
+    </RelativeLayout>
 
     <!-- load -->
     <RelativeLayout

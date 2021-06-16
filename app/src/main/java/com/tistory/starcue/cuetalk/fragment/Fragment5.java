@@ -460,6 +460,7 @@ public class Fragment5 extends Fragment {
         Map<String, Object> map = new HashMap<>();
         map.put("phonenumber", myPhoneNumber);
         map.put("uid", myUid);
+        map.put("date", getTime());
         db.collection("deleteUser").document(getTime()).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {

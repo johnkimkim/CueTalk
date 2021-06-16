@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
 import com.tistory.starcue.cuetalk.R;
+import com.tistory.starcue.cuetalk.SeePicDialog;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -49,6 +50,13 @@ public class F2DecViewAdapter extends RecyclerView.Adapter<F2DecViewAdapter.Cust
         holder.time.setText(arrayList.get(position).getTime());
         holder.whodec.setText("신고자: " + arrayList.get(position).getWhodec());
         holder.userUid.setText("피신고자: " + arrayList.get(position).getUid());
+
+        holder.img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SeePicDialog.seePicDialog(view.getContext(), arrayList.get(position).getPic());
+            }
+        });
     }
 
     @Override

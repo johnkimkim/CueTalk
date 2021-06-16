@@ -115,13 +115,47 @@
             android:layout_below="@+id/control_f1dec_list_layout_linear" />
     </RelativeLayout>
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/control_f4_dec_view"
+    <!--f4chatroom 신고 상세보기-->
+    <RelativeLayout
+        android:id="@+id/control_f4dec__list_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/control_bottom_layout"
-        android:layout_below="@+id/control_btn_layout" />
+        android:layout_below="@+id/control_btn_layout">
+
+        <LinearLayout
+            android:id="@+id/control_41dec_list_layout_linear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/control_f4dec_view_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/control_f4dec_view_cuz"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/control_f4dec_view_whodec"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/control_f4dec_view_useruid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/control_f4_dec_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/control_41dec_list_layout_linear" />
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/control_f2_dec_view"

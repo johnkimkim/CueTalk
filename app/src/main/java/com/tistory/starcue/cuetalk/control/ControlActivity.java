@@ -39,6 +39,7 @@ public class ControlActivity extends AppCompatActivity {
     RecyclerView.LayoutManager layoutManager;
 
     DecListAdapter decListAdapter;
+    F4DecListAdapter f4DecListAdapter;
     public static F1DecListViewAdapter f1DecViewListAdapter;
 
     FirebaseFirestore db;
@@ -46,8 +47,9 @@ public class ControlActivity extends AppCompatActivity {
     StorageReference storageReference;
 
     Button f1btn, f2btn, f3btn, f4btn, clear, bottom1, bottom2;
-    public static RelativeLayout f1decviewlayout;
+    public static RelativeLayout f1decviewlayout, f4decviewlayout;
     public static TextView f1decviewCategory, f1decviewCuz, f1decviewWhodec, f1decviewUserUid;
+    public static TextView f4decviewCategory, f4decviewCuz, f4decviewWhodec, f4decviewUserUid;
     public static RecyclerView f1declist, f2declist, f3declist, f4declist, f1decview, f4decview;
     public static LinearLayout f2decview, f3decview;
     public static RelativeLayout load;
@@ -82,6 +84,7 @@ public class ControlActivity extends AppCompatActivity {
         load = findViewById(R.id.control_load);
         load.setVisibility(View.GONE);
         f1decviewlayout = findViewById(R.id.control_f1dec__list_layout);
+        f4decviewlayout = findViewById(R.id.control_f4dec__list_layout);
         f1btn = findViewById(R.id.control_btn1);
         f2btn = findViewById(R.id.control_btn2);
         f3btn = findViewById(R.id.control_btn3);
@@ -103,6 +106,10 @@ public class ControlActivity extends AppCompatActivity {
         f1decviewCuz = findViewById(R.id.control_f1dec_view_cuz);
         f1decviewWhodec = findViewById(R.id.control_f1dec_view_whodec);
         f1decviewUserUid = findViewById(R.id.control_f1dec_view_useruid);
+        f4decviewCategory = findViewById(R.id.control_f4dec_view_category);
+        f4decviewCuz = findViewById(R.id.control_f4dec_view_cuz);
+        f4decviewWhodec = findViewById(R.id.control_f4dec_view_whodec);
+        f4decviewUserUid = findViewById(R.id.control_f4dec_view_useruid);
         allGone();
     }
 
@@ -146,7 +153,25 @@ public class ControlActivity extends AppCompatActivity {
         f4btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                f1decList.clear();
+                f2decList.clear();
+                f3decList.clear();
+                f4decList.clear();
+                load.setVisibility(View.VISIBLE);
+                allGone();
+                reference.getRef().child("messegedec").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        int count = 0;
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            f4decList.add(snapshot.getKey());
+                            count += 1;
+                            if (count == dataSnapshot.getChildrenCount()) {
+                                getF4DecList();
+                            }
+                        }
+                    }
+                });
             }
         });
         clear.setOnClickListener(new View.OnClickListener() {
@@ -164,6 +189,16 @@ public class ControlActivity extends AppCompatActivity {
         f1declist.setAdapter(decListAdapter);
         decListAdapter.notifyDataSetChanged();
         f1declist.setVisibility(View.VISIBLE);
+        load.setVisibility(View.GONE);
+    }
+
+    private void getF4DecList() {
+        layoutManager = new LinearLayoutManager(ControlActivity.this);
+        f4declist.setLayoutManager(layoutManager);
+        f4DecListAdapter = new F4DecListAdapter(f4decList, ControlActivity.this);
+        f4declist.setAdapter(f4DecListAdapter);
+        f4DecListAdapter.notifyDataSetChanged();
+        f4declist.setVisibility(View.VISIBLE);
         load.setVisibility(View.GONE);
     }
 
@@ -186,6 +221,22 @@ public class ControlActivity extends AppCompatActivity {
         Log.d("ControlActivity>>>", "arrayList get size: " + arrayList.size());
     }
 
+    public static void getF4DecListView(Context context, ArrayList<F1DecListItem> arrayList, String category, String cuz, String whodec, String userUid) {
+        f4decviewlayout.setVisibility(View.VISIBLE);
+
+        f4decviewCategory.setText(category);
+        f4decviewCuz.setText(cuz);
+        f4decviewWhodec.setText("신고자: " + whodec);
+        f4decviewUserUid.setText("피신고자" + userUid);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        f4decview.setLayoutManager(layoutManager);
+        f1DecViewListAdapter = new F1DecListViewAdapter(arrayList, Glide.with(context));
+        f4decview.setAdapter(f1DecViewListAdapter);
+        f1DecViewListAdapter.notifyDataSetChanged();
+        load.setVisibility(View.GONE);
+    }
+
     private void allGone() {
         f1declist.setVisibility(View.GONE);
         f2declist.setVisibility(View.GONE);
@@ -193,8 +244,8 @@ public class ControlActivity extends AppCompatActivity {
         f4declist.setVisibility(View.GONE);
         f2decview.setVisibility(View.GONE);
         f3decview.setVisibility(View.GONE);
-        f4decview.setVisibility(View.GONE);
         f1decviewlayout.setVisibility(View.GONE);
+        f4decviewlayout.setVisibility(View.GONE);
     }
 
 //    public static void allClearList() {

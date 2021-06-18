@@ -43,6 +43,8 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -199,10 +201,31 @@ public class PhoneNumber1 extends AppCompatActivity {
                             FirebaseUser mUser = mAuth.getCurrentUser();
                             String myNewPn = "010" + mUser.getPhoneNumber().substring(5, 13);
                             map.put("phonenumber", myNewPn);
-                            db.collection("users").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            Log.d("PhoneNumber1>>>", "success make id");
+
+                            db.collection("users").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
-                                public void onSuccess(Void unused) {
-                                    checkSameUnique();
+                                public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot snapshot = task.getResult();
+                                        if (snapshot.get("phonenumber") == null) {
+                                            db.collection("users").document(myUid).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+                                                    Log.d("PhoneNumber1>>>", "success update");
+                                                    checkSameUnique();
+                                                }
+                                            });
+                                        } else {
+                                            db.collection("users").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+                                                    Log.d("PhoneNumber1>>>", "success update");
+                                                    checkSameUnique();
+                                                }
+                                            });
+                                        }
+                                    }
                                 }
                             });
                         } else {
@@ -253,7 +276,7 @@ public class PhoneNumber1 extends AppCompatActivity {
                     map.put("개인정보처리방침", getTime());
                     map.put("위치기반서비스이용약관", getTime());
                     map.put("개인정보수집및이용동의", getTime());
-                    db.collection("users").document(myUid).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    db.collection("users").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
                             goBackSplashActivity();

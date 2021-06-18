@@ -120,7 +120,8 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot snapshot = task.getResult();
-                    if (snapshot.get("delete") == null) {
+                    if (snapshot.get("uid") != null) {
+                        //RightImageViewholder
                         if (holder instanceof RightImageViewholder) {
                             ((RightImageViewholder) holder).timepic.setText(time2);
                             requestManager
@@ -146,6 +147,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             } else {
                                 ((RightImageViewholder) holder).read.setText("");
                             }
+                            //LeftImageViewholder
                         } else if (holder instanceof LeftImageViewholder) {
                             ((LeftImageViewholder) holder).name.setText(userName);
                             ((LeftImageViewholder) holder).time.setText(time2);
@@ -201,6 +203,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                     SeePicDialog.seePicDialog(context, uri);
                                 }
                             });
+                            //RightViewholder
                         } else if (holder instanceof RightViewholder) {
                             ((RightViewholder) holder).time1.setText(time2);
                             ((RightViewholder) holder).messege1.setText(arrayList.get(position).getMessege());
@@ -210,6 +213,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                 ((RightViewholder) holder).read2.setText("");
                             }
                         }
+                        //LeftViewholder
                         else if (holder instanceof LeftViewholder) {
                             ((LeftViewholder) holder).name.setText(userName);
                             ((LeftViewholder) holder).messege.setText(arrayList.get(position).getMessege());

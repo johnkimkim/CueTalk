@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -88,7 +87,17 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
             public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot snapshot = task.getResult();
-                    if (snapshot.get("delete") == null) {
+                    if (snapshot.get("uid") == null) {
+                        Log.d("F4ReAdapter>>>", "snapshot null");
+                        holder.name.setText("(알수없음)");
+                        holder.sex.setText("");
+                        holder.age.setText("");
+                        requestManager.load(nullUser)
+                                .override(150, 150).circleCrop().into(holder.pic);
+
+                        holder.km.setText("");
+                    } else {
+                        Log.d("F4ReAdapter>>>", "snapshot not null");
                         String userName = snapshot.get("name").toString();
                         String userSex = snapshot.get("sex").toString();
                         String userAge = snapshot.get("age").toString();
@@ -121,14 +130,6 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
                             int i = (int) Math.floor(ddd) / 1000;
                             holder.km.setText(Integer.toString(i) + "km");
                         }
-                    } else {
-                        holder.name.setText("(알수없음)");
-                        holder.sex.setText("");
-                        holder.age.setText("");
-                        requestManager.load(nullUser)
-                                .override(150, 150).circleCrop().into(holder.pic);
-
-                        holder.km.setText("");
                     }
                 }
             }
@@ -190,27 +191,45 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
             public void onClick(View view) {
                 MainActivity.loading.setVisibility(View.VISIBLE);
 
-                db.collection("users").document(arrayList.get(position).getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                db.collection("users").document(arrayList.get(position).getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        String userPic = documentSnapshot.get("pic").toString();
-                        String userName = documentSnapshot.get("name").toString();
-                        String userSex = documentSnapshot.get("sex").toString();
-                        String userAge = documentSnapshot.get("age").toString();
-                        String latitude = documentSnapshot.get("latitude").toString();
-                        String longitude = documentSnapshot.get("longitude").toString();
-                        Intent intent = new Intent(context, Fragment4ChatRoom.class);
-                        intent.putExtra("userUid", arrayList.get(position).getUid());
-                        intent.putExtra("userPic", userPic);
-                        intent.putExtra("userName", userName);
-                        Log.d("getUserName>>>1", userName);
-                        intent.putExtra("userSex", userSex);
-                        intent.putExtra("userAge", userAge);
-                        intent.putExtra("latitude", latitude);
-                        intent.putExtra("longitude", longitude);
-                        Fragment4.stayf4chatroom = true;
-                        MainActivity.loading.setVisibility(View.GONE);
-                        context.startActivity(intent);
+                    public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot snapshot = task.getResult();
+                            if (snapshot.get("uid") != null) {
+                                String userPic = snapshot.get("pic").toString();
+                                String userName = snapshot.get("name").toString();
+                                String userSex = snapshot.get("sex").toString();
+                                String userAge = snapshot.get("age").toString();
+                                String latitude = snapshot.get("latitude").toString();
+                                String longitude = snapshot.get("longitude").toString();
+                                Intent intent = new Intent(context, Fragment4ChatRoom.class);
+                                intent.putExtra("userUid", arrayList.get(position).getUid());
+                                intent.putExtra("userPic", userPic);
+                                intent.putExtra("userName", userName);
+                                Log.d("getUserName>>>1", userName);
+                                intent.putExtra("userSex", userSex);
+                                intent.putExtra("userAge", userAge);
+                                intent.putExtra("latitude", latitude);
+                                intent.putExtra("longitude", longitude);
+                                Fragment4.stayf4chatroom = true;
+                                MainActivity.loading.setVisibility(View.GONE);
+                                context.startActivity(intent);
+                            } else {
+                                Intent intent = new Intent(context, Fragment4ChatRoom.class);
+                                intent.putExtra("userUid", arrayList.get(position).getUid());
+                                intent.putExtra("userPic", "");
+                                intent.putExtra("userName", "");
+                                Log.d("getUserName>>>1", "");
+                                intent.putExtra("userSex", "");
+                                intent.putExtra("userAge", "");
+                                intent.putExtra("latitude", "");
+                                intent.putExtra("longitude", "");
+                                Fragment4.stayf4chatroom = true;
+                                MainActivity.loading.setVisibility(View.GONE);
+                                context.startActivity(intent);
+                            }
+                        }
                     }
                 });
             }

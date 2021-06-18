@@ -37,6 +37,7 @@
                 android:textStyle="bold" />
 
             <LinearLayout
+                android:id="@+id/fragment4_chat_room_sexagekm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">

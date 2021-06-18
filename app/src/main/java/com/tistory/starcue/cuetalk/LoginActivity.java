@@ -238,12 +238,16 @@ public class LoginActivity extends AppCompatActivity {
 
             if (name.equals("")) {
                 Toast.makeText(LoginActivity.this, "닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
+                relativeLayout.setVisibility(View.GONE);
             } else if (name.matches(".*[ㄱ-ㅎ ㅏ-ㅣ]+.*")) {
                 Toast.makeText(LoginActivity.this, "올바른 닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
+                relativeLayout.setVisibility(View.GONE);
             } else if (i == 0) {
                 Toast.makeText(LoginActivity.this, "나이를 선택해주세요", Toast.LENGTH_SHORT).show();
+                relativeLayout.setVisibility(View.GONE);
             } else if (sexstring.equals("")) {
                 Toast.makeText(LoginActivity.this, "성별을 선택해주세요", Toast.LENGTH_SHORT).show();
+                relativeLayout.setVisibility(View.GONE);
             } else {
 
                 updateUser(name, sexstring, agestring);

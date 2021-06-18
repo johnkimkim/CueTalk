@@ -96,7 +96,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     private FirebaseFirestore db;
     private StorageReference storageReference;
 
-    LinearLayout titlelayout;
+    LinearLayout titlelayout, title2layout;
     TextView titleName, titleSex, titleAge, titleKm;
     String myUid, userUid, myUiduserUid, userUidmyUid, userPic, userName, userSex, userAge, userLatitude, userLongitude;
     String getroomname;
@@ -168,6 +168,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         cancelNotify(userUid);
         Log.d("Fragment4ChatRoom>>>", "get user uid: " + userUid);
         setTitle();
+        setEditText();
     }
 
     private void cancelNotify(String userUid) {
@@ -207,6 +208,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     private void setinit() {
         titlelayout = findViewById(R.id.chat_room_title_user_layout);
         titlelayout.setVisibility(View.INVISIBLE);
+        title2layout = findViewById(R.id.fragment4_chat_room_sexagekm);
         recyclerView = findViewById(R.id.fragment4_chat_room_recyclerview);
         sendimg = findViewById(R.id.fragment4_chat_room_sendimage);
         sendmsg = findViewById(R.id.fragment4_chat_room_sendbutton);
@@ -238,33 +240,41 @@ public class Fragment4ChatRoom extends AppCompatActivity {
     }
 
     private void setTitle() {
-        db.collection("users").document(userUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        db.collection("users").document(userUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                titleName.setText(documentSnapshot.get("name").toString());
-                titleSex.setText(documentSnapshot.get("sex").toString());
-                if (documentSnapshot.get("sex").toString().equals("남자")) {
-                    titleSex.setTextColor(getResources().getColor(R.color.male));
-                } else {
-                    titleSex.setTextColor(getResources().getColor(R.color.female));
+            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    if (documentSnapshot.get("uid") != null) {
+                        titleName.setText(documentSnapshot.get("name").toString());
+                        titleSex.setText(documentSnapshot.get("sex").toString());
+                        if (documentSnapshot.get("sex").toString().equals("남자")) {
+                            titleSex.setTextColor(getResources().getColor(R.color.male));
+                        } else {
+                            titleSex.setTextColor(getResources().getColor(R.color.female));
+                        }
+                        titleAge.setText(documentSnapshot.get("age").toString());
+                        double userLatitude = Double.parseDouble(documentSnapshot.get("latitude").toString());
+                        double userLongitude = Double.parseDouble(documentSnapshot.get("longitude").toString());
+                        GpsTracker gpsTracker = new GpsTracker(Fragment4ChatRoom.this);
+                        double myLatitude = gpsTracker.getLatitude();
+                        double myLongitude = gpsTracker.getLongitude();
+                        double ddd = getDistance(myLatitude, myLongitude, userLatitude, userLongitude);
+                        if (ddd < 500) {
+                            titleKm.setText("-50m");
+                        } else if (ddd < 1000) {
+                            int i = (int) Math.floor(ddd);
+                            titleKm.setText(Integer.toString(i) + "m");
+                        } else if (ddd >= 1000) {
+                            int i = (int) Math.floor(ddd) / 1000;
+                            titleKm.setText(Integer.toString(i) + "km");
+                        }
+                        titlelayout.setVisibility(View.VISIBLE);
+                    } else {
+                        titleName.setText("(알수없음)");
+                        title2layout.setVisibility(View.VISIBLE);
+                    }
                 }
-                titleAge.setText(documentSnapshot.get("age").toString());
-                double userLatitude = Double.parseDouble(documentSnapshot.get("latitude").toString());
-                double userLongitude = Double.parseDouble(documentSnapshot.get("longitude").toString());
-                GpsTracker gpsTracker = new GpsTracker(Fragment4ChatRoom.this);
-                double myLatitude = gpsTracker.getLatitude();
-                double myLongitude = gpsTracker.getLongitude();
-                double ddd = getDistance(myLatitude, myLongitude, userLatitude, userLongitude);
-                if (ddd < 500) {
-                    titleKm.setText("-50m");
-                } else if (ddd < 1000) {
-                    int i = (int) Math.floor(ddd);
-                    titleKm.setText(Integer.toString(i) + "m");
-                } else if (ddd >= 1000) {
-                    int i = (int) Math.floor(ddd) / 1000;
-                    titleKm.setText(Integer.toString(i) + "km");
-                }
-                titlelayout.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -282,6 +292,22 @@ public class Fragment4ChatRoom extends AppCompatActivity {
         getMyProfile();
         setSendmsg();
         setSendimg();
+    }
+
+    private void setEditText() {
+        db.collection("users").document(userUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot snapshot = task.getResult();
+                    if (snapshot.get("uid") == null) {
+                        editText.setEnabled(false);
+                    } else {
+                        editText.setEnabled(true);
+                    }
+                }
+            }
+        });
     }
 
     private void setState() {
@@ -862,7 +888,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                 okbtn.setEnabled(false);
                 cancel.setEnabled(false);
                 alertDialogA.dismiss();
-                goOutSetIsChat();
+                checkUserDelete();
             }
         });
 
@@ -921,7 +947,11 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         outAlready = true;
-                        alertDialogD.dismiss();
+                        if (alertDialogD != null) {
+                            alertDialogD.dismiss();
+                        } else if (alertDialogA != null) {
+                            alertDialogA.dismiss();
+                        }
                         finish();
                     }
                 });
@@ -930,6 +960,22 @@ public class Fragment4ChatRoom extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
 
+            }
+        });
+    }
+
+    private void checkUserDelete() {
+        db.collection("users").document(userUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot snapshot = task.getResult();
+                    if (snapshot.get("uid") != null) {
+                        goOutSetIsChat();
+                    } else {
+                        deleteImageISendB();
+                    }
+                }
             }
         });
     }

@@ -477,9 +477,15 @@ public class Fragment5 extends Fragment {
                 if (task.isSuccessful()) {
                     DocumentSnapshot snapshot = task.getResult();
                     if (snapshot.get("uid") != null) {
-                        db.collection("f2messege").document(myUid).delete();
+                        db.collection("f2messege").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                deletef3();
+                            }
+                        });
+                    } else {
+                        deletef3();
                     }
-                    deletef3();
                 }
             }
         });
@@ -493,21 +499,16 @@ public class Fragment5 extends Fragment {
                 if (task.isSuccessful()) {
                     DocumentSnapshot snapshot = task.getResult();
                     if (snapshot.get("uid") != null) {
-                        db.collection("f3messege").document(myUid).delete();
+                        db.collection("f3messege").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                deleteRealtimeMyroom();
+                            }
+                        });
+                    } else {
+                        deleteRealtimeMyroom();
                     }
-                    addDeleteUserYes();
                 }
-            }
-        });
-    }
-
-    private void addDeleteUserYes() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("delete", "yes");
-        db.collection("users").document(myUid).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                deleteRealtimeMyroom();
             }
         });
     }
@@ -523,13 +524,18 @@ public class Fragment5 extends Fragment {
     }
 
     private void lastDeleteUser() {
-        mCurrentUser.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+        db.collection("users").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                databaseHandler.uniquedelete();
-                alertDialog.dismiss();
-                startActivity(new Intent(getActivity(), SplashActivity.class));
-                MainActivity.loading.setVisibility(View.GONE);
+                mCurrentUser.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        databaseHandler.uniquedelete();
+                        alertDialog.dismiss();
+                        startActivity(new Intent(getActivity(), SplashActivity.class));
+                        MainActivity.loading.setVisibility(View.GONE);
+                    }
+                });
             }
         });
 //        mAuth.signOut();

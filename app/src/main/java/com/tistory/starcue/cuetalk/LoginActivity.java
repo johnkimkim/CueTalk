@@ -3,6 +3,7 @@ package com.tistory.starcue.cuetalk;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -26,6 +27,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
@@ -62,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
     Spinner agespin;
     RelativeLayout relativeLayout;
     ImageView pic;
+    CircularDotsLoader picpro;
     Button addpic;
     Uri imageUri;
     TextView editidcount;
@@ -100,6 +108,7 @@ public class LoginActivity extends AppCompatActivity {
         agespin = findViewById(R.id.longin_activity_agespin);
         relativeLayout = findViewById(R.id.progresslayout);
         pic = findViewById(R.id.login_profile_image);
+        picpro = findViewById(R.id.login_activity_pic_progress);
         addpic = findViewById(R.id.login_add_image);
         editidcount = findViewById(R.id.login_activity_name_count);
 
@@ -113,6 +122,25 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         setEditTextWithCount();
+
+        Glide.with(LoginActivity.this)
+                .load("https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullUser.png?alt=media&token=4c9daa69-6d03-4b19-a793-873f5739f3a1")
+                .circleCrop()
+                .override(150, 150)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        picpro.setVisibility(View.GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        picpro.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .into(pic);
     }
 
     private void setEditTextWithCount() {
@@ -146,8 +174,27 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
+            picpro.setVisibility(View.VISIBLE);
             imageUri = data.getData();
-            pic.setImageURI(imageUri);
+            Glide.with(LoginActivity.this)
+                    .load(imageUri)
+                    .override(150, 150)
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            picpro.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            picpro.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+                    .circleCrop()
+                    .into(pic);
+//            pic.setImageURI(imageUri);
         }
     }
 
@@ -161,7 +208,7 @@ public class LoginActivity extends AppCompatActivity {
         String uid = mAuth.getUid();
 
         if (imageUri != null) {
-            StorageReference riversRef = storageReference.child("images/" + uid);
+            StorageReference riversRef = storageReference.child("images/" + uid + "/" + uid + "count1");
             riversRef.putFile(imageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override

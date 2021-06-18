@@ -530,10 +530,15 @@ public class Fragment5 extends Fragment {
                 mCurrentUser.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
+                        Log.d("Fragment5>>>", "delete user success");
                         databaseHandler.uniquedelete();
-                        alertDialog.dismiss();
                         startActivity(new Intent(getActivity(), SplashActivity.class));
                         MainActivity.loading.setVisibility(View.GONE);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull @NotNull Exception e) {
+                        Log.d("Fragment5>>>", "delete user fail");
                     }
                 });
             }

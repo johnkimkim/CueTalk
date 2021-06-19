@@ -248,6 +248,8 @@ public class ControlActivity extends AppCompatActivity {
                             DeleteUserItem deleteUserItem = snapshot.toObject(DeleteUserItem.class);
                             deleteList.add(deleteUserItem);
                             if (count == queryDocumentSnapshots.size()) {
+                                Log.d("ControlActivity>>>", "count: " + queryDocumentSnapshots.size());
+                                Log.d("ControlActivity>>>", "list size: " + deleteList.size());
                                 getDeleteList();
                             }
                         }
@@ -319,7 +321,7 @@ public class ControlActivity extends AppCompatActivity {
         deletelist.setLayoutManager(layoutManager);
         deleteAdapter = new DeleteAdapter(deleteList);
         deletelist.setAdapter(deleteAdapter);
-        deleteAdapter.notifyDataSetChanged();;
+        deleteAdapter.notifyDataSetChanged();
         deleteUserLayout.setVisibility(View.VISIBLE);
         load.setVisibility(View.GONE);
     }

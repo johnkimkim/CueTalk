@@ -14,13 +14,13 @@
         android:orientation="vertical">
 
         <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/phonenumber1_lottie"
+            android:id="@+id/delete_auth_phonenumber1_lottie"
             android:layout_width="250dp"
             android:layout_height="250dp"
             app:lottie_rawRes="@raw/phonenumber1" />
 
         <TextView
-            android:id="@+id/phone1text"
+            android:id="@+id/delete_auth_phone1text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -31,10 +31,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="휴대폰으로 전송된 6자리 인증번호를 입력하세요." />
+            android:gravity="center"
+            android:text="휴대폰으로 전송된 6자리 인증번호를 입력하세요.\n인증 완료 후 계정이 완전히 삭제됩니다." />
 
         <EditText
-            android:id="@+id/edittext1"
+            android:id="@+id/delete_auth_edittext1"
             android:layout_width="200dp"
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
@@ -52,7 +53,7 @@
             app:theme="@style/editTextStyle" />
 
         <Button
-            android:id="@+id/okbtn1"
+            android:id="@+id/delete_auth_okbtn1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/phone1text"
@@ -66,7 +67,7 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/phonenumber1_load"
+        android:id="@+id/delete_auth_phonenumber1_load"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#A6000000"

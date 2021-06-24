@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -310,6 +311,7 @@ public class LoginActivity extends AppCompatActivity {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(LoginActivity.this, R.layout.change_profile_spinner_layout, R.id.change_profile_spinner_layout_text, items);
         arrayAdapter.setDropDownViewResource(R.layout.change_profile_spinner_layout);
         agespin.setAdapter(arrayAdapter);
+        agespin.setDropDownWidth(WindowManager.LayoutParams.MATCH_PARENT);
 
         agespin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

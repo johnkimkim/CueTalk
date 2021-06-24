@@ -37,27 +37,23 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.tistory.starcue.cuetalk.ChangeProfile;
-import com.tistory.starcue.cuetalk.control.ControlActivity;
 import com.tistory.starcue.cuetalk.DatabaseHandler;
+import com.tistory.starcue.cuetalk.DeleteAuth;
 import com.tistory.starcue.cuetalk.MainActivity;
 import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.SeePicDialog;
 import com.tistory.starcue.cuetalk.SplashActivity;
+import com.tistory.starcue.cuetalk.control.ControlActivity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -413,200 +409,48 @@ public class Fragment5 extends Fragment {
         deleteUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LayoutInflater vi = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                LinearLayout layout = (LinearLayout) vi.inflate(R.layout.delete_user_dialog, null);
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setView(layout);
-                alertDialog = builder.create();
-
-                alertDialog.show();
-
-                alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                Display display = getActivity().getWindowManager().getDefaultDisplay();
-                Point size = new Point();
-                display.getSize(size);
-                Window window = alertDialog.getWindow();
-                int x = (int) (size.x * 0.9);
-                int y = (int) (size.y * 0.3);
-                window.setLayout(x, y);
-
-                deleteUserDialogOkBtn = layout.findViewById(R.id.delete_user_dialog_okbtn);
-                deleteUserDialogNoBtn = layout.findViewById(R.id.delete_user_dialog_cancelbtn);
-
-                deleteUserDialogNoBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        alertDialog.dismiss();
-                    }
-                });
-
-                deleteUserDialogOkBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        MainActivity.loading.setVisibility(View.VISIBLE);
-                        alertDialog.dismiss();
-                        alertDialog.setCancelable(false);
-                        deleteUser.setEnabled(false);
-                        deleteUserDialogOkBtn.setEnabled(false);
-                        deleteUserDialogNoBtn.setEnabled(false);
-//                        deleteDocument();
-                        reference = FirebaseDatabase.getInstance().getReference();
-                        saveOneMonthUser();
-                    }
-                });
-            }
-        });
-    }
-
-    private void saveOneMonthUser() {
-        Log.d("Fragment5>>>", "saveOneMonthUser");
-        FirebaseUser firebaseUser = mAuth.getCurrentUser();
-        String myPhoneNumber = firebaseUser.getPhoneNumber();
-        Map<String, Object> map = new HashMap<>();
-        map.put("phonenumber", myPhoneNumber);
-        map.put("uid", myUid);
-        map.put("date", getTime());
-        db.collection("deleteUser").document(getTime()).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Log.d("Fragment5>>>", "saveOneMonthUser Success");
-                deleteStorageF4chatroomImg();
-            }
-        });
-    }
-
-    private void deleteStorageF4chatroomImg() {
-        Log.d("Fragment5>>>", "deleteStorageF4chatroomImg");
-        reference.getRef().child("myroom").child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-            @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getChildrenCount() != 0) {
-                    Log.d("Fragment5>>>", "deleteStorageF4chatroomImg Success");
-                    int count = 0;
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        count += 1;
-                        storageReference.child("/" + myUid + "/" + snapshot.getKey()).listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
-                            @Override
-                            public void onSuccess(ListResult listResult) {
-                                int i = listResult.getItems().size();
-                                if (i >= 1) {
-                                    for (StorageReference item : listResult.getItems()) {
-                                        storageReference.child("/" + myUid + "/" + snapshot.getKey() + "/" + item.getName()).delete();
-                                    }
-                                }
-                            }
-                        });
-                        if (count == dataSnapshot.getChildrenCount()) {
-                            deletef2();
-                        }
-                    }
-                } else {
-                    deletef2();
-                }
-            }
-        });
-    }
-
-    private void deletef2() {
-        Log.d("Fragment5>>>", "deletef2");
-        //delete f2
-        db.collection("f2messege").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot snapshot = task.getResult();
-                    if (snapshot.get("uid") != null) {
-                        db.collection("f2messege").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Log.d("Fragment5>>>", "deletef2 Success");
-                                deletef3();
-                            }
-                        });
-                    } else {
-                        Log.d("Fragment5>>>", "deletef2 Success");
-                        deletef3();
-                    }
-                }
-            }
-        });
-
-    }
-
-    private void deletef3() {
-        Log.d("Fragment5>>>", "deletef3");
-        db.collection("f3messege").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot snapshot = task.getResult();
-                    if (snapshot.get("uid") != null) {
-                        db.collection("f3messege").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Log.d("Fragment5>>>", "deletef3 Success");
-                                deleteF3Image();
-                            }
-                        });
-                    } else {
-                        Log.d("Fragment5>>>", "deletef3 Success");
-                        deleteRealtimeMyroom();
-                    }
-                }
-            }
-        });
-    }
-
-    private void deleteF3Image() {
-        Log.d("Fragment5>>>", "deleteF3Image");
-        storageReference.child("/fragment3/" + myUid + "/" + myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Log.d("Fragment5>>>", "deleteF3Image Success");
-                deleteRealtimeMyroom();
-            }
-        });
-    }
-
-    private void deleteRealtimeMyroom() {
-        Log.d("Fragment5>>>", "deleteRealtimeMyroom");
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        reference.getRef().child("myroom").child(myUid).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Log.d("Fragment5>>>", "deleteRealtimeMyroom Success");
-                lastDeleteUser();
-            }
-        });
-    }
-
-    private void lastDeleteUser() {
-        Log.d("Fragment5>>>", "lastDeleteUser");
-        db.collection("users").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Log.d("Fragment5>>>", "lastDeleteUser Success");
-                userAuthDelete();
-            }
-        });
-//        mAuth.signOut();
-    }
-
-    private void userAuthDelete() {
-        Log.d("Fragment5>>>", "userAuthDelete");
-        mCurrentUser.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Log.d("Fragment5>>>", "userAuthDelete success");
-                databaseHandler.uniquedelete();
-                startActivity(new Intent(getActivity(), SplashActivity.class));
-                MainActivity.loading.setVisibility(View.GONE);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull @NotNull Exception e) {
-                userAuthDelete();
-                Log.d("Fragment5>>>", "userAuthDelete fail: " + e.toString());
+                startActivity(new Intent(getActivity(), DeleteAuth.class));
+//                LayoutInflater vi = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//                LinearLayout layout = (LinearLayout) vi.inflate(R.layout.delete_user_dialog, null);
+//                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//                builder.setView(layout);
+//                alertDialog = builder.create();
+//
+//                alertDialog.show();
+//
+//                alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//                Display display = getActivity().getWindowManager().getDefaultDisplay();
+//                Point size = new Point();
+//                display.getSize(size);
+//                Window window = alertDialog.getWindow();
+//                int x = (int) (size.x * 0.9);
+//                int y = (int) (size.y * 0.3);
+//                window.setLayout(x, y);
+//
+//                deleteUserDialogOkBtn = layout.findViewById(R.id.delete_user_dialog_okbtn);
+//                deleteUserDialogNoBtn = layout.findViewById(R.id.delete_user_dialog_cancelbtn);
+//
+//                deleteUserDialogNoBtn.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        alertDialog.dismiss();
+//                    }
+//                });
+//
+//                deleteUserDialogOkBtn.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        MainActivity.loading.setVisibility(View.VISIBLE);
+//                        alertDialog.dismiss();
+//                        alertDialog.setCancelable(false);
+//                        deleteUser.setEnabled(false);
+//                        deleteUserDialogOkBtn.setEnabled(false);
+//                        deleteUserDialogNoBtn.setEnabled(false);
+////                        deleteDocument();
+//                        reference = FirebaseDatabase.getInstance().getReference();
+//                        startActivity(new Intent(getActivity(), DeleteAuth.class));
+//                    }
+//                });
             }
         });
     }

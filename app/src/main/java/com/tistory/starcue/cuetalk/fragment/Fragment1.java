@@ -54,6 +54,7 @@ import com.google.firebase.storage.StorageReference;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 import com.tistory.starcue.cuetalk.AdressRoom;
 import com.tistory.starcue.cuetalk.DatabaseHandler;
+import com.tistory.starcue.cuetalk.DeleteAuth;
 import com.tistory.starcue.cuetalk.MainActivity;
 import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.f1viewpager.F1F1;
@@ -135,31 +136,7 @@ public class Fragment1 extends Fragment {
         testbtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                reference.getRef().child("myroom").child(myUid).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-//                        if (task.isSuccessful()) {
-//                            DataSnapshot snapshot = task.getResult();
-//                            if (snapshot != null) {
-//                                Log.d("Fragment1>>>", "snapshot not null");
-//                            } else {
-//                                Log.d("Fragment1>>>", "snapshot null");
-//                            }
-//                        } else {
-//                            Log.d("Fragment1>>>", "task null");
-//                        }
-//                    }
-//                });
-                reference.getRef().child("myroom").child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                    @Override
-                    public void onSuccess(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getChildrenCount() == 0) {
-                            Log.d("Fragment1>>>", "snapshot null");
-                        } else {
-                            Log.d("Fragment1>>>", "snapshot not null");
-                        }
-                    }
-                });
+                startActivity(new Intent(getActivity(), DeleteAuth.class));
             }
         });
         testbtn2.setOnClickListener(new View.OnClickListener() {

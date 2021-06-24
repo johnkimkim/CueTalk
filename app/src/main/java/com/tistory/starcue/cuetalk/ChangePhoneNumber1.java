@@ -153,6 +153,7 @@ public class ChangePhoneNumber1 extends AppCompatActivity {
                     });
                 } else {
                     load.setVisibility(View.GONE);
+                    okbtn.setEnabled(true);
                     Toast.makeText(ChangePhoneNumber1.this, "네트워크 문제로 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
                 }
             }

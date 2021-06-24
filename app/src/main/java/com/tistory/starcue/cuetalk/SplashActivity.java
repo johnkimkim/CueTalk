@@ -34,9 +34,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -262,18 +260,35 @@ public class SplashActivity extends AppCompatActivity {
                         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
                         String myPhoneNumber = "0" + mAuth.getCurrentUser().getPhoneNumber().substring(3);
                         Log.d("Splash>>>", "get my phone number: " + myPhoneNumber);
-                        firestore.collection("blacklist").addSnapshotListener(new EventListener<QuerySnapshot>() {
+//                        firestore.collection("blacklist").addSnapshotListener(new EventListener<QuerySnapshot>() {
+//                            @Override
+//                            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+//                                List<String> count = new ArrayList<>();
+//                                for (DocumentSnapshot snapshot : value.getDocuments()) {
+//                                    count.add(snapshot.getId());
+//                                    if (count.size() == value.size()) {
+//                                        if (count.contains(myPhoneNumber)) {
+//                                            blacklistDialog();
+//                                        } else {
+//                                            checkUser();
+//                                            Log.d("SplashActivity>>>", "unique same");
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        });
+
+                        firestore.collection("blacklist").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                             @Override
-                            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                                List<String> count = new ArrayList<>();
-                                for (DocumentSnapshot snapshot : value.getDocuments()) {
-                                    count.add(snapshot.getId());
-                                    if (count.size() == value.size()) {
-                                        if (count.contains(myPhoneNumber)) {
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                List<String> pnlist = new ArrayList<>();
+                                for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                                    pnlist.add(snapshot.getId());
+                                    if (pnlist.size() == queryDocumentSnapshots.size()) {
+                                        if (pnlist.contains(myPhoneNumber)) {
                                             blacklistDialog();
                                         } else {
                                             checkUser();
-                                            Log.d("SplashActivity>>>", "unique same");
                                         }
                                     }
                                 }

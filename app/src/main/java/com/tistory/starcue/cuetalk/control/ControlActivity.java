@@ -443,6 +443,10 @@ public class ControlActivity extends AppCompatActivity {
         });
     }
 
+    private void saveBlackList(String uid) {
+
+    }
+
     private void deleteStorageF4chatroomImg(String uid) {
         reference.getRef().child("myroom").child(uid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override

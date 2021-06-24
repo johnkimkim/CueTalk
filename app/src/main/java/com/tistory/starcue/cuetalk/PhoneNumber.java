@@ -37,9 +37,7 @@ import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -237,16 +235,14 @@ public class PhoneNumber extends AppCompatActivity {
             public void onClick(View view) {
                 load.setVisibility(View.VISIBLE);
                 FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-                firestore.collection("blacklist").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                firestore.collection("blacklist").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         List<String> count = new ArrayList<>();
-                        for (DocumentSnapshot value1 : value.getDocuments()) {
-                            Log.d("Fragment1>>>", "get black list: " + value1.getId());
-                            Log.d("Fragment1>>>", "get black list size: " + value.size());
-                            count.add(value1.getId());
+                        for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                            count.add(snapshot.getId());
                             Log.d("Fragment1>>>", "count size: " + count.size());
-                            if (count.size() == value.size()) {
+                            if (count.size() == queryDocumentSnapshots.size()) {
                                 InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                                 manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 

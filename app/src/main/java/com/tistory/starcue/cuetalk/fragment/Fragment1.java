@@ -49,6 +49,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
@@ -67,11 +68,7 @@ import com.tistory.starcue.cuetalk.f1viewpager.F1F8;
 import com.tistory.starcue.cuetalk.f1viewpager.F1ViewpagerIntent;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONObject;
 
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -139,43 +136,35 @@ public class Fragment1 extends Fragment {
         testbtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new Thread(new Runnable() {
+//                FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+//                String myPhoneNumber = "0" + mAuth.getCurrentUser().getPhoneNumber().substring(3);
+//                Log.d("Splash>>>", "get my phone number: " + myPhoneNumber);
+//                firestore.collection("blacklist").addSnapshotListener(new EventListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+//                        List<String> count = new ArrayList<>();
+//                        for (DocumentSnapshot snapshot : value.getDocuments()) {
+//                            count.add(snapshot.getId());
+//                            if (count.size() == value.size()) {
+//                                if (count.contains(myPhoneNumber)) {
+//                                    Log.d("Fragment1>>>", "black list");
+//                                } else {
+//                                    Log.d("Fragment1>>>", "black list not");
+//                                }
+//                            }
+//                        }
+//                    }
+//                });
+
+                db.collection("blacklist").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
-                    public void run() {
-                        try {
-                            JSONObject root = new JSONObject();
-//                                        JSONObject notification = new JSONObject();
-                            JSONObject data = new JSONObject();
-//                                        notification.put("body", messege);
-//                                        notification.put("title", getString(R.string.app_name));
-                            data.put("messege", "신고로 인해 ");
-                            data.put("name", "큐톡");
-                            data.put("pic", "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullUser.png?alt=media&token=4c9daa69-6d03-4b19-a793-873f5739f3a1");
-                            data.put("uid", myUid);
-                            Log.d("Fragment4ChatRoom>>>", "운영자");
-//                                        root.put("notification", notification);
-                            root.put("data", data);
-                            root.put("to", "cAkBWY-USIuu-F_plxqD0g:APA91bHoq0y6TWzsefKjT3PP-hzA_JDv4m_EV5KMsSU4mGxkbcPCg17aks3Pd9PkIaJ1HCGL-iiMkwe87vBKkkvmjP8Jv_dQR7b6HleVhPJiev9XAyGs7XgFZ0dUiDMclNXRpUKfy9C6");
-
-                            URL Url = new URL("https://fcm.googleapis.com/fcm/send");
-                            HttpURLConnection connection = (HttpURLConnection) Url.openConnection();
-                            connection.setRequestMethod("POST");
-                            connection.setDoOutput(true);
-                            connection.setDoInput(true);
-                            connection.addRequestProperty("Authorization", "key=" + " AAAAqHwsNuA:APA91bEhOL4uoOR3d0Ys1qbFflQelzTPwaxBFLRI5Prx7tCor-KoivdXAKpLjz_PDlFctKT1iVPhwgXcPq8ioYh_TvaqSHPPjhCc98M5z7g9i3reg8Cqjbn-J0LbXXi0pSeMJa8KuYRk");
-                            connection.setRequestProperty("Accept", "application/json");
-                            connection.setRequestProperty("Content-type", "application/json");
-                            OutputStream os = connection.getOutputStream();
-                            os.write(root.toString().getBytes("utf-8"));
-                            os.flush();
-                            connection.getResponseCode();
-
-                            Log.d("Fragment4ChatRoom>>>", "send notify");
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                            String pn = snapshot.getId();
+                            Log.d("Fragment1>>>", "get pn: " + queryDocumentSnapshots.size());
                         }
                     }
-                }).start();
+                });
             }
         });
         testbtn2.setOnClickListener(new View.OnClickListener() {

@@ -49,7 +49,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
@@ -136,32 +135,28 @@ public class Fragment1 extends Fragment {
         testbtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-//                String myPhoneNumber = "0" + mAuth.getCurrentUser().getPhoneNumber().substring(3);
-//                Log.d("Splash>>>", "get my phone number: " + myPhoneNumber);
-//                firestore.collection("blacklist").addSnapshotListener(new EventListener<QuerySnapshot>() {
+//                reference.getRef().child("myroom").child(myUid).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
 //                    @Override
-//                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-//                        List<String> count = new ArrayList<>();
-//                        for (DocumentSnapshot snapshot : value.getDocuments()) {
-//                            count.add(snapshot.getId());
-//                            if (count.size() == value.size()) {
-//                                if (count.contains(myPhoneNumber)) {
-//                                    Log.d("Fragment1>>>", "black list");
-//                                } else {
-//                                    Log.d("Fragment1>>>", "black list not");
-//                                }
+//                    public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            DataSnapshot snapshot = task.getResult();
+//                            if (snapshot != null) {
+//                                Log.d("Fragment1>>>", "snapshot not null");
+//                            } else {
+//                                Log.d("Fragment1>>>", "snapshot null");
 //                            }
+//                        } else {
+//                            Log.d("Fragment1>>>", "task null");
 //                        }
 //                    }
 //                });
-
-                db.collection("blacklist").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                reference.getRef().child("myroom").child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                     @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
-                            String pn = snapshot.getId();
-                            Log.d("Fragment1>>>", "get pn: " + queryDocumentSnapshots.size());
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getChildrenCount() == 0) {
+                            Log.d("Fragment1>>>", "snapshot null");
+                        } else {
+                            Log.d("Fragment1>>>", "snapshot not null");
                         }
                     }
                 });

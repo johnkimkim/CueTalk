@@ -459,6 +459,7 @@ public class Fragment5 extends Fragment {
     }
 
     private void saveOneMonthUser() {
+        Log.d("Fragment5>>>", "saveOneMonthUser");
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
         String myPhoneNumber = firebaseUser.getPhoneNumber();
         Map<String, Object> map = new HashMap<>();
@@ -468,38 +469,46 @@ public class Fragment5 extends Fragment {
         db.collection("deleteUser").document(getTime()).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
+                Log.d("Fragment5>>>", "saveOneMonthUser Success");
                 deleteStorageF4chatroomImg();
             }
         });
     }
 
     private void deleteStorageF4chatroomImg() {
+        Log.d("Fragment5>>>", "deleteStorageF4chatroomImg");
         reference.getRef().child("myroom").child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
-                int count = 0;
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    count += 1;
-                    storageReference.child("/" + myUid + "/" + snapshot.getKey()).listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
-                        @Override
-                        public void onSuccess(ListResult listResult) {
-                            int i = listResult.getItems().size();
-                            if (i >= 1) {
-                                for (StorageReference item : listResult.getItems()) {
-                                    storageReference.child("/" + myUid + "/" + snapshot.getKey() + "/" + item.getName()).delete();
+                if (dataSnapshot.getChildrenCount() != 0) {
+                    Log.d("Fragment5>>>", "deleteStorageF4chatroomImg Success");
+                    int count = 0;
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        count += 1;
+                        storageReference.child("/" + myUid + "/" + snapshot.getKey()).listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                            @Override
+                            public void onSuccess(ListResult listResult) {
+                                int i = listResult.getItems().size();
+                                if (i >= 1) {
+                                    for (StorageReference item : listResult.getItems()) {
+                                        storageReference.child("/" + myUid + "/" + snapshot.getKey() + "/" + item.getName()).delete();
+                                    }
                                 }
                             }
+                        });
+                        if (count == dataSnapshot.getChildrenCount()) {
+                            deletef2();
                         }
-                    });
-                    if (count == dataSnapshot.getChildrenCount()) {
-                        deletef2();
                     }
+                } else {
+                    deletef2();
                 }
             }
         });
     }
 
     private void deletef2() {
+        Log.d("Fragment5>>>", "deletef2");
         //delete f2
         db.collection("f2messege").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -510,10 +519,12 @@ public class Fragment5 extends Fragment {
                         db.collection("f2messege").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
+                                Log.d("Fragment5>>>", "deletef2 Success");
                                 deletef3();
                             }
                         });
                     } else {
+                        Log.d("Fragment5>>>", "deletef2 Success");
                         deletef3();
                     }
                 }
@@ -523,6 +534,7 @@ public class Fragment5 extends Fragment {
     }
 
     private void deletef3() {
+        Log.d("Fragment5>>>", "deletef3");
         db.collection("f3messege").document(myUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
@@ -532,10 +544,12 @@ public class Fragment5 extends Fragment {
                         db.collection("f3messege").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
+                                Log.d("Fragment5>>>", "deletef3 Success");
                                 deleteF3Image();
                             }
                         });
                     } else {
+                        Log.d("Fragment5>>>", "deletef3 Success");
                         deleteRealtimeMyroom();
                     }
                 }
@@ -544,45 +558,57 @@ public class Fragment5 extends Fragment {
     }
 
     private void deleteF3Image() {
+        Log.d("Fragment5>>>", "deleteF3Image");
         storageReference.child("/fragment3/" + myUid + "/" + myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
+                Log.d("Fragment5>>>", "deleteF3Image Success");
                 deleteRealtimeMyroom();
             }
         });
     }
 
     private void deleteRealtimeMyroom() {
+        Log.d("Fragment5>>>", "deleteRealtimeMyroom");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.getRef().child("myroom").child(myUid).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
+                Log.d("Fragment5>>>", "deleteRealtimeMyroom Success");
                 lastDeleteUser();
             }
         });
     }
 
     private void lastDeleteUser() {
+        Log.d("Fragment5>>>", "lastDeleteUser");
         db.collection("users").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                mCurrentUser.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("Fragment5>>>", "delete user success");
-                        databaseHandler.uniquedelete();
-                        startActivity(new Intent(getActivity(), SplashActivity.class));
-                        MainActivity.loading.setVisibility(View.GONE);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull @NotNull Exception e) {
-                        Log.d("Fragment5>>>", "delete user fail");
-                    }
-                });
+                Log.d("Fragment5>>>", "lastDeleteUser Success");
+                userAuthDelete();
             }
         });
 //        mAuth.signOut();
+    }
+
+    private void userAuthDelete() {
+        Log.d("Fragment5>>>", "userAuthDelete");
+        mCurrentUser.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Log.d("Fragment5>>>", "userAuthDelete success");
+                databaseHandler.uniquedelete();
+                startActivity(new Intent(getActivity(), SplashActivity.class));
+                MainActivity.loading.setVisibility(View.GONE);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull @NotNull Exception e) {
+                userAuthDelete();
+                Log.d("Fragment5>>>", "userAuthDelete fail: " + e.toString());
+            }
+        });
     }
 
     private void setOnClickAsk() {

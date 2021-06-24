@@ -429,45 +429,51 @@ public class ControlActivity extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 String myPhoneNumber = documentSnapshot.get("phonenumber").toString();
-                Map<String, Object> map = new HashMap<>();
-                map.put("phonenumber", myPhoneNumber);
-                map.put("uid", uid);
-                map.put("date", getTime());
-                db.collection("deleteUser").document(getTime()).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                String blackpn = "010" + myPhoneNumber.substring(3);
+                Map<String, Object> map1 = new HashMap<>();
+                map1.put(blackpn, blackpn);
+                db.collection("blacklist").document(blackpn).set(map1).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        deleteStorageF4chatroomImg(uid);
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("phonenumber", myPhoneNumber);
+                        map.put("uid", uid);
+                        map.put("date", getTime());
+                        db.collection("deleteUser").document(getTime()).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                deleteStorageF4chatroomImg(uid);
+                            }
+                        });
                     }
                 });
             }
         });
     }
 
-    private void saveBlackList(String uid) {
-
-    }
-
     private void deleteStorageF4chatroomImg(String uid) {
         reference.getRef().child("myroom").child(uid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
-                int count = 0;
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    count += 1;
-                    storageReference.child("/" + uid + "/" + snapshot.getKey()).listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
-                        @Override
-                        public void onSuccess(ListResult listResult) {
-                            int i = listResult.getItems().size();
-                            if (i >= 1) {
+                if (dataSnapshot.getChildrenCount() != 0) {
+                    int count = 0;
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        count += 1;
+                        storageReference.child("/" + uid + "/" + snapshot.getKey()).listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                            @Override
+                            public void onSuccess(ListResult listResult) {
+                                int i = listResult.getItems().size();
                                 for (StorageReference item : listResult.getItems()) {
                                     storageReference.child("/" + uid + "/" + snapshot.getKey() + "/" + item.getName()).delete();
                                 }
                             }
+                        });
+                        if (count == dataSnapshot.getChildrenCount()) {
+                            deletef2(uid);
                         }
-                    });
-                    if (count == dataSnapshot.getChildrenCount()) {
-                        deletef2(uid);
                     }
+                } else {
+                    deletef2(uid);
                 }
             }
         });
@@ -583,31 +589,35 @@ public class ControlActivity extends AppCompatActivity {
     }
 
     private void lastDeleteUser(String uid) {
-        FirebaseUser mCurrentUser;
-        mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
         databaseHandler.setDB(ControlActivity.this);
         databaseHandler = new DatabaseHandler(ControlActivity.this);
         sqLiteDatabase = databaseHandler.getWritableDatabase();
         db.collection("users").document(uid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                mCurrentUser.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("Fragment5>>>", "delete user success");
-                        databaseHandler.uniquedelete();
-                        startActivity(new Intent(ControlActivity.this, SplashActivity.class));
-                        MainActivity.loading.setVisibility(View.GONE);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull @NotNull Exception e) {
-                        Log.d("Fragment5>>>", "delete user fail");
-                    }
-                });
+                userAuthDelete();
             }
         });
 //        mAuth.signOut();
+    }
+
+    private void userAuthDelete() {
+
+        FirebaseUser mCurrentUser;
+        mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+        mCurrentUser.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                databaseHandler.uniquedelete();
+                startActivity(new Intent(ControlActivity.this, SplashActivity.class));
+                MainActivity.loading.setVisibility(View.GONE);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull @NotNull Exception e) {
+                userAuthDelete();
+            }
+        });
     }
 
     private void allGone() {

@@ -27,6 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.tistory.starcue.cuetalk.R;
+import com.tistory.starcue.cuetalk.SplashActivity;
 import com.tistory.starcue.cuetalk.fragment.Fragment4;
 
 import org.jetbrains.annotations.NotNull;
@@ -52,7 +53,6 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
             db.collection("users").document(myUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    String state = documentSnapshot.get("notify").toString();
                     Map<String, String> data = remoteMessage.getData();
                     String title = data.get("messege");
                     String name = data.get("name");
@@ -60,6 +60,7 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
                     String userUid = data.get("uid");
                     Log.d("MessageService>>>", "notification pic: " + pic);
                     if (!name.equals("큐톡")) {
+                        String state = documentSnapshot.get("notify").toString();
                         if (state.equals("on")) {
 //                        String body = remoteMessage.getNotification().getBody();
                             Intent intent = new Intent(MyFirebaseMessageService.this, Fragment4.class);
@@ -87,7 +88,7 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
                                             notificationBuilder.setContentText(title);
                                             notificationBuilder.setAutoCancel(true);
                                             notificationBuilder.setSound(defaultSoundUri);
-                                            notificationBuilder.setContentIntent(pendingIntent);
+//                                            notificationBuilder.setContentIntent(pendingIntent);
                                             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                                 String channelName = "Channel Name";
@@ -106,7 +107,7 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
                                     });
                         }
                     } else {
-                        Intent intent = new Intent(MyFirebaseMessageService.this, Fragment4.class);
+                        Intent intent = new Intent(MyFirebaseMessageService.this, SplashActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         PendingIntent pendingIntent = PendingIntent.getActivity(MyFirebaseMessageService.this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
                         String channelId = "Channel ID";
@@ -141,6 +142,8 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
                                         int num = Integer.parseInt(userUid.replaceAll("[^0-9]", ""));
                                         Log.d("MessageService>>>", "num: " + num);
                                         notificationManager.notify(num, notificationBuilder.build());
+//                                        Intent intent1 = new Intent(MyFirebaseMessageService.this, SplashActivity.class);
+//                                        startActivity(intent1);
                                     }
 
                                     @Override

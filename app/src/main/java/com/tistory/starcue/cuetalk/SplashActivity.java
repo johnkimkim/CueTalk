@@ -389,6 +389,7 @@ public class SplashActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                blacklistDialog();
                 Log.d("SplashActivity>>>", e.toString());
             }
         });
@@ -459,7 +460,14 @@ public class SplashActivity extends AppCompatActivity {
                         db.collection("blacklist").document(myPhoneNumber).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                mAuth.signOut();
+                                Map<String, Object> map1 = new HashMap<>();
+                                map1.put(myPhoneNumber, myUid);
+                                db.collection("deletelogoutalready").document(myPhoneNumber).set(map1).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        mAuth.signOut();
+                                    }
+                                });
                             }
                         });
                     }

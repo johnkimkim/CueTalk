@@ -49,6 +49,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 import com.tistory.starcue.cuetalk.AdressRoom;
 import com.tistory.starcue.cuetalk.DatabaseHandler;
@@ -119,6 +121,7 @@ public class Fragment1 extends Fragment {
     }
 
     private void testclass(ViewGroup viewGroup) {
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser mUser = mAuth.getCurrentUser();
@@ -132,17 +135,18 @@ public class Fragment1 extends Fragment {
         testbtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                db.collection("users").document("CRp1FQYBWMhb03TPijQaDuCmuFh1").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                storageReference.child("/" + myUid + "/").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+//                    @Override
+//                    public void onSuccess(ListResult listResult) {
+//                        int i = listResult.getItems().size();
+//                        Log.d("Fragment1>>>", "listResult size: " + i);
+//                    }
+//                });
+
+                storageReference.child("/fragment3/" + myUid + "/" + myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot snapshot = task.getResult();
-                            if (snapshot.get("uid") == null) {
-                                Log.d("Fragment1>>>", "snapshot null");
-                            } else {
-                                Log.d("Fragment1>>>", "snapshot not null");
-                            }
-                        }
+                    public void onSuccess(Void unused) {
+                        Log.d("Fragment1>>>", "success");
                     }
                 });
             }

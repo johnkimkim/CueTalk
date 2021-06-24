@@ -43,11 +43,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.tistory.starcue.cuetalk.ChangeProfile;
 import com.tistory.starcue.cuetalk.control.ControlActivity;
@@ -83,6 +85,7 @@ public class Fragment5 extends Fragment {
     FirebaseFirestore db;
     FirebaseStorage storage;
     StorageReference storageReference;
+    DatabaseReference reference;
     String myUid;
 
     String myUri;
@@ -447,6 +450,7 @@ public class Fragment5 extends Fragment {
                         deleteUserDialogOkBtn.setEnabled(false);
                         deleteUserDialogNoBtn.setEnabled(false);
 //                        deleteDocument();
+                        reference = FirebaseDatabase.getInstance().getReference();
                         saveOneMonthUser();
                     }
                 });
@@ -464,7 +468,33 @@ public class Fragment5 extends Fragment {
         db.collection("deleteUser").document(getTime()).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                deletef2();
+                deleteStorageF4chatroomImg();
+            }
+        });
+    }
+
+    private void deleteStorageF4chatroomImg() {
+        reference.getRef().child("myroom").child(myUid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                int count = 0;
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    count += 1;
+                    storageReference.child("/" + myUid + "/" + snapshot.getKey()).listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                        @Override
+                        public void onSuccess(ListResult listResult) {
+                            int i = listResult.getItems().size();
+                            if (i >= 1) {
+                                for (StorageReference item : listResult.getItems()) {
+                                    storageReference.child("/" + myUid + "/" + snapshot.getKey() + "/" + item.getName()).delete();
+                                }
+                            }
+                        }
+                    });
+                    if (count == dataSnapshot.getChildrenCount()) {
+                        deletef2();
+                    }
+                }
             }
         });
     }
@@ -502,13 +532,22 @@ public class Fragment5 extends Fragment {
                         db.collection("f3messege").document(myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                deleteRealtimeMyroom();
+                                deleteF3Image();
                             }
                         });
                     } else {
                         deleteRealtimeMyroom();
                     }
                 }
+            }
+        });
+    }
+
+    private void deleteF3Image() {
+        storageReference.child("/fragment3/" + myUid + "/" + myUid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                deleteRealtimeMyroom();
             }
         });
     }

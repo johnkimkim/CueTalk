@@ -202,19 +202,60 @@
         android:layout_alignParentBottom="true"
         android:gravity="center"
         android:orientation="horizontal">
+        <RadioGroup
+            android:id="@+id/control_activity_radio_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/control_activity_radio1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="f1"/>
+            <RadioButton
+                android:id="@+id/control_activity_radio2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="f2"/>
+            <RadioButton
+                android:id="@+id/control_activity_radio3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="f3"/>
+            <RadioButton
+                android:id="@+id/control_activity_radio4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="f4"/>
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/control_activity_dec_room_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:hint="dec room name"
+            android:layout_below="@+id/control_activity_radio_group"/>
 
         <EditText
             android:id="@+id/control_activity_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/control_bottom_btn"/>
+            android:layout_toLeftOf="@+id/control_bottom_btn"
+            android:layout_below="@+id/control_activity_dec_room_name"
+            android:hint="피신고자 uid"/>
 
         <Button
             android:id="@+id/control_bottom_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="영정" />
+            android:text="영정"
+            android:layout_below="@+id/control_activity_dec_room_name" />
     </RelativeLayout>
 
     <!-- load -->

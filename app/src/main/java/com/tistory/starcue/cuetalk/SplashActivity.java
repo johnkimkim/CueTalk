@@ -29,10 +29,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -442,12 +445,33 @@ public class SplashActivity extends AppCompatActivity {
         int y = (int) (size.y * 0.3);
         window.setLayout(x, y);
 
+        String myPhoneNumber = "0" + mAuth.getCurrentUser().getPhoneNumber().substring(3);
+
+        db.collection("blacklist").document(myPhoneNumber).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot snapshot = task.getResult();
+                    String logout = snapshot.get("logout").toString();
+                    if (!logout.equals("yes")) {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("logout", "yes");
+                        db.collection("blacklist").document(myPhoneNumber).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                mAuth.signOut();
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
         Button btn = layout.findViewById(R.id.blacklist_dialog_btn);
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAuth.signOut();
                 goToPhoneNumber();
             }
         });

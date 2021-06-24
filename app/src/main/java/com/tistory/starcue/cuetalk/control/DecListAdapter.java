@@ -66,7 +66,9 @@ public class DecListAdapter extends RecyclerView.Adapter<DecListAdapter.CustomVi
                             Log.d("DecListAdapter>>>", "get snapshot: " + snapshot.getKey());
                             F1DecListItem f1DecListItem = snapshot.getValue(F1DecListItem.class);
                             arrayList.add(f1DecListItem);
-                            if (count == snapshot.getChildrenCount()) {
+                            Log.d("DecListAdapter>>>", "count: " + count);
+                            Log.d("DecListAdapter>>>", "snapshot size: " + snapshot.getChildrenCount());
+                            if (count == dataSnapshot.getChildrenCount()) {
                                 ControlActivity.f1declist.setVisibility(View.GONE);
                                 reference.getRef().child("chatroomdec").child(uidList.get(position)).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                     @Override
@@ -77,6 +79,7 @@ public class DecListAdapter extends RecyclerView.Adapter<DecListAdapter.CustomVi
                                                 cuz = snapshot1.child("cuz").getValue(String.class);
                                                 whodec = snapshot1.child("myUid").getValue(String.class);
                                                 userUid = snapshot1.child("userUid").getValue(String.class);
+                                                ControlActivity.decroomnameedit.setText(uidList.get(position));
                                                 ControlActivity.getF1DecListView(context, arrayList, category, cuz, whodec, userUid);
                                             }
                                         }

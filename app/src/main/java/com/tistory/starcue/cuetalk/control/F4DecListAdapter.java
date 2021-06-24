@@ -67,7 +67,7 @@ public class F4DecListAdapter extends RecyclerView.Adapter<F4DecListAdapter.Cust
                                 F1DecListItem f1DecListItem = snapshot.getValue(F1DecListItem.class);
                                 arrayList.add(f1DecListItem);
                             }
-                            if (count == snapshot.getChildrenCount()) {
+                            if (count == dataSnapshot.getChildrenCount()) {
                                 ControlActivity.f4declist.setVisibility(View.GONE);
                                 reference.getRef().child("messegedec").child(uidList.get(position)).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                     @Override
@@ -78,6 +78,7 @@ public class F4DecListAdapter extends RecyclerView.Adapter<F4DecListAdapter.Cust
                                                 cuz = snapshot1.child("cuz").getValue(String.class);
                                                 whodec = snapshot1.child("myUid").getValue(String.class);
                                                 userUid = snapshot1.child("userUid").getValue(String.class);
+                                                ControlActivity.decroomnameedit.setText(uidList.get(position));
                                                 ControlActivity.getF4DecListView(context, arrayList, category, cuz, whodec, userUid);
                                             }
                                         }

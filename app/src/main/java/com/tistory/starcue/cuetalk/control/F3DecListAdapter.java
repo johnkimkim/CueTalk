@@ -16,12 +16,15 @@ import com.tistory.starcue.cuetalk.SeePicDialog;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class F3DecListAdapter extends RecyclerView.Adapter<F3DecListAdapter.CustomViewHolder> {
     ArrayList<F3DecViewItem> arrayList = new ArrayList<>();
+    List<String> f3roomnamelist = new ArrayList<>();
     RequestManager requestManager;
-    public F3DecListAdapter(ArrayList<F3DecViewItem> arrayList, RequestManager requestManager) {
+    public F3DecListAdapter(ArrayList<F3DecViewItem> arrayList, List<String> f3roomnamelist, RequestManager requestManager) {
         this.arrayList = arrayList;
+        this.f3roomnamelist = f3roomnamelist;
         this.requestManager = requestManager;
     }
     @NonNull
@@ -66,6 +69,12 @@ public class F3DecListAdapter extends RecyclerView.Adapter<F3DecListAdapter.Cust
             @Override
             public void onClick(View view) {
                 SeePicDialog.seePicDialog(view.getContext(), arrayList.get(position).getPpic());
+            }
+        });
+        holder.whodec.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ControlActivity.decroomnameedit.setText(f3roomnamelist.get(position));
             }
         });
     }

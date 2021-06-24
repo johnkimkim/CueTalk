@@ -1,13 +1,14 @@
 package com.tistory.starcue.cuetalk.control;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,9 +36,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.tistory.starcue.cuetalk.DatabaseHandler;
-import com.tistory.starcue.cuetalk.MainActivity;
 import com.tistory.starcue.cuetalk.R;
-import com.tistory.starcue.cuetalk.SplashActivity;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
@@ -60,6 +59,8 @@ public class ControlActivity extends AppCompatActivity {
     public static List<String> f1decList;
     public static ArrayList<F2DecViewItem> f2decList;
     public static ArrayList<F3DecViewItem> f3decList;
+    public static List<String> f2roomnamelist;
+    public static List<String> f3roomnamelist;
     public static List<String> f4decList;
     public static ArrayList<DeleteUserItem> deleteList;
 
@@ -88,7 +89,11 @@ public class ControlActivity extends AppCompatActivity {
     public static RecyclerView f1declist, f2declist, f3declist, f4declist, f1decview, f4decview, deletelist;
     public static RelativeLayout load;
     EditText edit, deleteEdit;
+    public static EditText decroomnameedit;
     Button deleteBtn;
+
+    RadioGroup radioGroup;
+    RadioButton radio1, radio2, radio3, radio4;
 
     Context context;
 
@@ -117,6 +122,8 @@ public class ControlActivity extends AppCompatActivity {
         f3decList = new ArrayList<>();
         f4decList = new ArrayList<>();
         deleteList = new ArrayList<>();
+        f2roomnamelist = new ArrayList<>();
+        f3roomnamelist = new ArrayList<>();
 
         load = findViewById(R.id.control_load);
         load.setVisibility(View.GONE);
@@ -150,18 +157,26 @@ public class ControlActivity extends AppCompatActivity {
         f4decviewCuz = findViewById(R.id.control_f4dec_view_cuz);
         f4decviewWhodec = findViewById(R.id.control_f4dec_view_whodec);
         f4decviewUserUid = findViewById(R.id.control_f4dec_view_useruid);
+
+        decroomnameedit = findViewById(R.id.control_activity_dec_room_name);
+        radioGroup = findViewById(R.id.control_activity_radio_group);
+        radio1 = findViewById(R.id.control_activity_radio1);
+        radio2 = findViewById(R.id.control_activity_radio2);
+        radio3 = findViewById(R.id.control_activity_radio3);
+        radio4 = findViewById(R.id.control_activity_radio4);
+
         allGone();
+
+        btn();
     }
 
     private void topBtnOnClick() {
         f1btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                f1decList.clear();
-                f2decList.clear();
-                f3decList.clear();
-                f4decList.clear();
-                deleteList.clear();
+                radio1.setChecked(true);
+                allRemoveList();
+                decroomnameedit.setText("");
                 load.setVisibility(View.VISIBLE);
                 allGone();
                 reference.getRef().child("chatroomdec").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
@@ -182,11 +197,9 @@ public class ControlActivity extends AppCompatActivity {
         f2btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                f1decList.clear();
-                f2decList.clear();
-                f3decList.clear();
-                f4decList.clear();
-                deleteList.clear();
+                radio2.setChecked(true);
+                allRemoveList();
+                decroomnameedit.setText("");
                 load.setVisibility(View.VISIBLE);
                 allGone();
                 db.collection("f2dec").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -195,6 +208,7 @@ public class ControlActivity extends AppCompatActivity {
                         int count = 0;
                         for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
                             count += 1;
+                            f2roomnamelist.add(snapshot.getId());
                             F2DecViewItem f2DecViewItem = snapshot.toObject(F2DecViewItem.class);
                             f2decList.add(f2DecViewItem);
                             if (count == queryDocumentSnapshots.size()) {
@@ -208,11 +222,9 @@ public class ControlActivity extends AppCompatActivity {
         f3btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                f1decList.clear();
-                f2decList.clear();
-                f3decList.clear();
-                f4decList.clear();
-                deleteList.clear();
+                radio3.setChecked(true);
+                allRemoveList();
+                decroomnameedit.setText("");
                 load.setVisibility(View.VISIBLE);
                 allGone();
                 db.collection("f3dec").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -221,6 +233,7 @@ public class ControlActivity extends AppCompatActivity {
                         int count = 0;
                         for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
                             count += 1;
+                            f3roomnamelist.add(snapshot.getId());
                             F3DecViewItem f3DecViewItem = snapshot.toObject(F3DecViewItem.class);
                             f3decList.add(f3DecViewItem);
                             if (count == queryDocumentSnapshots.size()) {
@@ -234,11 +247,9 @@ public class ControlActivity extends AppCompatActivity {
         f4btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                f1decList.clear();
-                f2decList.clear();
-                f3decList.clear();
-                f4decList.clear();
-                deleteList.clear();
+                radio4.setChecked(true);
+                allRemoveList();
+                decroomnameedit.setText("");
                 load.setVisibility(View.VISIBLE);
                 allGone();
                 reference.getRef().child("messegedec").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
@@ -259,11 +270,9 @@ public class ControlActivity extends AppCompatActivity {
         btn5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                f1decList.clear();
-                f2decList.clear();
-                f3decList.clear();
-                f4decList.clear();
-                deleteList.clear();
+                radioGroup.clearCheck();
+                allRemoveList();
+                decroomnameedit.setText("");
                 load.setVisibility(View.VISIBLE);
                 allGone();
                 db.collection("deleteUser").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -287,11 +296,9 @@ public class ControlActivity extends AppCompatActivity {
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                f1decList.clear();
-                f2decList.clear();
-                f3decList.clear();
-                f4decList.clear();
-                deleteList.clear();
+                radioGroup.clearCheck();
+                allRemoveList();
+                decroomnameedit.setText("");
                 allGone();
             }
         });
@@ -303,6 +310,8 @@ public class ControlActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (edit.getText().toString().length() == 0) {
                     Toast.makeText(ControlActivity.this, "UID를 입력하세요", Toast.LENGTH_SHORT).show();
+                } else if (decroomnameedit.getText().toString().length() == 0) {
+                    Toast.makeText(ControlActivity.this, "roomname 입력", Toast.LENGTH_SHORT).show();
                 } else {
                     saveOneMonthUser(edit.getText().toString());
                 }
@@ -325,7 +334,7 @@ public class ControlActivity extends AppCompatActivity {
         Collections.sort(f2decList, descending);
         layoutManager = new LinearLayoutManager(ControlActivity.this);
         f2declist.setLayoutManager(layoutManager);
-        f2DecViewAdapter = new F2DecViewAdapter(f2decList, Glide.with(ControlActivity.this));
+        f2DecViewAdapter = new F2DecViewAdapter(f2decList, f2roomnamelist, Glide.with(ControlActivity.this));
         f2declist.setAdapter(f2DecViewAdapter);
         f2DecViewAdapter.notifyDataSetChanged();
         f2declist.setVisibility(View.VISIBLE);
@@ -337,7 +346,7 @@ public class ControlActivity extends AppCompatActivity {
         Collections.sort(f3decList, descending);
         layoutManager = new LinearLayoutManager(ControlActivity.this);
         f3declist.setLayoutManager(layoutManager);
-        f3DecListAdapter = new F3DecListAdapter(f3decList, Glide.with(ControlActivity.this));
+        f3DecListAdapter = new F3DecListAdapter(f3decList, f3roomnamelist, Glide.with(ControlActivity.this));
         f3declist.setAdapter(f3DecListAdapter);
         f3DecListAdapter.notifyDataSetChanged();
         ;
@@ -431,7 +440,7 @@ public class ControlActivity extends AppCompatActivity {
                 String myPhoneNumber = documentSnapshot.get("phonenumber").toString();
                 String blackpn = "010" + myPhoneNumber.substring(3);
                 Map<String, Object> map1 = new HashMap<>();
-                map1.put(blackpn, blackpn);
+                map1.put("logout", "no");
                 db.collection("blacklist").document(blackpn).set(map1).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
@@ -595,10 +604,23 @@ public class ControlActivity extends AppCompatActivity {
         db.collection("users").document(uid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
+                deleteDec();
                 userAuthDelete();
             }
         });
 //        mAuth.signOut();
+    }
+
+    private void deleteDec() {
+        if (radio1.isChecked()) {
+            reference.getRef().child("chatroomdec").child(decroomnameedit.getText().toString()).removeValue();
+        } else if (radio2.isChecked()) {
+            db.collection("f2dec").document(decroomnameedit.getText().toString()).delete();
+        } else if (radio3.isChecked()) {
+            db.collection("f3dec").document(decroomnameedit.getText().toString()).delete();
+        } else if (radio4.isChecked()) {
+            reference.getRef().child("messegedec").child(decroomnameedit.getText().toString()).removeValue();
+        }
     }
 
     private void userAuthDelete() {
@@ -609,15 +631,25 @@ public class ControlActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Void unused) {
                 databaseHandler.uniquedelete();
-                startActivity(new Intent(ControlActivity.this, SplashActivity.class));
-                MainActivity.loading.setVisibility(View.GONE);
+                Toast.makeText(ControlActivity.this, "완료", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull @NotNull Exception e) {
+                Log.d("ControlActivity>>>", "fail delete auth");
                 userAuthDelete();
             }
         });
+    }
+
+    private void allRemoveList() {
+        f1decList.clear();
+        f2decList.clear();
+        f3decList.clear();
+        f4decList.clear();
+        deleteList.clear();
+        f2roomnamelist.clear();
+        f3roomnamelist.clear();
     }
 
     private void allGone() {

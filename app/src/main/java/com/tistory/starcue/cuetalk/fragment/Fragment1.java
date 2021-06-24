@@ -54,7 +54,6 @@ import com.google.firebase.storage.StorageReference;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 import com.tistory.starcue.cuetalk.AdressRoom;
 import com.tistory.starcue.cuetalk.DatabaseHandler;
-import com.tistory.starcue.cuetalk.DeleteAuth;
 import com.tistory.starcue.cuetalk.MainActivity;
 import com.tistory.starcue.cuetalk.R;
 import com.tistory.starcue.cuetalk.f1viewpager.F1F1;
@@ -136,7 +135,18 @@ public class Fragment1 extends Fragment {
         testbtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), DeleteAuth.class));
+                Map<String, Object> map = new HashMap<>();
+                map.put("logout", "yes");
+                db.collection("blacklist").document("01012345678").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot snapshot = task.getResult();
+                            String logout = snapshot.get("logout").toString();
+                            db.collection("blacklist").document("01012345678").update(map);
+                        }
+                    }
+                });
             }
         });
         testbtn2.setOnClickListener(new View.OnClickListener() {

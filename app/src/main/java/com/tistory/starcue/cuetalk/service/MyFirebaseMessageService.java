@@ -53,16 +53,59 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     String state = documentSnapshot.get("notify").toString();
-                    if (state.equals("on")) {
+                    Map<String, String> data = remoteMessage.getData();
+                    String title = data.get("messege");
+                    String name = data.get("name");
+                    String pic = data.get("pic");
+                    String userUid = data.get("uid");
+                    Log.d("MessageService>>>", "notification pic: " + pic);
+                    if (!name.equals("큐톡")) {
+                        if (state.equals("on")) {
 //                        String body = remoteMessage.getNotification().getBody();
+                            Intent intent = new Intent(MyFirebaseMessageService.this, Fragment4.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            PendingIntent pendingIntent = PendingIntent.getActivity(MyFirebaseMessageService.this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+                            String channelId = "Channel ID";
+                            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-                        Map<String, String> data = remoteMessage.getData();
-                        String title = data.get("messege");
-                        String name = data.get("name");
-                        String pic = data.get("pic");
-                        String userUid = data.get("uid");
-                        Log.d("MessageService>>>", "notification pic: " + pic);
+                            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(MyFirebaseMessageService.this, channelId);
 
+
+                            int largeIconSize = Math.round(64 * getApplicationContext().getResources().getDisplayMetrics().density);
+                            Glide.with(getApplicationContext())
+                                    .asBitmap()
+                                    .load(pic)
+                                    .override(largeIconSize, largeIconSize)
+                                    .circleCrop()
+                                    .into(new CustomTarget<Bitmap>() {
+                                        @Override
+                                        public void onResourceReady(@NonNull @NotNull Bitmap resource, @Nullable @org.jetbrains.annotations.Nullable Transition<? super Bitmap> transition) {
+                                            notificationBuilder.setLargeIcon(resource);
+                                            notificationBuilder.setAutoCancel(true);
+                                            notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                                            notificationBuilder.setContentTitle(name);
+                                            notificationBuilder.setContentText(title);
+                                            notificationBuilder.setAutoCancel(true);
+                                            notificationBuilder.setSound(defaultSoundUri);
+                                            notificationBuilder.setContentIntent(pendingIntent);
+                                            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                String channelName = "Channel Name";
+                                                NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+                                                notificationManager.createNotificationChannel(channel);
+                                            }
+                                            int num = Integer.parseInt(userUid.replaceAll("[^0-9]", ""));
+                                            Log.d("MessageService>>>", "num: " + num);
+                                            notificationManager.notify(num, notificationBuilder.build());
+                                        }
+
+                                        @Override
+                                        public void onLoadCleared(@Nullable @org.jetbrains.annotations.Nullable Drawable placeholder) {
+
+                                        }
+                                    });
+                        }
+                    } else {
                         Intent intent = new Intent(MyFirebaseMessageService.this, Fragment4.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         PendingIntent pendingIntent = PendingIntent.getActivity(MyFirebaseMessageService.this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
@@ -106,6 +149,7 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
                                     }
                                 });
                     }
+
                 }
             });
         }

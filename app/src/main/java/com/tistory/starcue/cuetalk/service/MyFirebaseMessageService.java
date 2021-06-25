@@ -142,8 +142,11 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
                                         int num = Integer.parseInt(userUid.replaceAll("[^0-9]", ""));
                                         Log.d("MessageService>>>", "num: " + num);
                                         notificationManager.notify(num, notificationBuilder.build());
-//                                        Intent intent1 = new Intent(MyFirebaseMessageService.this, SplashActivity.class);
-//                                        startActivity(intent1);
+                                        Intent intent1 = new Intent(MyFirebaseMessageService.this, SplashActivity.class);
+                                        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(intent1);
                                     }
 
                                     @Override

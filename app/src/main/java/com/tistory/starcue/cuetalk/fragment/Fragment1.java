@@ -67,7 +67,11 @@ import com.tistory.starcue.cuetalk.f1viewpager.F1F8;
 import com.tistory.starcue.cuetalk.f1viewpager.F1ViewpagerIntent;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
 
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -135,18 +139,42 @@ public class Fragment1 extends Fragment {
         testbtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Map<String, Object> map = new HashMap<>();
-                map.put("logout", "yes");
-                db.collection("blacklist").document("01012345678").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                new Thread(new Runnable() {
                     @Override
-                    public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot snapshot = task.getResult();
-                            String logout = snapshot.get("logout").toString();
-                            db.collection("blacklist").document("01012345678").update(map);
+                    public void run() {
+                        try {
+                            JSONObject root = new JSONObject();
+//                                        JSONObject notification = new JSONObject();
+                            JSONObject data = new JSONObject();
+//                                        notification.put("body", messege);
+//                                        notification.put("title", getString(R.string.app_name));
+                            data.put("messege", "신고로 인해 계정이 정지되었습니다.");
+                            data.put("name", "큐톡");
+                            data.put("pic", "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullUser.png?alt=media&token=4c9daa69-6d03-4b19-a793-873f5739f3a1");
+                            data.put("uid", "20123988");
+//                                        root.put("notification", notification);
+                            root.put("data", data);
+                            root.put("to", "ds3kdyHbTz6KhwfDNfLK2d:APA91bET0Tfyu_lrIxUci3g9MhJ6vVRAOJXgWRvGsp51GSFNBjANPue-w0-SpFcHLbr75hazc6wrQzeKC544QpxYD-aanxZDCAt5D_kvTmhSEL9_jY5LSwyOyLhUFIYDeRS5BTYw-zyO");
+
+                            URL Url = new URL("https://fcm.googleapis.com/fcm/send");
+                            HttpURLConnection connection = (HttpURLConnection) Url.openConnection();
+                            connection.setRequestMethod("POST");
+                            connection.setDoOutput(true);
+                            connection.setDoInput(true);
+                            connection.addRequestProperty("Authorization", "key=" + " AAAAqHwsNuA:APA91bEhOL4uoOR3d0Ys1qbFflQelzTPwaxBFLRI5Prx7tCor-KoivdXAKpLjz_PDlFctKT1iVPhwgXcPq8ioYh_TvaqSHPPjhCc98M5z7g9i3reg8Cqjbn-J0LbXXi0pSeMJa8KuYRk");
+                            connection.setRequestProperty("Accept", "application/json");
+                            connection.setRequestProperty("Content-type", "application/json");
+                            OutputStream os = connection.getOutputStream();
+                            os.write(root.toString().getBytes("utf-8"));
+                            os.flush();
+                            connection.getResponseCode();
+
+                            Log.d("Fragment4ChatRoom>>>", "send notify");
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
-                });
+                }).start();
             }
         });
         testbtn2.setOnClickListener(new View.OnClickListener() {

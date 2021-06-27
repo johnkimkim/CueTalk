@@ -34,6 +34,13 @@ public class DeleteAdapter extends RecyclerView.Adapter<DeleteAdapter.CustomView
         holder.pn.setText(arrayList.get(position).getPhonenumber());
         holder.date.setText("탈퇴날짜: " + arrayList.get(position).getDate());
         holder.uid.setText(arrayList.get(position).getUid());
+
+        holder.date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ControlActivity.deleteEdit.setText(arrayList.get(position).getDate());
+            }
+        });
     }
 
     @Override

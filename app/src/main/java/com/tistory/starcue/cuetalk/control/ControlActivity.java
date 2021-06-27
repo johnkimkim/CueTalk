@@ -88,7 +88,8 @@ public class ControlActivity extends AppCompatActivity {
     public static TextView f4decviewCategory, f4decviewCuz, f4decviewWhodec, f4decviewUserUid;
     public static RecyclerView f1declist, f2declist, f3declist, f4declist, f1decview, f4decview, deletelist;
     public static RelativeLayout load;
-    EditText edit, deleteEdit;
+    EditText edit;
+    public static EditText deleteEdit;
     public static EditText decroomnameedit;
     Button deleteBtn;
 
@@ -183,11 +184,16 @@ public class ControlActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DataSnapshot dataSnapshot) {
                         int count = 0;
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            f1decList.add(snapshot.getKey());
-                            count += 1;
-                            if (count == dataSnapshot.getChildrenCount()) {
-                                getF1DecList();
+                        if (dataSnapshot.getChildrenCount() == 0) {
+                            load.setVisibility(View.GONE);
+                            Toast.makeText(ControlActivity.this, "f1 null", Toast.LENGTH_SHORT).show();
+                        } else {
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                f1decList.add(snapshot.getKey());
+                                count += 1;
+                                if (count == dataSnapshot.getChildrenCount()) {
+                                    getF1DecList();
+                                }
                             }
                         }
                     }
@@ -206,13 +212,18 @@ public class ControlActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         int count = 0;
-                        for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
-                            count += 1;
-                            f2roomnamelist.add(snapshot.getId());
-                            F2DecViewItem f2DecViewItem = snapshot.toObject(F2DecViewItem.class);
-                            f2decList.add(f2DecViewItem);
-                            if (count == queryDocumentSnapshots.size()) {
-                                getF2DecList();
+                        if (queryDocumentSnapshots.size() == 0) {
+                            load.setVisibility(View.GONE);
+                            Toast.makeText(ControlActivity.this, "f2 null", Toast.LENGTH_SHORT).show();
+                        } else {
+                            for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                                count += 1;
+                                f2roomnamelist.add(snapshot.getId());
+                                F2DecViewItem f2DecViewItem = snapshot.toObject(F2DecViewItem.class);
+                                f2decList.add(f2DecViewItem);
+                                if (count == queryDocumentSnapshots.size()) {
+                                    getF2DecList();
+                                }
                             }
                         }
                     }
@@ -231,13 +242,18 @@ public class ControlActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         int count = 0;
-                        for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
-                            count += 1;
-                            f3roomnamelist.add(snapshot.getId());
-                            F3DecViewItem f3DecViewItem = snapshot.toObject(F3DecViewItem.class);
-                            f3decList.add(f3DecViewItem);
-                            if (count == queryDocumentSnapshots.size()) {
-                                getF3DecList();
+                        if (queryDocumentSnapshots.size() == 0) {
+                            load.setVisibility(View.GONE);
+                            Toast.makeText(ControlActivity.this, "f3 null", Toast.LENGTH_SHORT).show();
+                        } else {
+                            for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                                count += 1;
+                                f3roomnamelist.add(snapshot.getId());
+                                F3DecViewItem f3DecViewItem = snapshot.toObject(F3DecViewItem.class);
+                                f3decList.add(f3DecViewItem);
+                                if (count == queryDocumentSnapshots.size()) {
+                                    getF3DecList();
+                                }
                             }
                         }
                     }
@@ -256,11 +272,16 @@ public class ControlActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DataSnapshot dataSnapshot) {
                         int count = 0;
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            f4decList.add(snapshot.getKey());
-                            count += 1;
-                            if (count == dataSnapshot.getChildrenCount()) {
-                                getF4DecList();
+                        if (dataSnapshot.getChildrenCount() == 0) {
+                            load.setVisibility(View.GONE);
+                            Toast.makeText(ControlActivity.this, "f4 null", Toast.LENGTH_SHORT).show();
+                        } else {
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                f4decList.add(snapshot.getKey());
+                                count += 1;
+                                if (count == dataSnapshot.getChildrenCount()) {
+                                    getF4DecList();
+                                }
                             }
                         }
                     }
@@ -279,14 +300,19 @@ public class ControlActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         int count = 0;
-                        for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
-                            count += 1;
-                            DeleteUserItem deleteUserItem = snapshot.toObject(DeleteUserItem.class);
-                            deleteList.add(deleteUserItem);
-                            if (count == queryDocumentSnapshots.size()) {
-                                Log.d("ControlActivity>>>", "count: " + queryDocumentSnapshots.size());
-                                Log.d("ControlActivity>>>", "list size: " + deleteList.size());
-                                getDeleteList();
+                        if (queryDocumentSnapshots.size() == 0) {
+                            load.setVisibility(View.GONE);
+                            Toast.makeText(ControlActivity.this, "delete null", Toast.LENGTH_SHORT).show();
+                        } else {
+                            for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                                count += 1;
+                                DeleteUserItem deleteUserItem = snapshot.toObject(DeleteUserItem.class);
+                                deleteList.add(deleteUserItem);
+                                if (count == queryDocumentSnapshots.size()) {
+                                    Log.d("ControlActivity>>>", "count: " + queryDocumentSnapshots.size());
+                                    Log.d("ControlActivity>>>", "list size: " + deleteList.size());
+                                    getDeleteList();
+                                }
                             }
                         }
                     }

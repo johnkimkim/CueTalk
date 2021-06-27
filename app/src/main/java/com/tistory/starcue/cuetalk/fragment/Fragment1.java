@@ -49,6 +49,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
@@ -135,17 +136,10 @@ public class Fragment1 extends Fragment {
         testbtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                db.collection("blacklist").document("0101111").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                db.collection("blacklist").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot snapshot = task.getResult();
-                            if (snapshot.exists()) {
-                                Log.d("Fragment1>>>", "test: have");
-                            } else {
-                                Log.d("Fragment1>>>", "test: null");
-                            }
-                        }
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        Log.d("Fragment1>>>", "get size: " + queryDocumentSnapshots.size());
                     }
                 });
             }

@@ -59,17 +59,34 @@ public class SplashActivity extends AppCompatActivity {
 
     AlertDialog alertDialog;
 
+    public static boolean splashIsOpen;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
+
+        splashIsOpen = true;
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);//no dark mode
 
         setdb();
         checkPermission();
         Log.d("SplashActivity>>>", "app version: " + getAppVersion());
+        Log.d("SplashActivity>>>", "onCreate");
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("SplashActivity>>>", "onStart");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("SplashActivity>>>", "onResume");
     }
 
     private void checkPermission() {
@@ -88,6 +105,7 @@ public class SplashActivity extends AppCompatActivity {
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
+                splashIsOpen = false;
             }
         } else {
             checkHasUnique();
@@ -247,6 +265,7 @@ public class SplashActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+        splashIsOpen = false;
         finish();
     }
 
@@ -364,6 +383,7 @@ public class SplashActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+        splashIsOpen = false;
         finish();
     }
 
@@ -372,6 +392,7 @@ public class SplashActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+        splashIsOpen = false;
         finish();
     }
 

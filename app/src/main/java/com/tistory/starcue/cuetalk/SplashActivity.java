@@ -240,6 +240,9 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void goToPhoneNumber() {
+        if (alertDialog != null) {
+            alertDialog.dismiss();
+        }
         Intent intent = new Intent(SplashActivity.this, PhoneNumber.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -429,60 +432,62 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void blacklistDialog() {
-        LayoutInflater vi = (LayoutInflater) SplashActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LinearLayout layout = (LinearLayout) vi.inflate(R.layout.blacklist_dialog, null);
-        AlertDialog.Builder builder = new AlertDialog.Builder(SplashActivity.this);
-        builder.setView(layout);
-        alertDialog = builder.create();
+        if (alertDialog == null) {
+            LayoutInflater vi = (LayoutInflater) SplashActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LinearLayout layout = (LinearLayout) vi.inflate(R.layout.blacklist_dialog, null);
+            AlertDialog.Builder builder = new AlertDialog.Builder(SplashActivity.this);
+            builder.setView(layout);
+            alertDialog = builder.create();
 
-        alertDialog.show();
-        //set size
-        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        Window window = alertDialog.getWindow();
-        int x = (int) (size.x * 0.9);
-        int y = (int) (size.y * 0.3);
-        window.setLayout(x, y);
+            alertDialog.show();
+            //set size
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            Window window = alertDialog.getWindow();
+            int x = (int) (size.x * 0.9);
+            int y = (int) (size.y * 0.3);
+            window.setLayout(x, y);
 
-        String myPhoneNumber = "0" + mAuth.getCurrentUser().getPhoneNumber().substring(3);
+            String myPhoneNumber = "0" + mAuth.getCurrentUser().getPhoneNumber().substring(3);
 
-        db.collection("blacklist").document(myPhoneNumber).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot snapshot = task.getResult();
-                    String logout = snapshot.get("logout").toString();
-                    if (!logout.equals("yes")) {
-                        Map<String, Object> map = new HashMap<>();
-                        map.put("logout", "yes");
-                        db.collection("blacklist").document(myPhoneNumber).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Map<String, Object> map1 = new HashMap<>();
-                                map1.put(myPhoneNumber, myUid);
-                                db.collection("deletelogoutalready").document(myPhoneNumber).set(map1).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        mAuth.signOut();
-                                    }
-                                });
-                            }
-                        });
+            db.collection("blacklist").document(myPhoneNumber).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot snapshot = task.getResult();
+                        String logout = snapshot.get("logout").toString();
+                        if (!logout.equals("yes")) {
+                            Map<String, Object> map = new HashMap<>();
+                            map.put("logout", "yes");
+                            db.collection("blacklist").document(myPhoneNumber).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Map<String, Object> map1 = new HashMap<>();
+                                    map1.put(myPhoneNumber, myUid);
+                                    db.collection("deletelogoutalready").document(myPhoneNumber).set(map1).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            mAuth.signOut();
+                                        }
+                                    });
+                                }
+                            });
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        Button btn = layout.findViewById(R.id.blacklist_dialog_btn);
+            Button btn = layout.findViewById(R.id.blacklist_dialog_btn);
 
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                goToPhoneNumber();
-            }
-        });
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    goToPhoneNumber();
+                }
+            });
+        }
     }
 
     public String getAppVersion() {

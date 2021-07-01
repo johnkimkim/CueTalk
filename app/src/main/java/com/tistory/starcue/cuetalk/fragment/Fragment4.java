@@ -135,7 +135,7 @@ public class Fragment4 extends Fragment {
         beforeCountList = new ArrayList<>();
         beforeCountKeyList = new ArrayList<>();
 
-        adapter = new F4ReAdapter(arrayList, lastList, lastKeyList, countList, getActivity(), Glide.with(Fragment4.this));
+        adapter = new F4ReAdapter(arrayList, lastList, lastKeyList, countList, getActivity(), Glide.with(Fragment4.this), getActivity());
         recyclerView.setAdapter(adapter);
 
         reference.getRef().child("messege").addChildEventListener(new ChildEventListener() {

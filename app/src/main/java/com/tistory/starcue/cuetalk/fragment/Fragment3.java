@@ -277,6 +277,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                     } else if (f3radio5.isChecked() || f3radio6.isChecked() || f3radio7.isChecked() || f3radio8.isChecked()) {
                         f3radioGroup2.clearCheck();
                     }
+                    page = 0;
                     progressBar.setVisibility(View.VISIBLE);
                     getDataListAll();
                 } else {

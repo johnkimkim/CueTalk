@@ -1,13 +1,17 @@
 package com.tistory.starcue.cuetalk.adpater;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.location.Location;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -40,6 +44,8 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
     String nullPicF = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullPicF.png?alt=media&token=935033f6-4ee8-44cf-9832-d15dc38c8c95";
     String nullUser = "https://firebasestorage.googleapis.com/v0/b/cuetalk-c4d03.appspot.com/o/nullUser.png?alt=media&token=4c9daa69-6d03-4b19-a793-873f5739f3a1";
 
+    Activity activity;
+
     ArrayList<F4MessegeItem> arrayList;
     ArrayList<LastListItem> lastList;
     List<String> keyList;
@@ -57,13 +63,15 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
 
     public F4ReAdapter(ArrayList<F4MessegeItem> arrayList, ArrayList<LastListItem> lastList,
                        List<String> keyList, List<String> countList,
-                       Context context, RequestManager requestManager) {
+                       Context context, RequestManager requestManager,
+                       Activity activity) {
         this.arrayList = arrayList;
         this.lastList = lastList;
         this.keyList = keyList;
         this.countList = countList;
         this.context = context;
         this.requestManager = requestManager;
+        this.activity = activity;
     }
 
     @NonNull
@@ -107,6 +115,11 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
 
                         holder.name.setText(userName);
                         holder.sex.setText(userSex);
+                        if (userName.equals("남자")) {
+                            holder.sex.setTextColor(context.getResources().getColor(R.color.male));
+                        } else {
+                            holder.sex.setTextColor(context.getResources().getColor(R.color.female));
+                        }
                         holder.age.setText(userAge);
                         requestManager.load(userPic)
                                 .override(150, 150).circleCrop().into(holder.pic);
@@ -144,8 +157,10 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
 
         if (countList.get(position).equals("0")) {
             holder.count.setText("");
+            holder.count.setVisibility(View.INVISIBLE);
         } else {
             holder.count.setText(countList.get(position));
+            holder.count.setVisibility(View.VISIBLE);
         }
 
 //        db.collection("users").document(arrayList.get(position).getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -241,6 +256,7 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
         ImageView pic;
         TextView name, sex, age, km, messege, time, count;
         RelativeLayout relativeLayout;
+        LinearLayout linearLayout;
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -253,7 +269,23 @@ public class F4ReAdapter extends RecyclerView.Adapter<F4ReAdapter.CustomViewHold
             this.time = itemView.findViewById(R.id.f4re_time);
             this.relativeLayout = itemView.findViewById(R.id.f4_recyclerview);
             this.count = itemView.findViewById(R.id.f4re_count);
+            this.linearLayout = itemView.findViewById(R.id.f4re_linear);
 
+            Display display = activity.getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int zz = (int) (size.x * 0.12);
+            int zzz = (int) (size.x * 0.05);
+
+            ViewGroup.LayoutParams params = pic.getLayoutParams();
+            params.width = zz;
+            params.height = zz;
+            pic.setLayoutParams(params);
+
+            ViewGroup.LayoutParams params1 = count.getLayoutParams();
+            params1.width = zzz;
+            params1.height = zzz;
+            count.setLayoutParams(params1);
         }
     }
 

@@ -437,7 +437,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             Display display = activity.getWindowManager().getDefaultDisplay();
             Point size = new Point();
             display.getSize(size);
-            int zz = (int) (size.y * 0.3);
+            int zz = (int) (size.x * 0.6);
             messege.setMaxWidth(zz);
         }
     }

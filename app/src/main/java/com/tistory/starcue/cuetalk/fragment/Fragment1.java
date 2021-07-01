@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -12,6 +13,7 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Display;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -49,7 +51,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
@@ -132,24 +133,18 @@ public class Fragment1 extends Fragment {
         Log.d("Fragment1>>>", "testtest: " + pn);
 
         Button testbtn1 = viewGroup.findViewById(R.id.testbtn1);
-        Button testbtn2 = viewGroup.findViewById(R.id.testbtn2);
         testbtn1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                db.collection("blacklist").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        Log.d("Fragment1>>>", "get size: " + queryDocumentSnapshots.size());
-                    }
-                });
-            }
-        });
-        testbtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
             }
         });
+
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int zz = (int) (size.x * 0.5);
+        testbtn1.setMaxWidth(zz);
     }
 
     @Override

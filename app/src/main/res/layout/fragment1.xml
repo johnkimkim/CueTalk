@@ -55,36 +55,37 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/viewpagerlayout"
-        android:layout_marginTop="20dp"
         android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
         android:layout_marginRight="30dp">
 
         <TextView
             android:id="@+id/f1_edittext_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="간단한 인사말을 입력해주세요!"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:text="간단한 인사말을 입력해주세요!" />
 
-    <EditText
-        android:id="@+id/f1_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_below="@+id/f1_edittext_text"
-        android:layout_marginTop="3dp"
-        android:background="@drawable/write_edittext"
-        android:hint="반가워요"
-        android:gravity="center"
-        android:maxLength="10"/>
+        <EditText
+            android:id="@+id/f1_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_below="@+id/f1_edittext_text"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/write_edittext"
+            android:gravity="center"
+            android:hint="반가워요"
+            android:maxLength="10" />
 
         <TextView
             android:id="@+id/f1_edit_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/f1_edittext"
             android:layout_alignParentRight="true"
-            android:text="0 / 10"
-            android:layout_below="@+id/f1_edittext"/>
+            android:text="0 / 10" />
     </RelativeLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -116,12 +117,10 @@
             android:drawableRight="@drawable/spinner_down" />
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:orientation="horizontal"
         android:layout_marginBottom="5dp">
 
         <Button
@@ -129,14 +128,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/button_on_click"
-            android:text="start"
+            android:text="laskdfjlskdjflkasdjfklasdjflkasdjfasldfjlksdjfklasdjflkasdjflajdsfklajsdlaskdjfklasdjf"
             android:textColor="@color/white" />
-        <Button
-            android:id="@+id/testbtn2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/button_on_click"
-            android:text="stop"
-            android:textColor="@color/white" />
-    </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>

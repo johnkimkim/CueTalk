@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -220,37 +221,51 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         }
                         //LeftViewholder
                         else if (holder instanceof LeftViewholder) {
-                            ((LeftViewholder) holder).name.setText(userName);
-                            ((LeftViewholder) holder).messege.setText(arrayList.get(position).getMessege());
-                            ((LeftViewholder) holder).time.setText(time2);
-                            Log.d("F4chatRoomAdapter>>>", "get time in arrayList: " + arrayList.get(position).getTime() + " / " + time2);
-                            requestManager//error. requast manager?사용해서 this받기
-                                    .load(userPic)
-                                    .override(150, 150)
-                                    .listener(new RequestListener<Drawable>() {
-                                        @Override
-                                        public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                            ((LeftViewholder) holder).progressBar.setVisibility(View.GONE);
-                                            return false;
-                                        }
+                            if (arrayList.size() != 0 && arrayList.get(position).getUid().equals(arrayList.get(position - 1).getUid())) {
+                                ((LeftViewholder) holder).messege.setText(arrayList.get(position).getMessege());
+                                ((LeftViewholder) holder).time.setText(time2);
+                                ((LeftViewholder) holder).piclayout.setVisibility(View.GONE);
+                                ((LeftViewholder) holder).name.setVisibility(View.GONE);
+                            } else {
+                                ((LeftViewholder) holder).name.setText(userName);
+                                ((LeftViewholder) holder).messege.setText(arrayList.get(position).getMessege());
+                                ((LeftViewholder) holder).time.setText(time2);
+                                Log.d("F4chatRoomAdapter>>>", "get time in arrayList: " + arrayList.get(position).getTime() + " / " + time2);
+                                requestManager//error. requast manager?사용해서 this받기
+                                        .load(userPic)
+                                        .override(150, 150)
+                                        .listener(new RequestListener<Drawable>() {
+                                            @Override
+                                            public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                                ((LeftViewholder) holder).progressBar.setVisibility(View.GONE);
+                                                return false;
+                                            }
 
-                                        @Override
-                                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                            ((LeftViewholder) holder).progressBar.setVisibility(View.GONE);
-                                            return false;
+                                            @Override
+                                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                                ((LeftViewholder) holder).progressBar.setVisibility(View.GONE);
+                                                return false;
+                                            }
+                                        })
+                                        .circleCrop()
+                                        .into(((LeftViewholder) holder).picl);
+                                ((LeftViewholder) holder).picl.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        String uri = userPic;
+                                        if (!uri.equals(nullPic) && !uri.equals(nullPicF) && !uri.equals(nullUser)) {
+                                            SeePicDialog.seePicDialog(context, uri);
                                         }
-                                    })
-                                    .circleCrop()
-                                    .into(((LeftViewholder) holder).picl);
-                            ((LeftViewholder) holder).picl.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    String uri = userPic;
-                                    if (!uri.equals(nullPic) && !uri.equals(nullPicF) && !uri.equals(nullUser)) {
-                                        SeePicDialog.seePicDialog(context, uri);
                                     }
-                                }
-                            });
+                                });
+                            }
+//                            if (arrayList.size() != 0 && arrayList.get(position).getUid().equals(arrayList.get(position - 1).getUid())) {
+//                                ((LeftViewholder) holder).piclayout.setVisibility(View.INVISIBLE);
+//                                ((LeftViewholder) holder).name.setVisibility(View.GONE);
+//                            } else {
+//                                ((LeftViewholder) holder).piclayout.setVisibility(View.VISIBLE);
+//                                ((LeftViewholder) holder).name.setVisibility(View.VISIBLE);
+//                            }
                         } else if (holder instanceof CenterViewholder) {
                             ((CenterViewholder) holder).textView.setText("입장완료");
                         } else if (holder instanceof CenterBottomViewholder) {
@@ -425,6 +440,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         ImageView picl;
         TextView time, name, messege;
         CircularDotsLoader progressBar;
+        RelativeLayout piclayout;
 
         public LeftViewholder(@NonNull View itemView) {
             super(itemView);
@@ -433,12 +449,28 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             this.time = itemView.findViewById(R.id.chat_room_layout_time1);
             this.messege = itemView.findViewById(R.id.chat_room_layout_messege1);
             this.progressBar = itemView.findViewById(R.id.chat_room_layout_progress);
+            this.piclayout = itemView.findViewById(R.id.chat_room_layout_left_pic_layout);
 
             Display display = activity.getWindowManager().getDefaultDisplay();
             Point size = new Point();
             display.getSize(size);
-            int zz = (int) (size.x * 0.6);
-            messege.setMaxWidth(zz);
+            int zz = (int) (size.x * 0.12);
+            int x = (int) (size.x * 0.13);
+            int zzz = (int) (size.x * 0.6);
+            messege.setMaxWidth(zzz);
+
+            ViewGroup.LayoutParams params = picl.getLayoutParams();
+            params.width = zz;
+            params.height = zz;
+            picl.setLayoutParams(params);
+
+            ViewGroup.MarginLayoutParams params1 = (ViewGroup.MarginLayoutParams) messege.getLayoutParams();
+            params1.setMargins(zz, 0, 0, 0);
+            messege.setLayoutParams(params1);
+
+            ViewGroup.MarginLayoutParams params2 = (ViewGroup.MarginLayoutParams) name.getLayoutParams();
+            params2.setMargins(zz, 0, 0, 0);
+            messege.setLayoutParams(params2);
         }
     }
 

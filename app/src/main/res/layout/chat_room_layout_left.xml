@@ -6,12 +6,12 @@
     android:layout_marginLeft="8dp"
     android:layout_marginTop="5dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
+            android:id="@+id/chat_room_layout_left_pic_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -40,7 +40,8 @@
                 app:loader_secondShadowColor="@color/base3"
                 app:loader_selectedColor="@color/base2"
                 app:loader_showRunningShadow="true"
-                android:layout_centerInParent="true"/>
+                android:layout_centerInParent="true"
+                android:visibility="invisible"/>
 
         </RelativeLayout>
 
@@ -78,7 +79,7 @@
             </LinearLayout>
         </LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
     <!--    <RelativeLayout-->

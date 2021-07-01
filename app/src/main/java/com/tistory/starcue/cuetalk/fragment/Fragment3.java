@@ -781,46 +781,6 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         return date;
     }
 
-//    private void setCategory() {
-//        b1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                progressBar.setVisibility(View.VISIBLE);
-//
-//                page = 0;
-//                getDataListAll();
-//            }
-//        });
-//
-//        b2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                progressBar.setVisibility(View.VISIBLE);
-//                page = 1;
-//                getDataList1();
-//            }
-//        });
-//
-//        b3.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                progressBar.setVisibility(View.VISIBLE);
-//                page = 2;
-//                getDataList2();
-//            }
-//        });
-//
-//        my.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                progressBar.setVisibility(View.VISIBLE);
-//                page = 3;
-//                getDataListMy();
-//            }
-//        });
-//    }
-
-
     @Override
     public void onResume() {
         super.onResume();

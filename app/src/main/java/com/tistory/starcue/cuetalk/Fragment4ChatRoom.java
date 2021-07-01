@@ -360,7 +360,7 @@ public class Fragment4ChatRoom extends AppCompatActivity {
                     Log.d("Fragment4ChatRoom>>>", userUidmyUid);
                     if (snapshot.getKey().contains(myUid) && snapshot.getKey().contains(userUid)) {
                         getroomname = snapshot.getKey();
-                        adapter = new F4ChatRoomAdapter(Fragment4ChatRoom.this, arrayList, getroomname, Glide.with(Fragment4ChatRoom.this));
+                        adapter = new F4ChatRoomAdapter(Fragment4ChatRoom.this, arrayList, getroomname, Glide.with(Fragment4ChatRoom.this), Fragment4ChatRoom.this);
                         recyclerView.setAdapter(adapter);
                         recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
                         setRecyclerviewList();

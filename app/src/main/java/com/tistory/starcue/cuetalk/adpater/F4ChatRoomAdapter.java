@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +44,8 @@ import java.util.List;
 
 public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    Activity activity;
+
     DatabaseHandler databaseHandler;
     private SQLiteDatabase sqLiteDatabase;
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -66,11 +70,12 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private Context context;
 
-    public F4ChatRoomAdapter(Context context, ArrayList<F4ChatRoomItem> arrayList, String getroomname, RequestManager requestManager) {
+    public F4ChatRoomAdapter(Context context, ArrayList<F4ChatRoomItem> arrayList, String getroomname, RequestManager requestManager, Activity activity) {
         this.arrayList = arrayList;
         this.context = context;
         this.getroomname = getroomname;
         this.requestManager = requestManager;
+        this.activity = activity;
     }
 
     @NonNull
@@ -428,6 +433,12 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             this.time = itemView.findViewById(R.id.chat_room_layout_time1);
             this.messege = itemView.findViewById(R.id.chat_room_layout_messege1);
             this.progressBar = itemView.findViewById(R.id.chat_room_layout_progress);
+
+            Display display = activity.getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int zz = (int) (size.y * 0.3);
+            messege.setMaxWidth(zz);
         }
     }
 

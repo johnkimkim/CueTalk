@@ -303,6 +303,12 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         radio5 = layout.findViewById(R.id.radio5);
         radio6 = layout.findViewById(R.id.radio6);
 
+//        if (radio1.isChecked()) {
+//            radio1.setBackgroundColor(getResources().getColor(R.color.base1));
+//        } else {
+//            radio1.setBackgroundColor(getResources().getColor(R.color.white));
+//        }
+
         ViewGroup.LayoutParams params = dialogImageView.getLayoutParams();
         params.width = xx;
         params.height = xx;

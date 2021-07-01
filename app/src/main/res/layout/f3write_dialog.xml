@@ -43,7 +43,6 @@
                         android:id="@+id/f3dialog_radiogroup1"
                         android:layout_width="300dp"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/f3radio_group_outline"
                         android:orientation="horizontal">
 
                         <RadioButton
@@ -51,41 +50,55 @@
                             android:layout_width="wrap_content"
                             android:layout_height="30dp"
                             android:layout_weight="1"
-                            android:background="@drawable/f3radio_selector"
-                            android:button="@android:color/transparent"
                             android:gravity="center"
+                            android:background="@drawable/f3radio_lt_selector"
+                            android:button="@android:color/transparent"
                             android:text="핸폰"
                             android:textColor="@color/f3radio_text_color" />
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="30dp"
+                            android:background="@color/base1"/>
 
                         <RadioButton
                             android:id="@+id/radio2"
                             android:layout_width="wrap_content"
                             android:layout_height="30dp"
                             android:layout_weight="1"
-                            android:background="@drawable/f3radio_selector"
+                            android:background="@drawable/f3radio_ct_selector"
                             android:button="@android:color/transparent"
                             android:gravity="center"
                             android:text="컴터"
                             android:textColor="@color/f3radio_text_color" />
-
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="30dp"
+                            android:background="@color/base1"/>
                         <RadioButton
                             android:id="@+id/radio3"
                             android:layout_width="wrap_content"
                             android:layout_height="30dp"
                             android:layout_weight="1"
-                            android:background="@drawable/f3radio_selector"
+                            android:background="@drawable/f3radio_rt_selector"
                             android:button="@android:color/transparent"
                             android:gravity="center"
                             android:text="패션"
                             android:textColor="@color/f3radio_text_color" />
                     </RadioGroup>
 
+                    <View
+                        android:id="@+id/f3radio_center_line"
+                        android:layout_width="300dp"
+                        android:layout_height="1dp"
+                        android:layout_below="@+id/f3dialog_radiogroup1"
+                        android:background="@color/base1"/>
+
                     <RadioGroup
                         android:id="@+id/f3dialog_radiogroup2"
                         android:layout_width="300dp"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/f3dialog_radiogroup1"
-                        android:background="@drawable/f3radio_group_outline"
+                        android:layout_below="@+id/f3radio_center_line"
                         android:orientation="horizontal">
 
                         <RadioButton
@@ -93,29 +106,35 @@
                             android:layout_width="wrap_content"
                             android:layout_height="30dp"
                             android:layout_weight="1"
-                            android:background="@drawable/f3radio_selector"
+                            android:background="@drawable/f3radio_lb_selector"
                             android:button="@android:color/transparent"
                             android:gravity="center"
                             android:text="미용"
                             android:textColor="@color/f3radio_text_color" />
-
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="30dp"
+                            android:background="@color/base1"/>
                         <RadioButton
                             android:id="@+id/radio5"
                             android:layout_width="wrap_content"
                             android:layout_height="30dp"
                             android:layout_weight="1"
-                            android:background="@drawable/f3radio_selector"
+                            android:background="@drawable/f3radio_cb_selector"
                             android:button="@android:color/transparent"
                             android:gravity="center"
                             android:text="전자"
                             android:textColor="@color/f3radio_text_color" />
-
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="30dp"
+                            android:background="@color/base1"/>
                         <RadioButton
                             android:id="@+id/radio6"
                             android:layout_width="wrap_content"
                             android:layout_height="30dp"
                             android:layout_weight="1"
-                            android:background="@drawable/f3radio_selector"
+                            android:background="@drawable/f3radio_rb_selector"
                             android:button="@android:color/transparent"
                             android:gravity="center"
                             android:text="티켓"

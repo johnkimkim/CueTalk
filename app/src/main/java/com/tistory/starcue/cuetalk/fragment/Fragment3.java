@@ -91,7 +91,9 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
 
     private ArrayList<F3Item> arrayList;
 
-    Button b1, b2, b3, my, write;
+    RadioGroup f3radioGroup1, f3radioGroup2;
+    RadioButton f3radioall, f3radio1, f3radio2, f3radio3, f3radio4, f3radio5, f3radio6, f3radio7, f3radio8;
+    Button write;
     SwipeRefreshLayout swipeRefreshLayout;
     public static CheckBox f3fragdec;
     private ProgressBar progressBar;
@@ -136,10 +138,17 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
 
     private void setinit(ViewGroup v) {
         recyclerView = v.findViewById(R.id.fragment3_recyclerview);
-        b1 = v.findViewById(R.id.f3b1);
-        b2 = v.findViewById(R.id.f3b2);
-        b3 = v.findViewById(R.id.f3b3);
-        my = v.findViewById(R.id.fragment3_my);
+        f3radioGroup1 = v.findViewById(R.id.f3radio_group1);
+        f3radioGroup2 = v.findViewById(R.id.f3radio_group2);
+        f3radioall = v.findViewById(R.id.f3radio_all);
+        f3radio1 = v.findViewById(R.id.f3radio1);
+        f3radio2 = v.findViewById(R.id.f3radio2);
+        f3radio3 = v.findViewById(R.id.f3radio3);
+        f3radio4 = v.findViewById(R.id.f3radio4);
+        f3radio5 = v.findViewById(R.id.f3radio5);
+        f3radio6 = v.findViewById(R.id.f3radio6);
+        f3radio7 = v.findViewById(R.id.f3radio7);
+        f3radio8 = v.findViewById(R.id.f3radio8);
         write = v.findViewById(R.id.fragment3_write);
         f3fragdec = v.findViewById(R.id.f3fragdec);
         f3fragdec.setChecked(false);
@@ -156,7 +165,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         });
 
         setRecyclerView();
-        setCategory();
+//        setCategory();
         setDec();
     }
 
@@ -564,44 +573,44 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         return date;
     }
 
-    private void setCategory() {
-        b1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                progressBar.setVisibility(View.VISIBLE);
-
-                page = 0;
-                getDataListAll();
-            }
-        });
-
-        b2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                progressBar.setVisibility(View.VISIBLE);
-                page = 1;
-                getDataList1();
-            }
-        });
-
-        b3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                progressBar.setVisibility(View.VISIBLE);
-                page = 2;
-                getDataList2();
-            }
-        });
-
-        my.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                progressBar.setVisibility(View.VISIBLE);
-                page = 3;
-                getDataListMy();
-            }
-        });
-    }
+//    private void setCategory() {
+//        b1.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                progressBar.setVisibility(View.VISIBLE);
+//
+//                page = 0;
+//                getDataListAll();
+//            }
+//        });
+//
+//        b2.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                progressBar.setVisibility(View.VISIBLE);
+//                page = 1;
+//                getDataList1();
+//            }
+//        });
+//
+//        b3.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                progressBar.setVisibility(View.VISIBLE);
+//                page = 2;
+//                getDataList2();
+//            }
+//        });
+//
+//        my.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                progressBar.setVisibility(View.VISIBLE);
+//                page = 3;
+//                getDataListMy();
+//            }
+//        });
+//    }
 
 
     @Override

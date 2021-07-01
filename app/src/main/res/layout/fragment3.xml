@@ -10,6 +10,7 @@
         android:id="@+id/f3titlebar"
         android:layout_width="match_parent"
         android:layout_height="45dp">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -17,6 +18,7 @@
             android:text="중고거래"
             android:textSize="18dp"
             android:textStyle="bold" />
+
         <CheckBox
             android:id="@+id/f3fragdec"
             android:layout_width="35dp"
@@ -30,49 +32,195 @@
     </RelativeLayout>
 
     <!-- TODO: Update blank fragment layout -->
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/f3linear"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_below="@+id/f3titlebar"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp">
 
-        <Button
-            android:id="@+id/f3b1"
+        <RadioButton
+            android:id="@+id/f3radio_all"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/f3radio_all_selector"
+            android:button="@android:color/transparent"
+            android:gravity="center"
+            android:text="전체" />
+
+        <View
+            android:id="@+id/f3view1"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/f3radio_all"
+            android:background="@color/base1" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="1" />
+            android:layout_toLeftOf="@+id/f3view2"
+            android:layout_toRightOf="@+id/f3view1"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/f3b2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="2" />
+            <RadioGroup
+                android:id="@+id/f3radio_group1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/f3b3"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="3" />
+                <RadioButton
+                    android:id="@+id/f3radio1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/f3radio_ct_selector"
+                    android:button="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="핸드폰"
+                    android:textColor="@color/f3radio_text_color" />
 
-        <Button
-            android:id="@+id/fragment3_my"
-            android:layout_width="match_parent"
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/base1" />
+
+                <RadioButton
+                    android:id="@+id/f3radio2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/f3radio_ct_selector"
+                    android:button="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="컴퓨터"
+                    android:textColor="@color/f3radio_text_color" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/base1" />
+
+                <RadioButton
+                    android:id="@+id/f3radio3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/f3radio_ct_selector"
+                    android:button="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="생활가전"
+                    android:textColor="@color/f3radio_text_color" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/base1" />
+
+                <RadioButton
+                    android:id="@+id/f3radio4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/f3radio_ct_selector"
+                    android:button="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="가구"
+                    android:textColor="@color/f3radio_text_color" />
+            </RadioGroup>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/base1" />
+
+            <RadioGroup
+                android:id="@+id/f3radio_group2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/f3radio5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/f3radio_cb_selector"
+                    android:button="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="여성의류"
+                    android:textColor="@color/f3radio_text_color" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/base1" />
+
+                <RadioButton
+                    android:id="@+id/f3radio6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/f3radio_cb_selector"
+                    android:button="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="남성의류"
+                    android:textColor="@color/f3radio_text_color" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/base1" />
+
+                <RadioButton
+                    android:id="@+id/f3radio7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/f3radio_cb_selector"
+                    android:button="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="미용"
+                    android:textColor="@color/f3radio_text_color" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/base1" />
+
+                <RadioButton
+                    android:id="@+id/f3radio8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/f3radio_cb_selector"
+                    android:button="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="기타"
+                    android:textColor="@color/f3radio_text_color" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/f3view2"
+            android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="내글" />
+            android:layout_toLeftOf="@+id/fragment3_write"
+            android:background="@color/base1" />
 
         <Button
             android:id="@+id/fragment3_write"
-            android:layout_width="match_parent"
+            android:layout_width="60dp"
             android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
             android:layout_weight="1"
-            android:text="글쓰기" />
+            android:background="@drawable/f3radio_write_1"
+            android:text="작성" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <ProgressBar
         android:id="@+id/fragment3_progress_bar"
@@ -88,7 +236,8 @@
         android:id="@+id/f3_swipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/f3linear">
+        android:layout_below="@+id/f3linear"
+        android:layout_marginTop="-2dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/fragment3_recyclerview"

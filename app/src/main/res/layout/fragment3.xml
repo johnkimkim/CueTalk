@@ -35,26 +35,33 @@
     <RelativeLayout
         android:id="@+id/f3linear"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="61dp"
         android:layout_below="@+id/f3titlebar"
         android:orientation="horizontal"
         android:paddingLeft="5dp"
         android:paddingRight="5dp">
 
-        <RadioButton
-            android:id="@+id/f3radio_all"
-            android:layout_width="60dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/f3radio_all_selector"
-            android:button="@android:color/transparent"
-            android:gravity="center"
-            android:text="전체" />
+        <RadioGroup
+            android:id="@+id/f3radio_group0"
+            android:layout_width="61dp"
+            android:layout_height="match_parent">
+
+            <RadioButton
+                android:id="@+id/f3radio_all"
+                android:layout_width="61dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/f3radio_all_selector"
+                android:button="@android:color/transparent"
+                android:gravity="center"
+                android:text="전체"
+                android:textColor="@color/f3radio_text_color" />
+        </RadioGroup>
 
         <View
             android:id="@+id/f3view1"
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:layout_toRightOf="@+id/f3radio_all"
+            android:layout_toRightOf="@+id/f3radio_group0"
             android:background="@color/base1" />
 
         <LinearLayout
@@ -213,7 +220,7 @@
 
         <Button
             android:id="@+id/fragment3_write"
-            android:layout_width="60dp"
+            android:layout_width="61dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_weight="1"

@@ -21,6 +21,7 @@ import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -91,7 +92,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
 
     private ArrayList<F3Item> arrayList;
 
-    RadioGroup f3radioGroup1, f3radioGroup2;
+    RadioGroup f3radioGroup0, f3radioGroup1, f3radioGroup2;
     RadioButton f3radioall, f3radio1, f3radio2, f3radio3, f3radio4, f3radio5, f3radio6, f3radio7, f3radio8;
     Button write;
     SwipeRefreshLayout swipeRefreshLayout;
@@ -105,8 +106,10 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
     ProgressBar dialogProgressBar;
     TextView dialogcount;
     RadioGroup radioGroup1, radioGroup2;
-    RadioButton radio1, radio2, radio3, radio4, radio5, radio6;
+    RadioButton radio1, radio2, radio3, radio4, radio5, radio6, radio7, radio8;
+    boolean mainGroup = false;
     boolean group = false;
+    boolean allradio = false;
 
     Uri imageUri;
     String picUri, messege, category;
@@ -138,6 +141,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
 
     private void setinit(ViewGroup v) {
         recyclerView = v.findViewById(R.id.fragment3_recyclerview);
+        f3radioGroup0 = v.findViewById(R.id.f3radio_group0);
         f3radioGroup1 = v.findViewById(R.id.f3radio_group1);
         f3radioGroup2 = v.findViewById(R.id.f3radio_group2);
         f3radioall = v.findViewById(R.id.f3radio_all);
@@ -156,6 +160,8 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         swipeRefreshLayout = v.findViewById(R.id.f3_swipe);
         swipeRefreshLayout.setOnRefreshListener(this);
         progressBar = v.findViewById(R.id.fragment3_progress_bar);
+
+        setF3Radio();
 
         write.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -198,7 +204,89 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
 
     }
 
-    private void getDataListAll() {
+    private void setF3Radio() {
+        f3radioGroup1.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                if (!mainGroup) {
+                    f3radioGroup0.clearCheck();
+                }
+                if (i != -1 && mainGroup) {
+                    mainGroup = false;
+                    f3radioGroup2.clearCheck();
+                }
+                mainGroup = true;
+                if (f3radio1.isChecked()) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    page = 1;
+                    getDataList1();
+                } else if (f3radio2.isChecked()) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    page = 2;
+                    getDataList2();
+                } else if (f3radio3.isChecked()) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    page = 3;
+                    getDataList3();
+                } else if (f3radio4.isChecked()) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    page = 4;
+                    getDataList4();
+                }
+            }
+        });
+
+        f3radioGroup2.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                if (!mainGroup) {
+                    f3radioGroup0.clearCheck();
+                }
+                if (i != -1 && mainGroup) {
+                    mainGroup = false;
+                    f3radioGroup1.clearCheck();
+                }
+                mainGroup = true;
+                if (f3radio5.isChecked()) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    page = 5;
+                    getDataList5();
+                } else if (f3radio6.isChecked()) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    page = 6;
+                    getDataList6();
+                } else if (f3radio7.isChecked()) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    page = 7;
+                    getDataList7();
+                } else if (f3radio8.isChecked()) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    page = 8;
+                    getDataList8();
+                }
+            }
+        });
+        f3radioall.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    mainGroup = false;
+                    allradio = true;
+                    if (f3radio1.isChecked() || f3radio2.isChecked() || f3radio3.isChecked() || f3radio4.isChecked()) {
+                        f3radioGroup1.clearCheck();
+                    } else if (f3radio5.isChecked() || f3radio6.isChecked() || f3radio7.isChecked() || f3radio8.isChecked()) {
+                        f3radioGroup2.clearCheck();
+                    }
+                    progressBar.setVisibility(View.VISIBLE);
+                    getDataListAll();
+                } else {
+                    allradio = false;
+                }
+            }
+        });
+    }
+
+    private void getDataListAll() {//0 전체
         firestore.collection("f3messege").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -219,13 +307,13 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         });
     }
 
-    private void getDataList1() {
+    private void getDataList1() {//1 핸드폰
         firestore.collection("f3messege").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 arrayList.clear();
                 for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
-                    if (snapshot.get("category").equals("1")) {
+                    if (snapshot.get("category").equals("핸드폰")) {
                         F3Item f3Item = snapshot.toObject(F3Item.class);
                         arrayList.add(f3Item);
                         setListTimeSort(arrayList);
@@ -238,13 +326,127 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         });
     }
 
-    private void getDataList2() {
+    private void getDataList2() {//2 컴퓨터
         firestore.collection("f3messege").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 arrayList.clear();
                 for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
-                    if (snapshot.get("category").equals("2")) {
+                    if (snapshot.get("category").equals("컴퓨터")) {
+                        F3Item f3Item = snapshot.toObject(F3Item.class);
+                        arrayList.add(f3Item);
+                        setListTimeSort(arrayList);
+                    }
+                }
+                swipeRefreshLayout.setRefreshing(false);
+                adapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void getDataList3() {//3 생활가전
+        firestore.collection("f3messege").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                arrayList.clear();
+                for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                    if (snapshot.get("category").equals("생활가전")) {
+                        F3Item f3Item = snapshot.toObject(F3Item.class);
+                        arrayList.add(f3Item);
+                        setListTimeSort(arrayList);
+                    }
+                }
+                swipeRefreshLayout.setRefreshing(false);
+                adapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void getDataList4() {//4 가구
+        firestore.collection("f3messege").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                arrayList.clear();
+                for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                    if (snapshot.get("category").equals("가구")) {
+                        F3Item f3Item = snapshot.toObject(F3Item.class);
+                        arrayList.add(f3Item);
+                        setListTimeSort(arrayList);
+                    }
+                }
+                swipeRefreshLayout.setRefreshing(false);
+                adapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void getDataList5() {//5 여성의류
+        firestore.collection("f3messege").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                arrayList.clear();
+                for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                    if (snapshot.get("category").equals("여성의류")) {
+                        F3Item f3Item = snapshot.toObject(F3Item.class);
+                        arrayList.add(f3Item);
+                        setListTimeSort(arrayList);
+                    }
+                }
+                swipeRefreshLayout.setRefreshing(false);
+                adapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void getDataList6() {//6 남성의류
+        firestore.collection("f3messege").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                arrayList.clear();
+                for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                    if (snapshot.get("category").equals("남성의류")) {
+                        F3Item f3Item = snapshot.toObject(F3Item.class);
+                        arrayList.add(f3Item);
+                        setListTimeSort(arrayList);
+                    }
+                }
+                swipeRefreshLayout.setRefreshing(false);
+                adapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void getDataList7() {//7 미용
+        firestore.collection("f3messege").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                arrayList.clear();
+                for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                    if (snapshot.get("category").equals("미용")) {
+                        F3Item f3Item = snapshot.toObject(F3Item.class);
+                        arrayList.add(f3Item);
+                        setListTimeSort(arrayList);
+                    }
+                }
+                swipeRefreshLayout.setRefreshing(false);
+                adapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void getDataList8() {//8 기타
+        firestore.collection("f3messege").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                arrayList.clear();
+                for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                    if (snapshot.get("category").equals("기타")) {
                         F3Item f3Item = snapshot.toObject(F3Item.class);
                         arrayList.add(f3Item);
                         setListTimeSort(arrayList);
@@ -311,6 +513,8 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         radio4 = layout.findViewById(R.id.radio4);
         radio5 = layout.findViewById(R.id.radio5);
         radio6 = layout.findViewById(R.id.radio6);
+        radio7 = layout.findViewById(R.id.radio7);
+        radio8 = layout.findViewById(R.id.radio8);
 
 //        if (radio1.isChecked()) {
 //            radio1.setBackgroundColor(getResources().getColor(R.color.base1));
@@ -399,11 +603,13 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                 }
                 group = true;
                 if (radio1.isChecked()) {
-                    category = "핸폰";
+                    category = "핸드폰";
                 } else if (radio2.isChecked()) {
-                    category = "컴터";
+                    category = "컴퓨터";
                 } else if (radio3.isChecked()) {
-                    category = "패션";
+                    category = "생활가전";
+                } else if (radio4.isChecked()) {
+                    category = "가구";
                 }
             }
         });
@@ -416,12 +622,14 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
                     radioGroup1.clearCheck();
                 }
                 group = true;
-                if (radio4.isChecked()) {
-                    category = "미용";
-                } else if (radio5.isChecked()) {
-                    category = "전자";
+                if (radio5.isChecked()) {
+                    category = "여성의류";
                 } else if (radio6.isChecked()) {
-                    category = "티켓";
+                    category = "남성의류";
+                } else if (radio7.isChecked()) {
+                    category = "미용";
+                } else if (radio8.isChecked()) {
+                    category = "기타";
                 }
             }
         });
@@ -621,11 +829,32 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         f3fragdec.setBackgroundResource(R.drawable.sirenicon);
         progressBar.setVisibility(View.VISIBLE);
         if (page == 0) {
+            f3radioall.setChecked(true);
             getDataListAll();
         } else if (page == 1) {
+            f3radio1.setChecked(true);
             getDataList1();
         } else if (page == 2) {
+            f3radio2.setChecked(true);
             getDataList2();
+        } else if (page == 3) {
+            f3radio3.setChecked(true);
+            getDataList3();
+        } else if (page == 4) {
+            f3radio4.setChecked(true);
+            getDataList4();
+        } else if (page == 5) {
+            f3radio5.setChecked(true);
+            getDataList5();
+        } else if (page == 6) {
+            f3radio6.setChecked(true);
+            getDataList6();
+        } else if (page == 7) {
+            f3radio7.setChecked(true);
+            getDataList7();
+        } else if (page == 8) {
+            f3radio8.setChecked(true);
+            getDataList8();
         }
     }
 
@@ -697,6 +926,7 @@ public class Fragment3 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         dialogno.setEnabled(true);
         dialogEditText.setEnabled(true);
     }
+
     int getCharNumber(String string, String string1) {
         int count = 0;
         for (int i = 0; i < string.length(); i++) {

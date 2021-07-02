@@ -21,7 +21,6 @@ import com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
@@ -102,13 +101,13 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         String time2 = time1.substring(0, time1.length() - 3);
 
         RequestOptions requestOptions = new RequestOptions();
-        requestOptions = requestOptions.transform(new CenterCrop(), new RoundedCorners(8));
+        requestOptions = requestOptions.transform(new RoundedCorners(100));
 
         if (holder instanceof RightImageViewholder) {
             ((RightImageViewholder) holder).timepic.setText(time2);
             requestManager
                     .load(arrayList.get(position).getUri())
-                    .override(150, 150)
+//                    .override(150, 150)
                     .listener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -153,7 +152,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     .into(((LeftImageViewholder) holder).picli);
             requestManager
                     .load(arrayList.get(position).getUri())
-                    .override(150, 150)
+//                    .override(150, 150)
                     .listener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -296,6 +295,27 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.time = itemView.findViewById(R.id.chat_room_layout_time1);
             this.messege = itemView.findViewById(R.id.chat_room_layout_messege1);
             this.progressBar = itemView.findViewById(R.id.chat_room_layout_progress);
+
+            Display display = activity.getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int zz = (int) (size.x * 0.12);
+            int x = (int) (size.x * 0.13);
+            int zzz = (int) (size.x * 0.6);
+            messege.setMaxWidth(zzz);
+
+            ViewGroup.LayoutParams params = picl.getLayoutParams();
+            params.width = zz;
+            params.height = zz;
+            picl.setLayoutParams(params);
+
+            ViewGroup.MarginLayoutParams params1 = (ViewGroup.MarginLayoutParams) messege.getLayoutParams();
+            params1.setMargins(zz, 0, 0, 0);
+            messege.setLayoutParams(params1);
+
+            ViewGroup.MarginLayoutParams params2 = (ViewGroup.MarginLayoutParams) name.getLayoutParams();
+            params2.setMargins(zz, 0, 0, 0);
+            messege.setLayoutParams(params2);
         }
     }
 
@@ -306,6 +326,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             super(itemView);
             this.time1 = itemView.findViewById(R.id.chat_room_layout_time2);
             this.messege1 = itemView.findViewById(R.id.chat_room_layout_messege2);
+
+            Display display = activity.getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int zzz = (int) (size.x * 0.6);
+            messege1.setMaxWidth(zzz);
         }
     }
 

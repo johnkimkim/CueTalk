@@ -128,7 +128,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     RequestOptions requestOptions = new RequestOptions();
-                    requestOptions = requestOptions.transform(new RoundedCorners(8));
+                    requestOptions = requestOptions.transform(new RoundedCorners(100));
                     DocumentSnapshot snapshot = task.getResult();
                     if (snapshot.get("uid") != null) {//상대방이 탈퇴안했을때
                         //RightImageViewholder
@@ -136,7 +136,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             ((RightImageViewholder) holder).timepic.setText(time2);
                             requestManager
                                     .load(arrayList.get(position).getUri())
-                                    .override(150, 150)
+//                                    .override(150, 150)
                                     .listener(new RequestListener<Drawable>() {
                                         @Override
                                         public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -187,7 +187,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                     .into(((LeftImageViewholder) holder).picli);
                             requestManager
                                     .load(arrayList.get(position).getUri())
-                                    .override(150, 150)
+//                                    .override(150, 150)
                                     .listener(new RequestListener<Drawable>() {
                                         @Override
                                         public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -286,7 +286,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             ((RightImageViewholder) holder).timepic.setText(time2);
                             requestManager
                                     .load(arrayList.get(position).getUri())
-                                    .override(150, 150)
+//                                    .override(150, 150)
                                     .apply(requestOptions)
                                     .into(((RightImageViewholder) holder).imagepic);
                             if (arrayList.get(position).getRead().equals("1")) {
@@ -317,7 +317,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                     .into(((LeftImageViewholder) holder).picli);
                             requestManager
                                     .load(arrayList.get(position).getUri())
-                                    .override(150, 150)
+//                                    .override(150, 150)
                                     .listener(new RequestListener<Drawable>() {
                                         @Override
                                         public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {

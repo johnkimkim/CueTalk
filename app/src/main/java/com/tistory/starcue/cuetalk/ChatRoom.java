@@ -446,7 +446,7 @@ public class ChatRoom extends AppCompatActivity {
                     DecDialog.alertDialog.dismiss();
                 }
             }
-            alertDialogA.show();
+            alertDialogA.show();//error
 
             /*Unable to add window -- token android.os.BinderProxy@7c9958a is not valid; is your activity running?*/
 

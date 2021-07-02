@@ -44,7 +44,7 @@
                 android:id="@+id/chat_room_layout_messege2_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#000000" />
+                android:adjustViewBounds="true"/>
 
             <com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
                 android:id="@+id/chat_room_layout_right_image_progress"

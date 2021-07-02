@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="65dp"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginLeft="13dp"
     android:layout_marginTop="13dp">
@@ -47,7 +47,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginLeft="3dp">
 
             <TextView
                 android:id="@+id/chat_room_layout_name1_img"
@@ -66,8 +67,9 @@
 
                     <ImageView
                         android:id="@+id/chat_room_layout_messege1_img"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"/>
 
 <!--                    <ProgressBar-->
 <!--                        android:id="@+id/chat_room_layout_progress_image"-->
@@ -97,7 +99,8 @@
                     android:id="@+id/chat_room_layout_time1_img"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#000000" />
+                    android:textColor="#000000"
+                    android:layout_gravity="bottom"/>
             </LinearLayout>
         </LinearLayout>
 

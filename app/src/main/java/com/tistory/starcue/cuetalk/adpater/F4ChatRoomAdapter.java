@@ -23,7 +23,9 @@ import com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -125,8 +127,10 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             @Override
             public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
+                    RequestOptions requestOptions = new RequestOptions();
+                    requestOptions = requestOptions.transform(new RoundedCorners(8));
                     DocumentSnapshot snapshot = task.getResult();
-                    if (snapshot.get("uid") != null) {
+                    if (snapshot.get("uid") != null) {//상대방이 탈퇴안했을때
                         //RightImageViewholder
                         if (holder instanceof RightImageViewholder) {
                             ((RightImageViewholder) holder).timepic.setText(time2);
@@ -146,13 +150,19 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                             return false;
                                         }
                                     })
-                                    .centerCrop()
+                                    .apply(requestOptions)
                                     .into(((RightImageViewholder) holder).imagepic);
                             if (arrayList.get(position).getRead().equals("1")) {
                                 ((RightImageViewholder) holder).read.setText("1");
                             } else {
                                 ((RightImageViewholder) holder).read.setText("");
                             }
+                            ((RightImageViewholder) holder).imagepic.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    SeePicDialog.seePicDialog(context, arrayList.get(position).getUri());
+                                }
+                            });
                             //LeftImageViewholder
                         } else if (holder instanceof LeftImageViewholder) {
                             ((LeftImageViewholder) holder).name.setText(userName);
@@ -191,7 +201,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                             return false;
                                         }
                                     })
-                                    .centerCrop()
+                                    .apply(requestOptions)
                                     .into(((LeftImageViewholder) holder).image);
                             ((LeftImageViewholder) holder).picli.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -271,13 +281,13 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         } else if (holder instanceof CenterBottomViewholder) {
                             ((CenterBottomViewholder) holder).titletext.setText("상대방이 대화방을 나갔습니다.");
                         }
-                    } else {
+                    } else {//상대방 탈퇴했을때
                         if (holder instanceof RightImageViewholder) {
                             ((RightImageViewholder) holder).timepic.setText(time2);
                             requestManager
                                     .load(arrayList.get(position).getUri())
                                     .override(150, 150)
-                                    .centerCrop()
+                                    .apply(requestOptions)
                                     .into(((RightImageViewholder) holder).imagepic);
                             if (arrayList.get(position).getRead().equals("1")) {
                                 ((RightImageViewholder) holder).read.setText("1");
@@ -321,7 +331,7 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                             return false;
                                         }
                                     })
-                                    .centerCrop()
+                                    .apply(requestOptions)
                                     .into(((LeftImageViewholder) holder).image);
                             ((LeftImageViewholder) holder).image.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -482,6 +492,13 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             this.time1 = itemView.findViewById(R.id.chat_room_layout_time2);
             this.messege1 = itemView.findViewById(R.id.chat_room_layout_messege2);
             this.read2 = itemView.findViewById(R.id.chat_room_layout_read2);
+
+            Display display = activity.getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int zzz = (int) (size.x * 0.6);
+            messege1.setMaxWidth(zzz);
+
         }
     }
 
@@ -498,6 +515,14 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             this.time = itemView.findViewById(R.id.chat_room_layout_time1_img);
             this.progressBar = itemView.findViewById(R.id.chat_room_layout_progress_image);
             this.userpicprogress = itemView.findViewById(R.id.chat_room_layout_userpic_progress_image);
+
+            Display display = activity.getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int xx = (int) (size.x * 0.6);
+            int yy = (int) (size.y * 0.5);
+            image.setMaxWidth(xx);
+            image.setMaxHeight(yy);
         }
     }
 
@@ -512,6 +537,14 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             this.imagepic = itemView.findViewById(R.id.chat_room_layout_messege2_img);
             this.read = itemView.findViewById(R.id.chat_room_layout_read);
             this.progressBar = itemView.findViewById(R.id.chat_room_layout_right_image_progress);
+
+            Display display = activity.getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int xx = (int) (size.x * 0.6);
+            int yy = (int) (size.y * 0.5);
+            imagepic.setMaxWidth(xx);
+            imagepic.setMaxHeight(yy);
         }
     }
 
@@ -523,4 +556,8 @@ public class F4ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 }

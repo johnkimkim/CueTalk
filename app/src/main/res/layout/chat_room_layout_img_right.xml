@@ -1,77 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="65dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginTop="13dp"
-    android:layout_marginRight="13dp">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:layout_marginRight="8dp">
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/bbb_img"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@+id/bbb_img"
             android:layout_width="wrap_content"
-            android:layout_height="65dp"
-            android:layout_alignParentRight="true"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginRight="3dp"
             android:orientation="vertical">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/chat_room_layout_read"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_gravity="right|center_vertical"
+                android:textColor="#FF9800" />
 
-                <TextView
-                    android:id="@+id/chat_room_layout_read"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#FF9800" />
-
-                <TextView
-                    android:id="@+id/chat_room_layout_time2_img"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#000000" />
-            </LinearLayout>
-
-
-            <RelativeLayout
+            <TextView
+                android:id="@+id/chat_room_layout_time2_img"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/chat_room_layout_messege2_img"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:textColor="#000000" />
-
-<!--                <ProgressBar-->
-<!--                    android:id="@+id/chat_room_layout_right_image_progress"-->
-<!--                    style="?android:attr/progressBarStyle"-->
-<!--                    android:layout_width="50dp"-->
-<!--                    android:layout_height="50dp"-->
-<!--                    android:layout_centerHorizontal="true"-->
-<!--                    android:layout_centerVertical="true" />-->
-
-                <com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
-                    android:id="@+id/chat_room_layout_right_image_progress"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    app:loader_animDur="80"
-                    app:loader_bigCircleRadius="12dp"
-                    app:loader_circleRadius="3dp"
-                    app:loader_defaultColor="@color/light_gray"
-                    app:loader_firstShadowColor="@color/base1"
-                    app:loader_secondShadowColor="@color/base3"
-                    app:loader_selectedColor="@color/base2"
-                    app:loader_showRunningShadow="true"
-                    android:layout_centerInParent="true"/>
-
-            </RelativeLayout>
-
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:textColor="#000000" />
         </LinearLayout>
 
-    </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/chat_room_layout_messege2_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000" />
+
+            <com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
+                android:id="@+id/chat_room_layout_right_image_progress"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                app:loader_animDur="80"
+                app:loader_bigCircleRadius="12dp"
+                app:loader_circleRadius="3dp"
+                app:loader_defaultColor="@color/light_gray"
+                app:loader_firstShadowColor="@color/base1"
+                app:loader_secondShadowColor="@color/base3"
+                app:loader_selectedColor="@color/base2"
+                app:loader_showRunningShadow="true" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

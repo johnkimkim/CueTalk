@@ -246,10 +246,10 @@ public class ChatRoom extends AppCompatActivity {
         layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
         arrayList = new ArrayList<>();
-        adapter = new ChatRoomAdapter(ChatRoom.this, arrayList, Glide.with(ChatRoom.this));
+        adapter = new ChatRoomAdapter(ChatRoom.this, arrayList, Glide.with(ChatRoom.this), ChatRoom.this);
 
         recyclerView.scrollToPosition(adapter.getItemCount() - 1);
-
+        adapter.setHasStableIds(true);
         recyclerView.setAdapter(adapter);
 
         String roomname = getRoomname();

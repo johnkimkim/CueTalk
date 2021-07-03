@@ -490,7 +490,9 @@ public class ChatRoom extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                dialogA();
+                if (!imakegoout) {
+                    dialogA();
+                }
             }
 
             @Override

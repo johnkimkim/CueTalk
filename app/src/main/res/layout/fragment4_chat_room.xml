@@ -140,7 +140,9 @@
     <LinearLayout
         android:id="@+id/fragment4_chat_room_nlayout"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
 
@@ -148,21 +150,30 @@
             android:id="@+id/fragment4_chat_room_sendimage"
             android:layout_width="35dp"
             android:layout_height="35dp"
+            android:layout_gravity="center_vertical"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:background="@drawable/addimage" />
 
         <EditText
             android:id="@+id/fragment4_chat_room_edittext"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:hint="메시지 입력" />
+            android:background="@drawable/chat_edit_outline"
+            android:gravity="center_vertical"
+            android:hint="메시지 입력"
+            android:paddingLeft="13dp"
+            android:paddingRight="13dp"
+            android:textCursorDrawable="@color/base1"
+            android:textSize="13dp" />
 
         <Button
             android:id="@+id/fragment4_chat_room_sendbutton"
             android:layout_width="35dp"
             android:layout_height="35dp"
+            android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
             android:background="@drawable/send_massage" />

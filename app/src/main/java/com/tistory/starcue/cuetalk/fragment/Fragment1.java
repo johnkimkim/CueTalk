@@ -133,18 +133,23 @@ public class Fragment1 extends Fragment {
         Log.d("Fragment1>>>", "testtest: " + pn);
 
         Button testbtn1 = viewGroup.findViewById(R.id.testbtn1);
-        testbtn1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
 
         Display display = getActivity().getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         int zz = (int) (size.x * 0.5);
         testbtn1.setMaxWidth(zz);
+
+        testbtn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Log.d("Fragment1>>>", "get display size: " + zz);
+                Log.d("Fragment1>>>", "get btn size: " + String.valueOf(testbtn1.getWidth()));
+            }
+        });
+
+
     }
 
     @Override
